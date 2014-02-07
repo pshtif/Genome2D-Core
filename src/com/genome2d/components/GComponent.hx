@@ -6,11 +6,8 @@
 *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
 */
 package com.genome2d.components ;
-import com.genome2d.context.GContextCamera;
 import com.genome2d.node.GNode;
-import flash.geom.Vector3D;
 import Type.ValueType;
-import com.genome2d.context.GContext;
 import com.genome2d.signals.GMouseSignal;
 
 class GComponent
@@ -70,7 +67,7 @@ class GComponent
 		for (i in 0...g2d_prototypableProperties.length) {
 			var propertyName:String = g2d_prototypableProperties[i];
 			var propertyValue = Reflect.getProperty(this, propertyName);
-			addPrototypeProperty(propertyName, propertyValue, propertiesXml);
+			g2d_addPrototypeProperty(propertyName, propertyValue, propertiesXml);
 		}
 		
 		prototypeXml.addChild(propertiesXml);
@@ -78,7 +75,7 @@ class GComponent
 		return prototypeXml;
 	}
 	
-	private function addPrototypeProperty(p_name:String, p_value:Dynamic, p_propertiesXml:Xml = null):Void {
+	private function g2d_addPrototypeProperty(p_name:String, p_value:Dynamic, p_propertiesXml:Xml = null):Void {
 		// Discard complex types
 		var propertyXml:Xml = Xml.parse("<property/>").firstElement();
 		var type:String = Type.typeof(p_value).getName();

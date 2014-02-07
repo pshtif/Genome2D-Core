@@ -1,6 +1,6 @@
 package com.genome2d.components.renderables;
 
-import com.genome2d.geom.GFloatRectangle;
+import com.genome2d.geom.GRectangle;
 import com.genome2d.node.GNode;
 import com.genome2d.node.factory.GNodeFactory;
 import com.genome2d.signals.GMouseSignal;
@@ -234,7 +234,7 @@ class GTextureText extends GComponent implements IRenderable
 		return false;
 	}
 
-    public function getBounds(p_target:GFloatRectangle = null):GFloatRectangle {
+    public function getBounds(p_target:GRectangle = null):GRectangle {
         // TODO
         return null;
     }

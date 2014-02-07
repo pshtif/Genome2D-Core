@@ -7,9 +7,9 @@
 */
 package com.genome2d.components.renderables;
 
+import com.genome2d.textures.GTexture;
 import com.genome2d.context.GContextCamera;
 import com.genome2d.node.GNode;
-import com.genome2d.textures.GTextureAtlas;
 
 class GMovieClip extends GTexturedQuad
 {
@@ -30,36 +30,18 @@ class GMovieClip extends GTexturedQuad
 	private var g2d_startIndex:Int = -1;
 	private var g2d_endIndex:Int = -1;
 	private var g2d_playing:Bool = true;
-	
-	private var g2d_textureAtlas:GTextureAtlas;
-    #if swc @:extern #end
-	public var textureAtlasId(get, set):String;
-    #if swc @:getter(textureAtlasId) #end
-	inline private function get_textureAtlasId():String {
-		return (g2d_textureAtlas != null) ? g2d_textureAtlas.getId() : "";
-	}
-    #if swc @:setter(textureAtlasId) #end
-	inline private function set_textureAtlasId(p_value:String):String {
-		g2d_textureAtlas = (p_value != "") ? GTextureAtlas.getTextureAtlasById(p_value) : null;
-		if (g2d_frameIds != null) texture = g2d_textureAtlas.getSubTexture(g2d_frameIds[0]);
-		return g2d_textureAtlas.getId();
-	}
-	
-	private var g2d_frameIds:Array<String>;
-	private var g2d_frameIdsLength:Int = 0;
-    #if swc @:extern #end
-	public var frames(get, set):Array<String>;
-    #if swc @:getter(frames) #end
-	inline private function get_frames():Array<String> {
-		return g2d_frameIds;
-	}
-    #if swc @:setter(frames) #end
-	inline private function set_frames(p_value:Array<String>):Array<String> {
-		g2d_frameIds = p_value;
-		g2d_frameIdsLength = g2d_frameIds.length;
+
+    private var g2d_textureFrames:Array<GTexture>;
+    private var g2d_textureFrameCount:Int;
+
+	public function setTextureFrameIds(p_value:Array<String>):Void {
+        g2d_textureFrames = new Array<GTexture>();
+	    g2d_textureFrameCount = p_value.length;
+        for (i in 0...g2d_textureFrameCount) {
+            g2d_textureFrames.push(GTexture.getTextureById(p_value[i]));
+        }
 		g2d_currentFrame = 0;
-		if (g2d_textureAtlas != null) texture = g2d_textureAtlas.getSubTexture(g2d_frameIds[0]);
-		return g2d_frameIds;
+		texture = g2d_textureFrames[0];
 	}
 	
 	public var repeatable:Bool = true;
@@ -71,14 +53,6 @@ class GMovieClip extends GTexturedQuad
 	 */
 	public function new(p_node:GNode) {
 		super(p_node);
-	}
-	
-	/**
-	 * 	Set texture atlas that should be used by this movie clip
-	 */
-	public function setTextureAtlas(p_textureAtlas:GTextureAtlas):Void {
-		g2d_textureAtlas = p_textureAtlas;
-		if (g2d_frameIds != null) texture = g2d_textureAtlas.getSubTexture(g2d_frameIds[0]);
 	}
 
     #if swc @:extern #end
@@ -100,17 +74,17 @@ class GMovieClip extends GTexturedQuad
 	public var numFrames(get, never):Int;
     #if swc @:getter(numFrames) #end
 	inline private function get_numFrames():Int {
-		return g2d_frameIdsLength;
+		return g2d_textureFrameCount;
 	}
 	
 	/**
 	 * 	Go to a specified frame of this movie clip
 	 */
 	public function gotoFrame(p_frame:Int):Void {
-		if (g2d_frameIds == null) return;
+		if (g2d_textureFrames == null) return;
 		g2d_currentFrame = p_frame;
-		g2d_currentFrame %= g2d_frameIds.length;
-		texture = g2d_textureAtlas.getSubTexture(g2d_frameIds[g2d_currentFrame]);
+		g2d_currentFrame %= g2d_textureFrameCount;
+		texture = g2d_textureFrames[g2d_currentFrame];
 	}
 	
 	public function gotoAndPlay(p_frame:Int):Void {
@@ -149,13 +123,13 @@ class GMovieClip extends GTexturedQuad
 
                 if (g2d_accumulatedTime >= g2d_speed) {
                     g2d_currentFrame += Std.int(g2d_accumulatedTime / g2d_speed);
-                    if (g2d_currentFrame<g2d_frameIdsLength || repeatable) {
-                        g2d_currentFrame %= g2d_frameIds.length;
+                    if (g2d_currentFrame<g2d_textureFrameCount || repeatable) {
+                        g2d_currentFrame %= g2d_textureFrameCount;
                     } else {
-                        g2d_currentFrame = g2d_frameIdsLength-1;
+                        g2d_currentFrame = g2d_textureFrameCount-1;
                     }
 
-                    texture = g2d_textureAtlas.getSubTexture(g2d_frameIds[g2d_currentFrame]);
+                    texture = g2d_textureFrames[g2d_currentFrame];
                 }
                 g2d_accumulatedTime %= g2d_speed;
             }

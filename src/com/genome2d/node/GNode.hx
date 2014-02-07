@@ -7,21 +7,16 @@
 */
 package com.genome2d.node;
 
+import com.genome2d.geom.GRectangle;
+import com.genome2d.postprocesses.GPostProcess;
+import com.genome2d.geom.GMatrix;
 import com.genome2d.geom.GMatrixUtils;
 import com.genome2d.geom.GMatrixUtils;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.context.GContext;
-import flash.Vector;
 import com.genome2d.geom.GMatrix;
-import flash.geom.Matrix;
 import com.genome2d.components.GTransform;
-import com.genome2d.geom.GFloatRectangle;
-import com.genome2d.context.postprocesses.GPostProcess;
-import com.genome2d.geom.GIntRectangle;
-import com.genome2d.components.renderables.GMovieClip;
 import com.genome2d.components.renderables.IRenderable;
-import com.genome2d.context.GContextCamera;
-import com.genome2d.components.renderables.GSprite;
 import com.genome2d.context.GContextCamera;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.signals.GNodeMouseSignal;
@@ -58,8 +53,8 @@ class GNode
 	public var g2d_poolNext:GNode;
 	public var g2d_poolPrevious:GNode;
 
-    public var maskRect:GIntRectangle;
-    private var g2d_previousMaskRect:GIntRectangle;
+    public var maskRect:GRectangle;
+    private var g2d_previousMaskRect:GRectangle;
 	
 	/**
 	 * 	Abstract reference to user defined data, if you want keep some custom data binded to G2DNode instance use it.
@@ -168,13 +163,13 @@ class GNode
 	 */
 	public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GContextCamera, p_renderAsMask:Bool, p_useMatrix:Bool):Void {
 		if (g2d_active) {
-            var previousMaskRect:GIntRectangle = null;
+            var previousMaskRect:GRectangle = null;
             var hasMask:Bool = false;
             if (maskRect != null && maskRect != parent.maskRect) {
                 hasMask = true;
                 previousMaskRect = (core.getContext().getMaskRect() == null) ? null : core.getContext().getMaskRect().clone();
                 if (parent.maskRect!=null) {
-                    var intersection:GIntRectangle = parent.maskRect.intersection(maskRect);
+                    var intersection:GRectangle = parent.maskRect.intersection(maskRect);
                     core.getContext().setMaskRect(intersection);
                 } else {
                     core.getContext().setMaskRect(maskRect);
@@ -529,7 +524,7 @@ class GNode
 		g2d_numChildren++;
         if (g2d_numChildren == 1 && transform.hasUniformRotation()) transform.g2d_useMatrix++;
 		
-		if (isOnStage()) p_child.addedToStage();
+		if (isOnStage()) p_child.g2d_addedToStage();
 	}
 
     public function addChildAt(p_child:GNode, p_index:Int):Void {
@@ -544,7 +539,7 @@ class GNode
         g2d_numChildren++;
         if (g2d_numChildren == 1 && transform.hasUniformRotation()) transform.g2d_useMatrix++;
 
-        if (isOnStage()) p_child.addedToStage();
+        if (isOnStage()) p_child.g2d_addedToStage();
     }
 	
 	public function getChildAt(p_index:Int):GNode {
@@ -592,7 +587,7 @@ class GNode
 		g2d_numChildren--;
         if (g2d_numChildren == 0 && transform.hasUniformRotation()) transform.g2d_useMatrix--;
 
-		if (isOnStage()) p_child.removedFromStage();	
+		if (isOnStage()) p_child.g2d_removedFromStage();
 	}
 	
 	public function removeChildAt(p_index:Int):Void {
@@ -610,23 +605,23 @@ class GNode
         }
     }
 
-	inline private function addedToStage():Void {
+	inline private function g2d_addedToStage():Void {
 		if (g2d_onAddedToStage != null) g2d_onAddedToStage.dispatch();
 		
 		//if (g2d_body != null) g2d_body.addToSpace();
 
 		for (i in 0...g2d_numChildren) {
-			g2d_children[i].addedToStage();
+			g2d_children[i].g2d_addedToStage();
 		}
 	}
 
-	inline private function removedFromStage():Void {
+	inline private function g2d_removedFromStage():Void {
 		if (g2d_onRemovedFromStage != null) g2d_onRemovedFromStage.dispatch();
 		
 		//if (g2d_body != null) g2d_body.removeFromSpace();
 		
 		for (i in 0...g2d_numChildren) {
-			g2d_children[i].removedFromStage();
+			g2d_children[i].g2d_removedFromStage();
 		}
 	}
 	
@@ -643,19 +638,19 @@ class GNode
         }
 	}
 
-    public function getBounds(p_targetSpace:GNode, p_bounds:GFloatRectangle = null):GFloatRectangle {
-        if (p_bounds == null) p_bounds = new GFloatRectangle();
+    public function getBounds(p_targetSpace:GNode, p_bounds:GRectangle = null):GRectangle {
+        if (p_bounds == null) p_bounds = new GRectangle();
         var found:Bool = false;
         var minX:Float = 10000000;
         var maxX:Float = -10000000;
         var minY:Float = 10000000;
         var maxY:Float = -10000000;
-        var aabb:GFloatRectangle = new GFloatRectangle(0,0,0,0);
+        var aabb:GRectangle = new GRectangle(0,0,0,0);
 
         if (g2d_renderable != null) {
             g2d_renderable.getBounds(aabb);
             if (aabb.width != 0 && aabb.height != 0) {
-                transform.getTransformationMatrix(p_targetSpace, g2d_cachedMatrix);
+                var m:GMatrix = transform.getTransformationMatrix(p_targetSpace, g2d_cachedMatrix);
 
                 var tx1:Float = g2d_cachedMatrix.a * aabb.x + g2d_cachedMatrix.c * aabb.y + g2d_cachedMatrix.tx;
                 var ty1:Float = g2d_cachedMatrix.d * aabb.y + g2d_cachedMatrix.b * aabb.x + g2d_cachedMatrix.ty;

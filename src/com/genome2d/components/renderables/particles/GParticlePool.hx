@@ -4,7 +4,6 @@ package com.genome2d.components.renderables.particles;
  * ...
  * @author Peter "sHTiF" Stefcek
  */
-import com.genome2d.geom.GFloatRectangle;
 class GParticlePool
 {
     static public var g2d_defaultPool:GParticlePool = new GParticlePool();

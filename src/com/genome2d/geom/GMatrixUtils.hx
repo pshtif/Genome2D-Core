@@ -1,7 +1,5 @@
 package com.genome2d.geom;
 
-import flash.geom.Rectangle;
-
 class GMatrixUtils {
     inline static public function prependMatrix(p_matrix:GMatrix, p_by:GMatrix):Void {
         p_matrix.setTo(p_matrix.a * p_by.a + p_matrix.c * p_by.b,

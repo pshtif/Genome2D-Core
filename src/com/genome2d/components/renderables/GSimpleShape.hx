@@ -1,5 +1,5 @@
 package com.genome2d.components.renderables;
-import com.genome2d.geom.GFloatRectangle;
+import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.context.GContextCamera;
 import com.genome2d.node.GNode;
@@ -32,7 +32,7 @@ class GSimpleShape extends GComponent implements IRenderable
         g2d_uvs = p_uvs;
     }
 
-    public function getBounds(p_target:GFloatRectangle = null):GFloatRectangle {
+    public function getBounds(p_target:GRectangle = null):GRectangle {
         return null;
     }
 }

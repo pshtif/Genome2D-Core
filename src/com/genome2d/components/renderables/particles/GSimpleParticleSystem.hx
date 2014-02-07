@@ -1,6 +1,6 @@
 package com.genome2d.components.renderables.particles;
 
-import com.genome2d.geom.GFloatRectangle;
+import com.genome2d.geom.GRectangle;
 import com.genome2d.components.GComponent;
 import com.genome2d.context.GContext;
 import com.genome2d.node.GNode;
@@ -264,7 +264,7 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 		// TODO
 	}
 
-    public function getBounds(p_target:GFloatRectangle = null):GFloatRectangle {
+    public function getBounds(p_target:GRectangle = null):GRectangle {
         // TODO
         return null;
     }

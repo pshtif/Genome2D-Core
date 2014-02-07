@@ -1,5 +1,5 @@
 package com.genome2d.components.renderables;
-import flash.geom.Matrix;
+import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.context.filters.GFilter;
 import com.genome2d.context.GContextCamera;
@@ -9,7 +9,6 @@ import com.genome2d.components.GComponent;
 import com.genome2d.context.GContext;
 import com.genome2d.signals.GMouseSignal;
 import com.genome2d.textures.GTexture;
-import com.genome2d.geom.GFloatRectangle;
 
 /**
  * ...
@@ -19,8 +18,10 @@ class GTexturedQuad extends GComponent implements IRenderable
 {
     public var blendMode:Int = 1;
 
+    public var mousePixelEnabled:Bool = false;
+    public var mousePixelTreshold:Int = 0;
+
 	public var texture:GTexture;
-    //public var mousePixelEnabled:Bool = false;
 
     public var filter:GFilter;
 
@@ -68,15 +69,13 @@ class GTexturedQuad extends GComponent implements IRenderable
         ty += .5;
 
 		if (tx >= -texture.pivotX / texture.width && tx <= 1 - texture.pivotX / texture.width && ty >= -texture.pivotY / texture.height && ty <= 1 - texture.pivotY / texture.height) {
-            /*
-			if (mousePixelEnabled && texture.getAlphaAtUV(tx+texture.pivotX/texture.width, ty+texture.pivotY/texture.height) == 0) {
+			if (mousePixelEnabled && texture.getAlphaAtUV(tx+texture.pivotX/texture.width, ty+texture.pivotY/texture.height) <= mousePixelTreshold) {
 				if (node.g2d_mouseOverNode == node) {
 					node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, tx*texture.width+texture.pivotX, ty*texture.height+texture.pivotY, p_contextSignal);
 				}
 				return false;
 			}
-			/**/
-            trace("here");
+
 			node.dispatchNodeMouseSignal(p_contextSignal.type, node, tx*texture.width+texture.pivotX, ty*texture.height+texture.pivotY, p_contextSignal);
 			if (node.g2d_mouseOverNode != node) {
 				node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OVER, node, tx*texture.width+texture.pivotX, ty*texture.height+texture.pivotY, p_contextSignal);
@@ -92,13 +91,13 @@ class GTexturedQuad extends GComponent implements IRenderable
 		return false;
 	}
 
-    public function getBounds(p_bounds:GFloatRectangle = null):GFloatRectangle {
+    public function getBounds(p_bounds:GRectangle = null):GRectangle {
         if (texture == null) {
             if (p_bounds != null) p_bounds.setTo(0, 0, 0, 0);
-            else p_bounds = new GFloatRectangle(0, 0, 0, 0);
+            else p_bounds = new GRectangle(0, 0, 0, 0);
         } else {
             if (p_bounds != null) p_bounds.setTo(-texture.width*.5-texture.pivotX, -texture.height*.5-texture.pivotY, texture.width, texture.height);
-            else p_bounds = new GFloatRectangle(-texture.width*.5-texture.pivotX, -texture.height*.5-texture.pivotY, texture.width, texture.height);
+            else p_bounds = new GRectangle(-texture.width*.5-texture.pivotX, -texture.height*.5-texture.pivotY, texture.width, texture.height);
         }
 
         return p_bounds;

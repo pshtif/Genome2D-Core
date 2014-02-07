@@ -7,9 +7,8 @@
 */
 package com.genome2d.components;
 
-import com.genome2d.geom.GFloatRectangle;
+import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GContext;
-import com.genome2d.geom.GIntRectangle;
 import com.genome2d.context.GContextCamera;
 import com.genome2d.node.GNode;
 import com.genome2d.signals.GMouseSignal;
@@ -46,7 +45,7 @@ class GCameraController extends GComponent
 		return alpha+red+green+blue;
 	}
 
-    private var g2d_viewRectangle:GFloatRectangle;
+    private var g2d_viewRectangle:GRectangle;
 
 	/**
 	 * 	@private
@@ -83,9 +82,9 @@ class GCameraController extends GComponent
 		super(p_node);
 
         g2d_contextCamera = new GContextCamera();
-        g2d_viewRectangle = new GFloatRectangle();
+        g2d_viewRectangle = new GRectangle();
 
-		if (node != node.core.root && node.isOnStage()) node.core.addCamera(this);
+		if (node != node.core.root && node.isOnStage()) node.core.g2d_addCamera(this);
 		
 		node.onAddedToStage.add(onAddedToStage);
 		node.onRemovedFromStage.add(onRemovedFromStage);
@@ -113,7 +112,7 @@ class GCameraController extends GComponent
 		if (g2d_capturedThisFrame || !node.isActive()) return false;
 		g2d_capturedThisFrame = true;
 
-        var stageRect:GIntRectangle = p_context.getStageViewRect();
+        var stageRect:GRectangle = p_context.getStageViewRect();
         g2d_viewRectangle.setTo(stageRect.width*g2d_contextCamera.normalizedViewX,
                                 stageRect.height*g2d_contextCamera.normalizedViewY,
                                 stageRect.width*g2d_contextCamera.normalizedViewWidth,
@@ -140,7 +139,7 @@ class GCameraController extends GComponent
 	 *
 	 */
 	override public function dispose():Void {
-		node.core.removeCamera(this);
+		node.core.g2d_removeCamera(this);
 		
 		node.onAddedToStage.remove(onAddedToStage);
 		node.onRemovedFromStage.remove(onRemovedFromStage);
@@ -149,10 +148,10 @@ class GCameraController extends GComponent
 	}
 	
 	private function onAddedToStage():Void {
-		node.core.addCamera(this);
+		node.core.g2d_addCamera(this);
 	}
 	
 	private function onRemovedFromStage():Void {
-		node.core.removeCamera(this);
+		node.core.g2d_removeCamera(this);
 	}
 }

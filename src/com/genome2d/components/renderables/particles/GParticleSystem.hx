@@ -1,6 +1,6 @@
 package com.genome2d.components.renderables.particles;
 
-import com.genome2d.geom.GFloatRectangle;
+import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GCurve;
 import com.genome2d.components.GComponent;
 import com.genome2d.context.GContext;
@@ -172,7 +172,7 @@ class GParticleSystem extends GComponent implements IRenderable
         p_particle.dispose();
     }
 
-    public function getBounds(p_target:GFloatRectangle = null):GFloatRectangle {
+    public function getBounds(p_target:GRectangle = null):GRectangle {
         return null;
     }
 }

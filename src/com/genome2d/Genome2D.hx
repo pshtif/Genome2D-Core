@@ -1,5 +1,6 @@
 package com.genome2d;
 
+import flash.Boot;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.components.GCameraController;
 import com.genome2d.node.GNode;
@@ -123,7 +124,7 @@ class Genome2D
      **/
 	private function new() {
 		if (!g2d_instantiable) new GError("Can't instantiate singleton directly");
-		
+
 		g2d_instance = this;
 
         g2d_renderMatrix = new GMatrix();
@@ -152,17 +153,17 @@ class Genome2D
 		if (g2d_context != null) g2d_context.dispose();
 		
 		g2d_context = Type.createInstance(p_config.g2d_contextClass, [p_config]);
-		g2d_context.onInitialized.add(contextInitializedHandler);
-		g2d_context.onFailed.add(contextFailedHandler);
+		g2d_context.onInitialized.add(g2d_contextInitializedHandler);
+		g2d_context.onFailed.add(g2d_contextFailedHandler);
 		g2d_context.init();
 	}
 
     /**
      *  Context initialized handler
      **/
-	private function contextInitializedHandler():Void {
-		g2d_context.onFrame.add(frameHandler);
-        g2d_context.onMouseInteraction.add(contextMouseSignalHandler);
+	private function g2d_contextInitializedHandler():Void {
+		g2d_context.onFrame.add(g2d_frameHandler);
+        g2d_context.onMouseInteraction.add(g2d_contextMouseSignalHandler);
 		
 		onInitialized.dispatch();
 	}
@@ -170,14 +171,14 @@ class Genome2D
     /**
      *  Context failed to initialize handler
      **/
-	private function contextFailedHandler():Void {
+	private function g2d_contextFailedHandler():Void {
 		onFailed.dispatch();
 	}
 
     /**
      *  Frame handler called each frame
      **/
-	private function frameHandler(p_deltaTime:Float):Void {
+	private function g2d_frameHandler(p_deltaTime:Float):Void {
         if (enabled) {
             g2d_currentFrameId++;
 		    update(p_deltaTime);
@@ -231,7 +232,7 @@ class Genome2D
     /**
      *  Add camera
      **/
-	public function addCamera(p_camera:GCameraController):Void {
+	public function g2d_addCamera(p_camera:GCameraController):Void {
         for (i in 0...g2d_cameras.length) if (g2d_cameras[i] == p_camera) return;
         g2d_cameras.push(p_camera);
     }
@@ -239,14 +240,14 @@ class Genome2D
     /**
      *  Remove camera
      **/
-    public function removeCamera(p_camera:GCameraController):Void {
+    public function g2d_removeCamera(p_camera:GCameraController):Void {
         for (i in 0...g2d_cameras.length) if (g2d_cameras[i] == p_camera) g2d_cameras.splice(i, 1);
     }
 
     /**
      *  Context mouse interaction handler
      **/
-	private function contextMouseSignalHandler(p_signal:GMouseSignal):Void {
+	private function g2d_contextMouseSignalHandler(p_signal:GMouseSignal):Void {
 		var captured:Bool = false;
 
         // If there is no camera process the signal directly by root node

@@ -222,7 +222,6 @@ class GTransform extends GComponent
         return g2d_matrix;
     }
 
-    // TODO Doesn't work with nonhierarchical target spaces
     public function getTransformationMatrix(p_targetSpace:GNode, p_resultMatrix:GMatrix = null):GMatrix {
         if (p_resultMatrix == null) {
             p_resultMatrix = new GMatrix();
