@@ -31,18 +31,39 @@ class GMovieClip extends GTexturedQuad
 	private var g2d_endIndex:Int = -1;
 	private var g2d_playing:Bool = true;
 
-    private var g2d_textureFrames:Array<GTexture>;
-    private var g2d_textureFrameCount:Int;
-
-	public function setTextureFrameIds(p_value:Array<String>):Void {
-        g2d_textureFrames = new Array<GTexture>();
-	    g2d_textureFrameCount = p_value.length;
-        for (i in 0...g2d_textureFrameCount) {
-            g2d_textureFrames.push(GTexture.getTextureById(p_value[i]));
+    #if swc @:extern #end
+    public var frameTextureIds(never, set):Array<String>;
+    #if swc @:setter(frameTextureIds) #end
+	inline private function frameTextureIds(p_value:Array<String>):Void {
+        g2d_frameTextures = new Array<GTexture>();
+	    g2d_frameTexturesCount = p_value.length;
+        for (i in 0...g2d_frameTexturesCount) {
+            g2d_frameTextures.push(GTexture.getTextureById(p_value[i]));
         }
 		g2d_currentFrame = 0;
-		texture = g2d_textureFrames[0];
+        if (g2d_frameTextures.length>0) {
+            texture = g2d_frameTextures[0];
+        } else {
+            texture = null;
+        }
 	}
+
+    private var g2d_frameTextures:Array<GTexture>;
+    private var g2d_frameTexturesCount:Int;
+
+    #if swc @:extern #end
+    public var framesTextures(never, set):Array<GTexture>;
+    #if swc @:setter(frameTextures) #end
+    inline private function frameTextures(p_value:Array<GTexture>):Void {
+        g2d_frameTextures = p_value;
+        g2d_frameTexturesCount = p_value.length;
+        g2d_currentFrame = 0;
+        if (g2d_frameTextures.length>0) {
+            texture = g2d_frameTextures[0];
+        } else {
+            texture = null;
+        }
+    }
 	
 	public var repeatable:Bool = true;
 	
@@ -74,17 +95,17 @@ class GMovieClip extends GTexturedQuad
 	public var numFrames(get, never):Int;
     #if swc @:getter(numFrames) #end
 	inline private function get_numFrames():Int {
-		return g2d_textureFrameCount;
+		return g2d_frameTexturesCount;
 	}
 	
 	/**
 	 * 	Go to a specified frame of this movie clip
 	 */
 	public function gotoFrame(p_frame:Int):Void {
-		if (g2d_textureFrames == null) return;
+		if (g2d_frameTextures == null) return;
 		g2d_currentFrame = p_frame;
-		g2d_currentFrame %= g2d_textureFrameCount;
-		texture = g2d_textureFrames[g2d_currentFrame];
+		g2d_currentFrame %= g2d_frameTexturesCount;
+		texture = g2d_frameTextures[g2d_currentFrame];
 	}
 	
 	public function gotoAndPlay(p_frame:Int):Void {
@@ -123,17 +144,15 @@ class GMovieClip extends GTexturedQuad
 
                 if (g2d_accumulatedTime >= g2d_speed) {
                     g2d_currentFrame += Std.int(g2d_accumulatedTime / g2d_speed);
-                    if (g2d_currentFrame<g2d_textureFrameCount || repeatable) {
-                        g2d_currentFrame %= g2d_textureFrameCount;
+                    if (g2d_currentFrame<g2d_frameTexturesCount || repeatable) {
+                        g2d_currentFrame %= g2d_frameTexturesCount;
                     } else {
-                        g2d_currentFrame = g2d_textureFrameCount-1;
+                        g2d_currentFrame = g2d_frameTexturesCount-1;
                     }
-
-                    texture = g2d_textureFrames[g2d_currentFrame];
+                    texture = g2d_frameTextures[g2d_currentFrame];
                 }
                 g2d_accumulatedTime %= g2d_speed;
             }
-
             super.render(p_camera, p_useMatrix);
         }
 	}
