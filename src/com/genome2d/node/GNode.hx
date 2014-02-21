@@ -42,19 +42,16 @@ class GNode
     }
 	
 	/**
-	 * 	Camera group this node belongs to, a node is rendered through this camera if camera.mask and nodecameraGroup != 0
+	 * 	Camera group this node belongs to, a node is rendered through this camera if camera.mask&node.cameraGroup != 0
 	 */
 	public var cameraGroup:Int = 0;
 
-	/**
-     *  Pool parent and list references
-     **/
 	public var g2d_pool:GNodePool;
 	public var g2d_poolNext:GNode;
 	public var g2d_poolPrevious:GNode;
 
+
     public var maskRect:GRectangle;
-    private var g2d_previousMaskRect:GRectangle;
 	
 	/**
 	 * 	Abstract reference to user defined data, if you want keep some custom data binded to G2DNode instance use it.
@@ -62,7 +59,7 @@ class GNode
 	private var g2d_userData:Map<String, Dynamic>;
 	#if swc @:extern #end
 	public var userData(get, never):Map<String, Dynamic>;
-	#if swc @:getter(active) #end
+	#if swc @:getter(userData) #end
 	inline private function get_userData():Map<String, Dynamic> {
 		if (g2d_userData == null) g2d_userData = new Map<String,Dynamic>();
 		return g2d_userData;

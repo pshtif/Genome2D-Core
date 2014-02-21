@@ -143,7 +143,7 @@ import com.genome2d.context.GContextCamera;
 
 class GPostProcess {
     public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GContextCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
-        throw new GError();
+        throw new GError("Postprocesses are not supported in this target.");
     }
 }
 #end

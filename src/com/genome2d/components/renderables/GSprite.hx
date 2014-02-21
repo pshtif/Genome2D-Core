@@ -8,6 +8,9 @@ import com.genome2d.textures.GTexture;
  */
 class GSprite extends GTexturedQuad
 {
+    /**
+     *  Texture id used by this sprite
+     **/
     #if swc @:extern #end
     public var textureId(get, set):String;
     #if swc @:getter(textureId) #end
@@ -22,6 +25,9 @@ class GSprite extends GTexturedQuad
         return p_value;
     }
 
+    /**
+     *  @private
+     **/
 	public function new(p_node:GNode) {
 		super(p_node);
 

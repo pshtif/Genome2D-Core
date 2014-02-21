@@ -1,6 +1,5 @@
 package com.genome2d;
 
-import flash.Boot;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.components.GCameraController;
 import com.genome2d.node.GNode;
@@ -18,7 +17,7 @@ import com.genome2d.context.GContextConfig;
 class Genome2D
 {
     // Genome2D version
-	inline static public var VERSION:String = "1.0.235hx";
+	inline static public var VERSION:String = "1.0.237hx";
 
     // Singleton instance
 	static private var g2d_instance:Genome2D;
@@ -119,6 +118,8 @@ class Genome2D
     public var g2d_renderMatrixIndex:Int = 0;
     public var g2d_renderMatrixArray:Array<GMatrix>;
 
+    private var g2d_contextConfig:GContextConfig;
+
 	/**
      *  CONSTRUCTOR
      **/
@@ -151,8 +152,9 @@ class Genome2D
      **/
 	public function init(p_config:GContextConfig):Void {
 		if (g2d_context != null) g2d_context.dispose();
-		
-		g2d_context = Type.createInstance(p_config.g2d_contextClass, [p_config]);
+
+        g2d_contextConfig = p_config;
+		g2d_context = Type.createInstance(p_config.contextClass, [g2d_contextConfig]);
 		g2d_context.onInitialized.add(g2d_contextInitializedHandler);
 		g2d_context.onFailed.add(g2d_contextFailedHandler);
 		g2d_context.init();
@@ -172,6 +174,13 @@ class Genome2D
      *  Context failed to initialize handler
      **/
 	private function g2d_contextFailedHandler():Void {
+        if (g2d_contextConfig.fallbackContextClass != null) {
+            g2d_context = Type.createInstance(g2d_contextConfig.fallbackContextClass, [g2d_contextConfig]);
+            g2d_context.onInitialized.add(g2d_contextInitializedHandler);
+            g2d_context.onFailed.add(g2d_contextFailedHandler);
+            g2d_context.init();
+        }
+
 		onFailed.dispatch();
 	}
 
@@ -224,8 +233,10 @@ class Genome2D
 			}
 		}
 
-        g2d_context.setCamera(g2d_context.g2d_defaultCamera);
-		onPostRender.dispatch();
+        if (onPostRender.numListeners>0) {
+            g2d_context.setCamera(g2d_context.g2d_defaultCamera);
+		    onPostRender.dispatch();
+        }
 		g2d_context.end();
 	}
 
@@ -256,7 +267,7 @@ class Genome2D
         // If there are cameras we need to process the signal through them
 		} else {
 		    for (i in 0...g2d_cameras.length) {
-					g2d_cameras[i].g2d_capturedThisFrame = false;
+				g2d_cameras[i].g2d_capturedThisFrame = false;
 			}
             for (i in 0...g2d_cameras.length) {
                 g2d_cameras[i].captureMouseEvent(g2d_context, captured, p_signal);

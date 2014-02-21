@@ -16,19 +16,41 @@ import com.genome2d.textures.GTexture;
  */
 class GTexturedQuad extends GComponent implements IRenderable
 {
+    /**
+     *  Blend mode used for rendering
+     **/
     public var blendMode:Int = 1;
 
+    /**
+     *  Enable/disable pixel perfect mouse detection, not supported by all contexts.
+     *  Default false
+     **/
     public var mousePixelEnabled:Bool = false;
+    /**
+     *  Specify alpha treshold for pixel perfect mouse detection, works with mousePixelEnabled true
+     **/
     public var mousePixelTreshold:Int = 0;
 
+    /**
+     *  Texture used for rendering
+     **/
 	public var texture:GTexture;
 
+    /**
+     *  Filter used for rendering
+     **/
     public var filter:GFilter;
 
+    /**
+     *  @private
+     **/
 	public function new(p_node:GNode) {
 		super(p_node);
 	}
 
+    /**
+     *  @private
+     **/
 	public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
 		if (texture != null) {
 			//trace(node.transform.g2d_worldScaleX + "," + node.transform.g2d_worldScaleY);
@@ -39,8 +61,11 @@ class GTexturedQuad extends GComponent implements IRenderable
                 node.core.getContext().draw(texture, node.transform.g2d_worldX, node.transform.g2d_worldY, node.transform.g2d_worldScaleX, node.transform.g2d_worldScaleY, node.transform.g2d_worldRotation, node.transform.g2d_worldRed, node.transform.g2d_worldGreen, node.transform.g2d_worldBlue, node.transform.g2d_worldAlpha, blendMode, filter);
             }
 		}
-	}	
-	
+	}
+
+    /**
+     *  @private
+     **/
 	override public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
 		if (p_captured && p_contextSignal.type == GMouseSignalType.MOUSE_UP) node.g2d_mouseDownNode = null;
 
@@ -91,6 +116,9 @@ class GTexturedQuad extends GComponent implements IRenderable
 		return false;
 	}
 
+    /**
+     *  @private
+     **/
     public function getBounds(p_bounds:GRectangle = null):GRectangle {
         if (texture == null) {
             if (p_bounds != null) p_bounds.setTo(0, 0, 0, 0);

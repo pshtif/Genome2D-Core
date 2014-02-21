@@ -14,11 +14,18 @@ import com.genome2d.context.GContextCamera;
  */
 class GTextureText extends GComponent implements IRenderable
 {
+    /**
+     *  Blend mode used for rendering
+     **/
     public var blendMode:Int = 1;
 		
 	private var g2d_invalidate:Bool = false;
 	
 	private var g2d_tracking:Float = 0;
+    /**
+     *  Character tracking
+     *  Default 0
+     **/
     #if swc @:extern #end
 	public var tracking(get, set):Float;
     #if swc @:getter(tracking) #end
@@ -33,6 +40,10 @@ class GTextureText extends GComponent implements IRenderable
 	}
 	
 	private var g2d_lineSpace:Float = 0;
+    /**
+     *  Line spacing
+     *  Default 0
+     **/
     #if swc @:extern #end
 	public var lineSpace(get, set):Float;
     #if swc @:getter(lineSpace) #end
@@ -47,6 +58,9 @@ class GTextureText extends GComponent implements IRenderable
 	}
 	
 	private var g2d_align:Int;
+    /**
+     *  Text alignment
+     **/
     #if swc @:extern #end
 	public var align(get,set):Int;
     #if swc @:getter(align) #end
@@ -59,7 +73,10 @@ class GTextureText extends GComponent implements IRenderable
 		g2d_invalidate = true;
 		return g2d_align;
 	}
-	
+
+    /**
+     *  Maximum width of the text
+     **/
 	public var maxWidth:Float = 0;
 	
 	/**
@@ -72,6 +89,9 @@ class GTextureText extends GComponent implements IRenderable
 	}
 
     private var g2d_textureAtlas:GTextureAtlas;
+    /**
+     *  Texture atlas id used for character textures lookup
+     **/
     #if swc @:extern #end
 	public var textureAtlasId(get, set):String;
     #if swc @:getter(textureAtlasId) #end
@@ -84,13 +104,19 @@ class GTextureText extends GComponent implements IRenderable
 		setTextureAtlas(GTextureAtlas.getTextureAtlasById(p_value));
 		return p_value;
 	}
-	
+
+    /**
+     *  Set texture atlas that will be used for character textures lookup
+     **/
 	public function setTextureAtlas(p_textureAtlas:GTextureAtlas):Void {
 		g2d_textureAtlas = p_textureAtlas;
 		g2d_invalidate = true;
 	}
 	
 	private var g2d_text:String = "";
+    /**
+     *  Text
+     **/
     #if swc @:extern #end
 	public var text(get, set):String;
     #if swc @:getter(text) #end
@@ -105,6 +131,9 @@ class GTextureText extends GComponent implements IRenderable
 	}
 	
 	private var g2d_width:Float = 0;
+    /**
+     *  Width of the text
+     **/
     #if swc @:extern #end
 	public var width(get, never):Float;
     #if swc @:getter(width) #end
@@ -115,6 +144,9 @@ class GTextureText extends GComponent implements IRenderable
 	}
 	
 	private var g2d_height:Float = 0;
+    /**
+     *  Height of the text
+     **/
     #if swc @:extern #end
 	public var height(get, never):Float;
     #if swc @:getter(height) #end
@@ -123,7 +155,10 @@ class GTextureText extends GComponent implements IRenderable
 		
 		return g2d_height * node.transform.g2d_worldScaleY;
 	}
-		
+
+    /**
+     *  @private
+     **/
 	public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
 		if (g2d_invalidate) invalidateText();
 	}
@@ -234,6 +269,9 @@ class GTextureText extends GComponent implements IRenderable
 		return false;
 	}
 
+    /**
+     *  @private
+     **/
     public function getBounds(p_target:GRectangle = null):GRectangle {
         // TODO
         return null;

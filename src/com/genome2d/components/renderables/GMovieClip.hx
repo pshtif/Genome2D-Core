@@ -21,6 +21,9 @@ class GMovieClip extends GTexturedQuad
     private var g2d_lastUpdatedFrameId:Int = 0;
 
     #if swc @:extern #end
+    /**
+     *  Get the current frame index the movieclip is at
+     **/
 	public var currentFrame(get, never):Int;
     #if swc @:getter(currentFrame) #end
 	inline private function get_currentFrame():Int {
@@ -31,10 +34,13 @@ class GMovieClip extends GTexturedQuad
 	private var g2d_endIndex:Int = -1;
 	private var g2d_playing:Bool = true;
 
+    /**
+     *  Texture ids used for movieclip frames
+     **/
     #if swc @:extern #end
     public var frameTextureIds(never, set):Array<String>;
     #if swc @:setter(frameTextureIds) #end
-	inline private function frameTextureIds(p_value:Array<String>):Void {
+	inline private function set_frameTextureIds(p_value:Array<String>):Array<String> {
         g2d_frameTextures = new Array<GTexture>();
 	    g2d_frameTexturesCount = p_value.length;
         for (i in 0...g2d_frameTexturesCount) {
@@ -46,15 +52,20 @@ class GMovieClip extends GTexturedQuad
         } else {
             texture = null;
         }
+
+        return p_value;
 	}
 
     private var g2d_frameTextures:Array<GTexture>;
     private var g2d_frameTexturesCount:Int;
 
+    /**
+     *  Textures used for movieclip frames
+     **/
     #if swc @:extern #end
-    public var framesTextures(never, set):Array<GTexture>;
+    public var frameTextures(never, set):Array<GTexture>;
     #if swc @:setter(frameTextures) #end
-    inline private function frameTextures(p_value:Array<GTexture>):Void {
+    inline private function set_frameTextures(p_value:Array<GTexture>):Array<GTexture> {
         g2d_frameTextures = p_value;
         g2d_frameTexturesCount = p_value.length;
         g2d_currentFrame = 0;
@@ -63,8 +74,13 @@ class GMovieClip extends GTexturedQuad
         } else {
             texture = null;
         }
+
+        return g2d_frameTextures;
     }
-	
+
+    /**
+     *  Is movieclip repeating after reaching the last frame, default true
+     **/
 	public var repeatable:Bool = true;
 	
 	static private var g2d_count:Int = 0;
@@ -76,21 +92,24 @@ class GMovieClip extends GTexturedQuad
 		super(p_node);
 	}
 
+    /**
+     *  Framerate the movieclips is playing at, default 30
+     **/
     #if swc @:extern #end
 	public var frameRate(get, set):Int;
     #if swc @:getter(frameRate) #end
 	inline private function get_frameRate():Int {
 		return Std.int(1000 / g2d_speed);
 	}
-	/**
-	 * 	Set framerate at which this clip should play
-	 */
     #if swc @:setter(frameRate) #end
 	inline private function set_frameRate(p_value :Int):Int {
 		g2d_speed = 1000 / p_value;
 		return p_value;
 	}
 
+    /**
+     *  Number of frames in this movieclip
+     **/
     #if swc @:extern #end
 	public var numFrames(get, never):Int;
     #if swc @:getter(numFrames) #end
@@ -107,12 +126,18 @@ class GMovieClip extends GTexturedQuad
 		g2d_currentFrame %= g2d_frameTexturesCount;
 		texture = g2d_frameTextures[g2d_currentFrame];
 	}
-	
+
+    /**
+     *  Go to a specified frame of this movieclip and start playing
+     **/
 	public function gotoAndPlay(p_frame:Int):Void {
 		gotoFrame(p_frame);
 		play();
 	}
-	
+
+    /**
+     *  Go to a specified frame of this movieclip and stop playing
+     **/
 	public function gotoAndStop(p_frame:Int):Void {
 		gotoFrame(p_frame);
 		stop();
