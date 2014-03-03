@@ -1,5 +1,8 @@
 package com.genome2d;
 
+import com.genome2d.textures.factories.GTextureAtlasFactory;
+import com.genome2d.textures.factories.GTextureFactory;
+import com.genome2d.context.IContext;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.components.GCameraController;
 import com.genome2d.node.GNode;
@@ -7,7 +10,6 @@ import com.genome2d.signals.GMouseSignal;
 import com.genome2d.error.GError;
 import msignal.Signal;
 
-import com.genome2d.context.GContext;
 import com.genome2d.context.GContextConfig;
 
 /**
@@ -32,9 +34,7 @@ class Genome2D
 		return g2d_instance;
 	}
 
-    public var enabled:Bool = true;
-
-
+    public var autoUpdateAndRender:Bool = true;
 
     // Physics instance
 	//public var physics:GPhysics;
@@ -102,8 +102,8 @@ class Genome2D
         return g2d_root;
     }
 
-	private var g2d_context:GContext;
-	inline public function getContext():GContext {
+	private var g2d_context:IContext;
+	inline public function getContext():IContext {
 		return g2d_context;
 	}
 
@@ -155,8 +155,8 @@ class Genome2D
 
         g2d_contextConfig = p_config;
 		g2d_context = Type.createInstance(p_config.contextClass, [g2d_contextConfig]);
-		g2d_context.onInitialized.add(g2d_contextInitializedHandler);
-		g2d_context.onFailed.add(g2d_contextFailedHandler);
+		g2d_context.onInitialized(g2d_contextInitializedHandler);
+		g2d_context.onFailed(g2d_contextFailedHandler);
 		g2d_context.init();
 	}
 
@@ -164,8 +164,10 @@ class Genome2D
      *  Context initialized handler
      **/
 	private function g2d_contextInitializedHandler():Void {
-		g2d_context.onFrame.add(g2d_frameHandler);
-        g2d_context.onMouseInteraction.add(g2d_contextMouseSignalHandler);
+        GTextureFactory.g2d_context = GTextureAtlasFactory.g2d_context = g2d_context;
+
+		g2d_context.onFrame(g2d_frameHandler);
+        g2d_context.onMouseInteraction(g2d_contextMouseSignalHandler);
 		
 		onInitialized.dispatch();
 	}
@@ -176,19 +178,19 @@ class Genome2D
 	private function g2d_contextFailedHandler():Void {
         if (g2d_contextConfig.fallbackContextClass != null) {
             g2d_context = Type.createInstance(g2d_contextConfig.fallbackContextClass, [g2d_contextConfig]);
-            g2d_context.onInitialized.add(g2d_contextInitializedHandler);
-            g2d_context.onFailed.add(g2d_contextFailedHandler);
+            g2d_context.onInitialized(g2d_contextInitializedHandler);
+            g2d_context.onFailed(g2d_contextFailedHandler);
             g2d_context.init();
         }
 
-		onFailed.dispatch();
+	    onFailed.dispatch();
 	}
 
     /**
      *  Frame handler called each frame
      **/
 	private function g2d_frameHandler(p_deltaTime:Float):Void {
-        if (enabled) {
+        if (autoUpdateAndRender) {
             g2d_currentFrameId++;
 		    update(p_deltaTime);
             render();
@@ -225,7 +227,7 @@ class Genome2D
 
         // If there is no camera render the root node directly
 		if (cameraCount==0) {
-			root.render(false, false, g2d_context.g2d_defaultCamera, false, false);
+			root.render(false, false, g2d_context.getDefaultCamera(), false, false);
         // If there are cameras render the root through them
 		} else {
 			for (i in 0...cameraCount) {
@@ -234,7 +236,7 @@ class Genome2D
 		}
 
         if (onPostRender.numListeners>0) {
-            g2d_context.setCamera(g2d_context.g2d_defaultCamera);
+            g2d_context.setCamera(g2d_context.getDefaultCamera());
 		    onPostRender.dispatch();
         }
 		g2d_context.end();
@@ -259,18 +261,16 @@ class Genome2D
      *  Context mouse interaction handler
      **/
 	private function g2d_contextMouseSignalHandler(p_signal:GMouseSignal):Void {
-		var captured:Bool = false;
-
         // If there is no camera process the signal directly by root node
 		if (g2d_cameras.length == 0) {
-            root.processContextMouseSignal(captured, p_signal.x, p_signal.y, p_signal, null);
+            root.processContextMouseSignal(p_signal.nativeCaptured, p_signal.x, p_signal.y, p_signal, null);
         // If there are cameras we need to process the signal through them
 		} else {
 		    for (i in 0...g2d_cameras.length) {
 				g2d_cameras[i].g2d_capturedThisFrame = false;
 			}
             for (i in 0...g2d_cameras.length) {
-                g2d_cameras[i].captureMouseEvent(g2d_context, captured, p_signal);
+                g2d_cameras[i].captureMouseEvent(g2d_context, p_signal.nativeCaptured, p_signal);
             }
 		}
 	}

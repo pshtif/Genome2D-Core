@@ -6,7 +6,6 @@ import com.genome2d.context.GContextCamera;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.node.GNode;
 import com.genome2d.components.GComponent;
-import com.genome2d.context.GContext;
 import com.genome2d.signals.GMouseSignal;
 import com.genome2d.textures.GTexture;
 

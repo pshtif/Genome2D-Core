@@ -7,12 +7,11 @@
 */
 package com.genome2d.components;
 
+import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
-import com.genome2d.context.GContext;
 import com.genome2d.context.GContextCamera;
 import com.genome2d.node.GNode;
 import com.genome2d.signals.GMouseSignal;
-import com.genome2d.context.GContext;
 
 class GCameraController extends GComponent
 {
@@ -108,7 +107,7 @@ class GCameraController extends GComponent
 	/**
 	 * 	@private
 	 */
-	public function captureMouseEvent(p_context:GContext, p_captured:Bool, p_signal:GMouseSignal):Bool {
+	public function captureMouseEvent(p_context:IContext, p_captured:Bool, p_signal:GMouseSignal):Bool {
 		if (g2d_capturedThisFrame || !node.isActive()) return false;
 		g2d_capturedThisFrame = true;
 

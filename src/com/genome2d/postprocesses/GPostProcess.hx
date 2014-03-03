@@ -1,6 +1,6 @@
 package com.genome2d.postprocesses;
 #if flash
-import com.genome2d.context.GContext;
+import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GContextCamera;
 import flash.geom.Matrix3D;
@@ -65,7 +65,7 @@ class GPostProcess {
 
         updatePassTextures(bounds);
 
-        var context:GContext = Genome2D.getInstance().getContext();
+        var context:IContext = Genome2D.getInstance().getContext();
 
         if (p_source == null) {
             g2d_matrix.identity();

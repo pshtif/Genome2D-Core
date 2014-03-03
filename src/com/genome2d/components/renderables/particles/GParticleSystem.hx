@@ -3,7 +3,6 @@ package com.genome2d.components.renderables.particles;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GCurve;
 import com.genome2d.components.GComponent;
-import com.genome2d.context.GContext;
 import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 import com.genome2d.components.renderables.IRenderable;
