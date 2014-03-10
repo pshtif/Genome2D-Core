@@ -124,7 +124,7 @@ class GComponent
 		try {
 			Reflect.setProperty(this, p_propertyXml.get("name"), value);
 		} catch (e:Dynamic) {
-			trace("bindPrototypeProperty error");
+			//trace("bindPrototypeProperty error");
 		}
 	}
 	

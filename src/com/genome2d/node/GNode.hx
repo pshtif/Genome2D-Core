@@ -7,6 +7,8 @@
 */
 package com.genome2d.node;
 
+import com.genome2d.context.GContextFeature;
+import com.genome2d.context.IContext;
 import com.genome2d.context.stats.GStats;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.postprocesses.GPostProcess;
@@ -29,6 +31,7 @@ class GNode
 {
     static private var g2d_cachedArray:Array<GNode>;
     static private var g2d_cachedMatrix:GMatrix;
+    static private var g2d_activeMasks:Array<GNode>;
 
     static private var g2d_core:Genome2D;
     #if swc @:extern #end
@@ -50,6 +53,23 @@ class GNode
 
 
     public var maskRect:GRectangle;
+
+    private var g2d_usedAsMask:Int = 0;
+    private var g2d_mask:GNode;
+    #if swc @:extern #end
+    public var mask(get, set):GNode;
+    #if swc @:getter(mask) #end
+    inline private function get_mask():GNode {
+        return g2d_mask;
+    }
+    #if swc @:getter(mask) #end
+    inline private function set_mask(p_value:GNode):GNode {
+        if (!core.getContext().hasFeature(GContextFeature.STENCIL_MASKING)) new GError("Stencil masking feature not supported.");
+        if (g2d_mask != null) g2d_mask.g2d_usedAsMask--;
+        g2d_mask = p_value;
+        g2d_mask.g2d_usedAsMask++;
+        return g2d_mask;
+    }
 	
 	/**
 	 * 	Abstract reference to user defined data, if you want keep some custom data binded to G2DNode instance use it.
@@ -149,6 +169,7 @@ class GNode
         // Create cached instances
         if (g2d_cachedMatrix == null)  {
             g2d_cachedMatrix = new GMatrix();
+            g2d_activeMasks = new Array<GNode>();
         }
 
         g2d_transform = new GTransform(this);
@@ -158,16 +179,17 @@ class GNode
 	 */
 	public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GContextCamera, p_renderAsMask:Bool, p_useMatrix:Bool):Void {
 		if (g2d_active) {
+            var context:IContext = core.getContext();
             var previousMaskRect:GRectangle = null;
             var hasMask:Bool = false;
             if (maskRect != null && maskRect != parent.maskRect) {
                 hasMask = true;
-                previousMaskRect = (core.getContext().getMaskRect() == null) ? null : core.getContext().getMaskRect().clone();
+                previousMaskRect = (context.getMaskRect() == null) ? null : context.getMaskRect().clone();
                 if (parent.maskRect!=null) {
                     var intersection:GRectangle = parent.maskRect.intersection(maskRect);
-                    core.getContext().setMaskRect(intersection);
+                    context.setMaskRect(intersection);
                 } else {
-                    core.getContext().setMaskRect(maskRect);
+                    context.setMaskRect(maskRect);
                 }
             }
 
@@ -180,7 +202,16 @@ class GNode
 
             //if (g2d_body != null) g2d_body.update(p_deltaTime, invalidateTransform, invalidateColor);
 
-            if (!g2d_active || !g2d_transform.visible || ((cameraGroup&p_camera.mask) == 0 && cameraGroup != 0)) return;
+            if (!g2d_active || !g2d_transform.visible || ((cameraGroup&p_camera.mask) == 0 && cameraGroup != 0) || (g2d_usedAsMask>0 && !p_renderAsMask)) return;
+
+            if (!p_renderAsMask) {
+                if (mask != null) {
+                    context.renderToStencil(g2d_activeMasks.length);
+                    mask.render(true, false, p_camera, true, false);
+                    g2d_activeMasks.push(mask);
+                    context.renderToColor(g2d_activeMasks.length);
+                }
+            }
 
             // Use matrix
             var useMatrix:Bool = p_useMatrix || transform.g2d_useMatrix > 0;
@@ -207,7 +238,15 @@ class GNode
             }
 
             if (hasMask) {
-                core.getContext().setMaskRect(previousMaskRect);
+                context.setMaskRect(previousMaskRect);
+            }
+
+            if (!p_renderAsMask) {
+                if (mask != null) {
+                    g2d_activeMasks.pop();
+                    if (g2d_activeMasks.length==0) context.clearStencil();
+                    context.renderToColor(g2d_activeMasks.length);
+                }
             }
 
             // Use matrix
@@ -564,7 +603,7 @@ class GNode
     }
 	
 	public function getChildAt(p_index:Int):GNode {
-        if (p_index>=g2d_numChildren) throw new GError();
+        if (p_index>=g2d_numChildren) new GError("Index out of bounds.");
         var child:GNode = g2d_firstChild;
         for (i in 0...p_index) {
             child = child.g2d_nextNode;
@@ -581,21 +620,37 @@ class GNode
         }
         return -1;
     }
-/*
-    public function setChildIndex(p_child:GNode, p_index:Int):Void {
-        if (p_child.parent != this) throw new GError();
 
-        g2d_children.splice(Lambda.indexOf(g2d_children, p_child), 1);
-        g2d_children.insert(p_index, p_child);
+    public function setChildIndex(p_child:GNode, p_index:Int):Void {
+        if (p_child.parent != this) new GError("Not a child of this node.");
+        if (p_index>=g2d_numChildren) new GError("Index out of bounds.");
+
+        var index:Int = 0;
+        var child:GNode = g2d_firstChild;
+        while (child!=null && index<p_index) {
+            child = child.g2d_nextNode;
+            index++;
+        }
+        if (index == p_index) {
+            p_child.g2d_nextNode.g2d_previousNode = p_child.g2d_previousNode;
+            p_child.g2d_previousNode.g2d_nextNode = p_child.g2d_nextNode;
+            if (child == null) {
+                p_child.g2d_previousNode = g2d_lastChild;
+                g2d_lastChild.g2d_nextNode = p_child;
+                g2d_lastChild = p_child;
+            } else {
+                p_child.g2d_previousNode = child.g2d_previousNode;
+                child.g2d_previousNode.g2d_nextNode = p_child;
+                p_child.g2d_nextNode = child;
+                child.g2d_previousNode = p_child;
+            }
+        }
     }
 
     public function swapChildrenAt(p_index1:Int, p_index2:Int):Void {
-        var child1:GNode = getChildAt(p_index1);
-        var child2:GNode = getChildAt(p_index2);
-        g2d_children[p_index1] = child2;
-        g2d_children[p_index2] = child1;
+        swapChildren(getChildAt(p_index1), getChildAt(p_index2));
     }
-/**/
+
     public function swapChildren(p_child1:GNode, p_child2:GNode):Void {
         if (p_child1.parent != this || p_child2.parent != this) return;
 
@@ -686,12 +741,18 @@ class GNode
 
 		if (isOnStage()) p_child.g2d_removedFromStage();
 	}
-	/*
+
 	public function removeChildAt(p_index:Int):Void {
-		if (g2d_children == null || (p_index > 0 && p_index < g2d_children.length)) return;
-		removeChild(g2d_children[p_index]);
+        if (p_index>=g2d_numChildren) new GError("Index out of bounds.");
+        var index:Int = 0;
+        var child:GNode = g2d_firstChild;
+		while (child != null && index<p_index) {
+            child = child.g2d_nextNode;
+            index++;
+        }
+        removeChild(child);
 	}
-    /**/
+
     /**
 	 * 	This method will call dispose on all children of this node which will remove them
 	 */

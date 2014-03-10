@@ -19,7 +19,7 @@ import com.genome2d.context.GContextConfig;
 class Genome2D
 {
     // Genome2D version
-	inline static public var VERSION:String = "1.0.237hx";
+	inline static public var VERSION:String = "1.0.244hx";
 
     // Singleton instance
 	static private var g2d_instance:Genome2D;
@@ -48,12 +48,20 @@ class Genome2D
         return g2d_onInitialized;
     }
 
-    private var g2d_onFailed:Signal0;
+    private var g2d_onFailed:Signal1<String>;
     #if swc @:extern #end
-	public var onFailed(get, never):Signal0;
+	public var onFailed(get, never):Signal1<String>;
     #if swc @:getter(onFailed) #end
-    inline private function get_onFailed():Signal0 {
+    inline private function get_onFailed():Signal1<String> {
         return g2d_onFailed;
+    }
+
+    private var g2d_onInvalidated:Signal0;
+    #if swc @:extern #end
+    public var onInvalidated(get, never):Signal0;
+    #if swc @:getter(onInvalidated) #end
+    inline private function get_onInvalidated():Signal0 {
+        return g2d_onInvalidated;
     }
 
     private var g2d_onUpdate:Signal1<Float>;
@@ -125,38 +133,37 @@ class Genome2D
      **/
 	private function new() {
 		if (!g2d_instantiable) new GError("Can't instantiate singleton directly");
-
 		g2d_instance = this;
+
+        g2d_onInitialized = new Signal0();
+        g2d_onFailed = new Signal1<String>();
+        g2d_onInvalidated = new Signal0();
+        g2d_onUpdate = new Signal1<Float>();
+        g2d_onPreRender = new Signal0();
+        g2d_onPostRender = new Signal0();
+	}
+
+    /**
+     *  Initialize genome2d
+     **/
+	public function init(p_config:GContextConfig):Void {
+        // Initialize root
+        if (g2d_root != null) g2d_root.dispose();
+        g2d_root = new GNode("root");
+
+        // Initialize camera controller array
+        g2d_cameras = new Array<GCameraController>();
 
         g2d_renderMatrix = new GMatrix();
         g2d_renderMatrixIndex = 0;
         g2d_renderMatrixArray = new Array<GMatrix>();
 
-        // Initialize root
-		g2d_root = new GNode("root");
-
-        // Initialize camera controller array
-        g2d_cameras = new Array<GCameraController>();
-
-        // Initialize signals
-		g2d_onInitialized = new Signal0();
-		g2d_onFailed = new Signal0();
-
-        g2d_onUpdate = new Signal1<Float>();
-		g2d_onPreRender = new Signal0();
-		g2d_onPostRender = new Signal0();
-	}
-
-    /**
-     *  Initialize context
-     **/
-	public function init(p_config:GContextConfig):Void {
-		if (g2d_context != null) g2d_context.dispose();
-
+        if (g2d_context != null) g2d_context.dispose();
         g2d_contextConfig = p_config;
 		g2d_context = Type.createInstance(p_config.contextClass, [g2d_contextConfig]);
 		g2d_context.onInitialized(g2d_contextInitializedHandler);
 		g2d_context.onFailed(g2d_contextFailedHandler);
+        g2d_context.onInvalidated(g2d_contextInvalidatedHandler);
 		g2d_context.init();
 	}
 
@@ -175,7 +182,7 @@ class Genome2D
     /**
      *  Context failed to initialize handler
      **/
-	private function g2d_contextFailedHandler():Void {
+	private function g2d_contextFailedHandler(p_error:String):Void {
         if (g2d_contextConfig.fallbackContextClass != null) {
             g2d_context = Type.createInstance(g2d_contextConfig.fallbackContextClass, [g2d_contextConfig]);
             g2d_context.onInitialized(g2d_contextInitializedHandler);
@@ -183,8 +190,12 @@ class Genome2D
             g2d_context.init();
         }
 
-	    onFailed.dispatch();
+	    onFailed.dispatch(p_error);
 	}
+
+    private function g2d_contextInvalidatedHandler():Void {
+        onInvalidated.dispatch();
+    }
 
     /**
      *  Frame handler called each frame
@@ -274,4 +285,19 @@ class Genome2D
             }
 		}
 	}
+
+    public function dispose():Void {
+        if (g2d_root != null) g2d_root.dispose();
+        g2d_root = null;
+
+        g2d_onInitialized.removeAll();
+        g2d_onFailed.removeAll();
+        g2d_onPostRender.removeAll();
+        g2d_onPreRender.removeAll();
+        g2d_onUpdate.removeAll();
+        g2d_onInvalidated.removeAll();
+
+        g2d_context.dispose();
+        g2d_context = null;
+    }
 }
