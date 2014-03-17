@@ -13,7 +13,7 @@ import com.genome2d.signals.GMouseSignal;
 class GComponent
 {
 	private var g2d_active:Bool = true;
-	
+
 	public function isActive():Bool {
 		return g2d_active;
 	}
@@ -58,6 +58,7 @@ class GComponent
 	 
 	public function getPrototype():Xml {
 		var prototypeXml:Xml = Xml.parse("<component/>").firstElement();
+
 		prototypeXml.set("id", id);
 		prototypeXml.set("componentClass", Type.getClassName(Type.getClass(this)));
 		prototypeXml.set("componentLookupClass", Type.getClassName(g2d_lookupClass));

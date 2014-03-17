@@ -54,6 +54,12 @@ class GCameraController extends GComponent
 	public var g2d_renderedNodesCount:Int;
 
     private var g2d_contextCamera:GContextCamera;
+    #if swc @:extern #end
+    public var contextCamera(get, never):GContextCamera;
+    #if swc @:getter(contextCamera) #end
+    inline private function get_contextCamera():GContextCamera {
+        return g2d_contextCamera;
+    }
 
     public function setView(p_normalizedX:Float, p_normalizedY:Float, p_normalizedWidth:Float, p_normalizedHeight:Float):Void {
         // TODO can't add to >1

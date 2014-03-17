@@ -5,7 +5,7 @@ import com.genome2d.error.GError;
 
 /**
  * ...
- * @author 
+ * @author Peter @sHTiF Stefcek
  */
 class GNodeFactory
 {

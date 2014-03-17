@@ -47,13 +47,15 @@ class GTexturedQuad extends GComponent implements IRenderable
 		super(p_node);
 	}
 
+    public var ignoreMatrix:Bool = true;
+
     /**
      *  @private
      **/
 	public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
 		if (texture != null) {
 			//trace(node.transform.g2d_worldScaleX + "," + node.transform.g2d_worldScaleY);
-            if (p_useMatrix) {
+            if (p_useMatrix && !ignoreMatrix) {
                 var matrix:GMatrix = node.core.g2d_renderMatrix;
                 node.core.getContext().drawMatrix(texture, matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty, node.transform.g2d_worldRed, node.transform.g2d_worldGreen, node.transform.g2d_worldBlue, node.transform.g2d_worldAlpha, blendMode, filter);
             } else {

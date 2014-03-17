@@ -279,7 +279,7 @@ class GTransform extends GComponent
 	}
 	
 	public function setPosition(p_x:Float, p_y:Float):Void {
-		g2d_transformDirty = true;
+		g2d_transformDirty = g2d_matrixDirty = true;
 		if (node.g2d_body != null) {
 			node.g2d_body.x = p_x;
 			node.g2d_body.y = p_y;
@@ -289,7 +289,7 @@ class GTransform extends GComponent
 	}
 	
 	public function setScale(p_scaleX:Float, p_scaleY:Float):Void {
-		g2d_transformDirty = true;
+		g2d_transformDirty = g2d_matrixDirty = true;
 		if (node.g2d_body != null) {
 			node.g2d_body.scaleX = p_scaleX;
 			node.g2d_body.scaleY = p_scaleY;
