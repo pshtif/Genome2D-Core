@@ -1,7 +1,6 @@
 package com.genome2d.textures;
-#if flash
-import flash.utils.Dictionary;
-#end
+
+import com.genome2d.utils.GMap;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
 
@@ -10,42 +9,24 @@ class GTextureAtlas extends GContextTexture {
         return cast GContextTexture.getContextTextureById(p_id);
     }
 
-    #if flash
-    private var g2d_textures:Dictionary;
-    public function getSubTexture(p_subId:String):GTexture {
-        return untyped g2d_textures[p_subId];
-    }
-    #else
-    private var g2d_textures:Map<String, GTexture>;
+    private var g2d_textures:GMap<String, GTexture>;
     public function getSubTexture(p_subId:String):GTexture {
         return g2d_textures.get(p_subId);
     }
-    #end
 
     public function new(p_context:IContext, p_id:String, p_sourceType:Int, p_source:Dynamic, p_region:GRectangle, p_format:String, p_uploadCallback:Void->Void) {
         super(p_context, p_id, p_sourceType, p_source, p_region, p_format, 0, 0);
 
         g2d_type = GTextureType.ATLAS;
-        #if flash
-        g2d_textures = new Dictionary(false);
-        #else
-        g2d_textures = new Map<String,GTexture>();
-        #end
+        g2d_textures = new GMap<String,GTexture>();
     }
 
     override public function invalidateNativeTexture(p_reinitialize:Bool):Void {
         super.invalidateNativeTexture(p_reinitialize);
 
-        #if flash
-        var textureIds:Array<String> = untyped __keys__(g2d_textures);
-        for (i in 0...textureIds.length) {
-            untyped g2d_textures[textureIds[i]].nativeTexture = nativeTexture;
-        }
-        #else
-        for (key in g2d_textures.keys()) {
-            g2d_textures.get(key).nativeTexture = nativeTexture;
-        }
-        #end
+		for (t in g2d_textures) {
+			t.nativeTexture = nativeTexture;
+		}
     }
 
     public function addSubTexture(p_subId:String, p_region:GRectangle, p_pivotX:Float = 0, p_pivotY:Float = 0):GTexture {
@@ -54,38 +35,25 @@ class GTextureAtlas extends GContextTexture {
         texture.g2d_filteringType = g2d_filteringType;
         texture.nativeTexture = nativeTexture;
 
-        #if flash
-        untyped g2d_textures[p_subId] = texture;
-        #else
         g2d_textures.set(p_subId, texture);
-        #end
-
+		
         return texture;
     }
 
     public function removeSubTexture(p_subId:String):Void {
-        #if flash
-        untyped g2d_textures[p_subId].dispose();
-        untyped __delete__(g2d_textures, p_subId);
-        #else
         g2d_textures.get(p_subId).dispose();
         g2d_textures.remove(p_subId);
-        #end
     }
 
     private function g2d_disposeSubTextures():Void {
-        #if flash
-        var textureIds:Array<String> = untyped __keys__(g2d_textures);
-        for (i in 0...textureIds.length) {
-            untyped g2d_textures[textureIds[i]].dispose();
-            untyped __delete__(g2d_textures, textureIds[i]);
+		for (t in g2d_textures) {
+            t.dispose();
         }
-        #else
-        for (key in g2d_textures.keys()) {
+		g2d_textures = new GMap<String,GTexture>();
+		/*for (key in g2d_textures.keys()) {
             g2d_textures.get(key).dispose();
             g2d_textures.remove(key);
-        }
-        #end
+        }*/
     }
 
     /**
