@@ -1,11 +1,36 @@
 package com.genome2d.utils;
 
 #if flash
+class FastIter<T> {
+	var values:Array<Dynamic>;
+	var curent:Int = 0;
+	var len:Int;
+	
+	public function new(obj:Dynamic) {
+		values = new Array<Dynamic>();
+		var t = 0;
+		untyped {
+			while ( __has_next__(obj, t)) {
+				values.push(obj[__forin__(obj,t)]);
+			}
+		}
+		len = values.length;
+	}
+	
+	public inline function hasNext():Bool {
+		return curent < len;
+	}
+	
+	public inline function next():T {
+		return values[curent++];
+	}
+}
+
 abstract GMap<K,V>(flash.utils.Dictionary) {
 
-	public inline function new() 
+	public inline function new(weakKeys : Bool = false) 
 	{
-		this = new flash.utils.Dictionary();
+		this = new flash.utils.Dictionary(weakKeys);
 	}
 	
 	@:arrayAccess public inline function get(key : K) : V {
@@ -24,26 +49,23 @@ abstract GMap<K,V>(flash.utils.Dictionary) {
 		return untyped __in__(key,this);
 	}
 
-	public function remove( key : K ) : Bool {
+	public inline function remove( key : K ) : Bool {
 		if( !exists(key) ) return false;
 		untyped __delete__(this, key);
 		return true;
 	}
 
- 	public function iterator() : Iterator<V> {
-		var ret = [];
-		for (i in keys())
-			ret.push(get(i));
-		return ret.iterator();
+ 	public inline function iterator() : Iterator<V> {
+		return new FastIter<V>(this);
  	}
 	
 	public function toString() : String {
-		var s = "";
-		var it = keys();
-		for( i in it ) {
-			s += (s == "" ? "" : ",") + Std.string(i);
-			s += " => ";
-			s += Std.string(get(i));
+		var s = "";		
+		var t = 0;
+		var i:K;
+		while ( untyped __has_next__(this, t)) untyped {
+			i = __forin__(this, t);
+			s += (s == "" ? "" : ",") + Std.string(i) + " => " + Std.string(this[i]);
 		}
 		return '{$s}';
 	}
