@@ -10,6 +10,7 @@ package com.genome2d.node;
 import com.genome2d.context.GContextFeature;
 import com.genome2d.context.IContext;
 import com.genome2d.context.stats.GStats;
+import com.genome2d.Genome2D;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.postprocesses.GPostProcess;
 import com.genome2d.geom.GMatrix;
@@ -21,26 +22,28 @@ import com.genome2d.context.GContextCamera;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.signals.GNodeMouseSignal;
 import com.genome2d.physics.GBody;
+import com.genome2d.utils.GMap.GMap;
+import com.genome2d.utils.IGProps;
 import msignal.Signal;
 import com.genome2d.components.GComponent;
 import com.genome2d.components.GTransform;
 import com.genome2d.error.GError;
 import com.genome2d.signals.GMouseSignal;
 
-class GNode
+class GNode implements IGProps
 {
     static private var g2d_cachedArray:Array<GNode>;
     static private var g2d_cachedMatrix:GMatrix;
     static private var g2d_activeMasks:Array<GNode>;
 
     static private var g2d_core:Genome2D;
-    #if swc @:extern #end
-    public var core(get, never):Genome2D;
-    #if swc @:getter(core) #end
-    inline private function get_core():Genome2D {
-        if (g2d_core == null) g2d_core = Genome2D.getInstance();
-        return g2d_core;
-    }
+
+	@prop var core:Genome2D = {
+		get: {  
+			if (g2d_core == null) g2d_core = Genome2D.getInstance();
+			return g2d_core;
+		}
+	}
 	
 	/**
 	 * 	Camera group this node belongs to, a node is rendered through this camera if camera.mask&node.cameraGroup != 0
@@ -56,31 +59,25 @@ class GNode
 
     private var g2d_usedAsMask:Int = 0;
     private var g2d_mask:GNode;
-    #if swc @:extern #end
-    public var mask(get, set):GNode;
-    #if swc @:getter(mask) #end
-    inline private function get_mask():GNode {
-        return g2d_mask;
-    }
-    #if swc @:getter(mask) #end
-    inline private function set_mask(p_value:GNode):GNode {
-        if (!core.getContext().hasFeature(GContextFeature.STENCIL_MASKING)) new GError("Stencil masking feature not supported.");
-        if (g2d_mask != null) g2d_mask.g2d_usedAsMask--;
-        g2d_mask = p_value;
-        g2d_mask.g2d_usedAsMask++;
-        return g2d_mask;
+	@prop var mask:GNode = {
+		get: return g2d_mask,
+		set: {
+			if (!core.getContext().hasFeature(GContextFeature.STENCIL_MASKING)) new GError("Stencil masking feature not supported.");
+			if (g2d_mask != null) g2d_mask.g2d_usedAsMask--;
+			g2d_mask = p_value;
+			g2d_mask.g2d_usedAsMask++;
+		}
     }
 	
 	/**
 	 * 	Abstract reference to user defined data, if you want keep some custom data binded to G2DNode instance use it.
 	 */
-	private var g2d_userData:Map<String, Dynamic>;
-	#if swc @:extern #end
-	public var userData(get, never):Map<String, Dynamic>;
-	#if swc @:getter(userData) #end
-	inline private function get_userData():Map<String, Dynamic> {
-		if (g2d_userData == null) g2d_userData = new Map<String,Dynamic>();
-		return g2d_userData;
+	private var g2d_userData:GMap<String, Dynamic>;
+	@prop var userData:GMap<String, Dynamic> = {
+		get: { 
+			if (g2d_userData == null) g2d_userData = new GMap<String,Dynamic>();
+			return g2d_userData;
+		}
 	}
 
 	private var g2d_active:Bool = true;
@@ -124,11 +121,8 @@ class GNode
      *  Internal node id
      **/
 	private var g2d_id:Int;
-    #if swc @:extern #end
-    public var id(get, never):Int;
-    #if swc @:getter(id) #end
-    inline private function get_id():Int {
-        return g2d_id;
+    @prop var id:Int = {
+		get: return g2d_id
     }
 
 	/**
@@ -138,22 +132,16 @@ class GNode
 
     // Node transform
 	private var g2d_transform:GTransform;
-	#if swc @:extern #end
-	public var transform(get, never):GTransform;
-	#if swc @:getter(transform) #end
-	inline private function get_transform():GTransform {
-		return g2d_transform;
+	@prop var transform:GTransform = {
+		get: return g2d_transform
 	}
 
     public var postProcess:GPostProcess;
 
     // Node parent
 	private var g2d_parent:GNode;
-	#if swc @:extern #end
-	public var parent(get, never):GNode;
-	#if swc @:getter(parent) #end
-	inline private function get_parent():GNode {
-		return g2d_parent;
+	@prop var parent:GNode = {
+		get: return g2d_parent
 	}
 
     // Physics body
@@ -328,52 +316,46 @@ class GNode
 	
 	// Mouse signals
 	private var g2d_onMouseDown:Signal1<GNodeMouseSignal>;
-    #if swc @:extern #end
-	public var onMouseDown(get, never):Signal1<GNodeMouseSignal>;
-    #if swc @:getter(onMouseDown) #end
-	private function get_onMouseDown():Signal1<GNodeMouseSignal> {
-		if (g2d_onMouseDown == null) g2d_onMouseDown = new Signal1(GMouseSignal);
-		return g2d_onMouseDown;
+    @prop var onMouseDown:Signal1<GNodeMouseSignal> = {
+		get: {
+			if (g2d_onMouseDown == null) g2d_onMouseDown = new Signal1(GMouseSignal);
+			return g2d_onMouseDown;
+		}
 	}
 	private var g2d_onMouseMove:Signal1<GNodeMouseSignal>;
-    #if swc @:extern #end
-	public var onMouseMove(get, never):Signal1<GNodeMouseSignal>;
-    #if swc @:getter(onMouseMove) #end
-	private function get_onMouseMove():Signal1<GNodeMouseSignal> {
-		if (g2d_onMouseMove == null) g2d_onMouseMove = new Signal1(GMouseSignal);
-		return g2d_onMouseMove;
+    @prop var onMouseMove:Signal1<GNodeMouseSignal> = {
+		get: {
+			if (g2d_onMouseMove == null) g2d_onMouseMove = new Signal1(GMouseSignal);
+			return g2d_onMouseMove;
+		}
 	}
 	private var g2d_onMouseClick:Signal1<GNodeMouseSignal>;
-    #if swc @:extern #end
-	public var onMouseClick(get, never):Signal1<GNodeMouseSignal>;
-    #if swc @:getter(onMouseClick) #end
-	private function get_onMouseClick():Signal1<GNodeMouseSignal> {
-		if (g2d_onMouseClick == null) g2d_onMouseClick = new Signal1(GMouseSignal);
-		return g2d_onMouseClick;
+    @prop var onMouseClick:Signal1<GNodeMouseSignal> = {
+		get: {
+			if (g2d_onMouseClick == null) g2d_onMouseClick = new Signal1(GMouseSignal);
+			return g2d_onMouseClick;
+		}
 	}
 	private var g2d_onMouseUp:Signal1<GNodeMouseSignal>;
-    #if swc @:extern #end
-	public var onMouseUp(get, never):Signal1<GNodeMouseSignal>;
-    #if swc @:getter(onMouseUp) #end
-	private function get_onMouseUp():Signal1<GNodeMouseSignal> {
-		if (g2d_onMouseUp == null) g2d_onMouseUp = new Signal1(GMouseSignal);
-		return g2d_onMouseUp;
+	@prop var onMouseUp:Signal1<GNodeMouseSignal> = {
+		get: {
+			if (g2d_onMouseUp == null) g2d_onMouseUp = new Signal1(GMouseSignal);
+			return g2d_onMouseUp;
+		}
 	}
 	private var g2d_onMouseOver:Signal1<GNodeMouseSignal>;
-    #if swc @:extern #end
-	public var onMouseOver(get, never):Signal1<GNodeMouseSignal>;
-    #if swc @:getter(onMouseOver) #end
-	private function get_onMouseOver():Signal1<GNodeMouseSignal> {
-		if (g2d_onMouseOver == null) g2d_onMouseOver = new Signal1(GMouseSignal);
-		return g2d_onMouseOver;
+    @prop var onMouseOver:Signal1<GNodeMouseSignal> = {
+		get: {
+			if (g2d_onMouseOver == null) g2d_onMouseOver = new Signal1(GMouseSignal);
+			return g2d_onMouseOver;
+		}
 	}
 	private var g2d_onMouseOut:Signal1<GNodeMouseSignal>;
-    #if swc @:extern #end
-	public var onMouseOut(get, never):Signal1<GNodeMouseSignal>;
-    #if swc @:getter(onMouseOut) #end
-	private function get_onMouseOut():Signal1<GNodeMouseSignal> {
-		if (g2d_onMouseOut == null) g2d_onMouseOut = new Signal1(GMouseSignal);
-		return g2d_onMouseOut;
+    @prop var onMouseOut:Signal1<GNodeMouseSignal> = {
+		get: {
+			if (g2d_onMouseOut == null) g2d_onMouseOut = new Signal1(GMouseSignal);
+			return g2d_onMouseOut;
+		}
 	}
 
 	private var g2d_onRightMouseDown:Signal1<GNodeMouseSignal>;
@@ -532,29 +514,24 @@ class GNode
     private var g2d_previousNode:GNode;
 
     private var g2d_numChildren:Int = 0;
-    #if swc @:extern #end
-	public var numChildren(get, never):Int;
-    #if swc @:getter(numChildren) #end
-    inline private function get_numChildren():Int {
-        return g2d_numChildren;
+    @prop var numChildren:Int = {
+		get: return g2d_numChildren
     }
 
     private var g2d_onAddedToStage:Signal0;
-    #if swc @:extern #end
-    public var onAddedToStage(get, never):Signal0;
-    #if swc @:getter(onAddedToStage) #end
-    inline private function get_onAddedToStage():Signal0 {
-        if (g2d_onAddedToStage == null) g2d_onAddedToStage = new Signal0();
-        return g2d_onAddedToStage;
+    @prop var onAddedToStage:Signal0 = {
+		get: {
+			if (g2d_onAddedToStage == null) g2d_onAddedToStage = new Signal0();
+			return g2d_onAddedToStage;
+		}
     }
 
     private var g2d_onRemovedFromStage:Signal0;
-    #if swc @:extern #end
-    public var onRemovedFromStage(get, never):Signal0;
-    #if swc @:getter(onRemovedFromStage) #end
-    inline private function get_onRemovedFromStage():Signal0 {
-        if (g2d_onRemovedFromStage == null) g2d_onRemovedFromStage = new Signal0();
-        return g2d_onRemovedFromStage;
+    @prop var onRemovedFromStage:Signal0 = {
+		get: {
+			if (g2d_onRemovedFromStage == null) g2d_onRemovedFromStage = new Signal0();
+			return g2d_onRemovedFromStage;
+		}
     }
 	
 	/**
