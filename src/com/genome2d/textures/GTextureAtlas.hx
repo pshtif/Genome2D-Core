@@ -2,6 +2,7 @@ package com.genome2d.textures;
 #if flash
 import flash.utils.Dictionary;
 #end
+import com.genome2d.textures.GTexture;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
 
@@ -23,7 +24,7 @@ class GTextureAtlas extends GContextTexture {
     #end
 
     public function new(p_context:IContext, p_id:String, p_sourceType:Int, p_source:Dynamic, p_region:GRectangle, p_format:String, p_uploadCallback:Void->Void) {
-        super(p_context, p_id, p_sourceType, p_source, p_region, p_format, 0, 0);
+        super(p_context, p_id, p_sourceType, p_source, p_region, p_format, false, 0, 0);
 
         g2d_type = GTextureType.ATLAS;
         #if flash
@@ -39,17 +40,23 @@ class GTextureAtlas extends GContextTexture {
         #if flash
         var textureIds:Array<String> = untyped __keys__(g2d_textures);
         for (i in 0...textureIds.length) {
-            untyped g2d_textures[textureIds[i]].nativeTexture = nativeTexture;
+            var texture:GTexture = untyped g2d_textures[textureIds[i]];
+            texture.nativeTexture = nativeTexture;
+            texture.g2d_gpuWidth = g2d_gpuWidth;
+            texture.g2d_gpuHeight = g2d_gpuHeight;
         }
         #else
         for (key in g2d_textures.keys()) {
-            g2d_textures.get(key).nativeTexture = nativeTexture;
+            var texture:GTexture = g2d_textures.get(key);
+            texture.nativeTexture = nativeTexture;
+            texture.g2d_gpuWidth = g2d_gpuWidth;
+            texture.g2d_gpuHeight = g2d_gpuHeight;
         }
         #end
     }
 
     public function addSubTexture(p_subId:String, p_region:GRectangle, p_pivotX:Float = 0, p_pivotY:Float = 0):GTexture {
-        var texture:GTexture = new GTexture(g2d_context, g2d_id+"_"+p_subId, g2d_sourceType, g2d_nativeSource, p_region, g2d_format, p_pivotX, p_pivotY, this);
+        var texture:GTexture = new GTexture(g2d_context, g2d_id+"_"+p_subId, g2d_sourceType, g2d_nativeSource, p_region, g2d_format, false, p_pivotX, p_pivotY, this);
         texture.g2d_subId = p_subId;
         texture.g2d_filteringType = g2d_filteringType;
         texture.nativeTexture = nativeTexture;

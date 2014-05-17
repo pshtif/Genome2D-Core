@@ -20,6 +20,8 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 	 */
 	public var emit:Bool = false;
 
+    public var useWorldSpace:Bool = false;
+
 	public var initialScale:Float = 1;
 	public var initialScaleVariance:Float = 0;
 	public var endScale:Float = 1;
@@ -130,27 +132,18 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 	}
 
 	private function setInitialParticlePosition(p_particle:GSimpleParticle):Void {
-		/*
-		if (useWorldSpace) {
-			p_particleNode.cTransform.x = cNode.cTransform.nWorldX + Math.random() * dispersionXVariance - dispersionXVariance * .5;
-			p_particleNode.cTransform.y = cNode.cTransform.nWorldY + Math.random() * dispersionYVariance-  dispersionYVariance * .5;
-		} else {
-			p_particleNode.cTransform.x = Math.random() * dispersionXVariance - dispersionXVariance * .5;
-			p_particleNode.cTransform.y = Math.random() * dispersionYVariance - dispersionYVariance * .5;
-		}
-		/**/
-		p_particle.g2d_x = node.transform.g2d_worldX;
-		if (dispersionXVariance>0) p_particle.g2d_x += dispersionXVariance*Math.random() - dispersionXVariance*.5; 
-		p_particle.g2d_y = node.transform.g2d_worldY;
-		if (dispersionYVariance>0) p_particle.g2d_y += dispersionYVariance*Math.random() - dispersionYVariance*.5; 
-		p_particle.g2d_rotation = initialAngle;
-		if (initialAngleVariance>0) p_particle.g2d_rotation += initialAngleVariance*Math.random();
-		p_particle.g2d_scaleX = p_particle.g2d_scaleY = initialScale;
-		if (initialScaleVariance>0) {
-			var sd:Float = initialScaleVariance*Math.random();
-			p_particle.g2d_scaleX += sd;
-			p_particle.g2d_scaleY += sd;
-		}
+        p_particle.g2d_x = (useWorldSpace) ? node.transform.g2d_worldX : 0;
+        if (dispersionXVariance>0) p_particle.g2d_x += dispersionXVariance*Math.random() - dispersionXVariance*.5;
+        p_particle.g2d_y = (useWorldSpace) ? node.transform.g2d_worldY : 0;
+        if (dispersionYVariance>0) p_particle.g2d_y += dispersionYVariance*Math.random() - dispersionYVariance*.5;
+        p_particle.g2d_rotation = initialAngle;
+        if (initialAngleVariance>0) p_particle.g2d_rotation += initialAngleVariance*Math.random();
+        p_particle.g2d_scaleX = p_particle.g2d_scaleY = initialScale;
+        if (initialScaleVariance>0) {
+            var sd:Float = initialScaleVariance*Math.random();
+            p_particle.g2d_scaleX += sd;
+            p_particle.g2d_scaleY += sd;
+        }
 	}
 
 	/**
@@ -231,8 +224,15 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 		while (particle != null) {
 			var next:GSimpleParticle = particle.g2d_next;
 
-			var tx:Float = node.transform.g2d_worldX + (particle.g2d_x - node.transform.g2d_worldX) * 1;
-			var ty:Float = node.transform.g2d_worldY + (particle.g2d_y - node.transform.g2d_worldY) * 1;
+            var tx:Float;
+            var ty:Float;
+            if (useWorldSpace) {
+                tx = particle.g2d_x;
+                ty = particle.g2d_y;
+            } else {
+                tx = node.transform.g2d_worldX + particle.g2d_x;
+                ty = node.transform.g2d_worldY + particle.g2d_y;
+            }
 		
 			node.core.getContext().draw(texture, tx, ty, particle.g2d_scaleX*node.transform.g2d_worldScaleX, particle.g2d_scaleY*node.transform.g2d_worldScaleY, particle.g2d_rotation, particle.g2d_red, particle.g2d_green, particle.g2d_blue, particle.g2d_alpha, blendMode);
 
@@ -254,7 +254,8 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 	}
 
 	override public function dispose():Void {
-		// TODO
+        while (g2d_firstParticle != null) deactivateParticle(g2d_firstParticle);
+        node.core.onUpdate.remove(update);
 		
 		super.dispose();
 	}

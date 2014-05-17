@@ -19,7 +19,7 @@ import com.genome2d.context.GContextConfig;
 class Genome2D
 {
     // Genome2D version
-	inline static public var VERSION:String = "1.0.247hx";
+	inline static public var VERSION:String = "1.0.254hx";
 
     // Singleton instance
 	static private var g2d_instance:Genome2D;

@@ -1,5 +1,6 @@
 package com.genome2d.postprocesses;
-#if flash
+
+import com.genome2d.geom.GRectangle;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GContextCamera;
@@ -45,7 +46,7 @@ class GPostProcess {
         createPassTextures();
     }
 
-    public function setBounds(p_bounds:Rectangle):Void {
+    public function setBounds(p_bounds:GRectangle):Void {
         g2d_definedBounds = p_bounds;
     }
 
@@ -56,12 +57,12 @@ class GPostProcess {
         g2d_bottomMargin = p_bottomMargin;
     }
 
-    public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GContextCamera, p_node:GNode, p_bounds:Rectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
+    public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GContextCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
         var bounds:Rectangle = p_bounds;
         if (bounds == null) bounds = (g2d_definedBounds != null) ? g2d_definedBounds : p_node.getBounds(null, g2d_activeBounds);
 
         // Invalid bounds
-        if (bounds.x >= 4096) return;
+        if (bounds.width > 4096) return;
 
         updatePassTextures(bounds);
 
@@ -134,16 +135,3 @@ class GPostProcess {
         }
     }
 }
-#else
-import com.genome2d.error.GError;
-import com.genome2d.textures.GTexture;
-import com.genome2d.geom.GRectangle;
-import com.genome2d.node.GNode;
-import com.genome2d.context.GContextCamera;
-
-class GPostProcess {
-    public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GContextCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
-        throw new GError("Postprocesses are not supported in this target.");
-    }
-}
-#end

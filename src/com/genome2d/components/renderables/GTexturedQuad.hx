@@ -64,6 +64,38 @@ class GTexturedQuad extends GComponent implements IRenderable
 		}
 	}
 
+    public function hitTestPoint(p_x:Float, p_y:Float, p_pixelEnabled:Bool = false, p_w:Float = 0, p_h:Float = 0):Bool {
+        var tx:Float = p_x - node.transform.g2d_worldX;
+        var ty:Float = p_y - node.transform.g2d_worldY;
+
+        if (g2d_node.transform.g2d_worldRotation != 0) {
+            var cos:Float = Math.cos(-node.transform.g2d_worldRotation);
+            var sin:Float = Math.sin(-node.transform.g2d_worldRotation);
+
+            var ox:Float = tx;
+            tx = (tx*cos - ty*sin);
+            ty = (ty*cos + ox*sin);
+        }
+
+        tx /= g2d_node.transform.g2d_worldScaleX*texture.width;
+        ty /= g2d_node.transform.g2d_worldScaleY*texture.height;
+
+        if (p_w != 0) p_w /= g2d_node.transform.g2d_worldScaleX*texture.width;
+        if (p_h != 0) p_h /= g2d_node.transform.g2d_worldScaleY*texture.height;
+
+        tx += .5;
+        ty += .5;
+
+        if (tx+p_w >= -texture.pivotX / texture.width && tx-p_w <= 1 - texture.pivotX / texture.width && ty+p_h >= -texture.pivotY / texture.height && ty-p_h <= 1 - texture.pivotY / texture.height) {
+            if (p_pixelEnabled && texture.getAlphaAtUV(tx+texture.pivotX/texture.width, ty+texture.pivotY/texture.height) <= mousePixelTreshold) {
+                return false;
+            }
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      *  @private
      **/
@@ -97,20 +129,20 @@ class GTexturedQuad extends GComponent implements IRenderable
 		if (tx >= -texture.pivotX / texture.width && tx <= 1 - texture.pivotX / texture.width && ty >= -texture.pivotY / texture.height && ty <= 1 - texture.pivotY / texture.height) {
 			if (mousePixelEnabled && texture.getAlphaAtUV(tx+texture.pivotX/texture.width, ty+texture.pivotY/texture.height) <= mousePixelTreshold) {
 				if (node.g2d_mouseOverNode == node) {
-					node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, tx*texture.width+texture.pivotX, ty*texture.height+texture.pivotY, p_contextSignal);
+					node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, tx*texture.width-texture.width*.5, ty*texture.height-texture.height*.5, p_contextSignal);
 				}
 				return false;
 			}
 
-			node.dispatchNodeMouseSignal(p_contextSignal.type, node, tx*texture.width+texture.pivotX, ty*texture.height+texture.pivotY, p_contextSignal);
+			node.dispatchNodeMouseSignal(p_contextSignal.type, node, tx*texture.width-texture.width*.5, ty*texture.height-texture.height*.5, p_contextSignal);
 			if (node.g2d_mouseOverNode != node) {
-				node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OVER, node, tx*texture.width+texture.pivotX, ty*texture.height+texture.pivotY, p_contextSignal);
+				node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OVER, node, tx*texture.width-texture.width*.5, ty*texture.height-texture.height*.5, p_contextSignal);
 			}
 			
 			return true;
 		} else {
 			if (node.g2d_mouseOverNode == node) {
-				node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, tx*texture.width+texture.pivotX, ty*texture.height+texture.pivotY, p_contextSignal);
+				node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, tx*texture.width-texture.width*.5, ty*texture.height-texture.height*.5, p_contextSignal);
 			}
 		}
 		
@@ -131,4 +163,52 @@ class GTexturedQuad extends GComponent implements IRenderable
 
         return p_bounds;
     }
+
+/*
+public function hitTestObject(p_sprite:GTexturedQuad):Boolean {
+			var tvs1:Vector.<Number> = p_sprite.getTransformedVertices3D();
+			var tvs2:Vector.<Number> = getTransformedVertices3D();
+
+			var cx:Number = (tvs1[0]+tvs1[3]+tvs1[6]+tvs1[9])/4;
+			var cy:Number = (tvs1[1]+tvs1[4]+tvs1[7]+tvs1[10])/4;
+
+			if (isSeparating(tvs1[3], tvs1[4], tvs1[0]-tvs1[3], tvs1[1]-tvs1[4], cx, cy, tvs2)) return false;
+
+			if (isSeparating(tvs1[6], tvs1[7], tvs1[3]-tvs1[6], tvs1[4]-tvs1[7], cx, cy, tvs2)) return false;
+
+			if (isSeparating(tvs1[9], tvs1[10], tvs1[6]-tvs1[9], tvs1[7]-tvs1[10], cx, cy, tvs2)) return false;
+
+			if (isSeparating(tvs1[0], tvs1[1], tvs1[9]-tvs1[0], tvs1[10]-tvs1[1], cx, cy, tvs2)) return false;
+
+			cx = (tvs2[0]+tvs2[3]+tvs2[6]+tvs2[9])/4;
+			cy = (tvs2[1]+tvs2[4]+tvs2[7]+tvs2[10])/4;
+
+			if (isSeparating(tvs2[3], tvs2[4], tvs2[0]-tvs2[3], tvs2[1]-tvs2[4], cx, cy, tvs1)) return false;
+
+			if (isSeparating(tvs2[6], tvs2[7], tvs2[3]-tvs2[6], tvs2[4]-tvs2[7], cx, cy, tvs1)) return false;
+
+			if (isSeparating(tvs2[9], tvs2[10], tvs2[6]-tvs2[9], tvs2[7]-tvs2[10], cx, cy, tvs1)) return false;
+
+			if (isSeparating(tvs2[0], tvs2[1], tvs2[9]-tvs2[0], tvs2[10]-tvs2[1], cx, cy, tvs1)) return false;
+
+			return true;
+		}
+
+		private function isSeparating(p_sx:Number, p_sy:Number, p_ex:Number, p_ey:Number, p_cx:Number, p_cy:Number, p_vertices:Vector.<Number>):Boolean {
+			var rx:Number = -p_ey;
+			var ry:Number = p_ex;
+
+			var sideCenter:Number = rx * (p_cx - p_sx) + ry * (p_cy - p_sy);
+
+			var sideV1:Number = rx * (p_vertices[0] - p_sx) + ry * (p_vertices[1] - p_sy);
+			var sideV2:Number = rx * (p_vertices[3] - p_sx) + ry * (p_vertices[4] - p_sy);
+			var sideV3:Number = rx * (p_vertices[6] - p_sx) + ry * (p_vertices[7] - p_sy);
+			var sideV4:Number = rx * (p_vertices[9] - p_sx) + ry * (p_vertices[10] - p_sy);
+
+			if (sideCenter < 0 && sideV1 >= 0 && sideV2 >= 0 && sideV3 >= 0 && sideV4 >= 0) return true;
+			if (sideCenter > 0 && sideV1 <= 0 && sideV2 <= 0 && sideV3 <= 0 && sideV4 <= 0) return true;
+
+			return false;
+		}
+ */
 }

@@ -62,7 +62,7 @@ class GNode
     inline private function get_mask():GNode {
         return g2d_mask;
     }
-    #if swc @:getter(mask) #end
+    #if swc @:setter(mask) #end
     inline private function set_mask(p_value:GNode):GNode {
         if (!core.getContext().hasFeature(GContextFeature.STENCIL_MASKING)) new GError("Stencil masking feature not supported.");
         if (g2d_mask != null) g2d_mask.g2d_usedAsMask--;
@@ -519,6 +519,7 @@ class GNode
 		if (component == null || component == transform) return;
 
         g2d_components.remove(component);
+        g2d_numComponents--;
 		
 		component.dispose();
 	}
@@ -527,8 +528,22 @@ class GNode
 	 * 	CONTAINER CODE
 	 ****************************************************************************************************/
 	private var g2d_firstChild:GNode;
+    #if swc @:extern #end
+    public var firstChild(get, never):GNode;
+    #if swc @:getter(firstChild) #end
+    inline private function get_firstChild():GNode {
+        return g2d_firstChild;
+    }
+
     private var g2d_lastChild:GNode;
+
     private var g2d_nextNode:GNode;
+    #if swc @:extern #end
+    public var nextNode(get, never):GNode;
+    #if swc @:getter(nextNode) #end
+    inline private function get_nextNode():GNode {
+        return g2d_nextNode;
+    }
     private var g2d_previousNode:GNode;
 
     private var g2d_numChildren:Int = 0;
@@ -820,13 +835,14 @@ class GNode
         }
 	}
 
-    public function getBounds(p_targetSpace:GNode, p_bounds:GRectangle = null):GRectangle {
+    public function getBounds(p_targetSpace:GNode = null, p_bounds:GRectangle = null):GRectangle {
+        if (p_targetSpace == null) p_targetSpace = core.root;
         if (p_bounds == null) p_bounds = new GRectangle();
         var found:Bool = false;
-        var minX:Float = 10000000;
-        var maxX:Float = -10000000;
-        var minY:Float = 10000000;
-        var maxY:Float = -10000000;
+        var minX:Float = Math.POSITIVE_INFINITY;
+        var maxX:Float = Math.NEGATIVE_INFINITY;
+        var minY:Float = Math.POSITIVE_INFINITY;
+        var maxY:Float = Math.NEGATIVE_INFINITY;
         var aabb:GRectangle = new GRectangle(0,0,0,0);
 
         if (g2d_renderable != null) {
@@ -854,7 +870,10 @@ class GNode
         while (child != null) {
             var next:GNode = child.g2d_nextNode;
             child.getBounds(p_targetSpace, aabb);
-            if (aabb.width == 0 || aabb.height == 0) continue;
+            if (aabb.width == 0 || aabb.height == 0) {
+                child = next;
+                continue;
+            }
             if (minX > aabb.x) minX = aabb.x;
             if (maxX < aabb.right) maxX = aabb.right;
             if (minY > aabb.y) minY = aabb.y;
@@ -864,7 +883,6 @@ class GNode
         }
 
         if (found) p_bounds.setTo(minX, minY, maxX-minX, maxY-minY);
-
 
         return p_bounds;
     }

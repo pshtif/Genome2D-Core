@@ -39,8 +39,8 @@ class GTexture extends GContextTexture
 		return g2d_region = p_value;
 	}
 
-	public function new(p_context:IContext, p_id:String, p_sourceType:Int, p_source:Dynamic, p_region:GRectangle, p_format:String, p_pivotX:Float = 0, p_pivotY:Float = 0, p_parentAtlas:GTextureAtlas = null) {
-		super(p_context, p_id, p_sourceType, p_source, p_region, p_format, p_pivotX, p_pivotY);
+	public function new(p_context:IContext, p_id:String, p_sourceType:Int, p_source:Dynamic, p_region:GRectangle, p_format:String, p_repeatable:Bool, p_pivotX:Float = 0, p_pivotY:Float = 0, p_parentAtlas:GTextureAtlas = null) {
+		super(p_context, p_id, p_sourceType, p_source, p_region, p_format, p_repeatable, p_pivotX, p_pivotY);
 		
 		g2d_parentAtlas = p_parentAtlas;
 
