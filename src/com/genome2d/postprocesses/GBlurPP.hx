@@ -22,11 +22,11 @@ class GBlurPP extends GPostProcess
     #if swc @:extern #end
     public var colorize(get, set):Bool;
     #if swc @:getter(colorize) #end
-    public function get_colorize():Bool {
+    inline private function get_colorize():Bool {
         return g2d_colorize;
     }
     #if swc @:setter(colorize) #end
-    public function set_colorize(p_value:Bool):Bool {
+    inline private function set_colorize(p_value:Bool):Bool {
         g2d_colorize = p_value;
         g2d_invalidate = true;
         return g2d_colorize;
@@ -35,11 +35,11 @@ class GBlurPP extends GPostProcess
     #if swc @:extern #end
     public var red(get, set):Float;
     #if swc @:getter(red) #end
-    public function get_red():Float {
+    inline private function get_red():Float {
         return g2d_red;
     }
     #if swc @:setter(red) #end
-    public function set_red(p_value:Float):Float {
+    inline private function set_red(p_value:Float):Float {
         g2d_red = p_value;
         g2d_invalidate = true;
         return g2d_red;
@@ -48,11 +48,11 @@ class GBlurPP extends GPostProcess
     #if swc @:extern #end
     public var green(get, set):Float;
     #if swc @:getter(green) #end
-    public function get_green():Float {
+    inline private function get_green():Float {
         return g2d_green;
     }
     #if swc @:setter(green) #end
-    public function set_green(p_value:Float):Float {
+    inline private function set_green(p_value:Float):Float {
         g2d_green = p_value;
         g2d_invalidate = true;
         return g2d_green;
@@ -61,11 +61,11 @@ class GBlurPP extends GPostProcess
     #if swc @:extern #end
     public var blue(get, set):Float;
     #if swc @:getter(blue) #end
-    public function get_blue():Float {
+    inline private function get_blue():Float {
         return g2d_blue;
     }
     #if swc @:setter(blue) #end
-    public function set_blue(p_value:Float):Float {
+    inline private function set_blue(p_value:Float):Float {
         g2d_blue = p_value;
         g2d_invalidate = true;
         return g2d_blue;
@@ -74,11 +74,11 @@ class GBlurPP extends GPostProcess
     #if swc @:extern #end
     public var alpha(get, set):Float;
     #if swc @:getter(alpha) #end
-    public function get_alpha():Float {
+    inline private function get_alpha():Float {
         return g2d_alpha;
     }
     #if swc @:setter(alpha) #end
-    public function set_alpha(p_value:Float):Float {
+    inline private function set_alpha(p_value:Float):Float {
         g2d_alpha = p_value;
         g2d_invalidate = true;
         return g2d_alpha;
@@ -87,7 +87,7 @@ class GBlurPP extends GPostProcess
     #if swc @:extern #end
     public var passes(get, never):Int;
     #if swc @:getter(passes) #end
-    public function get_passes():Int {
+    inline private function get_passes():Int {
         return g2d_passes>>1;
     }
 
@@ -95,11 +95,11 @@ class GBlurPP extends GPostProcess
     #if swc @:extern #end
     public var blurX(get, set):Int;
     #if swc @:getter(blurX) #end
-    public function get_blurX():Int {
+    inline private function get_blurX():Int {
         return Std.int(g2d_passes*(g2d_blurX/2));
     }
     #if swc @:setter(blurY) #end
-    public function set_blurX(p_value:Int):Int {
+    inline private function set_blurX(p_value:Int):Int {
         g2d_blurX = 2*p_value/g2d_passes;
         g2d_invalidate = true;
         return p_value;
@@ -108,11 +108,11 @@ class GBlurPP extends GPostProcess
     #if swc @:extern #end
     public var blurY(get, set):Int;
     #if swc @:getter(blurY) #end
-    public function get_blurY():Int {
+    inline private function get_blurY():Int {
         return Std.int(g2d_passes*(g2d_blurY/2));
     }
     #if swc @:setter(blurY) #end
-    public function set_blurY(p_value:Int):Int {
+    inline private function set_blurY(p_value:Int):Int {
         g2d_blurY = 2*p_value/g2d_passes;
         g2d_invalidate = true;
         return p_value;

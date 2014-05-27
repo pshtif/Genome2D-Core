@@ -20,13 +20,13 @@ import com.genome2d.components.renderables.IRenderable;
 import com.genome2d.context.GContextCamera;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.signals.GNodeMouseSignal;
-import com.genome2d.physics.GBody;
 import msignal.Signal;
 import com.genome2d.components.GComponent;
 import com.genome2d.components.GTransform;
 import com.genome2d.error.GError;
 import com.genome2d.signals.GMouseSignal;
 
+@:access(com.genome2d.components.GTransform)
 class GNode
 {
     static private var g2d_cachedArray:Array<GNode>;
@@ -103,8 +103,6 @@ class GNode
                     g2d_pool.g2d_putToFront(this);
                 }
 			}
-			
-			//if (g2d_body != null) g2d_body.setActive(g2d_active);
 
             for (i in 0...g2d_numComponents) {
                 g2d_components[i].setActive(p_value);
@@ -156,9 +154,6 @@ class GNode
 		return g2d_parent;
 	}
 
-    // Physics body
-	public var g2d_body:GBody;
-
 	private var g2d_disposed:Bool = false;
 
     // Internal node count
@@ -178,6 +173,7 @@ class GNode
         g2d_transform = new GTransform(this);
         g2d_transform.g2d_lookupClass = GTransform;
 	}
+
 	/**
 	 * 	@private
 	 */
@@ -200,11 +196,9 @@ class GNode
             var invalidateTransform:Bool = p_parentTransformUpdate || transform.g2d_transformDirty;
             var invalidateColor:Bool = p_parentColorUpdate || transform.g2d_colorDirty;
 
-            if (invalidateTransform || invalidateColor || (g2d_body != null && g2d_body.isDynamic())) {
+            if (invalidateTransform || invalidateColor) {
                 transform.invalidate(p_parentTransformUpdate, p_parentColorUpdate);
             }
-
-            //if (g2d_body != null) g2d_body.update(p_deltaTime, invalidateTransform, invalidateColor);
 
             if (!g2d_active || !transform.visible || ((cameraGroup&p_camera.mask) == 0 && cameraGroup != 0) || (g2d_usedAsMask>0 && !p_renderAsMask)) return;
 
@@ -273,8 +267,6 @@ class GNode
             g2d_components.pop().dispose();
             g2d_numComponents--;
         }
-		
-		g2d_body = null;
 		g2d_transform = null;
 		
 		if (parent != null) {
@@ -298,8 +290,6 @@ class GNode
 		
 		var componentsXml:Xml = Xml.parse("<components/>").firstElement();
 		componentsXml.addChild(transform.getPrototype());
-
-		if (g2d_body != null) componentsXml.addChild(g2d_body.getPrototype());
 
 		for (i in 0...g2d_numComponents) {
 			componentsXml.addChild(g2d_components[i].getPrototype());
@@ -492,13 +482,6 @@ class GNode
         if (Std.is(component, IRenderable)) {
             g2d_renderable = cast component;
         }
-
-		/*
-		if (Std.is(component, GBody)) {
-			g2d_body = cast component;
-			return component;
-		}
-		/**/
 
         if (g2d_components == null)g2d_components = new Array<GComponent>();
 		g2d_components.push(component);
@@ -797,8 +780,6 @@ class GNode
 	inline private function g2d_addedToStage():Void {
 		if (g2d_onAddedToStage != null) g2d_onAddedToStage.dispatch();
         GStats.nodeCount++;
-		
-		//if (g2d_body != null) g2d_body.addToSpace();
 
         var child:GNode = g2d_firstChild;
         while (child != null) {
@@ -811,8 +792,6 @@ class GNode
 	inline private function g2d_removedFromStage():Void {
 		if (g2d_onRemovedFromStage != null) g2d_onRemovedFromStage.dispatch();
         GStats.nodeCount--;
-		
-		//if (g2d_body != null) g2d_body.removeFromSpace();
 
         var child:GNode = g2d_firstChild;
         while (child != null) {

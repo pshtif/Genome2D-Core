@@ -89,7 +89,7 @@ class GCameraController extends GComponent
         g2d_contextCamera = new GContextCamera();
         g2d_viewRectangle = new GRectangle();
 
-		if (node != node.core.root && node.isOnStage()) node.core.g2d_addCamera(this);
+		if (node != node.core.root && node.isOnStage()) node.core.g2d_addCameraController(this);
 		
 		node.onAddedToStage.add(onAddedToStage);
 		node.onRemovedFromStage.add(onRemovedFromStage);
@@ -144,19 +144,19 @@ class GCameraController extends GComponent
 	 *
 	 */
 	override public function dispose():Void {
-		node.core.g2d_removeCamera(this);
+		node.core.g2d_removeCameraController(this);
 		
 		node.onAddedToStage.remove(onAddedToStage);
 		node.onRemovedFromStage.remove(onRemovedFromStage);
 
 		super.dispose();
 	}
-	
+
 	private function onAddedToStage():Void {
-		node.core.g2d_addCamera(this);
+		node.core.g2d_addCameraController(this);
 	}
-	
+
 	private function onRemovedFromStage():Void {
-		node.core.g2d_removeCamera(this);
+		node.core.g2d_removeCameraController(this);
 	}
 }

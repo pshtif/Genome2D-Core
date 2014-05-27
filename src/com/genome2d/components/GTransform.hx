@@ -4,7 +4,8 @@ import com.genome2d.geom.GMatrix;
 import com.genome2d.node.GNode;
 
 /**
- * ...
+ * Transform component
+ *
  * @author Peter "sHTiF" Stefcek
  */
 class GTransform extends GComponent
@@ -15,8 +16,8 @@ class GTransform extends GComponent
 	public var useWorldColor:Bool = false;
 
     private var g2d_matrixDirty:Bool = true;
-	public var g2d_transformDirty:Bool = false;
-	public var g2d_colorDirty:Bool = false;
+	private var g2d_transformDirty:Bool = false;
+	private var g2d_colorDirty:Bool = false;
 	
 	private var g2d_visible:Bool = true;
 	#if swc @:extern #end
@@ -29,9 +30,10 @@ class GTransform extends GComponent
 	inline private function set_visible(p_value:Bool):Bool {
 		return g2d_visible = p_value;
 	}
-	
+
+    @:dox(hide)
 	public var g2d_worldX:Float = 0;
-	public var g2d_localX:Float = 0;
+	private var g2d_localX:Float = 0;
 	#if swc @:extern #end
 	public var x(get, set):Float;
 	#if swc @:getter(x) #end
@@ -41,12 +43,12 @@ class GTransform extends GComponent
 	#if swc @:setter(x) #end
 	inline private function set_x(p_value:Float):Float {
 		g2d_transformDirty = g2d_matrixDirty = true;
-		if (node.g2d_body != null) node.g2d_body.x = p_value;
 		return g2d_localX = g2d_worldX = p_value;
 	}
-	
+
+    @:dox(hide)
 	public var g2d_worldY:Float = 0;
-	public var g2d_localY:Float = 0;
+	private var g2d_localY:Float = 0;
 	#if swc @:extern #end
 	public var y(get, set):Float;
 	#if swc @:getter(y) #end
@@ -56,7 +58,6 @@ class GTransform extends GComponent
 	#if swc @:setter(y) #end
 	inline private function set_y(p_value:Float):Float {
 		g2d_transformDirty = g2d_matrixDirty = true;
-		if (node.g2d_body != null) node.g2d_body.y = p_value;
 		return g2d_localY = g2d_worldY = p_value;
 	}
 
@@ -64,7 +65,8 @@ class GTransform extends GComponent
         return (g2d_localScaleX != g2d_localScaleY && g2d_localRotation != 0);
     }
     private var g2d_localUseMatrix:Int = 0;
-    public var g2d_useMatrix(get, set):Int;
+
+    private var g2d_useMatrix(get, set):Int;
     inline private function get_g2d_useMatrix():Int {
         return g2d_localUseMatrix;
     }
@@ -73,9 +75,10 @@ class GTransform extends GComponent
         g2d_localUseMatrix = p_value;
         return g2d_useMatrix;
     }
-	
+
+    @:dox(hide)
 	public var g2d_worldScaleX:Float = 1;
-	public var g2d_localScaleX:Float = 1;
+	private var g2d_localScaleX:Float = 1;
 	#if swc @:extern #end
 	public var scaleX(get, set):Float;
 	#if swc @:getter(scaleX) #end
@@ -88,12 +91,12 @@ class GTransform extends GComponent
         if (g2d_localScaleX == g2d_localScaleY && p_value == g2d_localScaleY && g2d_localRotation != 0 && node.numChildren>0) g2d_useMatrix--;
 
 		g2d_transformDirty = g2d_matrixDirty = true;
-		if (node.g2d_body != null) node.g2d_body.scaleX = p_value;
 		return g2d_localScaleX = g2d_worldScaleX = p_value;
 	}
-	
+
+    @:dox(hide)
 	public var g2d_worldScaleY:Float = 1;
-	public var g2d_localScaleY:Float = 1;
+	private var g2d_localScaleY:Float = 1;
 	#if swc @:extern #end
 	public var scaleY(get, set):Float;
 	#if swc @:getter(scaleY) #end
@@ -106,12 +109,12 @@ class GTransform extends GComponent
         if (g2d_localScaleX == g2d_localScaleY && p_value == g2d_localScaleX && g2d_localRotation != 0 && node.numChildren>0) g2d_useMatrix--;
 
 		g2d_transformDirty = g2d_matrixDirty = true;
-		if (node.g2d_body != null) node.g2d_body.scaleY = p_value;
 		return g2d_localScaleY = g2d_worldScaleY = p_value;
 	}
-	
+
+    @:dox(hide)
 	public var g2d_worldRotation:Float = 0;
-	public var g2d_localRotation:Float = 0;
+	private var g2d_localRotation:Float = 0;
 	#if swc @:extern #end
 	public var rotation(get, set):Float;
 	#if swc @:getter(rotation) #end
@@ -124,12 +127,12 @@ class GTransform extends GComponent
         if (g2d_localRotation != 0 && p_value == 0 && g2d_localScaleX != g2d_localScaleY && node.numChildren>0) g2d_useMatrix--;
 
 		g2d_transformDirty = g2d_matrixDirty = true;
-		if (node.g2d_body != null) node.g2d_body.rotation = p_value;
 		return g2d_localRotation = g2d_worldRotation = p_value;
-	}	
-	
+	}
+
+    @:dox(hide)
 	public var g2d_worldRed:Float = 1;
-	public var g2d_localRed:Float = 1;
+	private var g2d_localRed:Float = 1;
 	#if swc @:extern #end
 	public var red(get, set):Float;
 	#if swc @:getter(red) #end
@@ -141,9 +144,10 @@ class GTransform extends GComponent
 		g2d_colorDirty = true;
 		return g2d_localRed = g2d_worldRed = p_value;
 	}
-	
+
+    @:dox(hide)
 	public var g2d_worldGreen:Float = 1;
-	public var g2d_localGreen:Float = 1;
+	private var g2d_localGreen:Float = 1;
 	#if swc @:extern #end
 	public var green(get, set):Float;
 	#if swc @:getter(green) #end
@@ -155,9 +159,10 @@ class GTransform extends GComponent
 		g2d_colorDirty = true;
 		return g2d_localGreen = g2d_worldGreen = p_value;
 	}
-	
+
+    @:dox(hide)
 	public var g2d_worldBlue:Float = 1;
-	public var g2d_localBlue:Float = 1;
+	private var g2d_localBlue:Float = 1;
 	#if swc @:extern #end
 	public var blue(get, set):Float;
 	#if swc @:getter(blue) #end
@@ -169,9 +174,10 @@ class GTransform extends GComponent
 		g2d_colorDirty = true;
 		return g2d_localBlue = g2d_worldBlue = p_value;
 	}
-	
+
+    @:dox(hide)
 	public var g2d_worldAlpha:Float = 1;
-	public var g2d_localAlpha:Float = 1;
+	private var g2d_localAlpha:Float = 1;
 	#if swc @:extern #end
 	public var alpha(get, set):Float;
 	#if swc @:getter(alpha) #end
@@ -280,20 +286,12 @@ class GTransform extends GComponent
 	
 	public function setPosition(p_x:Float, p_y:Float):Void {
 		g2d_transformDirty = g2d_matrixDirty = true;
-		if (node.g2d_body != null) {
-			node.g2d_body.x = p_x;
-			node.g2d_body.y = p_y;
-		}
 		g2d_localX = g2d_worldX = p_x;
 		g2d_localY = g2d_worldY = p_y;
 	}
-	
+
 	public function setScale(p_scaleX:Float, p_scaleY:Float):Void {
 		g2d_transformDirty = g2d_matrixDirty = true;
-		if (node.g2d_body != null) {
-			node.g2d_body.scaleX = p_scaleX;
-			node.g2d_body.scaleY = p_scaleY;
-		}
 		g2d_localScaleX = g2d_worldScaleX = p_scaleX;
 		g2d_localScaleY = g2d_worldScaleY = p_scaleY;
 	}
@@ -301,44 +299,32 @@ class GTransform extends GComponent
 	inline public function invalidate(p_invalidateTransform:Bool, p_invalidateColor:Bool):Void {
         var parentTransform:GTransform = node.parent.transform;
 
-        if (node.g2d_body != null && node.g2d_body.isDynamic()) {
-            x = node.g2d_body.x;
-            y = node.g2d_body.y;
-            rotation = node.g2d_body.rotation;
-        } else {
-            if (p_invalidateTransform && !useWorldSpace) {
-                if (parentTransform.g2d_worldRotation != 0) {
-                    var cos:Float = Math.cos(parentTransform.g2d_worldRotation);
-                    var sin:Float = Math.sin(parentTransform.g2d_worldRotation);
+        if (p_invalidateTransform && !useWorldSpace) {
+            if (parentTransform.g2d_worldRotation != 0) {
+                var cos:Float = Math.cos(parentTransform.g2d_worldRotation);
+                var sin:Float = Math.sin(parentTransform.g2d_worldRotation);
 
-                    g2d_worldX = (x * cos - y * sin) * parentTransform.g2d_worldScaleX + parentTransform.g2d_worldX;
-                    g2d_worldY = (y * cos + x * sin) * parentTransform.g2d_worldScaleY + parentTransform.g2d_worldY;
-                } else {
-                    g2d_worldX = g2d_localX * parentTransform.g2d_worldScaleX + parentTransform.g2d_worldX;
-                    g2d_worldY = g2d_localY * parentTransform.g2d_worldScaleY + parentTransform.g2d_worldY;
-                }
-
-                g2d_worldScaleX = g2d_localScaleX * parentTransform.g2d_worldScaleX;
-                g2d_worldScaleY = g2d_localScaleY * parentTransform.g2d_worldScaleY;
-                g2d_worldRotation = g2d_localRotation + parentTransform.g2d_worldRotation;
-
-                if (node.g2d_body != null && node.g2d_body.isKinematic()) {
-                    node.g2d_body.x = g2d_worldX;
-                    node.g2d_body.y = g2d_worldY;
-                    node.g2d_body.rotation = g2d_worldRotation;
-                }
-
-                g2d_transformDirty = false;
+                g2d_worldX = (x * cos - y * sin) * parentTransform.g2d_worldScaleX + parentTransform.g2d_worldX;
+                g2d_worldY = (y * cos + x * sin) * parentTransform.g2d_worldScaleY + parentTransform.g2d_worldY;
+            } else {
+                g2d_worldX = g2d_localX * parentTransform.g2d_worldScaleX + parentTransform.g2d_worldX;
+                g2d_worldY = g2d_localY * parentTransform.g2d_worldScaleY + parentTransform.g2d_worldY;
             }
 
-            if (p_invalidateColor && !useWorldColor) {
-                g2d_worldRed = g2d_localRed * parentTransform.g2d_worldRed;
-                g2d_worldGreen = g2d_localGreen * parentTransform.g2d_worldGreen;
-                g2d_worldBlue = g2d_localBlue * parentTransform.g2d_worldBlue;
-                g2d_worldAlpha = g2d_localAlpha * parentTransform.g2d_worldAlpha;
+            g2d_worldScaleX = g2d_localScaleX * parentTransform.g2d_worldScaleX;
+            g2d_worldScaleY = g2d_localScaleY * parentTransform.g2d_worldScaleY;
+            g2d_worldRotation = g2d_localRotation + parentTransform.g2d_worldRotation;
 
-                g2d_colorDirty = false;
-            }
+            g2d_transformDirty = false;
+        }
+
+        if (p_invalidateColor && !useWorldColor) {
+            g2d_worldRed = g2d_localRed * parentTransform.g2d_worldRed;
+            g2d_worldGreen = g2d_localGreen * parentTransform.g2d_worldGreen;
+            g2d_worldBlue = g2d_localBlue * parentTransform.g2d_worldBlue;
+            g2d_worldAlpha = g2d_localAlpha * parentTransform.g2d_worldAlpha;
+
+            g2d_colorDirty = false;
         }
 	}
 }

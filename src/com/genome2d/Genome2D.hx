@@ -1,5 +1,6 @@
 package com.genome2d;
 
+import com.genome2d.components.GTransform;
 import com.genome2d.textures.factories.GTextureAtlasFactory;
 import com.genome2d.textures.factories.GTextureFactory;
 import com.genome2d.context.IContext;
@@ -13,13 +14,14 @@ import msignal.Signal;
 import com.genome2d.context.GContextConfig;
 
 /**
- * ...
- * @author Peter "sHTiF" Stefcek
+   Genome2D core class
+
+   Author: Peter "sHTiF" Stefcek
  */
 class Genome2D
 {
     // Genome2D version
-	inline static public var VERSION:String = "1.0.254hx";
+	inline static public var VERSION:String = "1.0.256hx";
 
     // Singleton instance
 	static private var g2d_instance:Genome2D;
@@ -35,9 +37,6 @@ class Genome2D
 	}
 
     public var autoUpdateAndRender:Bool = true;
-
-    // Physics instance
-	//public var physics:GPhysics;
 
     // Genome2D signals
     private var g2d_onInitialized:Signal0;
@@ -122,8 +121,11 @@ class Genome2D
     public var backgroundBlue:Float = 0;
     public var backgroundAlpha:Float = 1;
 
+    @:dox(hide)
     public var g2d_renderMatrix:GMatrix;
+    @:dox(hide)
     public var g2d_renderMatrixIndex:Int = 0;
+    @:dox(hide)
     public var g2d_renderMatrixArray:Array<GMatrix>;
 
     private var g2d_contextConfig:GContextConfig;
@@ -144,7 +146,9 @@ class Genome2D
 	}
 
     /**
-     *  Initialize genome2d
+     *  Initialize Genome2D
+     *
+     *  @param p_config Genome2D configuration instance
      **/
 	public function init(p_config:GContextConfig):Void {
         // Initialize root
@@ -225,6 +229,7 @@ class Genome2D
     /**
      *  Render node graph
      **/
+    @:access(com.genome2d.components.GTransform)
 	public function render():Void {
         var cameraCount:Int = g2d_cameras.length;
 		g2d_context.begin(backgroundRed, backgroundGreen, backgroundBlue, backgroundAlpha, cameraCount==0);
@@ -253,24 +258,17 @@ class Genome2D
 		g2d_context.end();
 	}
 
-    /**
-     *  Add camera
-     **/
-	public function g2d_addCamera(p_camera:GCameraController):Void {
+    @:allow(com.genome2d.components.GCameraController)
+	private function g2d_addCameraController(p_camera:GCameraController):Void {
         for (i in 0...g2d_cameras.length) if (g2d_cameras[i] == p_camera) return;
         g2d_cameras.push(p_camera);
     }
 
-    /**
-     *  Remove camera
-     **/
-    public function g2d_removeCamera(p_camera:GCameraController):Void {
+    @:allow(com.genome2d.components.GCameraController)
+    private function g2d_removeCameraController(p_camera:GCameraController):Void {
         for (i in 0...g2d_cameras.length) if (g2d_cameras[i] == p_camera) g2d_cameras.splice(i, 1);
     }
 
-    /**
-     *  Context mouse interaction handler
-     **/
 	private function g2d_contextMouseSignalHandler(p_signal:GMouseSignal):Void {
         // If there is no camera process the signal directly by root node
 		if (g2d_cameras.length == 0) {
