@@ -1,4 +1,5 @@
 package com.genome2d.components.renderables;
+import com.genome2d.context.stage3d.renderers.GShapeRenderer;
 import com.genome2d.error.GError;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GBlendMode;
@@ -18,7 +19,7 @@ class GShape extends GComponent implements IRenderable
     private var g2d_vertices:Array<Float>;
     private var g2d_uvs:Array<Float>;
 
-    //private var g2d_contextPoly:GContextPolygon;
+    private var g2d_shapeRenderer:GShapeRenderer;
 
     public function new(p_node:GNode) {
         super(p_node);
@@ -27,7 +28,12 @@ class GShape extends GComponent implements IRenderable
     public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
         if (texture == null || g2d_vertices == null || g2d_uvs == null) return;
         var transform:GTransform = node.transform;
-        node.core.getContext().drawPoly(texture, g2d_vertices, g2d_uvs, transform.g2d_worldX, transform.g2d_worldY, transform.g2d_worldScaleX, transform.g2d_worldScaleY, transform.g2d_worldRotation, transform.g2d_worldRed, transform.g2d_worldGreen, transform.g2d_worldBlue, transform.g2d_worldAlpha, blendMode);
+        if (g2d_shapeRenderer == null) {
+            node.core.getContext().drawPoly(texture, g2d_vertices, g2d_uvs, transform.g2d_worldX, transform.g2d_worldY, transform.g2d_worldScaleX, transform.g2d_worldScaleY, transform.g2d_worldRotation, transform.g2d_worldRed, transform.g2d_worldGreen, transform.g2d_worldBlue, transform.g2d_worldAlpha, blendMode);
+        } else {
+            node.core.getContext().bindRenderer(g2d_shapeRenderer);
+            g2d_shapeRenderer.draw(texture);
+        }
     }
 
     public function init(p_vertices:Array<Float>, p_uvs:Array<Float>):Void {
@@ -36,6 +42,10 @@ class GShape extends GComponent implements IRenderable
         if (p_vertices.length != p_uvs.length) new GError("Vertices and UVs need to have same amount of values.");
         g2d_vertices = p_vertices;
         g2d_uvs = p_uvs;
+    }
+
+    public function cache():Void {
+        g2d_shapeRenderer = new GShapeRenderer(g2d_vertices, g2d_uvs, false);
     }
 
     public function getBounds(p_target:GRectangle = null):GRectangle {
