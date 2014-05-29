@@ -1,5 +1,5 @@
 package com.genome2d.components.renderables;
-import com.genome2d.context.stage3d.renderers.GShapeRenderer;
+import com.genome2d.context.stage3d.renderers.GCustomRenderer;
 import com.genome2d.error.GError;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GBlendMode;
@@ -19,7 +19,7 @@ class GShape extends GComponent implements IRenderable
     private var g2d_vertices:Array<Float>;
     private var g2d_uvs:Array<Float>;
 
-    private var g2d_shapeRenderer:GShapeRenderer;
+    private var g2d_shapeRenderer:GCustomRenderer;
 
     public function new(p_node:GNode) {
         super(p_node);
@@ -45,7 +45,7 @@ class GShape extends GComponent implements IRenderable
     }
 
     public function cache():Void {
-        g2d_shapeRenderer = new GShapeRenderer(g2d_vertices, g2d_uvs, false);
+        g2d_shapeRenderer = new GCustomRenderer(g2d_vertices, g2d_uvs, false);
     }
 
     public function getBounds(p_target:GRectangle = null):GRectangle {
