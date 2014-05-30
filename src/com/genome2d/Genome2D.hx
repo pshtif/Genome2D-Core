@@ -1,5 +1,6 @@
 package com.genome2d;
 
+import com.genome2d.signals.GKeyboardSignal;
 import com.genome2d.components.GTransform;
 import com.genome2d.textures.factories.GTextureAtlasFactory;
 import com.genome2d.textures.factories.GTextureFactory;
@@ -87,6 +88,14 @@ class Genome2D
         return g2d_onPostRender;
     }
 
+    private var g2d_onKeyInteraction:Signal1<GKeyboardSignal>;
+    #if swc @:extern #end
+    public var onKeyInteraction(get, never):Signal1<GKeyboardSignal>;
+    #if swc @:getter(onKeyInteraction) #end
+    inline private function get_onKeyInteraction():Signal1<GKeyboardSignal> {
+        return g2d_onKeyInteraction;
+    }
+
     // Current frame time
 	private var g2d_currentTime:Float = 0;
     // Render frame id
@@ -143,6 +152,7 @@ class Genome2D
         g2d_onUpdate = new Signal1<Float>();
         g2d_onPreRender = new Signal0();
         g2d_onPostRender = new Signal0();
+        g2d_onKeyInteraction = new Signal1<GKeyboardSignal>();
 	}
 
     /**
@@ -179,6 +189,7 @@ class Genome2D
 
 		g2d_context.onFrame(g2d_frameHandler);
         g2d_context.onMouseInteraction(g2d_contextMouseSignalHandler);
+        g2d_context.onKeyboardInteraction(g2d_contextKeySignalHandler);
 		
 		onInitialized.dispatch();
 	}
@@ -253,6 +264,7 @@ class Genome2D
 
         if (onPostRender.numListeners>0) {
             g2d_context.setCamera(g2d_context.getDefaultCamera());
+            g2d_context.setRenderTarget(null);
 		    onPostRender.dispatch();
         }
 		g2d_context.end();
@@ -284,6 +296,10 @@ class Genome2D
 		}
 	}
 
+    private function g2d_contextKeySignalHandler(p_signal:GKeyboardSignal):Void {
+        onKeyInteraction.dispatch(p_signal);
+    }
+
     public function dispose():Void {
         if (g2d_root != null) g2d_root.dispose();
         g2d_root = null;
@@ -294,6 +310,7 @@ class Genome2D
         g2d_onPreRender.removeAll();
         g2d_onUpdate.removeAll();
         g2d_onInvalidated.removeAll();
+        g2d_onKeyInteraction.removeAll();
 
         g2d_context.dispose();
         g2d_context = null;

@@ -7,6 +7,7 @@
 */
 package com.genome2d.components;
 
+import com.genome2d.textures.GTexture;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GContextCamera;
@@ -31,6 +32,8 @@ class GCameraController extends GComponent
 	 * 	@private
 	 */
 	public var backgroundAlpha:Float = 0;
+
+    public var renderTarget:GTexture;
 	
 	/**
 	 * 	Get a viewport color
@@ -107,6 +110,7 @@ class GCameraController extends GComponent
         g2d_contextCamera.rotation = node.transform.g2d_worldRotation;
 
 		node.core.getContext().setCamera(g2d_contextCamera);
+        node.core.getContext().setRenderTarget(renderTarget);
 		node.core.root.render(false, false, g2d_contextCamera, false, false);
 	}
 	
