@@ -1,3 +1,8 @@
+package com.genome2d.components ;
+import com.genome2d.node.GNode;
+import Type.ValueType;
+import com.genome2d.signals.GMouseSignal;
+
 /*
 * 	Genome2D - GPU 2D framework utilizing Molehill API
 *
@@ -5,11 +10,6 @@
 *
 *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
 */
-package com.genome2d.components ;
-import com.genome2d.node.GNode;
-import Type.ValueType;
-import com.genome2d.signals.GMouseSignal;
-
 class GComponent
 {
 	private var g2d_active:Bool = true;

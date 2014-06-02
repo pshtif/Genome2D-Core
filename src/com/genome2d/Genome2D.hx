@@ -281,6 +281,7 @@ class Genome2D
         for (i in 0...g2d_cameras.length) if (g2d_cameras[i] == p_camera) g2d_cameras.splice(i, 1);
     }
 
+    @:access(com.genome2d.components.GCameraController)
 	private function g2d_contextMouseSignalHandler(p_signal:GMouseSignal):Void {
         // If there is no camera process the signal directly by root node
 		if (g2d_cameras.length == 0) {

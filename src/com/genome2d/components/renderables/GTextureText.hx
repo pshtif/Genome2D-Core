@@ -8,10 +8,13 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureAtlas;
 import com.genome2d.context.GContextCamera;
 
-/**
- * ...
- * @author 
- */
+/*
+* 	Genome2D - GPU 2D framework utilizing Molehill API
+*
+*	Copyright 2011 Peter Stefcek. All rights reserved.
+*
+*	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
+*/
 class GTextureText extends GComponent implements IRenderable
 {
     /**

@@ -9,10 +9,13 @@ import com.genome2d.components.GComponent;
 import com.genome2d.signals.GMouseSignal;
 import com.genome2d.textures.GTexture;
 
-/**
- * ...
- * @author Peter "sHTiF" Stefcek
- */
+/*
+* 	Genome2D - GPU 2D framework utilizing Molehill API
+*
+*	Copyright 2011 Peter Stefcek. All rights reserved.
+*
+*	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
+*/
 class GTexturedQuad extends GComponent implements IRenderable
 {
     /**

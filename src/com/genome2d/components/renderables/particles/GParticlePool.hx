@@ -1,9 +1,12 @@
 package com.genome2d.components.renderables.particles;
 
-/**
- * ...
- * @author Peter "sHTiF" Stefcek
- */
+/*
+* 	Genome2D - GPU 2D framework utilizing Molehill API
+*
+*	Copyright 2011 Peter Stefcek. All rights reserved.
+*
+*	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
+*/
 class GParticlePool
 {
     static public var g2d_defaultPool:GParticlePool = new GParticlePool();

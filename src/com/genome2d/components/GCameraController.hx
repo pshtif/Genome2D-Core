@@ -1,10 +1,3 @@
-/*
-* 	Genome2D - GPU 2D framework utilizing Molehill API
-*
-*	Copyright 2011 Peter Stefcek. All rights reserved.
-*
-*	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
-*/
 package com.genome2d.components;
 
 import com.genome2d.textures.GTexture;
@@ -14,6 +7,13 @@ import com.genome2d.context.GContextCamera;
 import com.genome2d.node.GNode;
 import com.genome2d.signals.GMouseSignal;
 
+/*
+* 	Genome2D - GPU 2D framework utilizing Molehill API
+*
+*	Copyright 2011 Peter Stefcek. All rights reserved.
+*
+*	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
+*/
 class GCameraController extends GComponent
 {
 	/**
@@ -28,9 +28,7 @@ class GCameraController extends GComponent
 	 * 	Blue component of viewport background color
 	 */
 	public var backgroundBlue:Float = 0;
-	/**
-	 * 	@private
-	 */
+
 	public var backgroundAlpha:Float = 0;
 
     public var renderTarget:GTexture;
@@ -49,12 +47,9 @@ class GCameraController extends GComponent
 
     private var g2d_viewRectangle:GRectangle;
 
-	/**
-	 * 	@private
-	 */	
-	public var g2d_capturedThisFrame:Bool = false;
+	private var g2d_capturedThisFrame:Bool = false;
 	
-	public var g2d_renderedNodesCount:Int;
+	private var g2d_renderedNodesCount:Int;
 
     private var g2d_contextCamera:GContextCamera;
     #if swc @:extern #end
