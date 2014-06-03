@@ -1,16 +1,16 @@
 package com.genome2d.postprocesses;
 
+import com.genome2d.geom.GMatrix3D;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GContextCamera;
-import flash.geom.Matrix3D;
 import com.genome2d.textures.GTextureFilteringType;
 import com.genome2d.textures.factories.GTextureFactory;
 import com.genome2d.node.GNode;
-import flash.geom.Rectangle;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.filters.GFilter;
+
 class GPostProcess {
     private var g2d_passes:Int = 1;
     public function getPassCount():Int {
@@ -19,15 +19,15 @@ class GPostProcess {
 
     private var g2d_passFilters:Array<GFilter>;
     private var g2d_passTextures:Array<GTexture>;
-    private var g2d_definedBounds:Rectangle;
-    private var g2d_activeBounds:Rectangle;
+    private var g2d_definedBounds:GRectangle;
+    private var g2d_activeBounds:GRectangle;
 
     private var g2d_leftMargin:Int = 0;
     private var g2d_rightMargin:Int = 0;
     private var g2d_topMargin:Int = 0;
     private var g2d_bottomMargin:Int = 0;
 
-    private var g2d_matrix:Matrix3D;
+    private var g2d_matrix:GMatrix3D;
 
     static private var g2d_count:Int = 0;
     private var g2d_id:String;
@@ -36,7 +36,7 @@ class GPostProcess {
         if (p_passes<1) throw "There are no passes";
 
         g2d_passes = p_passes;
-        g2d_matrix = new Matrix3D();
+        g2d_matrix = new GMatrix3D();
 
         g2d_passFilters = p_filters;
         g2d_passTextures = new Array<GTexture>();
@@ -58,7 +58,7 @@ class GPostProcess {
     }
 
     public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GContextCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
-        var bounds:Rectangle = p_bounds;
+        var bounds:GRectangle = p_bounds;
         if (bounds == null) bounds = (g2d_definedBounds != null) ? g2d_definedBounds : p_node.getBounds(null, g2d_activeBounds);
 
         // Invalid bounds
