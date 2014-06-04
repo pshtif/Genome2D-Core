@@ -1,5 +1,3 @@
-package com.genome2d.assets;
-
 /*
 * 	Genome2D - GPU 2D framework utilizing Molehill API
 *
@@ -7,6 +5,8 @@ package com.genome2d.assets;
 *
 *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
 */
+package com.genome2d.assets;
+
 import msignal.Signal.Signal0;
 
 class GAssetManager {

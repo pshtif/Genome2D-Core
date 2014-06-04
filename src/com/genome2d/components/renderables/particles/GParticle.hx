@@ -1,9 +1,3 @@
-package com.genome2d.components.renderables.particles;
-
-import com.genome2d.context.GContextCamera;
-import com.genome2d.node.GNode;
-import com.genome2d.textures.GTexture;
-
 /*
 * 	Genome2D - GPU 2D framework utilizing Molehill API
 *
@@ -11,6 +5,12 @@ import com.genome2d.textures.GTexture;
 *
 *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
 */
+package com.genome2d.components.renderables.particles;
+
+import com.genome2d.context.GContextCamera;
+import com.genome2d.node.GNode;
+import com.genome2d.textures.GTexture;
+
 class GParticle
 {
     public var g2d_next:GParticle;
