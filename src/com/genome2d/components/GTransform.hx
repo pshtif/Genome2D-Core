@@ -279,7 +279,8 @@ class GTransform extends GComponent
         p_result.y = g2d_cachedMatrix.d * p_global.y + g2d_cachedMatrix.b * p_global.x + g2d_cachedMatrix.ty;
         return p_result;
     }
-	
+
+    @:dox(hide)
 	public function new(p_node:GNode) {
 		super(p_node);
 

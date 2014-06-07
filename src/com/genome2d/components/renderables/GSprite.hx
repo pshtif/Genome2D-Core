@@ -1,4 +1,5 @@
 package com.genome2d.components.renderables;
+import Type.ValueType;
 import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 
@@ -28,12 +29,12 @@ class GSprite extends GTexturedQuad
         return p_value;
     }
 
-    /**
-     *  @private
-     **/
+    @:dox(hide)
 	public function new(p_node:GNode) {
 		super(p_node);
 
+        var a:ValueType = ValueType.TClass(GTexture);
+        trace(a);
         g2d_prototypableProperties.push("textureId");
 	}
 	

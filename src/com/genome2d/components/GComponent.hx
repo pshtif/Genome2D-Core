@@ -1,4 +1,5 @@
 package com.genome2d.components ;
+import haxe.macro.Context;
 import com.genome2d.node.GNode;
 import Type.ValueType;
 import com.genome2d.signals.GMouseSignal;
@@ -64,7 +65,20 @@ class GComponent
 		prototypeXml.set("componentLookupClass", Type.getClassName(g2d_lookupClass));
 		
 		var propertiesXml:Xml = Xml.parse("<properties/>").firstElement();
-		
+
+        var fields:Array<String> = Type.getInstanceFields(Type.getClass(this));
+        var i:Int = 0;
+        while (i<fields.length) {
+            if (fields[i].indexOf("g2d_") == 0 || fields[i].indexOf("set_g2d_")==0 || fields[i].indexOf("get_g2d_")==0) fields.splice(i,1) else
+            if (fields[i].indexOf("get_") == 0 && fields.indexOf("set_"+fields[i].substring(4,fields[i].length))==-1) fields.splice(i,1) else
+            if (fields[i].indexOf("set_") == 0 && fields.indexOf("get_"+fields[i].substring(4,fields[i].length))==-1) fields.splice(i,1) else i++;
+        }
+
+        //trace(fields);
+        for (i in 0...fields.length) {
+          //  trace(fields[i], Type.typeof(Reflect.getProperty(this, fields[i])));
+        }
+
 		for (i in 0...g2d_prototypableProperties.length) {
 			var propertyName:String = g2d_prototypableProperties[i];
 			var propertyValue = Reflect.getProperty(this, propertyName);
