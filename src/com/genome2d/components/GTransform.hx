@@ -281,9 +281,7 @@ class GTransform extends GComponent
     }
 
     @:dox(hide)
-	public function new(p_node:GNode) {
-		super(p_node);
-
+	override public function init():Void {
         if (g2d_cachedMatrix == null) g2d_cachedMatrix = new GMatrix();
 	}
 	

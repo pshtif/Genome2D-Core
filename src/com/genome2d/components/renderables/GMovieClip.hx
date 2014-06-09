@@ -84,13 +84,6 @@ class GMovieClip extends GTexturedQuad
 	public var repeatable:Bool = true;
 	
 	static private var g2d_count:Int = 0;
-	
-	/**
-	 * 	@private
-	 */
-	public function new(p_node:GNode) {
-		super(p_node);
-	}
 
     /**
      *  Framerate the movieclips is playing at, default 30

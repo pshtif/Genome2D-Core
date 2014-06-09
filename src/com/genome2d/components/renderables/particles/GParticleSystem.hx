@@ -19,10 +19,6 @@ class GParticleSystem extends GComponent implements IRenderable
 {
     public var blendMode:Int = 1;
 
-    override public function bindFromPrototype(p_prototype:Xml):Void {
-        super.bindFromPrototype(p_prototype);
-    }
-
     public var emit:Bool = true;
 
     private var g2d_initializers:Array<IGInitializer>;
@@ -59,9 +55,7 @@ class GParticleSystem extends GComponent implements IRenderable
 
     public var texture:GTexture;
 
-    public function new(p_node:GNode) {
-        super(p_node);
-
+    public function init():Void {
         particlePool = GParticlePool.g2d_defaultPool;
 
         g2d_initializers = new Array<IGInitializer>();

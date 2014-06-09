@@ -1,5 +1,5 @@
 package com.genome2d.components ;
-import haxe.macro.Context;
+import com.genome2d.node.factory.GNodeFactory;
 import com.genome2d.node.GNode;
 import Type.ValueType;
 import com.genome2d.signals.GMouseSignal;
@@ -11,7 +11,7 @@ import com.genome2d.signals.GMouseSignal;
 *
 *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
 */
-@:autoBuild(com.genome2d.components.ComponentMacro.build()) class GComponent
+@:autoBuild(com.genome2d.components.GComponentMacro.build()) class GComponent implements IGPrototypable
 {
 	private var g2d_active:Bool = true;
 
@@ -34,7 +34,8 @@ import com.genome2d.signals.GMouseSignal;
 	 * 	@private
 	 */
 	public var g2d_next:GComponent;
-	
+
+    @:allow(com.genome2d.node.GNode)
 	private var g2d_node:GNode;
 	#if swc @:extern #end
 	public var node(get, never):GNode;
@@ -46,13 +47,12 @@ import com.genome2d.signals.GMouseSignal;
 	/**
 	 *  @private
 	 */
-	public function new(p_node:GNode) {
-		g2d_node = p_node;
+	public function new() {
 	}
 	
 	/****************************************************************************************************
 	 * 	PROTOTYPE CODE
-	 ****************************************************************************************************/	
+	 ****************************************************************************************************/
 	public function getPrototype():Xml {
 		var prototypeXml:Xml = Xml.parse("<component/>").firstElement();
 
@@ -62,20 +62,6 @@ import com.genome2d.signals.GMouseSignal;
 		
 		var propertiesXml:Xml = Xml.parse("<properties/>").firstElement();
 
-        /*
-        var fields:Array<String> = Type.getInstanceFields(Type.getClass(this));
-        var i:Int = 0;
-        while (i<fields.length) {
-            if (fields[i].indexOf("g2d_") == 0 || fields[i].indexOf("set_g2d_")==0 || fields[i].indexOf("get_g2d_")==0) fields.splice(i,1) else
-            if (fields[i].indexOf("get_") == 0 && fields.indexOf("set_"+fields[i].substring(4,fields[i].length))==-1) fields.splice(i,1) else
-            if (fields[i].indexOf("set_") == 0 && fields.indexOf("get_"+fields[i].substring(4,fields[i].length))==-1) fields.splice(i,1) else i++;
-        }
-
-        //trace(fields);
-        for (i in 0...fields.length) {
-          //  trace(fields[i], Type.typeof(Reflect.getProperty(this, fields[i])));
-        }
-        /**/
         var properties:Array<String> = Reflect.field(Type.getClass(this), "PROTOTYPE_PROPERTIES");
 
         if (properties != null) {
@@ -94,49 +80,53 @@ import com.genome2d.signals.GMouseSignal;
 		// Discard complex types
 		var propertyXml:Xml = Xml.parse("<property/>").firstElement();
 
-        var value = Reflect.getProperty(this, p_name);
-        /*
-        if (p_type == "") {
-            p_type = Type.typeof(value).getName();
-            if (p_type == "TClass") {
-                p_type = p_type+":"+Type.getClassName(Type.getClass(value));
-            }
+        var value;
+        if (p_type != "Int" && p_type != "Bool" && p_type != "Float" && p_type != "String") {
+            value = cast (Reflect.getProperty(this, p_name),IGPrototypable).getPrototype().toString();
+        } else {
+            value = Reflect.getProperty(this, p_name);
         }
-        /**/
+
 		propertyXml.set("name", p_name);
 		propertyXml.set("value", value);
 		propertyXml.set("type", p_type);
 
 		p_propertiesXml.addChild(propertyXml);
 	}
-	
-	
-	public function bindFromPrototype(p_prototypeXml:Xml):Void {
+
+    public function init():Void {
+    }
+
+	public function initPrototype(p_prototypeXml:Xml):Void {
 		id = p_prototypeXml.get("id");
 
 		var propertiesXml:Xml = p_prototypeXml.firstElement();
 		
 		var it:Iterator<Xml> = propertiesXml.elements();
 		while (it.hasNext()) {
-			bindPrototypeProperty(it.next());
+			g2d_initPrototypeProperty(it.next());
 		}
 	}
 	
-	public function bindPrototypeProperty(p_propertyXml:Xml):Void {
+	private function g2d_initPrototypeProperty(p_propertyXml:Xml):Void {
 		var value:Dynamic = null;
 		var type:Array<String> = p_propertyXml.get("type").split(":");
 		
 		switch (type[0]) {
-			case "TBool":
+			case "Bool":
 				value = (p_propertyXml.get("value") == "false") ? false : true;
-			case "TInt":
+			case "Int":
 				value = Std.parseInt(p_propertyXml.get("value"));
-			case "TFloat":
+			case "Float":
 				value = Std.parseFloat(p_propertyXml.get("value"));
-            case "TClass":
-                switch (type[1]) {
-                    case "String":
-                        value = p_propertyXml.get("value");
+            case "String":
+                value = p_propertyXml.get("value");
+            case _:
+                var property:String = p_propertyXml.get("value");
+                if (value != "null") {
+                    var c:Class<Dynamic> = cast Type.resolveClass(type[0]);
+                    value = Type.createInstance(c,[]);
+                    value.initPrototype(Xml.parse(property));
                 }
 		}
 

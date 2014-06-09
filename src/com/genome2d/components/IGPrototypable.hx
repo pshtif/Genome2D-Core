@@ -1,5 +1,6 @@
 package com.genome2d.components;
 
 interface IGPrototypable {
-    static function getPrototype():Xml;
+    function getPrototype():Xml;
+    function initPrototype(p_xml:Xml):Void;
 }

@@ -1,5 +1,6 @@
 package com.genome2d.node;
 
+import com.genome2d.components.GComponent;
 import com.genome2d.context.GContextFeature;
 import com.genome2d.context.IContext;
 import com.genome2d.context.stats.GStats;
@@ -170,8 +171,7 @@ class GNode
             g2d_activeMasks = new Array<GNode>();
         }
 
-        g2d_transform = new GTransform(this);
-        g2d_transform.g2d_lookupClass = GTransform;
+        g2d_transform = cast addComponent(GTransform);
 	}
 
 	/**
@@ -289,7 +289,6 @@ class GNode
 		prototypeXml.set("mouseChildren", Std.string(mouseChildren));
 		
 		var componentsXml:Xml = Xml.parse("<components/>").firstElement();
-		componentsXml.addChild(transform.getPrototype());
 
 		for (i in 0...g2d_numComponents) {
 			componentsXml.addChild(g2d_components[i].getPrototype());
@@ -474,21 +473,37 @@ class GNode
         var lookup:GComponent = getComponent(p_componentLookupClass);
 		if (lookup != null) return lookup;
 
-		var component:GComponent = Type.createInstance(p_componentClass, [this]);
-
-		if (component == null) throw new GError();
-		component.g2d_lookupClass = p_componentLookupClass;
+        var component:GComponent = Type.createInstance(p_componentClass,[]);
+        if (component == null) throw new GError();
+        component.g2d_node = this;
+        component.g2d_lookupClass = p_componentLookupClass;
 
         if (Std.is(component, IRenderable)) {
             g2d_renderable = cast component;
         }
 
-        if (g2d_components == null)g2d_components = new Array<GComponent>();
+        if (g2d_components == null) {
+            g2d_components = new Array<GComponent>();
+        }
 		g2d_components.push(component);
 		g2d_numComponents++;
-		
+
+        component.init();
 		return component;
 	}
+
+    public function addComponentPrototype(p_prototype:Xml):GComponent {
+        if (g2d_disposed) throw new GError();
+
+        var componentClass:Class<GComponent> = cast Type.resolveClass(p_prototype.get("componentClass"));
+        var componentLookupClass:Class<GComponent> = cast Type.resolveClass(p_prototype.get("componentLookupClass"));
+        var component:GComponent = addComponent(componentClass, componentLookupClass);
+
+        component.initPrototype(p_prototype);
+
+        return component;
+    }
+
 	
 	/**
 	 * 	Remove component of specified type from this node

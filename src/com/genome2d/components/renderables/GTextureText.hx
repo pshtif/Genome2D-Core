@@ -60,7 +60,7 @@ class GTextureText extends GComponent implements IRenderable
 		return g2d_lineSpace;
 	}
 	
-	private var g2d_align:Int;
+	private var g2d_align:Int = 0;
     /**
      *  Text alignment
      **/
@@ -81,15 +81,6 @@ class GTextureText extends GComponent implements IRenderable
      *  Maximum width of the text
      **/
 	public var maxWidth:Float = 0;
-	
-	/**
-	 * 	@private
-	 */
-	public function new(p_node:GNode) {
-		super(p_node);
-
-        g2d_align = GTextureTextAlignType.TOP_LEFT;
-	}
 
     private var g2d_textureAtlas:GTextureAtlas;
     /**

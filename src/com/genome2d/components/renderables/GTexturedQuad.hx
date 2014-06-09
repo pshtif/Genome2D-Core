@@ -43,13 +43,6 @@ class GTexturedQuad extends GComponent implements IRenderable
      **/
     public var filter:GFilter;
 
-    /**
-     *  @private
-     **/
-	public function new(p_node:GNode) {
-		super(p_node);
-	}
-
     public var ignoreMatrix:Bool = true;
 
     /**

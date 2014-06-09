@@ -81,9 +81,7 @@ class GCameraController extends GComponent
 	/**
 	 * 	@private
 	 */
-	public function new(p_node:GNode) {
-		super(p_node);
-
+	override public function init():Void {
         g2d_contextCamera = new GContextCamera();
         g2d_viewRectangle = new GRectangle();
 

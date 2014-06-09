@@ -152,9 +152,7 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 	/**
 	 * 	@private
 	 */
-	public function new(p_node:GNode) {
-		super(p_node);
-
+	public function init():Void {
         node.core.onUpdate.add(update);
 	}
 

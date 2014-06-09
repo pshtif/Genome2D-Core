@@ -24,10 +24,6 @@ class GShape extends GComponent implements IRenderable
 
     private var g2d_shapeRenderer:GCustomRenderer;
 
-    public function new(p_node:GNode) {
-        super(p_node);
-    }
-
     public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
         if (texture == null || g2d_vertices == null || g2d_uvs == null) return;
         var transform:GTransform = node.transform;

@@ -14,15 +14,15 @@ class GNodeFactory
 	}
 	
 	static public function createNodeWithComponent(p_componentClass:Class<GComponent>, p_name:String = "", p_lookupClass:Class<GComponent> = null):GComponent {
-		var node:GNode = new GNode(p_name);
+		var node:GNode = new GNode();
 			
 		return node.addComponent(p_componentClass, p_lookupClass);
 	}
 	
-	static public function createFromPrototype(p_prototypeXml:Xml, p_name:String = ""):GNode {
+	static public function createFromPrototype(p_prototypeXml:Xml):GNode {
 		if (p_prototypeXml == null) throw new GError("Null prototype");
 		
-		var node:GNode = new GNode(p_name);
+		var node:GNode = new GNode();
 		node.mouseEnabled = (p_prototypeXml.get("mouseEnabled") == "true") ? true : false;
 		node.mouseChildren = (p_prototypeXml.get("mouseChildren") == "true") ? true : false;
 
@@ -34,10 +34,8 @@ class GNodeFactory
 				var componentsIt:Iterator<Xml> = xml.elements();
 				while (componentsIt.hasNext()) {
 					var componentXml:Xml = componentsIt.next();
-					var componentClass:Class<GComponent> = cast Type.resolveClass(componentXml.get("componentClass"));					
-					var componentLookupClass:Class<GComponent> = cast Type.resolveClass(componentXml.get("componentLookupClass"));
-					var component:GComponent = node.addComponent(componentClass, componentLookupClass);
-					component.bindFromPrototype(componentXml);
+
+					node.addComponentPrototype(componentXml);
 				}
 			}
 			
