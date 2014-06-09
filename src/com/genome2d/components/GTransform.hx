@@ -37,7 +37,7 @@ class GTransform extends GComponent
 	public var g2d_worldX:Float = 0;
 	private var g2d_localX:Float = 0;
 	#if swc @:extern #end
-	public var x(get, set):Float;
+	@prototype public var x(get, set):Float;
 	#if swc @:getter(x) #end
 	inline private function get_x():Float {
 		return g2d_localX;

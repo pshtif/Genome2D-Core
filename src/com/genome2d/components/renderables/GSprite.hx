@@ -16,7 +16,7 @@ class GSprite extends GTexturedQuad
      *  Texture id used by this sprite
      **/
     #if swc @:extern #end
-    public var textureId(get, set):String;
+    @prototype public var textureId(get, set):String;
     #if swc @:getter(textureId) #end
     inline private function get_textureId():String {
         var id:String = "";
@@ -32,10 +32,6 @@ class GSprite extends GTexturedQuad
     @:dox(hide)
 	public function new(p_node:GNode) {
 		super(p_node);
-
-        var a:ValueType = ValueType.TClass(GTexture);
-        trace(a);
-        g2d_prototypableProperties.push("textureId");
 	}
 	
 }

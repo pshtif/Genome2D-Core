@@ -11,7 +11,7 @@ import com.genome2d.signals.GMouseSignal;
 *
 *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
 */
-class GComponent
+@:autoBuild(com.genome2d.components.ComponentMacro.build()) class GComponent
 {
 	private var g2d_active:Bool = true;
 
@@ -48,15 +48,11 @@ class GComponent
 	 */
 	public function new(p_node:GNode) {
 		g2d_node = p_node;
-
-	    g2d_prototypableProperties = new Array<String>();
 	}
 	
 	/****************************************************************************************************
 	 * 	PROTOTYPE CODE
 	 ****************************************************************************************************/	
-	private var g2d_prototypableProperties:Array<String>;
-	 
 	public function getPrototype():Xml {
 		var prototypeXml:Xml = Xml.parse("<component/>").firstElement();
 
@@ -66,6 +62,7 @@ class GComponent
 		
 		var propertiesXml:Xml = Xml.parse("<properties/>").firstElement();
 
+        /*
         var fields:Array<String> = Type.getInstanceFields(Type.getClass(this));
         var i:Int = 0;
         while (i<fields.length) {
@@ -78,30 +75,37 @@ class GComponent
         for (i in 0...fields.length) {
           //  trace(fields[i], Type.typeof(Reflect.getProperty(this, fields[i])));
         }
+        /**/
+        var properties:Array<String> = Reflect.field(Type.getClass(this), "PROTOTYPE_PROPERTIES");
 
-		for (i in 0...g2d_prototypableProperties.length) {
-			var propertyName:String = g2d_prototypableProperties[i];
-			var propertyValue = Reflect.getProperty(this, propertyName);
-			g2d_addPrototypeProperty(propertyName, propertyValue, propertiesXml);
-		}
+        if (properties != null) {
+            for (i in 0...properties.length) {
+                var property:Array<String> = properties[i].split("|");
+                g2d_addPrototypeProperty(property[0], property.length>1?property[1]:"", propertiesXml);
+            }
+        }
 		
 		prototypeXml.addChild(propertiesXml);
 		
 		return prototypeXml;
 	}
 	
-	private function g2d_addPrototypeProperty(p_name:String, p_value:Dynamic, p_propertiesXml:Xml = null):Void {
+	private function g2d_addPrototypeProperty(p_name:String, p_type:String, p_propertiesXml:Xml = null):Void {
 		// Discard complex types
 		var propertyXml:Xml = Xml.parse("<property/>").firstElement();
-		var type:String = Type.typeof(p_value).getName();
 
-        if (type == "TClass") {
-            type = type+":"+Type.getClassName(Type.getClass(p_value));
+        var value = Reflect.getProperty(this, p_name);
+        /*
+        if (p_type == "") {
+            p_type = Type.typeof(value).getName();
+            if (p_type == "TClass") {
+                p_type = p_type+":"+Type.getClassName(Type.getClass(value));
+            }
         }
-
+        /**/
 		propertyXml.set("name", p_name);
-		propertyXml.set("value", Std.string(p_value));
-		propertyXml.set("type", type);
+		propertyXml.set("value", value);
+		propertyXml.set("type", p_type);
 
 		p_propertiesXml.addChild(propertyXml);
 	}
