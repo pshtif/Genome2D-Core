@@ -1,13 +1,3 @@
-package com.genome2d.components.renderables;
-
-import com.genome2d.geom.GRectangle;
-import com.genome2d.node.GNode;
-import com.genome2d.node.factory.GNodeFactory;
-import com.genome2d.signals.GMouseSignal;
-import com.genome2d.textures.GTexture;
-import com.genome2d.textures.GTextureAtlas;
-import com.genome2d.context.GContextCamera;
-
 /*
 * 	Genome2D - GPU 2D framework utilizing Molehill API
 *
@@ -15,20 +5,31 @@ import com.genome2d.context.GContextCamera;
 *
 *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
 */
+package com.genome2d.components.renderables;
+
+import com.genome2d.geom.GRectangle;
+import com.genome2d.signals.GMouseSignalType;
+import com.genome2d.node.GNode;
+import com.genome2d.node.factory.GNodeFactory;
+import com.genome2d.signals.GMouseSignal;
+import com.genome2d.textures.GTexture;
+import com.genome2d.textures.GTextureAtlas;
+import com.genome2d.context.GContextCamera;
+
 class GTextureText extends GComponent implements IRenderable
 {
-    /**
+    /*
      *  Blend mode used for rendering
-     **/
+     */
     public var blendMode:Int = 1;
 		
 	private var g2d_invalidate:Bool = false;
 	
 	private var g2d_tracking:Float = 0;
-    /**
+    /*
      *  Character tracking
      *  Default 0
-     **/
+     */
     #if swc @:extern #end
 	public var tracking(get, set):Float;
     #if swc @:getter(tracking) #end
@@ -43,10 +44,10 @@ class GTextureText extends GComponent implements IRenderable
 	}
 	
 	private var g2d_lineSpace:Float = 0;
-    /**
+    /*
      *  Line spacing
      *  Default 0
-     **/
+     */
     #if swc @:extern #end
 	public var lineSpace(get, set):Float;
     #if swc @:getter(lineSpace) #end
@@ -61,9 +62,9 @@ class GTextureText extends GComponent implements IRenderable
 	}
 	
 	private var g2d_align:Int = 0;
-    /**
+    /*
      *  Text alignment
-     **/
+     */
     #if swc @:extern #end
 	public var align(get,set):Int;
     #if swc @:getter(align) #end
@@ -77,15 +78,15 @@ class GTextureText extends GComponent implements IRenderable
 		return g2d_align;
 	}
 
-    /**
+    /*
      *  Maximum width of the text
-     **/
+     */
 	public var maxWidth:Float = 0;
 
     private var g2d_textureAtlas:GTextureAtlas;
-    /**
+    /*
      *  Texture atlas id used for character textures lookup
-     **/
+     */
     #if swc @:extern #end
 	public var textureAtlasId(get, set):String;
     #if swc @:getter(textureAtlasId) #end
@@ -99,18 +100,18 @@ class GTextureText extends GComponent implements IRenderable
 		return p_value;
 	}
 
-    /**
+    /*
      *  Set texture atlas that will be used for character textures lookup
-     **/
+     */
 	public function setTextureAtlas(p_textureAtlas:GTextureAtlas):Void {
 		g2d_textureAtlas = p_textureAtlas;
 		g2d_invalidate = true;
 	}
 	
 	private var g2d_text:String = "";
-    /**
+    /*
      *  Text
-     **/
+     */
     #if swc @:extern #end
 	public var text(get, set):String;
     #if swc @:getter(text) #end
@@ -125,9 +126,9 @@ class GTextureText extends GComponent implements IRenderable
 	}
 	
 	private var g2d_width:Float = 0;
-    /**
+    /*
      *  Width of the text
-     **/
+     */
     #if swc @:extern #end
 	public var width(get, never):Float;
     #if swc @:getter(width) #end
@@ -138,9 +139,9 @@ class GTextureText extends GComponent implements IRenderable
 	}
 	
 	private var g2d_height:Float = 0;
-    /**
+    /*
      *  Height of the text
-     **/
+     */
     #if swc @:extern #end
 	public var height(get, never):Float;
     #if swc @:getter(height) #end
@@ -150,9 +151,7 @@ class GTextureText extends GComponent implements IRenderable
 		return g2d_height * node.transform.g2d_worldScaleY;
 	}
 
-    /**
-     *  @private
-     **/
+    @:dox(hide)
 	public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
 		if (g2d_invalidate) invalidateText();
 	}
@@ -200,12 +199,12 @@ class GTextureText extends GComponent implements IRenderable
 		for (i in g2d_text.length...node.numChildren) {
 			node.getChildAt(i).transform.visible = false;
 		}
-		/**/
+
 		invalidateAlign();
 		
 		g2d_invalidate = false;
 	}
-	
+
 	private function invalidateAlign():Void {
 		switch (g2d_align) {
 			case GTextureTextAlignType.MIDDLE:
@@ -221,53 +220,54 @@ class GTextureText extends GComponent implements IRenderable
 		}
 	}
 	
-	/**
-	 * 	@private
-	 */
+	@:dox(hide)
     override public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
-		/*
 		if (g2d_width == 0 || g2d_height == 0) return false;
+
 		if (p_captured) {
-			if (node.cMouseOver == node) node.handleMouseEvent(node, MouseEvent.MOUSE_OUT, Float.NaN, Float.NaN, p_event.buttonDown, p_event.ctrlKey);
-			return false;
+            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, 0, 0, p_contextSignal);
+            return false;
 		}
-		
-		var transformMatrix:Matrix3D = node.cTransform.getTransformedWorldTransformMatrix(g2d_width, g2d_height, 0, true);
-		
-		var localMousePosition:Vector3D = transformMatrix.transformVector(p_position);
-		
-		transformMatrix.prependScale(1/g2d_width, 1/g2d_height, 1);
-		
-		var tx:Float = 0;
-		var ty:Float = 0;
-		switch (g2d_align) {
-			case GTextureTextAlignType.MIDDLE:
-				tx = -.5;
-				ty = -.5;
-				break;
-		}
-		
-		if (localMousePosition.x >= tx && localMousePosition.x <= 1+tx && localMousePosition.y >= ty && localMousePosition.y <= 1+ty) {
-			node.handleMouseEvent(node, p_event.type, localMousePosition.x*g2d_width, localMousePosition.y*g2d_height, p_event.buttonDown, p_event.ctrlKey);
-			if (node.cMouseOver != node) {
-				node.handleMouseEvent(node, MouseEvent.MOUSE_OVER, localMousePosition.x*g2d_width, localMousePosition.y*g2d_height, p_event.buttonDown, p_event.ctrlKey);
-			}
-			
-			return true;
-		} else {
-			if (node.cMouseOver == node) {
-				node.handleMouseEvent(node, MouseEvent.MOUSE_OUT, localMousePosition.x*g2d_width, localMousePosition.y*g2d_height, p_event.buttonDown, p_event.ctrlKey);
-			}
-		}
-		/**/
-		return false;
+
+        // Invert translations
+        var tx:Float = p_cameraX - node.transform.g2d_worldX;
+        var ty:Float = p_cameraY - node.transform.g2d_worldY;
+
+        if (node.transform.g2d_worldRotation != 0) {
+            var cos:Float = Math.cos(-node.transform.g2d_worldRotation);
+            var sin:Float = Math.sin(-node.transform.g2d_worldRotation);
+
+            var ox:Float = tx;
+            tx = (tx*cos - ty*sin);
+            ty = (ty*cos + ox*sin);
+        }
+
+        tx /= node.transform.g2d_worldScaleX*g2d_width;
+        ty /= node.transform.g2d_worldScaleY*g2d_height;
+
+        var tw:Float = .5;
+        var th:Float = .5;
+
+        if (tx >= -tw && tx <= 1 - tw && ty >= -th && ty <= 1 - th) {
+            node.dispatchNodeMouseSignal(p_contextSignal.type, node, tx*g2d_width, ty*g2d_height, p_contextSignal);
+            if (node.g2d_mouseOverNode != node) {
+                node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OVER, node, tx*g2d_width, ty*g2d_height, p_contextSignal);
+            }
+
+            return true;
+        } else {
+            if (node.g2d_mouseOverNode == node) {
+                node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, tx*g2d_width, ty*g2d_height, p_contextSignal);
+            }
+        }
+
+        return false;
 	}
 
-    /**
-     *  @private
-     **/
-    public function getBounds(p_target:GRectangle = null):GRectangle {
-        // TODO
-        return null;
+    public function getBounds(p_bounds:GRectangle = null):GRectangle {
+        if (p_bounds != null) p_bounds.setTo(0, 0, g2d_width, g2d_height);
+        else p_bounds = new GRectangle(0, 0, g2d_width, g2d_height);
+
+        return p_bounds;
     }
 }

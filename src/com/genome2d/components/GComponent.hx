@@ -1,9 +1,3 @@
-package com.genome2d.components ;
-import com.genome2d.node.factory.GNodeFactory;
-import com.genome2d.node.GNode;
-import Type.ValueType;
-import com.genome2d.signals.GMouseSignal;
-
 /*
 * 	Genome2D - GPU 2D framework utilizing Molehill API
 *
@@ -11,6 +5,12 @@ import com.genome2d.signals.GMouseSignal;
 *
 *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
 */
+package com.genome2d.components ;
+import com.genome2d.node.factory.GNodeFactory;
+import com.genome2d.node.GNode;
+import Type.ValueType;
+import com.genome2d.signals.GMouseSignal;
+
 @:autoBuild(com.genome2d.components.GComponentMacro.build()) class GComponent implements IGPrototypable
 {
 	private var g2d_active:Bool = true;
@@ -80,16 +80,15 @@ import com.genome2d.signals.GMouseSignal;
 		// Discard complex types
 		var propertyXml:Xml = Xml.parse("<property/>").firstElement();
 
-        var value;
-        if (p_type != "Int" && p_type != "Bool" && p_type != "Float" && p_type != "String") {
-            value = cast (Reflect.getProperty(this, p_name),IGPrototypable).getPrototype().toString();
-        } else {
-            value = Reflect.getProperty(this, p_name);
-        }
+        propertyXml.set("name", p_name);
+        propertyXml.set("type", p_type);
 
-		propertyXml.set("name", p_name);
-		propertyXml.set("value", value);
-		propertyXml.set("type", p_type);
+        if (p_type != "Int" && p_type != "Bool" && p_type != "Float" && p_type != "String") {
+            propertyXml.set("value", "xml");
+            propertyXml.addChild(cast (Reflect.getProperty(this, p_name),IGPrototypable).getPrototype());
+        } else {
+            propertyXml.set("value", Reflect.getProperty(this, p_name));
+        }
 
 		p_propertiesXml.addChild(propertyXml);
 	}

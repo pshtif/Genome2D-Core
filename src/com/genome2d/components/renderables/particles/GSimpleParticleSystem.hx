@@ -152,11 +152,11 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 	/**
 	 * 	@private
 	 */
-	public function init():Void {
+	override public function init():Void {
         node.core.onUpdate.add(update);
 	}
 
-	public function init(p_maxCount:Int = 0, p_precacheCount:Int = 0, p_disposeImmediately:Bool = true):Void {
+	public function setup(p_maxCount:Int = 0, p_precacheCount:Int = 0, p_disposeImmediately:Bool = true):Void {
 		g2d_accumulatedTime = 0;
 		g2d_accumulatedEmission = 0;
 	}

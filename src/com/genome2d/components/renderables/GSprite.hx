@@ -12,12 +12,6 @@ import com.genome2d.textures.GTexture;
 */
 class GSprite extends GTexturedQuad
 {
-    @prototype public var a:TestClass;
-
-    override public function init():Void {
-        a = new TestClass();
-    }
-
     /**
      *  Texture id used by this sprite
      **/

@@ -55,7 +55,7 @@ class GParticleSystem extends GComponent implements IRenderable
 
     public var texture:GTexture;
 
-    public function init():Void {
+    override public function init():Void {
         particlePool = GParticlePool.g2d_defaultPool;
 
         g2d_initializers = new Array<IGInitializer>();

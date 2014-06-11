@@ -35,7 +35,7 @@ class GShape extends GComponent implements IRenderable
         }
     }
 
-    public function init(p_vertices:Array<Float>, p_uvs:Array<Float>):Void {
+    public function setup(p_vertices:Array<Float>, p_uvs:Array<Float>):Void {
         if (p_vertices == null || p_uvs == null) new GError("Vertices and UVs can't be null.");
         if (p_vertices.length == 0) new GError("Shape can't have 0 vertices.");
         if (p_vertices.length != p_uvs.length) new GError("Vertices and UVs need to have same amount of values.");

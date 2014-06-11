@@ -454,6 +454,10 @@ class GNode
 		return null;
 	}
 
+    public function getComponents():Array<GComponent> {
+        return g2d_components;
+    }
+
 	/**
      *  Has component
      **/

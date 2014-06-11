@@ -14,8 +14,8 @@ class GTransform extends GComponent
 {
     static private var g2d_cachedMatrix:GMatrix;
 
-	public var useWorldSpace:Bool = false;
-	public var useWorldColor:Bool = false;
+	@prototype public var useWorldSpace:Bool = false;
+	@prototype public var useWorldColor:Bool = false;
 
     private var g2d_matrixDirty:Bool = true;
 	private var g2d_transformDirty:Bool = false;
@@ -52,7 +52,7 @@ class GTransform extends GComponent
 	public var g2d_worldY:Float = 0;
 	private var g2d_localY:Float = 0;
 	#if swc @:extern #end
-	public var y(get, set):Float;
+	@prototype public var y(get, set):Float;
 	#if swc @:getter(y) #end
 	inline private function get_y():Float {
 		return g2d_localY;
@@ -82,7 +82,7 @@ class GTransform extends GComponent
 	public var g2d_worldScaleX:Float = 1;
 	private var g2d_localScaleX:Float = 1;
 	#if swc @:extern #end
-	public var scaleX(get, set):Float;
+	@prototype public var scaleX(get, set):Float;
 	#if swc @:getter(scaleX) #end
 	inline private function get_scaleX():Float {
 		return g2d_localScaleX;
@@ -100,7 +100,7 @@ class GTransform extends GComponent
 	public var g2d_worldScaleY:Float = 1;
 	private var g2d_localScaleY:Float = 1;
 	#if swc @:extern #end
-	public var scaleY(get, set):Float;
+	@prototype public var scaleY(get, set):Float;
 	#if swc @:getter(scaleY) #end
 	inline private function get_scaleY():Float {
 		return g2d_localScaleY;
@@ -118,7 +118,7 @@ class GTransform extends GComponent
 	public var g2d_worldRotation:Float = 0;
 	private var g2d_localRotation:Float = 0;
 	#if swc @:extern #end
-	public var rotation(get, set):Float;
+	@prototype public var rotation(get, set):Float;
 	#if swc @:getter(rotation) #end
 	inline private function get_rotation():Float {
 		return g2d_localRotation;
@@ -181,7 +181,7 @@ class GTransform extends GComponent
 	public var g2d_worldAlpha:Float = 1;
 	private var g2d_localAlpha:Float = 1;
 	#if swc @:extern #end
-	public var alpha(get, set):Float;
+	@prototype public var alpha(get, set):Float;
 	#if swc @:getter(alpha) #end
 	inline private function get_alpha():Float {
 		return g2d_localAlpha;

@@ -7,20 +7,29 @@
 */
 package com.genome2d.assets;
 
+import flash.display.BitmapData;
 import msignal.Signal.Signal0;
 
 class GAssetManager {
+    static public var PATH_REGEX:EReg = ~/([^\?\/\\]+?)(?:\.([\w\-]+))?(?:\?.*)?$/;
+
     private var g2d_assetsQueue:Array<GAsset>;
     private var g2d_loading:Bool;
     private var g2d_assets:Array<GAsset>;
 
-    public var onLoaded:Signal0;
+    private var g2d_onAllLoaded:Signal0;
+    #if swc @:extern #end
+    public var onAllLoaded(get,never):Signal0;
+    #if swc @:getter(onAllLoaded) #end
+    inline private function get_onAllLoaded():Signal0 {
+        return g2d_onAllLoaded;
+    }
 
     public function new() {
         g2d_assetsQueue = new Array<GAsset>();
         g2d_assets = new Array<GAsset>();
 
-        onLoaded = new Signal0();
+        g2d_onAllLoaded = new Signal0();
     }
 
     public function getAssetById(p_id:String):GAsset {
@@ -44,7 +53,34 @@ class GAssetManager {
     }
 
     public function add(p_asset:GAsset):Void {
-        g2d_assetsQueue.push(p_asset);
+        if (p_asset.isLoaded()) {
+            g2d_assets.push(p_asset);
+        } else {
+            g2d_assetsQueue.push(p_asset);
+        }
+    }
+
+    public function addUrl(p_id:String, p_url:String):Void {
+        var asset:GAsset = null;
+
+        switch (getExtension(p_url)) {
+            case "jpg" | "jpeg" | "png":
+                asset = new GImageAsset();
+            case "atf":
+                asset = new GImageAsset();
+            case "xml":
+                asset = new GXmlAsset();
+        }
+
+        if (asset != null) asset.initUrl(p_id, p_url);
+        add(asset);
+    }
+
+    public function addImage(p_id:String, p_bitmapData:BitmapData):Void {
+        var asset:GImageAsset = new GImageAsset();
+        asset.initBitmapData(p_id, p_bitmapData);
+
+        add(asset);
     }
 
     public function load():Void {
@@ -55,13 +91,23 @@ class GAssetManager {
     private function g2d_loadNext():Void {
         if (g2d_assetsQueue.length==0) {
             g2d_loading = false;
-            onLoaded.dispatch();
+            g2d_onAllLoaded.dispatch();
         } else {
             g2d_loading = true;
             var asset:GAsset = g2d_assetsQueue.shift();
             asset.onLoaded.addOnce(g2d_hasAssetLoaded);
             asset.load();
         }
+    }
+
+    inline private function getName(p_path:String):String {
+        PATH_REGEX.match(p_path);
+        return PATH_REGEX.matched(1);
+    }
+
+    inline private function getExtension(p_path:String):String {
+        PATH_REGEX.match(p_path);
+        return PATH_REGEX.matched(2);
     }
 
     private function g2d_hasAssetLoaded(p_asset:GAsset):Void {

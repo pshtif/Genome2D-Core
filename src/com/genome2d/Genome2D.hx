@@ -175,9 +175,9 @@ class Genome2D
         if (g2d_context != null) g2d_context.dispose();
         g2d_contextConfig = p_config;
 		g2d_context = Type.createInstance(p_config.contextClass, [g2d_contextConfig]);
-		g2d_context.onInitialized(g2d_contextInitializedHandler);
-		g2d_context.onFailed(g2d_contextFailedHandler);
-        g2d_context.onInvalidated(g2d_contextInvalidatedHandler);
+		g2d_context.onInitialized.add(g2d_contextInitializedHandler);
+		g2d_context.onFailed.add(g2d_contextFailedHandler);
+        g2d_context.onInvalidated.add(g2d_contextInvalidatedHandler);
 		g2d_context.init();
 	}
 
@@ -187,9 +187,9 @@ class Genome2D
 	private function g2d_contextInitializedHandler():Void {
         GTextureFactory.g2d_context = GTextureAtlasFactory.g2d_context = g2d_context;
 
-		g2d_context.onFrame(g2d_frameHandler);
-        g2d_context.onMouseInteraction(g2d_contextMouseSignalHandler);
-        g2d_context.onKeyboardInteraction(g2d_contextKeySignalHandler);
+		g2d_context.onFrame.add(g2d_frameHandler);
+        g2d_context.onMouseSignal.add(g2d_contextMouseSignalHandler);
+        g2d_context.onKeyboardSignal.add(g2d_contextKeySignalHandler);
 		
 		onInitialized.dispatch();
 	}
@@ -200,8 +200,8 @@ class Genome2D
 	private function g2d_contextFailedHandler(p_error:String):Void {
         if (g2d_contextConfig.fallbackContextClass != null) {
             g2d_context = Type.createInstance(g2d_contextConfig.fallbackContextClass, [g2d_contextConfig]);
-            g2d_context.onInitialized(g2d_contextInitializedHandler);
-            g2d_context.onFailed(g2d_contextFailedHandler);
+            g2d_context.onInitialized.add(g2d_contextInitializedHandler);
+            g2d_context.onFailed.add(g2d_contextFailedHandler);
             g2d_context.init();
         }
 
