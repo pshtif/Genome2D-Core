@@ -6,7 +6,6 @@
 *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
 */
 package com.genome2d.components ;
-import com.genome2d.node.factory.GNodeFactory;
 import com.genome2d.node.GNode;
 import Type.ValueType;
 import com.genome2d.signals.GMouseSignal;
@@ -87,7 +86,7 @@ import com.genome2d.signals.GMouseSignal;
             propertyXml.set("value", "xml");
             propertyXml.addChild(cast (Reflect.getProperty(this, p_name),IGPrototypable).getPrototype());
         } else {
-            propertyXml.set("value", Reflect.getProperty(this, p_name));
+            propertyXml.set("value", Std.string(Reflect.getProperty(this, p_name)));
         }
 
 		p_propertiesXml.addChild(propertyXml);
@@ -132,7 +131,7 @@ import com.genome2d.signals.GMouseSignal;
 		try {
 			Reflect.setProperty(this, p_propertyXml.get("name"), value);
 		} catch (e:Dynamic) {
-			//trace("bindPrototypeProperty error");
+			trace("bindPrototypeProperty error");
 		}
 	}
 	

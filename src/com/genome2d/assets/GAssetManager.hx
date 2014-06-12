@@ -7,7 +7,6 @@
 */
 package com.genome2d.assets;
 
-import flash.display.BitmapData;
 import msignal.Signal.Signal0;
 
 class GAssetManager {
@@ -68,18 +67,11 @@ class GAssetManager {
                 asset = new GImageAsset();
             case "atf":
                 asset = new GImageAsset();
-            case "xml":
+            case "xml" | "fnt":
                 asset = new GXmlAsset();
         }
 
         if (asset != null) asset.initUrl(p_id, p_url);
-        add(asset);
-    }
-
-    public function addImage(p_id:String, p_bitmapData:BitmapData):Void {
-        var asset:GImageAsset = new GImageAsset();
-        asset.initBitmapData(p_id, p_bitmapData);
-
         add(asset);
     }
 
