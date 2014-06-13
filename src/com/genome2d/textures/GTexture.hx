@@ -9,6 +9,7 @@ package com.genome2d.textures;
 
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
+
 class GTexture extends GContextTexture
 {
     static public function getTextureById(p_id:String):GTexture {

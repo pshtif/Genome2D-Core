@@ -1,8 +1,3 @@
-package com.genome2d.components.renderables;
-
-import com.genome2d.geom.GRectangle;
-import com.genome2d.context.GContextCamera;
-
 /*
 * 	Genome2D - GPU 2D framework utilizing Molehill API
 *
@@ -10,6 +5,11 @@ import com.genome2d.context.GContextCamera;
 *
 *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
 */
+package com.genome2d.components.renderables;
+
+import com.genome2d.geom.GRectangle;
+import com.genome2d.context.GContextCamera;
+
 interface IRenderable {
     function render(p_camera:GContextCamera, p_useMatrix:Bool):Void;
 

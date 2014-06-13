@@ -1,3 +1,10 @@
+/*
+* 	Genome2D - GPU 2D framework utilizing Molehill API
+*
+*	Copyright 2011 Peter Stefcek. All rights reserved.
+*
+*	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
+*/
 package com.genome2d;
 
 import com.genome2d.signals.GKeyboardSignal;
@@ -14,11 +21,11 @@ import msignal.Signal;
 
 import com.genome2d.context.GContextConfig;
 
-/**
-   Genome2D core class
-
-   Author: Peter "sHTiF" Stefcek
- */
+/*
+*  Genome2D core class
+*
+*   Author: Peter "sHTiF" Stefcek
+*/
 class Genome2D
 {
     // Genome2D version
