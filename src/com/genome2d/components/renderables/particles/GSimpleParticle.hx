@@ -7,59 +7,52 @@
 */
 package com.genome2d.components.renderables.particles;
 
+/**
+ *  GParticle class
+ */
+@:allow(com.genome2d.components.renderables.particles.GSimpleParticleSystem)
 class GSimpleParticle
 {
-	/**
-	 * 	@private
-	 */
-	public var g2d_next:GSimpleParticle;
-	/**
-	 * 	@private
-	 */
-	public var g2d_previous:GSimpleParticle;
+	private var g2d_next:GSimpleParticle;
+	private var g2d_previous:GSimpleParticle;
 	
-	public var g2d_x:Float;
-	public var g2d_y:Float;
-	public var g2d_rotation:Float;
-	public var g2d_scaleX:Float;
-	public var g2d_scaleY:Float;
-	public var g2d_red:Float;
-	public var g2d_green:Float;
-	public var g2d_blue:Float;
-	public var g2d_alpha:Float;
-	/**
-	 * 	@private
-	 */
-	public var g2d_velocityX:Float = 0;
-	/**
-	 * 	@private
-	 */
-	public var g2d_velocityY:Float = 0;
+	private var g2d_x:Float;
+	private var g2d_y:Float;
+	private var g2d_rotation:Float;
+	private var g2d_scaleX:Float;
+	private var g2d_scaleY:Float;
+	private var g2d_red:Float;
+	private var g2d_green:Float;
+	private var g2d_blue:Float;
+	private var g2d_alpha:Float;
+
+	private var g2d_velocityX:Float = 0;
+	private var g2d_velocityY:Float = 0;
 	
-	public var g2d_accelerationX:Float;
-	public var g2d_accelerationY:Float;
+	private var g2d_accelerationX:Float;
+	private var g2d_accelerationY:Float;
 	
-	public var g2d_energy:Float = 0;
+	private var g2d_energy:Float = 0;
 	
-	public var g2d_initialScale:Float = 1;
-	public var g2d_endScale:Float = 1;
+	private var g2d_initialScale:Float = 1;
+	private var g2d_endScale:Float = 1;
 	
-	public var g2d_initialVelocityX:Float;
-	public var g2d_initialVelocityY:Float;
-	public var g2d_initialVelocityAngular:Float;
+	private var g2d_initialVelocityX:Float;
+	private var g2d_initialVelocityY:Float;
+	private var g2d_initialVelocityAngular:Float;
 	
-	public var g2d_initialAccelerationX:Float;
-	public var g2d_initialAccelerationY:Float;
+	private var g2d_initialAccelerationX:Float;
+	private var g2d_initialAccelerationY:Float;
 	
-	public var g2d_initialRed:Float;
-	public var g2d_initialGreen:Float;
-	public var g2d_initialBlue:Float;
-	public var g2d_initialAlpha:Float;
+	private var g2d_initialRed:Float;
+	private var g2d_initialGreen:Float;
+	private var g2d_initialBlue:Float;
+	private var g2d_initialAlpha:Float;
 	
-	public var g2d_endRed:Float;
-	public var g2d_endGreen:Float;
-	public var g2d_endBlue:Float;
-	public var g2d_endAlpha:Float;
+	private var g2d_endRed:Float;
+	private var g2d_endGreen:Float;
+	private var g2d_endBlue:Float;
+	private var g2d_endAlpha:Float;
 	
 	private var g2d_redDif:Float;
 	private var g2d_greenDif:Float;
@@ -68,22 +61,26 @@ class GSimpleParticle
 	
 	private var g2d_scaleDif:Float;
 	
-	public var g2d_accumulatedEnergy:Float = 0;
+	private var g2d_accumulatedEnergy:Float = 0;
 	
 	private var g2d_nextInstance:GSimpleParticle;
-	static private var availableInstance:GSimpleParticle;
-	static private var count:Int = 0;
 	private var g2d_id:Int = 0;
+
+    static private var g2d_availableInstance:GSimpleParticle;
+    static private var g2d_instanceCount:Int = 0;
+
+    @:dox(hide)
 	public function new():Void {
-		g2d_id = count++;
+		g2d_id = g2d_instanceCount++;
 	}
-	
+
+    @:dox(hide)
 	static public function precache(p_precacheCount:Int):Void {
-		if (p_precacheCount < count) return;
+		if (p_precacheCount < g2d_instanceCount) return;
 		
-		var precached:GSimpleParticle = get();
-		while (count<p_precacheCount) {
-			var n:GSimpleParticle = get();
+		var precached:GSimpleParticle = g2d_get();
+		while (g2d_instanceCount<p_precacheCount) {
+			var n:GSimpleParticle = g2d_get();
 			n.g2d_previous = precached;
 			precached = n;
 		}
@@ -91,14 +88,14 @@ class GSimpleParticle
 		while (precached != null) {
 			var d:GSimpleParticle = precached;
 			precached = d.g2d_previous;
-			d.dispose();
+			d.g2d_dispose();
 		}
 	}
-	
-	static public function get():GSimpleParticle {
-		var instance:GSimpleParticle = availableInstance;
+
+	static private function g2d_get():GSimpleParticle {
+		var instance:GSimpleParticle = g2d_availableInstance;
 		if (instance != null) {
-			availableInstance = instance.g2d_nextInstance;
+			g2d_availableInstance = instance.g2d_nextInstance;
 			instance.g2d_nextInstance = null;
 		} else {
 			instance = new GSimpleParticle();
@@ -106,8 +103,8 @@ class GSimpleParticle
 
 		return instance;
 	}
-	
-	public function init(p_emitter:GSimpleParticleSystem, p_invalidate:Bool = true):Void {
+
+	private function g2d_init(p_emitter:GSimpleParticleSystem, p_invalidate:Bool = true):Void {
 		g2d_accumulatedEnergy = 0;
 		
 		g2d_energy = p_emitter.energy * 1000;
@@ -189,8 +186,8 @@ class GSimpleParticle
 		
 		g2d_scaleDif = g2d_endScale - g2d_initialScale;
 	}
-	
-	public function update(p_emitter:GSimpleParticleSystem, p_deltaTime:Float):Void {
+
+	private function g2d_update(p_emitter:GSimpleParticleSystem, p_deltaTime:Float):Void {
 		g2d_accumulatedEnergy += p_deltaTime;
 	
 		if (g2d_accumulatedEnergy >= g2d_energy) {
@@ -228,13 +225,13 @@ class GSimpleParticle
 		}
 		/**/
 	}
-	
-	public function dispose():Void {
+
+	private function g2d_dispose():Void {
 		if (g2d_next != null) g2d_next.g2d_previous = g2d_previous;
 		if (g2d_previous != null) g2d_previous.g2d_next = g2d_next;
 		g2d_next = null;
 		g2d_previous = null;
-		g2d_nextInstance = availableInstance;
-		availableInstance = this;
+		g2d_nextInstance = g2d_availableInstance;
+		g2d_availableInstance = this;
 	}
 }

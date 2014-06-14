@@ -37,6 +37,7 @@ class GParticlePool
         }
     }
 
+    @:dox(hide)
     public function get():GParticle {
         var instance:GParticle = g2d_availableInstance;
         if (instance != null) {

@@ -162,7 +162,7 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 	}
 
 	private function createParticle():GSimpleParticle {
-		var particle:GSimpleParticle = GSimpleParticle.get();
+		var particle:GSimpleParticle = GSimpleParticle.g2d_get();
 		if (g2d_firstParticle != null) {
 			particle.g2d_next = g2d_firstParticle;
 			g2d_firstParticle.g2d_previous = particle;
@@ -211,7 +211,7 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 		while (particle != null) {
 			var next:GSimpleParticle = particle.g2d_next;
 
-			particle.update(this, g2d_lastUpdateTime);
+			particle.g2d_update(this, g2d_lastUpdateTime);
 			particle = next;
 		}	
 	}
@@ -245,13 +245,13 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 		var particle:GSimpleParticle = createParticle();
 		setInitialParticlePosition(particle);
 		
-		particle.init(this);
+		particle.g2d_init(this);
 	}
 
 	public function deactivateParticle(p_particle:GSimpleParticle):Void {
 		if (p_particle == g2d_lastParticle) g2d_lastParticle = g2d_lastParticle.g2d_previous;
 		if (p_particle == g2d_firstParticle) g2d_firstParticle = g2d_firstParticle.g2d_next;
-		p_particle.dispose();
+		p_particle.g2d_dispose();
 	}
 
 	override public function dispose():Void {

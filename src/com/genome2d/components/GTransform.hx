@@ -29,17 +29,7 @@ class GTransform extends GComponent
 	private var g2d_transformDirty:Bool = false;
 	private var g2d_colorDirty:Bool = false;
 	
-	private var g2d_visible:Bool = true;
-	#if swc @:extern #end
-	public var visible(get, set):Bool;
-	#if swc @:getter(visible) #end
-	inline private function get_visible():Bool {
-		return g2d_visible;
-	}
-	#if swc @:setter(visible) #end
-	inline private function set_visible(p_value:Bool):Bool {
-		return g2d_visible = p_value;
-	}
+	public var visible:Bool = true;
 
     @:dox(hide)
 	public var g2d_worldX:Float = 0;

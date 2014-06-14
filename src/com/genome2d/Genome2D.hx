@@ -21,22 +21,22 @@ import msignal.Signal;
 
 import com.genome2d.context.GContextConfig;
 
-/*
-*  Genome2D core class
-*
-*   Author: Peter "sHTiF" Stefcek
-*/
+/**
+    Genome2D core class
+**/
 class Genome2D
 {
-    // Genome2D version
+    /**
+        Genome2D Version
+    **/
 	inline static public var VERSION:String = "1.0.256hx";
 
-    // Singleton instance
 	static private var g2d_instance:Genome2D;
-    // Enforce singleton creation through getInstance
 	static private var g2d_instantiable:Bool = false;
 
-    // Get Genome2D instance
+    /**
+        Get the singleton instance of Genome2D
+    **/
 	static public function getInstance():Genome2D {
 		g2d_instantiable = true;
 		if (g2d_instance == null) new Genome2D();
@@ -44,10 +44,20 @@ class Genome2D
 		return g2d_instance;
 	}
 
+    /**
+        Enable/disable auto updating and rendering of Genome2D node graph
+
+        default `true`
+    **/
     public var autoUpdateAndRender:Bool = true;
 
-    // Genome2D signals
+    /*
+     *  SIGNALS
+     */
     private var g2d_onInitialized:Signal0;
+    /**
+        Signal dispatched when Genome2D initializes successfully
+    **/
     #if swc @:extern #end
 	public var onInitialized(get, never):Signal0;
     #if swc @:getter(onInitialized) #end
@@ -56,6 +66,11 @@ class Genome2D
     }
 
     private var g2d_onFailed:Signal1<String>;
+    /**
+        Signal dispatched when Genome2D failes to initialize
+
+        Sends reason message
+    **/
     #if swc @:extern #end
 	public var onFailed(get, never):Signal1<String>;
     #if swc @:getter(onFailed) #end
@@ -64,6 +79,9 @@ class Genome2D
     }
 
     private var g2d_onInvalidated:Signal0;
+    /**
+        Signal dispatched when Genome2D is invalidated
+    **/
     #if swc @:extern #end
     public var onInvalidated(get, never):Signal0;
     #if swc @:getter(onInvalidated) #end
@@ -72,6 +90,11 @@ class Genome2D
     }
 
     private var g2d_onUpdate:Signal1<Float>;
+    /**
+        Signal dispatched when Genome2D is updated to next frame
+
+        Sends deltaTime `Float` passed between updates
+    **/
     #if swc @:extern #end
 	public var onUpdate(get, never):Signal1<Float>;
     #if swc @:getter(onUpdate) #end
@@ -80,6 +103,9 @@ class Genome2D
     }
 
     private var g2d_onPreRender:Signal0;
+    /**
+        Signal dispatched when Genome2D is rendering, before it renders its own node graph
+    **/
     #if swc @:extern #end
 	public var onPreRender(get, never):Signal0;
     #if swc @:getter(onPreRender) #end
@@ -88,6 +114,9 @@ class Genome2D
     }
 
     private var g2d_onPostRender:Signal0;
+    /**
+        Signal dispatched when Genome2D is rendering, after it rendered its own node graph
+    **/
     #if swc @:extern #end
 	public var onPostRender(get, never):Signal0;
     #if swc @:getter(onPostRender) #end
@@ -95,29 +124,37 @@ class Genome2D
         return g2d_onPostRender;
     }
 
-    private var g2d_onKeyInteraction:Signal1<GKeyboardSignal>;
+    private var g2d_onKeySignal:Signal1<GKeyboardSignal>;
+    /**
+        Signal dispatched when Genome2D processes keyboard signal
+    **/
     #if swc @:extern #end
-    public var onKeyInteraction(get, never):Signal1<GKeyboardSignal>;
-    #if swc @:getter(onKeyInteraction) #end
-    inline private function get_onKeyInteraction():Signal1<GKeyboardSignal> {
-        return g2d_onKeyInteraction;
+    public var onKeySignal(get, never):Signal1<GKeyboardSignal>;
+    #if swc @:getter(onKeySignal) #end
+    inline private function get_onKeySignal():Signal1<GKeyboardSignal> {
+        return g2d_onKeySignal;
     }
 
-    // Current frame time
-	private var g2d_currentTime:Float = 0;
-    // Render frame id
 	private var g2d_currentFrameId:Int = 0;
+    /**
+        Return current Genome2D frame Id
+    **/
     inline public function getCurrentFrameId():Int {
         return g2d_currentFrameId;
     }
 
-    // Last delta time
     private var g2d_currentFrameDeltaTime:Float;
+    /**
+        Return current frame delta time
+    **/
     inline public function getCurrentFrameDeltaTime():Float {
         return g2d_currentFrameDeltaTime;
     }
 
     private var g2d_root:GNode;
+    /**
+        Root `GNode` the parent of the whole node graph
+    **/
     #if swc @:extern #end
 	public var root(get, never):GNode;
     #if swc @:getter(root) #end
@@ -130,25 +167,17 @@ class Genome2D
 		return g2d_context;
 	}
 
+    @:allow(com.genome2d.components.renderables.GTexturedQuad)
+    private var g2d_renderMatrix:GMatrix;
+    private var g2d_renderMatrixIndex:Int = 0;
+    private var g2d_renderMatrixArray:Array<GMatrix>;
+    private var g2d_contextConfig:GContextConfig;
     private var g2d_cameras:Array<GCameraController>;
 
-    public var backgroundRed:Float = 0;
-    public var backgroundGreen:Float = 0;
-    public var backgroundBlue:Float = 0;
-    public var backgroundAlpha:Float = 1;
-
-    @:dox(hide)
-    public var g2d_renderMatrix:GMatrix;
-    @:dox(hide)
-    public var g2d_renderMatrixIndex:Int = 0;
-    @:dox(hide)
-    public var g2d_renderMatrixArray:Array<GMatrix>;
-
-    private var g2d_contextConfig:GContextConfig;
-
 	/**
-     *  CONSTRUCTOR
-     **/
+       CONSTRUCTOR
+    **/
+    @:dox(hide)
 	private function new() {
 		if (!g2d_instantiable) new GError("Can't instantiate singleton directly");
 		g2d_instance = this;
@@ -159,14 +188,14 @@ class Genome2D
         g2d_onUpdate = new Signal1<Float>();
         g2d_onPreRender = new Signal0();
         g2d_onPostRender = new Signal0();
-        g2d_onKeyInteraction = new Signal1<GKeyboardSignal>();
+        g2d_onKeySignal = new Signal1<GKeyboardSignal>();
 	}
 
     /**
-     *  Initialize Genome2D
-     *
-     *  @param p_config Genome2D configuration instance
-     **/
+        Initialize Genome2D
+
+        @param p_config `GContextConfig` instance configuring Genome2D context
+    **/
 	public function init(p_config:GContextConfig):Void {
         // Initialize root
         if (g2d_root != null) g2d_root.dispose();
@@ -189,68 +218,24 @@ class Genome2D
 	}
 
     /**
-     *  Context initialized handler
-     **/
-	private function g2d_contextInitializedHandler():Void {
-        GTextureFactory.g2d_context = GTextureAtlasFactory.g2d_context = g2d_context;
+        Update node graph
 
-		g2d_context.onFrame.add(g2d_frameHandler);
-        g2d_context.onMouseSignal.add(g2d_contextMouseSignalHandler);
-        g2d_context.onKeyboardSignal.add(g2d_contextKeySignalHandler);
-		
-		onInitialized.dispatch();
-	}
-
-    /**
-     *  Context failed to initialize handler
-     **/
-	private function g2d_contextFailedHandler(p_error:String):Void {
-        if (g2d_contextConfig.fallbackContextClass != null) {
-            g2d_context = Type.createInstance(g2d_contextConfig.fallbackContextClass, [g2d_contextConfig]);
-            g2d_context.onInitialized.add(g2d_contextInitializedHandler);
-            g2d_context.onFailed.add(g2d_contextFailedHandler);
-            g2d_context.init();
-        }
-
-	    onFailed.dispatch(p_error);
-	}
-
-    private function g2d_contextInvalidatedHandler():Void {
-        onInvalidated.dispatch();
-    }
-
-    /**
-     *  Frame handler called each frame
-     **/
-	private function g2d_frameHandler(p_deltaTime:Float):Void {
-        if (autoUpdateAndRender) {
-            g2d_currentFrameId++;
-		    update(p_deltaTime);
-            render();
-        }
-	}
-
-    /**
-     *  Update node graph
-     **/
+        This method is called automatically if `autoUpdateAndRender` is true
+    **/
 	public function update(p_deltaTime:Float):Void {
         g2d_currentFrameDeltaTime = p_deltaTime;
         onUpdate.dispatch(g2d_currentFrameDeltaTime);
-
-        /*
-		if (physics != null && g2d_currentDeltaTime > 0) {
-			physics.step(g2d_currentDeltaTime);
-		}
-		/**/
 	}
 
     /**
-     *  Render node graph
-     **/
+        Render node graph
+
+        This method is called automatically if `autoUpdateAndRender` is true
+    **/
     @:access(com.genome2d.components.GTransform)
 	public function render():Void {
         var cameraCount:Int = g2d_cameras.length;
-		g2d_context.begin(backgroundRed, backgroundGreen, backgroundBlue, backgroundAlpha, cameraCount==0);
+		g2d_context.begin(0,0,0,1, cameraCount==0);
 		onPreRender.dispatch();
 
         // Check if there is matrix useage in the pipeline
@@ -277,15 +262,71 @@ class Genome2D
 		g2d_context.end();
 	}
 
+    /**
+        Dispose Genome2D framework
+    **/
+    public function dispose():Void {
+        if (g2d_root != null) g2d_root.dispose();
+        g2d_root = null;
+
+        g2d_onInitialized.removeAll();
+        g2d_onFailed.removeAll();
+        g2d_onPostRender.removeAll();
+        g2d_onPreRender.removeAll();
+        g2d_onUpdate.removeAll();
+        g2d_onInvalidated.removeAll();
+        g2d_onKeySignal.removeAll();
+
+        g2d_context.dispose();
+        g2d_context = null;
+    }
+
+    private function g2d_contextInitializedHandler():Void {
+        GTextureFactory.g2d_context = GTextureAtlasFactory.g2d_context = g2d_context;
+
+        g2d_context.onFrame.add(g2d_frameHandler);
+        g2d_context.onMouseSignal.add(g2d_contextMouseSignalHandler);
+        g2d_context.onKeyboardSignal.add(g2d_contextKeySignalHandler);
+
+        onInitialized.dispatch();
+    }
+
+    private function g2d_contextFailedHandler(p_error:String):Void {
+        if (g2d_contextConfig.fallbackContextClass != null) {
+            g2d_context = Type.createInstance(g2d_contextConfig.fallbackContextClass, [g2d_contextConfig]);
+            g2d_context.onInitialized.add(g2d_contextInitializedHandler);
+            g2d_context.onFailed.add(g2d_contextFailedHandler);
+            g2d_context.init();
+        }
+
+        onFailed.dispatch(p_error);
+    }
+
+    private function g2d_contextInvalidatedHandler():Void {
+        onInvalidated.dispatch();
+    }
+
+    private function g2d_frameHandler(p_deltaTime:Float):Void {
+        if (autoUpdateAndRender) {
+            g2d_currentFrameId++;
+            update(p_deltaTime);
+            render();
+        }
+    }
+
     @:allow(com.genome2d.components.GCameraController)
 	private function g2d_addCameraController(p_camera:GCameraController):Void {
-        for (i in 0...g2d_cameras.length) if (g2d_cameras[i] == p_camera) return;
+        for (i in 0...g2d_cameras.length) {
+            if (g2d_cameras[i] == p_camera) return;
+        }
         g2d_cameras.push(p_camera);
     }
 
     @:allow(com.genome2d.components.GCameraController)
     private function g2d_removeCameraController(p_camera:GCameraController):Void {
-        for (i in 0...g2d_cameras.length) if (g2d_cameras[i] == p_camera) g2d_cameras.splice(i, 1);
+        for (i in 0...g2d_cameras.length) {
+            if (g2d_cameras[i] == p_camera) g2d_cameras.splice(i, 1);
+        }
     }
 
     @:access(com.genome2d.components.GCameraController)
@@ -305,22 +346,6 @@ class Genome2D
 	}
 
     private function g2d_contextKeySignalHandler(p_signal:GKeyboardSignal):Void {
-        onKeyInteraction.dispatch(p_signal);
-    }
-
-    public function dispose():Void {
-        if (g2d_root != null) g2d_root.dispose();
-        g2d_root = null;
-
-        g2d_onInitialized.removeAll();
-        g2d_onFailed.removeAll();
-        g2d_onPostRender.removeAll();
-        g2d_onPreRender.removeAll();
-        g2d_onUpdate.removeAll();
-        g2d_onInvalidated.removeAll();
-        g2d_onKeyInteraction.removeAll();
-
-        g2d_context.dispose();
-        g2d_context = null;
+        onKeySignal.dispatch(p_signal);
     }
 }

@@ -35,6 +35,7 @@ import com.genome2d.signals.GMouseSignal;
 *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
 */
 @:access(com.genome2d.components.GTransform)
+@:access(com.genome2d.Genome2D)
 class GNode
 {
     static private var g2d_cachedArray:Array<GNode>;

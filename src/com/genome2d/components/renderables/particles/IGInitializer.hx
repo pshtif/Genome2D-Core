@@ -7,6 +7,13 @@
 */
 package com.genome2d.components.renderables.particles;
 
+/**
+    Interface providing method for `GParticleSystem` particle initialization
+**/
 interface IGInitializer {
+
+    /**
+        Initialize `p_particle` inside `p_system`
+     **/
     function initialize(p_system:GParticleSystem, p_particle:GParticle):Void;
 }

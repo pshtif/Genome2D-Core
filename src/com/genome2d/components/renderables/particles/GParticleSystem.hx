@@ -35,10 +35,13 @@ class GParticleSystem extends GComponent implements IRenderable
         g2d_affectorsCount++;
     }
 
-/**
-         *  Duration of the particle system in seconds
-         */
+    /**
+     *  Duration of the particle system in seconds
+     */
     public var duration:Float = 0;
+    /**
+     *  Loop particle emission
+     */
     public var loop:Bool = true;
 
     public var emission:GCurve;
@@ -46,12 +49,12 @@ class GParticleSystem extends GComponent implements IRenderable
 
     public var particlePool:GParticlePool;
 
-    public var g2d_accumulatedTime:Float = 0;
-    public var g2d_accumulatedSecond:Float = 0;
-    public var g2d_accumulatedEmission:Float = 0;
+    private var g2d_accumulatedTime:Float = 0;
+    private var g2d_accumulatedSecond:Float = 0;
+    private var g2d_accumulatedEmission:Float = 0;
 
-    public var g2d_firstParticle:GParticle;
-    public var g2d_lastParticle:GParticle;
+    private var g2d_firstParticle:GParticle;
+    private var g2d_lastParticle:GParticle;
 
     public var texture:GTexture;
 
@@ -109,8 +112,8 @@ class GParticleSystem extends GComponent implements IRenderable
         }
     }
 
-    // TODO add matrix transformations
     public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
+        // TODO add matrix transformations
         var particle:GParticle = g2d_firstParticle;
         while (particle!=null) {
             var next:GParticle = particle.g2d_next;

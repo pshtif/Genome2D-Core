@@ -11,11 +11,13 @@ import com.genome2d.context.GContextCamera;
 import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 
+/**
+
+ **/
+@:allow(com.genome2d.components.renderables.particles.GParticlePool)
+@:allow(com.genome2d.components.renderables.particles.GParticleSystem)
 class GParticle
 {
-    public var g2d_next:GParticle;
-    public var g2d_previous:GParticle;
-
     public var texture:GTexture;
 
     public var overrideRender:Bool = false;
@@ -48,18 +50,19 @@ class GParticle
 
     public var die:Bool = false;
 
-    public var g2d_nextAvailableInstance:GParticle;
+    private var g2d_next:GParticle;
+    private var g2d_previous:GParticle;
+    private var g2d_nextAvailableInstance:GParticle;
 
     private var g2d_id:Int = 0;
     private var g2d_pool:GParticlePool;
 
+    @:dox(hide)
     public function new(p_pool:GParticlePool):Void {
         g2d_pool = p_pool;
     }
-    public function toString():String {
-        return "["+g2d_id+"]";
-    }
 
+    @:dox(hide)
     public function init(p_particleSystem:GParticleSystem):Void {
         texture = p_particleSystem.texture;
         x = p_particleSystem.node.transform.g2d_worldX;
@@ -79,6 +82,7 @@ class GParticle
         currentFrame = 0;
     }
 
+    @:dox(hide)
     public function dispose():Void {
         die = false;
         if (g2d_next != null) g2d_next.g2d_previous = g2d_previous;
