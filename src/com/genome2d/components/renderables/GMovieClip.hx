@@ -1,40 +1,44 @@
 /*
- * Simple asset class for alpha asset management, will be differentiated into multiple classes for different assets later
- *
- * @author Peter "sHTiF" Stefcek / www.flash-core.com
- */
+* 	Genome2D - GPU 2D framework utilizing Molehill API
+*
+*	Copyright 2011 Peter Stefcek. All rights reserved.
+*
+*	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
+*/
 package com.genome2d.components.renderables;
 
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.GContextCamera;
 import com.genome2d.node.GNode;
 
+/**
+    Component used for rendering animations defined by set of textures
+**/
 class GMovieClip extends GTexturedQuad
 {
 	private var g2d_speed:Float = 1000/30;
 	private var g2d_accumulatedTime:Float = 0;
-	
 	private var g2d_currentFrame:Int = -1;
-
     private var g2d_lastUpdatedFrameId:Int = 0;
+    private var g2d_startIndex:Int = -1;
+    private var g2d_endIndex:Int = -1;
+    private var g2d_playing:Bool = true;
+    private var g2d_frameTextures:Array<GTexture>;
+    private var g2d_frameTexturesCount:Int;
 
-    #if swc @:extern #end
     /**
-     *  Get the current frame index the movieclip is at
-     **/
+        Get the current frame index the movieclip is at
+    **/
+    #if swc @:extern #end
 	public var currentFrame(get, never):Int;
     #if swc @:getter(currentFrame) #end
 	inline private function get_currentFrame():Int {
 		return g2d_currentFrame;
 	}
-	
-	private var g2d_startIndex:Int = -1;
-	private var g2d_endIndex:Int = -1;
-	private var g2d_playing:Bool = true;
 
     /**
-     *  Texture ids used for movieclip frames
-     **/
+        Texture ids used for movieclip frames
+    **/
     #if swc @:extern #end
     public var frameTextureIds(never, set):Array<String>;
     #if swc @:setter(frameTextureIds) #end
@@ -54,12 +58,9 @@ class GMovieClip extends GTexturedQuad
         return p_value;
 	}
 
-    private var g2d_frameTextures:Array<GTexture>;
-    private var g2d_frameTexturesCount:Int;
-
     /**
-     *  Textures used for movieclip frames
-     **/
+        Textures used for movieclip frames
+    **/
     #if swc @:extern #end
     public var frameTextures(never, set):Array<GTexture>;
     #if swc @:setter(frameTextures) #end
@@ -77,15 +78,13 @@ class GMovieClip extends GTexturedQuad
     }
 
     /**
-     *  Is movieclip repeating after reaching the last frame, default true
-     **/
+        Is movieclip repeating after reaching the last frame, default true
+    **/
 	public var repeatable:Bool = true;
-	
-	static private var g2d_count:Int = 0;
 
     /**
-     *  Framerate the movieclips is playing at, default 30
-     **/
+        Framerate the movieclips is playing at, default 30
+    **/
     #if swc @:extern #end
 	public var frameRate(get, set):Int;
     #if swc @:getter(frameRate) #end
@@ -99,8 +98,8 @@ class GMovieClip extends GTexturedQuad
 	}
 
     /**
-     *  Number of frames in this movieclip
-     **/
+        Number of frames in this movieclip
+    **/
     #if swc @:extern #end
 	public var numFrames(get, never):Int;
     #if swc @:getter(numFrames) #end
@@ -109,8 +108,8 @@ class GMovieClip extends GTexturedQuad
 	}
 	
 	/**
-	 * 	Go to a specified frame of this movie clip
-	 */
+	    Go to a specified frame of this movie clip
+	**/
 	public function gotoFrame(p_frame:Int):Void {
 		if (g2d_frameTextures == null) return;
 		g2d_currentFrame = p_frame;
@@ -119,38 +118,36 @@ class GMovieClip extends GTexturedQuad
 	}
 
     /**
-     *  Go to a specified frame of this movieclip and start playing
-     **/
+        Go to a specified frame of this movieclip and start playing
+    **/
 	public function gotoAndPlay(p_frame:Int):Void {
 		gotoFrame(p_frame);
 		play();
 	}
 
     /**
-     *  Go to a specified frame of this movieclip and stop playing
-     **/
+        Go to a specified frame of this movieclip and stop playing
+    **/
 	public function gotoAndStop(p_frame:Int):Void {
 		gotoFrame(p_frame);
 		stop();
 	}
 	
 	/**
-	 * 	Stop playback of this movie clip
-	 */
+	    Stop playback of this movie clip
+	**/
 	public function stop():Void {
 		g2d_playing = false;
 	}
 	
 	/**
-	 * 	Start the playback of this movie clip
-	 */
+	    Start the playback of this movie clip
+	**/
 	public function play():Void {
 		g2d_playing = true;
 	}
 	
-	/**
-	 * 	@private
-	 */
+	@:doc(hide)
 	override public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
 		if (texture != null) {
             var currentFrameId:Int = node.core.getCurrentFrameId();

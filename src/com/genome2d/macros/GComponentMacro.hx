@@ -5,7 +5,7 @@
 *
 *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
 */
-package com.genome2d.components;
+package com.genome2d.macros;
 
 import haxe.macro.Expr;
 import haxe.macro.Context;

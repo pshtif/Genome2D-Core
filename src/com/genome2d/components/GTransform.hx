@@ -11,23 +11,19 @@ import com.genome2d.geom.GPoint;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.node.GNode;
 
-/*
-* 	Genome2D - GPU 2D framework utilizing Molehill API
-*
-*	Copyright 2011 Peter Stefcek. All rights reserved.
-*
-*	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
-*/
+/**
+    Transform component, initialized automatically for every `GNode` used for handling all transformations
+**/
 class GTransform extends GComponent
 {
     static private var g2d_cachedMatrix:GMatrix;
 
-	@prototype public var useWorldSpace:Bool = false;
-	@prototype public var useWorldColor:Bool = false;
-
     private var g2d_matrixDirty:Bool = true;
 	private var g2d_transformDirty:Bool = false;
 	private var g2d_colorDirty:Bool = false;
+
+    @prototype public var useWorldSpace:Bool = false;
+    @prototype public var useWorldColor:Bool = false;
 	
 	public var visible:Bool = true;
 
@@ -295,7 +291,7 @@ class GTransform extends GComponent
 		g2d_localScaleY = g2d_worldScaleY = p_scaleY;
 	}
 	
-	inline public function invalidate(p_invalidateTransform:Bool, p_invalidateColor:Bool):Void {
+	inline private function invalidate(p_invalidateTransform:Bool, p_invalidateColor:Bool):Void {
         var parentTransform:GTransform = node.parent.transform;
 
         if (p_invalidateTransform && !useWorldSpace) {

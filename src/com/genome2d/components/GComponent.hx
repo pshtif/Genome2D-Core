@@ -7,13 +7,18 @@
 */
 package com.genome2d.components;
 
+import com.genome2d.macros.GComponentMacro;
 import com.genome2d.node.GNode;
 import Type.ValueType;
 import com.genome2d.signals.GMouseSignal;
 
-@:autoBuild(com.genome2d.components.GComponentMacro.build()) class GComponent implements IGPrototypable
+@:allow(com.genome2d.node.GNode)
+@:autoBuild(com.genome2d.macros.GComponentMacro.build()) class GComponent implements IGPrototypable
 {
 	private var g2d_active:Bool = true;
+    private var g2d_lookupClass:Class<GComponent>;
+    private var g2d_previous:GComponent;
+    private var g2d_next:GComponent;
 
 	public function isActive():Bool {
 		return g2d_active;
@@ -23,19 +28,7 @@ import com.genome2d.signals.GMouseSignal;
 	}
 
 	public var id:String = "";
-	
-	public var g2d_lookupClass:Class<GComponent>;
-	
-	/**
-	 * 	@private
-	 */
-	public var g2d_previous:GComponent;
-	/**
-	 * 	@private
-	 */
-	public var g2d_next:GComponent;
 
-    @:allow(com.genome2d.node.GNode)
 	private var g2d_node:GNode;
 	#if swc @:extern #end
 	public var node(get, never):GNode;
@@ -93,9 +86,15 @@ import com.genome2d.signals.GMouseSignal;
 		p_propertiesXml.addChild(propertyXml);
 	}
 
+	/**
+        Abstract method called after component is initialized on the node
+    **/
     public function init():Void {
     }
 
+    /**
+
+    **/
 	public function initPrototype(p_prototypeXml:Xml):Void {
 		id = p_prototypeXml.get("id");
 
@@ -137,15 +136,15 @@ import com.genome2d.signals.GMouseSignal;
 	}
 	
 	/**
-	 * 	Abstract method that should be overriden and implemented if you are creating your own components, its called each time a node that uses this component is processing mouse events
-	 */
+	    Abstract method that should be overriden and implemented if you are creating your own components, its called each time a node that uses this component is processing mouse events
+	**/
 	public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
 		return false;	
 	}
 	
 	/**
-	 * 	Base dispose method, if there is a disposing you need to do in your extending component you should override it and always call super.dispose() its used when a node using this component is being disposed
-	 */
+	    Base dispose method, if there is a disposing you need to do in your extending component you should override it and always call super.dispose() its used when a node using this component is being disposed
+	**/
 	public function dispose():Void {
 		g2d_active = false;
 		

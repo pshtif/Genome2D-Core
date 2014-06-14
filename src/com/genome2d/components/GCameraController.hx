@@ -16,26 +16,37 @@ import com.genome2d.signals.GMouseSignal;
 
 class GCameraController extends GComponent
 {
+    private var g2d_viewRectangle:GRectangle;
+    private var g2d_capturedThisFrame:Bool = false;
+    private var g2d_renderedNodesCount:Int;
+
 	/**
-	 * 	Red component of viewport background color
-	 */
+	    Red component of viewport background color
+	**/
 	public var backgroundRed:Float = 0;
+
 	/**
-	 * 	Green component of viewport background color
-	 */
+	    Green component of viewport background color
+	**/
 	public var backgroundGreen:Float = 0;
+
 	/**
-	 * 	Blue component of viewport background color
-	 */
+	    Blue component of viewport background color
+	**/
 	public var backgroundBlue:Float = 0;
 
 	public var backgroundAlpha:Float = 0;
 
-    public var renderTarget:GTexture;
+    /**
+        Render texture used as a target for rendering this camera
+
+        Default `null`
+	**/
+    public var renderTarget:GTexture = null;
 	
 	/**
-	 * 	Get a viewport color
-	 */
+	    Get a viewport color
+	**/
 	public function getBackgroundColor():Int {
 		var alpha:Int = Std.int(backgroundAlpha*255)<<24;
 		var red:Int = Std.int(backgroundRed*255)<<16;
@@ -44,12 +55,6 @@ class GCameraController extends GComponent
 
 		return alpha+red+green+blue;
 	}
-
-    private var g2d_viewRectangle:GRectangle;
-
-	private var g2d_capturedThisFrame:Bool = false;
-	
-	private var g2d_renderedNodesCount:Int;
 
     private var g2d_contextCamera:GContextCamera;
     #if swc @:extern #end
@@ -77,23 +82,17 @@ class GCameraController extends GComponent
 	inline private function set_zoom(p_value:Float):Float {
 		return g2d_contextCamera.scaleX = g2d_contextCamera.scaleY = p_value;
 	}
-	
-	/**
-	 * 	@private
-	 */
+
 	override public function init():Void {
         g2d_contextCamera = new GContextCamera();
         g2d_viewRectangle = new GRectangle();
 
 		if (node != node.core.root && node.isOnStage()) node.core.g2d_addCameraController(this);
 		
-		node.onAddedToStage.add(onAddedToStage);
-		node.onRemovedFromStage.add(onRemovedFromStage);
+		node.onAddedToStage.add(g2d_onAddedToStage);
+		node.onRemovedFromStage.add(g2d_onRemovedFromStage);
 	}
-	
-	/**
-	 * 	@private
-	 */
+
 	public function render():Void {
 		if (!node.isActive()) return;
 		g2d_renderedNodesCount = 0;
@@ -106,10 +105,7 @@ class GCameraController extends GComponent
         node.core.getContext().setRenderTarget(renderTarget);
 		node.core.root.render(false, false, g2d_contextCamera, false, false);
 	}
-	
-	/**
-	 * 	@private
-	 */
+
 	public function captureMouseEvent(p_context:IContext, p_captured:Bool, p_signal:GMouseSignal):Bool {
 		if (g2d_capturedThisFrame || !node.isActive()) return false;
 		g2d_capturedThisFrame = true;
@@ -136,24 +132,21 @@ class GCameraController extends GComponent
 
 		return node.core.root.processContextMouseSignal(p_captured, rx+node.transform.g2d_worldX, ry+node.transform.g2d_worldY, p_signal, g2d_contextCamera);
 	}
-	
-	/**
-	 *
-	 */
+
 	override public function dispose():Void {
 		node.core.g2d_removeCameraController(this);
 		
-		node.onAddedToStage.remove(onAddedToStage);
-		node.onRemovedFromStage.remove(onRemovedFromStage);
+		node.onAddedToStage.remove(g2d_onAddedToStage);
+		node.onRemovedFromStage.remove(g2d_onRemovedFromStage);
 
 		super.dispose();
 	}
 
-	private function onAddedToStage():Void {
+	private function g2d_onAddedToStage():Void {
 		node.core.g2d_addCameraController(this);
 	}
 
-	private function onRemovedFromStage():Void {
+	private function g2d_onRemovedFromStage():Void {
 		node.core.g2d_removeCameraController(this);
 	}
 }

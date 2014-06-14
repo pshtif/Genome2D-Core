@@ -17,41 +17,42 @@ import com.genome2d.components.GComponent;
 import com.genome2d.signals.GMouseSignal;
 import com.genome2d.textures.GTexture;
 
+/**
+    Component used for rendering textured quads used as a super class for `GSprite` and `GMovieClip`
+**/
 class GTexturedQuad extends GComponent implements IRenderable
 {
     /**
-     *  Blend mode used for rendering
-     **/
+        Blend mode used for rendering
+    **/
     public var blendMode:Int = 1;
 
     /**
-     *  Enable/disable pixel perfect mouse detection, not supported by all contexts.
-     *  Default false
-     **/
+        Enable/disable pixel perfect mouse detection, not supported by all contexts.
+        Default false
+    **/
     public var mousePixelEnabled:Bool = false;
+
     /**
-     *  Specify alpha treshold for pixel perfect mouse detection, works with mousePixelEnabled true
-     **/
+        Specify alpha treshold for pixel perfect mouse detection, works with mousePixelEnabled true
+    **/
     public var mousePixelTreshold:Int = 0;
 
     /**
-     *  Texture used for rendering
-     **/
+        Texture used for rendering
+    **/
 	public var texture:GTexture;
 
     /**
-     *  Filter used for rendering
-     **/
+        Filter used for rendering
+    **/
     public var filter:GFilter;
 
     public var ignoreMatrix:Bool = true;
 
-    /**
-     *  @private
-     **/
+    @:dox(hide)
 	public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
 		if (texture != null) {
-			//trace(node.transform.g2d_worldScaleX + "," + node.transform.g2d_worldScaleY);
             if (p_useMatrix && !ignoreMatrix) {
                 var matrix:GMatrix = node.core.g2d_renderMatrix;
                 node.core.getContext().drawMatrix(texture, matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty, node.transform.g2d_worldRed, node.transform.g2d_worldGreen, node.transform.g2d_worldBlue, node.transform.g2d_worldAlpha, blendMode, filter);
@@ -61,6 +62,9 @@ class GTexturedQuad extends GComponent implements IRenderable
 		}
 	}
 
+	/**
+        Check if a point is inside this quad
+    **/
     public function hitTestPoint(p_x:Float, p_y:Float, p_pixelEnabled:Bool = false, p_w:Float = 0, p_h:Float = 0):Bool {
         var tx:Float = p_x - node.transform.g2d_worldX;
         var ty:Float = p_y - node.transform.g2d_worldY;
@@ -93,9 +97,7 @@ class GTexturedQuad extends GComponent implements IRenderable
         return false;
     }
 
-    /**
-     *  @private
-     **/
+    @:dox(hide)
 	override public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
 		if (p_captured && p_contextSignal.type == GMouseSignalType.MOUSE_UP) node.g2d_mouseDownNode = null;
 
@@ -146,9 +148,9 @@ class GTexturedQuad extends GComponent implements IRenderable
 		return false;
 	}
 
-    /**
-     *  @private
-     **/
+	/**
+        Get local bounds
+    **/
     public function getBounds(p_bounds:GRectangle = null):GRectangle {
         if (texture == null) {
             if (p_bounds != null) p_bounds.setTo(0, 0, 0, 0);
