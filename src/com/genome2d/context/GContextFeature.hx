@@ -8,9 +8,10 @@
 package com.genome2d.context;
 
 /**
-
+    Context features
 **/
 class GContextFeature {
     static inline public var STENCIL_MASKING:Int = 1;
+
     static inline public var RECTANGLE_TEXTURES:Int = 2;
 }

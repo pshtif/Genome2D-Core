@@ -15,6 +15,9 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.components.renderables.IRenderable;
 import com.genome2d.context.GContextCamera;
 
+/**
+    Component handling advanced particle systems with unlimited extendibility using custom particle instances and user defined affectors and initializers
+ **/
 class GParticleSystem extends GComponent implements IRenderable
 {
     public var blendMode:Int = 1;
@@ -148,7 +151,7 @@ class GParticleSystem extends GComponent implements IRenderable
     }
 
     private function activateParticle():Void {
-        var particle:GParticle = particlePool.get();
+        var particle:GParticle = particlePool.g2d_get();
         if (g2d_firstParticle != null) {
             particle.g2d_next = g2d_firstParticle;
             g2d_firstParticle.g2d_previous = particle;

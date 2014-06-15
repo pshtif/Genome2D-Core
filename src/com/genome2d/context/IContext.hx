@@ -24,6 +24,9 @@ import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GMatrix3D;
 import com.genome2d.context.filters.GFilter;
 
+/**
+    Interface for all Genome2D contexts
+**/
 interface IContext {
     function hasFeature(p_feature:Int):Bool;
 

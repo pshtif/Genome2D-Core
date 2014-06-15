@@ -7,6 +7,9 @@
 */
 package com.genome2d.components.renderables;
 
+/**
+    `GTextureText` alignment types
+**/
 class GTextureTextAlignType
 {
 	static public inline var TOP_LEFT:Int = 0;

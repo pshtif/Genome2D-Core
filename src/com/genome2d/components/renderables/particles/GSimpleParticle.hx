@@ -8,8 +8,8 @@
 package com.genome2d.components.renderables.particles;
 
 /**
- *  GParticle class
- */
+    Simple particle element used by `GSimpleParticleSystem`
+**/
 @:allow(com.genome2d.components.renderables.particles.GSimpleParticleSystem)
 class GSimpleParticle
 {

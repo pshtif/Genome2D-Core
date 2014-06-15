@@ -12,7 +12,7 @@ import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 
 /**
-
+    Particle element class used by `GParticlePool` and `GParticleSystem`
  **/
 @:allow(com.genome2d.components.renderables.particles.GParticlePool)
 @:allow(com.genome2d.components.renderables.particles.GParticleSystem)

@@ -52,8 +52,8 @@ class GNode
     }
 	
 	/**
-	 * 	Camera group this node belongs to, a node is rendered through this camera if camera.mask&node.cameraGroup != 0
-	 */
+	    Camera group this node belongs to, a node is rendered through this camera if camera.mask&node.cameraGroup != 0
+	**/
 	public var cameraGroup:Int = 0;
 
 	public var g2d_pool:GNodePool;
@@ -81,8 +81,8 @@ class GNode
     }
 	
 	/**
-	 * 	Abstract reference to user defined data, if you want keep some custom data binded to G2DNode instance use it.
-	 */
+	    Abstract reference to user defined data, if you want keep some custom data binded to G2DNode instance use it.
+	**/
 	private var g2d_userData:Map<String, Dynamic>;
 	#if swc @:extern #end
 	public var userData(get, never):Map<String, Dynamic>;
@@ -127,9 +127,6 @@ class GNode
 	}
     /**/
 
-    /**
-     *  Internal node id
-     **/
 	private var g2d_id:Int;
     #if swc @:extern #end
     public var id(get, never):Int;
@@ -139,11 +136,10 @@ class GNode
     }
 
 	/**
-	 * 	Node name
-	 */
+	    Node name
+	**/
 	public var name:String;
 
-    // Node transform
 	private var g2d_transform:GTransform;
 	#if swc @:extern #end
 	public var transform(get, never):GTransform;
@@ -154,7 +150,6 @@ class GNode
 
     public var postProcess:GPostProcess;
 
-    // Node parent
 	private var g2d_parent:GNode;
 	#if swc @:extern #end
 	public var parent(get, never):GNode;
@@ -165,11 +160,9 @@ class GNode
 
 	private var g2d_disposed:Bool = false;
 
-    // Internal node count
 	static private var g2d_nodeCount:Int = 0;
-	/**
-	 * 	Constructor
-	 */
+
+	@:dox(hide)
 	public function new(p_name:String = "") {
 		g2d_id = g2d_nodeCount++;
 		name = (p_name == "") ? "GNode#"+g2d_id : p_name;

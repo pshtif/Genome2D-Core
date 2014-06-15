@@ -16,6 +16,9 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureAtlas;
 import com.genome2d.context.GContextCamera;
 
+/**
+    Component used for rendering texture based text
+**/
 class GTextureText extends GComponent implements IRenderable
 {
     /*

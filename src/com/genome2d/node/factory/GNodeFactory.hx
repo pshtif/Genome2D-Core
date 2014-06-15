@@ -11,6 +11,9 @@ import com.genome2d.components.GComponent;
 import com.genome2d.components.GTransform;
 import com.genome2d.error.GError;
 
+/**
+    Node creation factory used to create `GNode` instances
+**/
 class GNodeFactory
 {
 	static public function createNode(p_name:String = ""):GNode {

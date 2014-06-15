@@ -14,13 +14,13 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.components.renderables.IRenderable;
 import com.genome2d.context.GContextCamera;
 
+/**
+    Component handling simple particle systems used for best performance
+ **/
 class GSimpleParticleSystem extends GComponent implements IRenderable
 {
     public var blendMode:Int = 1;
 
-	/**
-	 * 	Emitting particles
-	 */
 	public var emit:Bool = false;
 
     public var useWorldSpace:Bool = false;
@@ -149,9 +149,6 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
         }
 	}
 
-	/**
-	 * 	@private
-	 */
 	override public function init():Void {
         node.core.onUpdate.add(update);
 	}
@@ -161,7 +158,7 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 		g2d_accumulatedEmission = 0;
 	}
 
-	private function createParticle():GSimpleParticle {
+	private function g2d_createParticle():GSimpleParticle {
 		var particle:GSimpleParticle = GSimpleParticle.g2d_get();
 		if (g2d_firstParticle != null) {
 			particle.g2d_next = g2d_firstParticle;
@@ -179,7 +176,7 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 		var currentEmission:Int = Std.int(emission + emissionVariance * Math.random());
 
 		for (i in 0...currentEmission) {
-			activateParticle();
+			g2d_activateParticle();
 		}
 		emit = false;
 	}
@@ -200,7 +197,7 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 					g2d_accumulatedEmission += updateEmission * p_deltaTime * .001;
 
 					while (g2d_accumulatedEmission > 0) {
-						activateParticle();
+						g2d_activateParticle();
 						g2d_accumulatedEmission--;
 					}
 				}
@@ -216,8 +213,8 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 		}	
 	}
 
-    // TODO add matrix transformations
 	public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
+        // TODO add matrix transformations
 		if (texture == null) return;
 		
 		var particle:GSimpleParticle = g2d_firstParticle;
@@ -241,8 +238,8 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 		}
 	}
 
-	private function activateParticle():Void {
-		var particle:GSimpleParticle = createParticle();
+	private function g2d_activateParticle():Void {
+		var particle:GSimpleParticle = g2d_createParticle();
 		setInitialParticlePosition(particle);
 		
 		particle.g2d_init(this);

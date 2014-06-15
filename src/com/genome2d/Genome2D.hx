@@ -204,6 +204,7 @@ class Genome2D
         // Initialize camera controller array
         g2d_cameras = new Array<GCameraController>();
 
+        // Prepare matrix structures
         g2d_renderMatrix = new GMatrix();
         g2d_renderMatrixIndex = 0;
         g2d_renderMatrixArray = new Array<GMatrix>();
@@ -238,7 +239,7 @@ class Genome2D
 		g2d_context.begin(0,0,0,1, cameraCount==0);
 		onPreRender.dispatch();
 
-        // Check if there is matrix useage in the pipeline
+        // Check if there is matrix usage in the pipeline
         if (root.transform.g2d_useMatrix > 0) {
             g2d_renderMatrix.identity();
             g2d_renderMatrixArray = [];

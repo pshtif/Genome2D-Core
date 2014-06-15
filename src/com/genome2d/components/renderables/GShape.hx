@@ -15,6 +15,9 @@ import com.genome2d.context.GContextCamera;
 import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 
+/**
+    Component used for shape rendering
+**/
 class GShape extends GComponent implements IRenderable
 {
     public var texture:GTexture;

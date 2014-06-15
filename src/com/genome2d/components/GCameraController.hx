@@ -14,6 +14,9 @@ import com.genome2d.context.GContextCamera;
 import com.genome2d.node.GNode;
 import com.genome2d.signals.GMouseSignal;
 
+/**
+    Component used for adding and handling custom camera
+**/
 class GCameraController extends GComponent
 {
     private var g2d_viewRectangle:GRectangle;

@@ -12,6 +12,9 @@ import com.genome2d.node.GNode;
 import Type.ValueType;
 import com.genome2d.signals.GMouseSignal;
 
+/**
+    Component super class all components need to extend it
+**/
 @:allow(com.genome2d.node.GNode)
 @:autoBuild(com.genome2d.macros.GComponentMacro.build()) class GComponent implements IGPrototypable
 {

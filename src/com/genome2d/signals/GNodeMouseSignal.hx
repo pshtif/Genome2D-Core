@@ -9,6 +9,9 @@ package com.genome2d.signals;
 
 import com.genome2d.node.GNode;
 
+/**
+
+**/
 class GNodeMouseSignal {
     public var target:GNode;
     public var dispatcher:GNode;

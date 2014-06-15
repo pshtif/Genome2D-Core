@@ -10,6 +10,11 @@ package com.genome2d.macros;
 import haxe.macro.Expr;
 import haxe.macro.Context;
 
+/**
+    Genome2D component build macro to enumerate prototypable properties
+
+    Not used by user
+**/
 class GComponentMacro {
     @:macro public static function build() : Array<Field> {
         var pos = Context.currentPos();
@@ -25,7 +30,7 @@ class GComponentMacro {
                 }
             }
             if (!isPrototype) continue;
-            //trace(i);
+
             switch (i.kind) {
                 case FVar(t,e):
                     switch (t) {
