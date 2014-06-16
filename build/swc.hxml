@@ -1,0 +1,22 @@
+# Include sources
+-cp ../src/core/src
+-cp ../src/context/flash/src
+-cp ../src/context/common/src
+
+# Include libraries
+-lib msignal
+-lib actuate
+-swf-lib ../lib/AGAL.swc
+
+# Flash flags
+-swf-version 12
+
+# Haxe flags
+-dce no
+
+# Genome2D flags
+-D stage3Donly
+
+# Swc flags
+--macro include('com')
+-swf ../out/Genome2Dhx.swc
