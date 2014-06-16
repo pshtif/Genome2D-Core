@@ -27,13 +27,9 @@ import com.genome2d.components.GTransform;
 import com.genome2d.error.GError;
 import com.genome2d.signals.GMouseSignal;
 
-/*
-* 	Genome2D - GPU 2D framework utilizing Molehill API
-*
-*	Copyright 2011 Peter Stefcek. All rights reserved.
-*
-*	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
-*/
+/**
+    Node class
+**/
 @:access(com.genome2d.components.GTransform)
 @:access(com.genome2d.Genome2D)
 class GNode
@@ -56,10 +52,9 @@ class GNode
 	**/
 	public var cameraGroup:Int = 0;
 
-	public var g2d_pool:GNodePool;
-	public var g2d_poolNext:GNode;
-	public var g2d_poolPrevious:GNode;
-
+	private var g2d_pool:GNodePool;
+	private var g2d_poolNext:GNode;
+	private var g2d_poolPrevious:GNode;
 
     public var maskRect:GRectangle;
 

@@ -10,8 +10,10 @@ package com.genome2d.node;
 import com.genome2d.node.factory.GNodeFactory;
 
 /**
-    Node pool
+    Node pool based on prototypes
 **/
+@:allow(com.genome2d.node.GNode)
+@:access(com.genome2d.node.GNode)
 class GNodePool
 {
 	private var g2d_first:GNode;
@@ -47,7 +49,6 @@ class GNodePool
 		return node;
 	}
 
-    @:allow(com.genome2d.node.GNode)
 	private function g2d_putToFront(p_node:GNode):Void {
 		if (p_node == g2d_first) return;
 		
@@ -61,7 +62,6 @@ class GNodePool
 		g2d_first = p_node;
 	}
 
-    @:allow(com.genome2d.node.GNode)
 	private function g2d_putToBack(p_node:GNode):Void {
 		if (p_node == g2d_last) return;
 		
