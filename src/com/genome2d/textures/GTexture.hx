@@ -26,19 +26,23 @@ class GTexture extends GContextTexture
     public function getRegion():GRectangle {
         return g2d_region;
     }
-	public function setRegion(p_value:GRectangle):GRectangle {
+    public function setRegion(p_value:GRectangle):Void {
+        g2d_region = p_value;
+
+        g2d_invalidateUV();
+    }
+
+	private function g2d_invalidateUV():Void {
 		if (g2d_parentAtlas != null) {
-			uvX = p_value.x / g2d_parentAtlas.width;
-			uvY = p_value.y / g2d_parentAtlas.height;
+			uvX = g2d_region.x / g2d_parentAtlas.width;
+			uvY = g2d_region.y / g2d_parentAtlas.height;
 			
 			uvScaleX = width / g2d_parentAtlas.width;
 			uvScaleY = height / g2d_parentAtlas.height;	
 		} else {
-            uvScaleX = width / GTextureUtils.getNextValidTextureSize(width);
-            uvScaleY = height / GTextureUtils.getNextValidTextureSize(height);
+            uvScaleX = width / g2d_gpuWidth;
+            uvScaleY = height / g2d_gpuHeight;
         }
-		
-		return g2d_region = p_value;
 	}
 
 	public function new(p_context:IContext, p_id:String, p_sourceType:Int, p_source:Dynamic, p_region:GRectangle, p_format:String, p_repeatable:Bool, p_pivotX:Float, p_pivotY:Float, p_parentAtlas:GTextureAtlas) {
@@ -48,7 +52,7 @@ class GTexture extends GContextTexture
 
         g2d_type = (g2d_parentAtlas == null) ? GTextureType.STANDALONE : GTextureType.SUBTEXTURE;
 		
-		setRegion(p_region);
+		g2d_invalidateUV();
 		
 		pivotX = p_pivotX;
 		pivotY = p_pivotY;

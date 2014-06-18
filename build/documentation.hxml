@@ -1,12 +1,12 @@
 # Include sources
--cp ../src/core/src
--cp ../src/context/flash\src
--cp ../src/context/common\src
+-cp core/src
+-cp context/flash/src
+-cp context/common/src
 
 # Include libraries
 -lib msignal
 -lib actuate
--swf-lib ../lib/AGAL.swc
+-swf-lib context/flash/lib/AGAL.swc
 
 # Flash flags
 -swf-version 12
