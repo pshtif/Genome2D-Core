@@ -8,9 +8,10 @@
  */
 package com.genome2d.textures;
 
-#if flash
+#if swc
 import flash.utils.Dictionary;
 #end
+import flash.utils.RegExp;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
@@ -20,15 +21,45 @@ class GTextureAtlas extends GContextTexture {
         return cast GContextTexture.getContextTextureById(p_id);
     }
 
-    #if flash
+    #if swc
     private var g2d_textures:Dictionary;
     public function getSubTexture(p_subId:String):GTexture {
         return untyped g2d_textures[p_subId];
+    }
+    public function getSubTextures(p_regExp:RegExp = null):Array<GTexture> {
+        var found:Array<GTexture> = new Array<GTexture>();
+        var textureIds:Array<String> = untyped __keys__(g2d_textures);
+        for (i in 0...textureIds.length) {
+            var texture:GTexture = untyped g2d_textures[textureIds[i]];
+            if (p_regExp != null) {
+                if (p_regExp.test(texture.getId())) {
+                    found.push(texture);
+                }
+            } else {
+                found.push(texture);
+            }
+        }
+
+        return found;
     }
     #else
     private var g2d_textures:Map<String, GTexture>;
     public function getSubTexture(p_subId:String):GTexture {
         return g2d_textures.get(p_subId);
+    }
+    public function getSubTextures(p_regExp:EReg = null) {
+        var found:Array<GTexture> = new Array<GTexture>();
+        for (tex in g2d_textures) {
+            if (p_regExp != null) {
+                if (p_regExp.match(tex.getId())) {
+                    found.push(tex);
+                }
+            } else {
+                found.push(tex);
+            }
+        }
+
+        return found;
     }
     #end
 
@@ -36,7 +67,7 @@ class GTextureAtlas extends GContextTexture {
         super(p_context, p_id, p_sourceType, p_source, p_region, p_format, false, 0, 0);
 
         g2d_type = GTextureType.ATLAS;
-        #if flash
+        #if swc
         g2d_textures = new Dictionary(false);
         #else
         g2d_textures = new Map<String,GTexture>();
@@ -46,7 +77,7 @@ class GTextureAtlas extends GContextTexture {
     override public function invalidateNativeTexture(p_reinitialize:Bool):Void {
         super.invalidateNativeTexture(p_reinitialize);
 
-        #if flash
+        #if swc
         var textureIds:Array<String> = untyped __keys__(g2d_textures);
         for (i in 0...textureIds.length) {
             var texture:GTexture = untyped g2d_textures[textureIds[i]];
@@ -55,11 +86,10 @@ class GTextureAtlas extends GContextTexture {
             texture.g2d_gpuHeight = g2d_gpuHeight;
         }
         #else
-        for (key in g2d_textures.keys()) {
-            var texture:GTexture = g2d_textures.get(key);
-            texture.nativeTexture = nativeTexture;
-            texture.g2d_gpuWidth = g2d_gpuWidth;
-            texture.g2d_gpuHeight = g2d_gpuHeight;
+        for (tex in g2d_textures) {
+            tex.nativeTexture = nativeTexture;
+            tex.g2d_gpuWidth = g2d_gpuWidth;
+            tex.g2d_gpuHeight = g2d_gpuHeight;
         }
         #end
     }
@@ -70,7 +100,7 @@ class GTextureAtlas extends GContextTexture {
         texture.g2d_filteringType = g2d_filteringType;
         texture.nativeTexture = nativeTexture;
 
-        #if flash
+        #if swc
         untyped g2d_textures[p_subId] = texture;
         #else
         g2d_textures.set(p_subId, texture);
@@ -80,7 +110,7 @@ class GTextureAtlas extends GContextTexture {
     }
 
     public function removeSubTexture(p_subId:String):Void {
-        #if flash
+        #if swc
         untyped g2d_textures[p_subId].dispose();
         untyped __delete__(g2d_textures, p_subId);
         #else
@@ -90,7 +120,7 @@ class GTextureAtlas extends GContextTexture {
     }
 
     private function g2d_disposeSubTextures():Void {
-        #if flash
+        #if swc
         var textureIds:Array<String> = untyped __keys__(g2d_textures);
         for (i in 0...textureIds.length) {
             untyped g2d_textures[textureIds[i]].dispose();

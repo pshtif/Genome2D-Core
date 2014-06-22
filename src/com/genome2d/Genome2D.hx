@@ -30,7 +30,7 @@ class Genome2D
     /**
         Genome2D Version
     **/
-	inline static public var VERSION:String = "1.0.257hx";
+	inline static public var VERSION:String = "1.0.262";
 
 	static private var g2d_instance:Genome2D;
 	static private var g2d_instantiable:Bool = false;
@@ -68,7 +68,7 @@ class Genome2D
 
     private var g2d_onFailed:Signal1<String>;
     /**
-        Signal dispatched when Genome2D failes to initialize
+        Signal dispatched when Genome2D fails to initialize
 
         Sends reason message
     **/

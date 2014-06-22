@@ -8,7 +8,6 @@
  */
 package com.genome2d.components.renderables;
 
-import com.genome2d.context.stage3d.renderers.GCustomRenderer;
 import com.genome2d.error.GError;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GBlendMode;
@@ -27,7 +26,7 @@ class GShape extends GComponent implements IRenderable
     private var g2d_vertices:Array<Float>;
     private var g2d_uvs:Array<Float>;
 
-    private var g2d_shapeRenderer:GCustomRenderer;
+    private var g2d_shapeRenderer:Dynamic;
 
     public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
         if (texture == null || g2d_vertices == null || g2d_uvs == null) return;
@@ -49,7 +48,7 @@ class GShape extends GComponent implements IRenderable
     }
 
     public function cache():Void {
-        g2d_shapeRenderer = new GCustomRenderer(g2d_vertices, g2d_uvs, false);
+        //g2d_shapeRenderer = new GCustomRenderer(g2d_vertices, g2d_uvs, false);
     }
 
     public function getBounds(p_target:GRectangle = null):GRectangle {
