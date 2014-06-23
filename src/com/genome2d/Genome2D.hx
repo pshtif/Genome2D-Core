@@ -30,7 +30,7 @@ class Genome2D
     /**
         Genome2D Version
     **/
-	inline static public var VERSION:String = "1.0.262";
+	inline static public var VERSION:String = "1.0.263";
 
 	static private var g2d_instance:Genome2D;
 	static private var g2d_instantiable:Bool = false;
@@ -237,7 +237,7 @@ class Genome2D
     @:access(com.genome2d.components.GTransform)
 	public function render():Void {
         var cameraCount:Int = g2d_cameras.length;
-		g2d_context.begin(0,0,0,1, cameraCount==0);
+		g2d_context.begin();
 		onPreRender.dispatch();
 
         // Check if there is matrix usage in the pipeline
