@@ -8,6 +8,8 @@
  */
 package com.genome2d.components.renderables;
 
+import com.genome2d.textures.GCharTexture;
+import com.genome2d.textures.GFontTextureAtlas;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.node.GNode;
@@ -87,7 +89,7 @@ class GTextureText extends GComponent implements IRenderable
      */
 	public var maxWidth:Float = 0;
 
-    private var g2d_textureAtlas:GTextureAtlas;
+    private var g2d_textureAtlas:GFontTextureAtlas;
     /*
      *  Texture atlas id used for character textures lookup
      */
@@ -100,14 +102,14 @@ class GTextureText extends GComponent implements IRenderable
 	}
     #if swc @:setter(textureAtlasId) #end
 	inline private function set_textureAtlasId(p_value:String):String {
-		setTextureAtlas(GTextureAtlas.getTextureAtlasById(p_value));
+		setTextureAtlas(GTextureAtlas.getFontTextureAtlasById(p_value));
 		return p_value;
 	}
 
     /*
      *  Set texture atlas that will be used for character textures lookup
      */
-	public function setTextureAtlas(p_textureAtlas:GTextureAtlas):Void {
+	public function setTextureAtlas(p_textureAtlas:GFontTextureAtlas):Void {
 		g2d_textureAtlas = p_textureAtlas;
 		g2d_invalidate = true;
 	}
@@ -167,17 +169,18 @@ class GTextureText extends GComponent implements IRenderable
 		var offsetX:Float = 0;
 		var offsetY:Float =  0;
 		var charSprite:GSprite;
-		var texture:GTexture = null;
+		var texture:GCharTexture = null;
 		
 		for (i in 0...g2d_text.length) {
 			if (g2d_text.charCodeAt(i) == 10) {
 				g2d_width = (offsetX>g2d_width) ? offsetX : g2d_width;
 				offsetX = 0;
-				offsetY += (texture != null ? texture.height + g2d_lineSpace : g2d_lineSpace);
+				offsetY += g2d_textureAtlas.lineHeight + g2d_lineSpace;
 				continue;
             }
 			texture = g2d_textureAtlas.getSubTexture(Std.string(g2d_text.charCodeAt(i)));
 			if (texture == null) continue;//throw new GError("Texture for character "+g2d_text.charAt(i)+" with code "+g2d_text.charCodeAt(i)+" not found!");
+
 			if (i>=node.numChildren) {
 				charSprite = cast GNodeFactory.createNodeWithComponent(GSprite);
 				node.addChild(charSprite.node);
@@ -189,13 +192,14 @@ class GTextureText extends GComponent implements IRenderable
 			if (maxWidth>0 && offsetX + texture.width>maxWidth) {
 				g2d_width = (offsetX>g2d_width) ? offsetX : g2d_width;
 				offsetX = 0;
-				offsetY+=texture.height+g2d_lineSpace;
+				offsetY += g2d_textureAtlas.lineHeight + g2d_lineSpace;
 			}
-			offsetX += texture.width / 2;
+
 			charSprite.node.transform.visible = true;
-			charSprite.node.transform.x = offsetX;
-			charSprite.node.transform.y = offsetY+texture.height/2;
-			offsetX += texture.width/2 + g2d_tracking;
+			charSprite.node.transform.x = offsetX + texture.xoffset;
+			charSprite.node.transform.y = offsetY + texture.yoffset;
+            trace(texture.xadvance, texture.xoffset, texture.yoffset, offsetX);
+			offsetX += texture.xadvance + g2d_tracking;
 		}
 		
 		g2d_width = (offsetX>g2d_width) ? offsetX : g2d_width;
@@ -204,12 +208,12 @@ class GTextureText extends GComponent implements IRenderable
 			node.getChildAt(i).transform.visible = false;
 		}
 
-		invalidateAlign();
+		g2d_invalidateAlign();
 		
 		g2d_invalidate = false;
 	}
 
-	private function invalidateAlign():Void {
+	private function g2d_invalidateAlign():Void {
 		switch (g2d_align) {
 			case GTextureTextAlignType.MIDDLE:
 				for (i in 0...node.numChildren) {

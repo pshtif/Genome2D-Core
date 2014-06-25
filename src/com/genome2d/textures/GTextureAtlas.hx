@@ -10,14 +10,18 @@ package com.genome2d.textures;
 
 #if swc
 import flash.utils.Dictionary;
-#end
 import flash.utils.RegExp;
+#end
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
 
 class GTextureAtlas extends GContextTexture {
     static public function getTextureAtlasById(p_id:String):GTextureAtlas {
+        return cast GContextTexture.getContextTextureById(p_id);
+    }
+
+    static public function getFontTextureAtlasById(p_id:String):GFontTextureAtlas {
         return cast GContextTexture.getContextTextureById(p_id);
     }
 
