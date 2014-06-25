@@ -27,6 +27,10 @@ import com.genome2d.context.GContextConfig;
 **/
 class Genome2D
 {
+    static public function main():Void {
+        // Abstract method to enable Haxe direct build
+    }
+
     /**
         Genome2D Version
     **/
