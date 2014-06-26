@@ -12,6 +12,7 @@ import com.genome2d.geom.GRectangle;
 class GFontTextureAtlas extends GTextureAtlas
 {
     public var lineHeight:Int = 0;
+    public var g2d_kerning:Map<Int,Map<Int,Int>>;
 
     #if swc
     override public function getSubTexture(p_subId:String):GCharTexture {
@@ -36,5 +37,20 @@ class GFontTextureAtlas extends GTextureAtlas
         #end
 
         return texture;
+    }
+
+    public function getKerning(p_first:Int, p_second:Int):Int {
+        if (g2d_kerning != null) {
+            var map:Map<Int,Int> = g2d_kerning.get(p_first);
+            if (map != null) {
+                if (!map.exists(p_second)) {
+                    return 0;
+                } else {
+                    return map.get(p_second);
+                }
+            }
+        }
+
+        return 0;
     }
 }

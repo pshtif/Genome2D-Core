@@ -6,7 +6,7 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderables;
+package com.genome2d.components.renderables.text;
 
 import com.genome2d.textures.GCharTexture;
 import com.genome2d.textures.GFontTextureAtlas;
@@ -67,22 +67,33 @@ class GTextureText extends GComponent implements IRenderable
 		return g2d_lineSpace;
 	}
 	
-	private var g2d_align:Int = 0;
-    /*
-     *  Text alignment
-     */
+	private var g2d_vAlign:Int = 0;
     #if swc @:extern #end
-	public var align(get,set):Int;
-    #if swc @:getter(align) #end
-	inline private function get_align():Int {
-		return g2d_align;
+	public var vAlign(get,set):Int;
+    #if swc @:getter(vAlign) #end
+	inline private function get_vAlign():Int {
+		return g2d_vAlign;
 	}
-    #if swc @:setter(align) #end
-	inline private function set_align(p_align:Int):Int {
-		g2d_align = p_align;
+    #if swc @:setter(vAlign) #end
+	inline private function set_vAlign(p_value:Int):Int {
+		g2d_vAlign = p_value;
 		g2d_invalidate = true;
-		return g2d_align;
+		return g2d_vAlign;
 	}
+
+    private var g2d_hAlign:Int = 0;
+    #if swc @:extern #end
+    public var hAlign(get,set):Int;
+    #if swc @:getter(hAlign) #end
+    inline private function get_hAlign():Int {
+        return g2d_hAlign;
+    }
+    #if swc @:setter(hAlign) #end
+    inline private function set_hAlign(p_value:Int):Int {
+        g2d_hAlign = p_value;
+        g2d_invalidate = true;
+        return g2d_hAlign;
+    }
 
     /*
      *  Maximum width of the text
@@ -157,75 +168,127 @@ class GTextureText extends GComponent implements IRenderable
 		return g2d_height * node.transform.g2d_worldScaleY;
 	}
 
+    private var g2d_chars:Array<GChar>;
+
     @:dox(hide)
 	public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
 		if (g2d_invalidate) invalidateText();
+
+        var charCount:Int = g2d_chars.length;
+        var cos:Float = 1;
+        var sin:Float = 0;
+        if (g2d_node.transform.g2d_worldRotation != 0) {
+            cos = Math.cos(node.transform.g2d_worldRotation);
+            sin = Math.sin(node.transform.g2d_worldRotation);
+        }
+
+        for (i in 0...charCount) {
+            var char:GChar = g2d_chars[i];
+
+            var tx:Float = char.g2d_x * node.transform.g2d_worldScaleX + g2d_node.transform.g2d_worldX;
+            var ty:Float = char.g2d_y * node.transform.g2d_worldScaleY + g2d_node.transform.g2d_worldY;
+            if (g2d_node.transform.g2d_worldRotation != 0) {
+                tx = (char.g2d_x * cos - char.g2d_y * sin) * node.transform.g2d_worldScaleX + g2d_node.transform.g2d_worldX;
+                ty = (char.g2d_y * cos + char.g2d_x * sin) * node.transform.g2d_worldScaleY + g2d_node.transform.g2d_worldY;
+            }
+
+            node.core.getContext().draw(char.g2d_texture, tx, ty, node.transform.g2d_worldScaleX, node.transform.g2d_worldScaleY, node.transform.g2d_worldRotation, node.transform.g2d_worldRed, node.transform.g2d_worldGreen, node.transform.g2d_worldBlue, node.transform.g2d_worldAlpha, 1, null);
+        }
 	}
 		
 	private function invalidateText():Void {
 		if (g2d_textureAtlas == null) return;
+        if (g2d_chars == null) g2d_chars = new Array<GChar>();
 		
 		g2d_width = 0;
 		var offsetX:Float = 0;
 		var offsetY:Float =  0;
-		var charSprite:GSprite;
+		var char:GChar;
 		var texture:GCharTexture = null;
+        var currentCharCode:Int = -1;
+        var previousCharCode:Int = -1;
+
+        var lines:Array<Array<GChar>> = new Array<Array<GChar>>();
+        var currentLine:Array<GChar> = new Array<GChar>();
 		
 		for (i in 0...g2d_text.length) {
+
 			if (g2d_text.charCodeAt(i) == 10) {
 				g2d_width = (offsetX>g2d_width) ? offsetX : g2d_width;
 				offsetX = 0;
 				offsetY += g2d_textureAtlas.lineHeight + g2d_lineSpace;
+                lines.push(currentLine);
+                currentLine = new Array<GChar>();
 				continue;
             }
-			texture = g2d_textureAtlas.getSubTexture(Std.string(g2d_text.charCodeAt(i)));
+
+            currentCharCode = g2d_text.charCodeAt(i);
+			texture = g2d_textureAtlas.getSubTexture(Std.string(currentCharCode));
 			if (texture == null) continue;//throw new GError("Texture for character "+g2d_text.charAt(i)+" with code "+g2d_text.charCodeAt(i)+" not found!");
 
-			if (i>=node.numChildren) {
-				charSprite = cast GNodeFactory.createNodeWithComponent(GSprite);
-				node.addChild(charSprite.node);
+            if (previousCharCode != -1) {
+                offsetX += g2d_textureAtlas.getKerning(previousCharCode,currentCharCode);
+            }
+			if (i>=g2d_chars.length) {
+				char = new GChar();
+				g2d_chars.push(char);
 			} else {
-				charSprite = cast node.getChildAt(i).getComponent(GSprite);
+				char = g2d_chars[i];
 			}
 
-			charSprite.texture = texture;
-			if (maxWidth>0 && offsetX + texture.width>maxWidth) {
+			char.g2d_texture = texture;
+
+			if (maxWidth>0 && offsetX + texture.xoffset + texture.width>maxWidth) {
 				g2d_width = (offsetX>g2d_width) ? offsetX : g2d_width;
 				offsetX = 0;
 				offsetY += g2d_textureAtlas.lineHeight + g2d_lineSpace;
+                lines.push(currentLine);
+                currentLine = new Array<GChar>();
 			}
 
-			charSprite.node.transform.visible = true;
-			charSprite.node.transform.x = offsetX + texture.xoffset;
-			charSprite.node.transform.y = offsetY + texture.yoffset;
-            trace(texture.xadvance, texture.xoffset, texture.yoffset, offsetX);
+			char.g2d_x = offsetX + texture.xoffset;
+			char.g2d_y = offsetY + texture.yoffset;
 			offsetX += texture.xadvance + g2d_tracking;
-		}
-		
-		g2d_width = (offsetX>g2d_width) ? offsetX : g2d_width;
-		g2d_height = offsetY + (texture!=null ? texture.height : 0);
-		for (i in g2d_text.length...node.numChildren) {
-			node.getChildAt(i).transform.visible = false;
+
+            currentLine.push(char);
+
+            previousCharCode = currentCharCode;
 		}
 
-		g2d_invalidateAlign();
+        lines.push(currentLine);
+		g2d_width = (offsetX>g2d_width) ? offsetX : g2d_width;
+		g2d_height = offsetY + g2d_textureAtlas.lineHeight;
+
+        var offsetY:Float = 0;
+        if (g2d_vAlign == GTextureTextVAlignType.MIDDLE) {
+            offsetX = g2d_height * .5;
+        } else if (g2d_vAlign == GTextureTextVAlignType.BOTTOM) {
+
+        }
+
+        for (i in 0...lines.length) {
+            var currentLine:Array<GChar> = lines[i];
+
+            var charCount:Int = currentLine.length;
+            if (charCount == 0) continue;
+            var offsetX:Float = 0;
+            var last:GChar = currentLine[charCount-1];
+            var rightOffset:Float = last.g2d_x - last.g2d_texture.xoffset + last.g2d_texture.xadvance;
+
+            if (g2d_hAlign == GTextureTextHAlignType.CENTER) {
+                offsetX = (g2d_width - rightOffset) * .5;
+            } else if (g2d_hAlign == GTextureTextHAlignType.RIGHT) {
+                offsetX = g2d_width - rightOffset;
+            }
+
+            for (j in 0...charCount) {
+                var char:GChar = currentLine[j];
+                char.g2d_x = char.g2d_x + offsetX;
+                char.g2d_y = char.g2d_y + offsetY;
+            }
+        }
 		
 		g2d_invalidate = false;
-	}
-
-	private function g2d_invalidateAlign():Void {
-		switch (g2d_align) {
-			case GTextureTextAlignType.MIDDLE:
-				for (i in 0...node.numChildren) {
-					var child:GNode = node.getChildAt(i);
-					child.transform.x -= g2d_width/2;
-					child.transform.y -= g2d_height/2;
-				}
-			case GTextureTextAlignType.TOP_RIGHT:
-				for (i in 0...node.numChildren) {
-					node.getChildAt(i).transform.x -= g2d_width;
-				}
-		}
 	}
 	
 	@:dox(hide)
@@ -253,8 +316,8 @@ class GTextureText extends GComponent implements IRenderable
         tx /= node.transform.g2d_worldScaleX*g2d_width;
         ty /= node.transform.g2d_worldScaleY*g2d_height;
 
-        var tw:Float = .5;
-        var th:Float = .5;
+        var tw:Float = 0;
+        var th:Float = 0;
 
         if (tx >= -tw && tx <= 1 - tw && ty >= -th && ty <= 1 - th) {
             node.dispatchNodeMouseSignal(p_contextSignal.type, node, tx*g2d_width, ty*g2d_height, p_contextSignal);
