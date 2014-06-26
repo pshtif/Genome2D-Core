@@ -126,7 +126,7 @@ class GParticleSystem extends GComponent implements IRenderable
                 particle.render(p_camera, this);
             } else {
                 var tx:Float = node.transform.g2d_worldX + (particle.x-node.transform.g2d_worldX)*1;//node.transform.g2d_worldScaleX;
-                    var ty:Float = node.transform.g2d_worldY + (particle.y-node.transform.g2d_worldY)*1;//node.transform.g2d_worldScaleY;
+                var ty:Float = node.transform.g2d_worldY + (particle.y-node.transform.g2d_worldY)*1;//node.transform.g2d_worldScaleY;
 
                 if (particle.overrideUvs) {
                     var zuvX:Float = particle.texture.uvX;
