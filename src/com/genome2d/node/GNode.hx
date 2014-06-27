@@ -261,10 +261,11 @@ class GNode
 		disposeChildren();
 
         while (g2d_numComponents>0) {
-            g2d_components.pop().dispose();
+            g2d_components.pop().g2d_dispose();
             g2d_numComponents--;
         }
 		g2d_transform = null;
+        g2d_renderable = null;
 		
 		if (parent != null) {
 			parent.removeChild(this);
@@ -519,8 +520,12 @@ class GNode
 
         g2d_components.remove(component);
         g2d_numComponents--;
+
+        if (Std.is(component, IRenderable)) {
+            g2d_renderable = cast component;
+        }
 		
-		component.dispose();
+		component.g2d_dispose();
 	}
 	
 	/****************************************************************************************************
