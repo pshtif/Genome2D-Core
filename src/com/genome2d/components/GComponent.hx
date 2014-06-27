@@ -34,16 +34,16 @@ import com.genome2d.signals.GMouseSignal;
 	public var id:String = "";
 
 	private var g2d_node:GNode;
+    /**
+        Component's node reference
+     **/
 	#if swc @:extern #end
 	public var node(get, never):GNode;
 	#if swc @:getter(node) #end
 	inline private function get_node():GNode {
 		return g2d_node;
 	}
-	
-	/**
-	 *  @private
-	 */
+
 	public function new() {
 	}
 	
@@ -97,6 +97,17 @@ import com.genome2d.signals.GMouseSignal;
     }
 
     /**
+	    Abstract method that should be overriden and implemented if you are creating your own components, its called each time a node that uses this component is processing mouse events
+	**/
+    public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
+        return false;
+    }
+
+    public function dispose():Void {
+
+    }
+
+    /**
 
     **/
 	public function initPrototype(p_prototypeXml:Xml):Void {
@@ -140,16 +151,11 @@ import com.genome2d.signals.GMouseSignal;
 	}
 	
 	/**
-	    Abstract method that should be overriden and implemented if you are creating your own components, its called each time a node that uses this component is processing mouse events
-	**/
-	public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
-		return false;	
-	}
-	
-	/**
 	    Base dispose method, if there is a disposing you need to do in your extending component you should override it and always call super.dispose() its used when a node using this component is being disposed
 	**/
-	public function dispose():Void {
+	private function g2d_dispose():Void {
+        dispose();
+
 		g2d_active = false;
 		
 		g2d_node = null;
