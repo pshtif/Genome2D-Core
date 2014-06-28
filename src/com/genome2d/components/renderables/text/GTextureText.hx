@@ -8,6 +8,7 @@
  */
 package com.genome2d.components.renderables.text;
 
+import com.genome2d.error.GError;
 import com.genome2d.textures.GCharTexture;
 import com.genome2d.textures.GFontTextureAtlas;
 import com.genome2d.geom.GRectangle;
@@ -138,6 +139,21 @@ class GTextureText extends GComponent implements IRenderable
 	}
 
     private var g2d_autoSize:Bool = false;
+    /*
+        Text should automatically resize width/height
+     */
+    #if swc @:extern #end
+    public var autoSize(get, set):Bool;
+    #if swc @:getter(autoSize) #end
+    inline private function get_autoSize():Bool {
+        return g2d_autoSize;
+    }
+    #if swc @:setter(width) #end
+    inline private function set_autoSize(p_value:Bool):Bool {
+        g2d_autoSize = p_value;
+        g2d_invalidate = true;
+        return g2d_autoSize;
+    }
 	
 	private var g2d_width:Float = 100;
     /*
@@ -224,70 +240,88 @@ class GTextureText extends GComponent implements IRenderable
         var lines:Array<Array<GChar>> = new Array<Array<GChar>>();
         var currentLine:Array<GChar> = new Array<GChar>();
         var charIndex:Int = 0;
-		
-		for (i in 0...g2d_text.length) {
+        var whiteSpaceIndex:Int = -1;
+		var i:Int = 0;
+
+		while (i<g2d_text.length) {
             // New line character
 			if (g2d_text.charCodeAt(i) == 10) {
                 if (g2d_autoSize) {
 				    g2d_width = (offsetX>g2d_width) ? offsetX : g2d_width;
                 }
-				offsetX = 0;
-				offsetY += g2d_textureAtlas.lineHeight + g2d_lineSpace;
                 previousCharCode = -1;
                 lines.push(currentLine);
                 currentLine = new Array<GChar>();
-                if (!g2d_autoSize && offsetY + g2d_textureAtlas.lineHeight + g2d_lineSpace > g2d_height) break;
+                if (!g2d_autoSize && offsetY + 2*(g2d_textureAtlas.lineHeight + g2d_lineSpace) > g2d_height) break;
+                offsetX = 0;
+                offsetY += g2d_textureAtlas.lineHeight + g2d_lineSpace;
             } else {
                 currentCharCode = g2d_text.charCodeAt(i);
                 texture = g2d_textureAtlas.getSubTexture(Std.string(currentCharCode));
-                if (texture == null) continue;//throw new GError("Texture for character "+g2d_text.charAt(i)+" with code "+g2d_text.charCodeAt(i)+" not found!");
+                if (texture == null) continue;// throw new GError("Texture for character "+g2d_text.charAt(i)+" with code "+g2d_text.charCodeAt(i)+" not found!");
 
                 if (previousCharCode != -1) {
                     offsetX += g2d_textureAtlas.getKerning(previousCharCode,currentCharCode);
                 }
-                // Not enough chars in pool
-                if (i>=g2d_chars.length) {
-                    char = new GChar();
-                    g2d_chars.push(char);
+
+                if (currentCharCode != 32) {
+                    if (charIndex>=g2d_chars.length) {
+                        char = new GChar();
+                        g2d_chars.push(char);
+                    } else {
+                        char = g2d_chars[charIndex];
+                    }
+
+                    char.g2d_code = currentCharCode;
+                    char.g2d_texture = texture;
+                    if (!g2d_autoSize && offsetX + texture.width>g2d_width) {
+                        lines.push(currentLine);
+                        var backtrack:Int = i-whiteSpaceIndex-1;
+                        var currentCount:Int = currentLine.length;
+                        currentLine.splice(currentLine.length-backtrack, backtrack);
+                        currentLine = new Array<GChar>();
+                        charIndex -= backtrack;
+                        if (backtrack>=currentCount) break;
+                        if (!g2d_autoSize && offsetY + 2*(g2d_textureAtlas.lineHeight + g2d_lineSpace) > g2d_height) break;
+                        i = whiteSpaceIndex+1;
+                        offsetX = 0;
+                        offsetY += g2d_textureAtlas.lineHeight + g2d_lineSpace;
+                        continue;
+                    }
+
+                    currentLine.push(char);
+                    char.g2d_visible = true;
+                    char.g2d_x = offsetX + texture.xoffset;
+                    char.g2d_y = offsetY + texture.yoffset;
+                    charIndex++;
                 } else {
-                    char = g2d_chars[charIndex];
+                    whiteSpaceIndex = i;
                 }
 
-                char.g2d_texture = texture;
-                if (!g2d_autoSize && offsetX + texture.width>g2d_width) {
-                    offsetX = 0;
-                    offsetY += g2d_textureAtlas.lineHeight + g2d_lineSpace;
-                    lines.push(currentLine);
-                    currentLine = new Array<GChar>();
-                    if (!g2d_autoSize && offsetY + g2d_textureAtlas.lineHeight + g2d_lineSpace > g2d_height) break;
-                }
-
-                char.g2d_visible = true;
-                char.g2d_x = offsetX + texture.xoffset;
-                char.g2d_y = offsetY + texture.yoffset;
                 offsetX += texture.xadvance + g2d_tracking;
 
-                currentLine.push(char);
-
                 previousCharCode = currentCharCode;
-                charIndex++;
             }
+            ++i;
 		}
+        lines.push(currentLine);
 
         var charCount:Int = g2d_chars.length;
         for (i in charIndex...charCount) {
             g2d_chars[i].g2d_visible = false;
         }
 
-        lines.push(currentLine);
-		g2d_width = (offsetX>g2d_width) ? offsetX : g2d_width;
-		g2d_height = offsetY + g2d_textureAtlas.lineHeight;
+        if (g2d_autoSize) {
+		    g2d_width = offsetX;
+		    g2d_height = offsetY + g2d_textureAtlas.lineHeight;
+        }
 
+        var bottom:Float = offsetY + g2d_textureAtlas.lineHeight;
         var offsetY:Float = 0;
         if (g2d_vAlign == GTextureTextVAlignType.MIDDLE) {
-            offsetX = g2d_height * .5;
+            offsetY = (g2d_height - bottom) * .5;
         } else if (g2d_vAlign == GTextureTextVAlignType.BOTTOM) {
-
+            offsetY = g2d_height - bottom;
         }
 
         for (i in 0...lines.length) {
@@ -297,12 +331,12 @@ class GTextureText extends GComponent implements IRenderable
             if (charCount == 0) continue;
             var offsetX:Float = 0;
             var last:GChar = currentLine[charCount-1];
-            var rightOffset:Float = last.g2d_x - last.g2d_texture.xoffset + last.g2d_texture.xadvance;
+            var right:Float = last.g2d_x - last.g2d_texture.xoffset + last.g2d_texture.xadvance;
 
             if (g2d_hAlign == GTextureTextHAlignType.CENTER) {
-                offsetX = (g2d_width - rightOffset) * .5;
+                offsetX = (g2d_width - right) * .5;
             } else if (g2d_hAlign == GTextureTextHAlignType.RIGHT) {
-                offsetX = g2d_width - rightOffset;
+                offsetX = g2d_width - right;
             }
 
             for (j in 0...charCount) {

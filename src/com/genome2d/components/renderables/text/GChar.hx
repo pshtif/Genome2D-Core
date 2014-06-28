@@ -1,5 +1,6 @@
 package com.genome2d.components.renderables.text;
 
+import String;
 import com.genome2d.textures.GCharTexture;
 
 @:allow(com.genome2d.components.renderables.text.GTextureText)
@@ -18,6 +19,6 @@ class GChar
     }
 
     public function toString():String {
-        return g2d_x+":"+g2d_y;
+        return String.fromCharCode(g2d_code)+":"+g2d_x+":"+g2d_y;
     }
 }
