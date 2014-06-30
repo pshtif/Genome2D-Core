@@ -148,7 +148,7 @@ class GTextureText extends GComponent implements IRenderable
     inline private function get_autoSize():Bool {
         return g2d_autoSize;
     }
-    #if swc @:setter(width) #end
+    #if swc @:setter(autoSize) #end
     inline private function set_autoSize(p_value:Bool):Bool {
         g2d_autoSize = p_value;
         g2d_invalidate = true;
