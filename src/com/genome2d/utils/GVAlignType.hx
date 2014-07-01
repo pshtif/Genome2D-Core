@@ -6,12 +6,12 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderables.text;
+package com.genome2d.utils;
 
 /**
-    `GTextureText` vertical alignment types
+    Vertical alignment types
 **/
-class GTextureTextVAlignType
+class GVAlignType
 {
 	static public inline var TOP:Int = 0;
 

@@ -6,12 +6,12 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderables.text;
+package com.genome2d.utils;
 
 /**
-    `GTextureText` horizontal alignment types
+    Horizontal alignment types
 **/
-class GTextureTextHAlignType
+class GHAlignType
 {
 	static public inline var LEFT:Int = 0;
 
