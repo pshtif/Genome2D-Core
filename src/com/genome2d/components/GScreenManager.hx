@@ -21,7 +21,7 @@ class GScreenManager extends GComponent {
         g2d_cameraController.node.transform.setPosition(g2d_screenWidth*.5, g2d_screenHeight*.5);
 
         if (p_resize) {
-            node.core.getContext().onResizeSignal.add(resizeHandler);
+            node.core.getContext().onResize.add(resizeHandler);
         }
     }
 
