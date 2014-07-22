@@ -23,7 +23,6 @@ class GFlashVideo extends GFlashObject {
     }
 
     private var g2d_playing:Bool = false;
-    private var g2d_textureId:String;
 
     static private var g2d_count:Int = 0;
 
@@ -46,10 +45,10 @@ class GFlashVideo extends GFlashObject {
     }
 
     public function onMetaData(p_data:Object):Void {
-        g2d_nativeVideo.width = (p_data.width!=undefined) ? p_data.width : 320;
-        g2d_nativeVideo.height = (p_data.height!=undefined) ? p_data.height : 240;
+        g2d_nativeVideo.width = (p_data.width!="undefined") ? p_data.width : 320;
+        g2d_nativeVideo.height = (p_data.height!="undefined") ? p_data.height : 240;
 
-        if (updateFrameRate != 0 && p_data.framerate != undefined) updateFrameRate = p_data.framerate;
+        if (updateFrameRate != 0 && p_data.framerate != "undefined") updateFrameRate = p_data.framerate;
     }
 
     public function onPlayStatus(p_data:Object):Void {
@@ -67,7 +66,6 @@ class GFlashVideo extends GFlashObject {
         switch (event.info.code) {
             case "NetStream.Play.Stop":
                 g2d_stream.seek(0);
-                break;
         }
     }
 

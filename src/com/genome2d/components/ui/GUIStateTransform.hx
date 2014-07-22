@@ -6,7 +6,7 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.screen;
+package com.genome2d.components.ui;
 
 class GUIStateTransform {
     public var time:Float;

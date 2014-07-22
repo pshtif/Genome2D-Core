@@ -292,10 +292,10 @@ class GTransform extends GComponent
 		g2d_localScaleY = g2d_worldScaleY = p_scaleY;
 	}
 	
-	inline private function invalidate(p_invalidateTransform:Bool, p_invalidateColor:Bool):Void {
+	inline private function invalidate(p_invalidateParentTransform:Bool, p_invalidateParentColor:Bool):Void {
         var parentTransform:GTransform = node.parent.transform;
 
-        if (p_invalidateTransform && !useWorldSpace) {
+        if (p_invalidateParentTransform && !useWorldSpace) {
             if (parentTransform.g2d_worldRotation != 0) {
                 var cos:Float = Math.cos(parentTransform.g2d_worldRotation);
                 var sin:Float = Math.sin(parentTransform.g2d_worldRotation);
@@ -314,7 +314,7 @@ class GTransform extends GComponent
             g2d_transformDirty = false;
         }
 
-        if (p_invalidateColor && !useWorldColor) {
+        if (p_invalidateParentColor && !useWorldColor) {
             g2d_worldRed = g2d_localRed * parentTransform.g2d_worldRed;
             g2d_worldGreen = g2d_localGreen * parentTransform.g2d_worldGreen;
             g2d_worldBlue = g2d_localBlue * parentTransform.g2d_worldBlue;

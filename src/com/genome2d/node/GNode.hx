@@ -199,13 +199,11 @@ class GNode
 
             if (!g2d_active || !transform.visible || ((cameraGroup&p_camera.mask) == 0 && cameraGroup != 0) || (g2d_usedAsMask>0 && !p_renderAsMask)) return;
 
-            if (!p_renderAsMask) {
-                if (mask != null) {
-                    context.renderToStencil(g2d_activeMasks.length);
-                    mask.render(true, false, p_camera, true, false);
-                    g2d_activeMasks.push(mask);
-                    context.renderToColor(g2d_activeMasks.length);
-                }
+            if (!p_renderAsMask && mask != null) {
+                context.renderToStencil(g2d_activeMasks.length);
+                mask.render(true, false, p_camera, true, false);
+                g2d_activeMasks.push(mask);
+                context.renderToColor(g2d_activeMasks.length);
             }
 
             // Use matrix
@@ -236,12 +234,10 @@ class GNode
                 context.setMaskRect(previousMaskRect);
             }
 
-            if (!p_renderAsMask) {
-                if (mask != null) {
-                    g2d_activeMasks.pop();
-                    if (g2d_activeMasks.length==0) context.clearStencil();
-                    context.renderToColor(g2d_activeMasks.length);
-                }
+            if (!p_renderAsMask && mask != null) {
+                g2d_activeMasks.pop();
+                if (g2d_activeMasks.length==0) context.clearStencil();
+                context.renderToColor(g2d_activeMasks.length);
             }
 
             // Use matrix

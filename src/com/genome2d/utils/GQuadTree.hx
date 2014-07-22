@@ -29,7 +29,7 @@ class GQuadTree {
 
         g2d_root = new GQuadTreeNode(g2d_left, g2d_top, g2d_right, g2d_bottom);
 
-        g2d_map = new Map<Dynamic,GQuadTreeNode>();
+        g2d_map = new Map<String,GQuadTreeNode>();
     }
 
     public function add(p_object:Dynamic, p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Bool {
@@ -43,13 +43,13 @@ class GQuadTree {
     }
 
     public function remove(p_object:Dynamic):Bool {
-        var node:GQuadTreeNode = g2d_map.get(object);
+        var node:GQuadTreeNode = g2d_map.get(p_object.name);
 
         if (node == null) return false;
 
         node.remove(p_object);
 
-        g2d_map.remove(p_object);
+        g2d_map.remove(p_object.name);
 
         return true;
     }

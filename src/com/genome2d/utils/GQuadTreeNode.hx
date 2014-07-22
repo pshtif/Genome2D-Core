@@ -45,7 +45,7 @@ class GQuadTreeNode {
         var hw:Float = g2d_width*.5;
         var hh:Float = g2d_height*.5;
 
-        if (w<MIN_WIDTH || h<MIN_HEIGHT) {
+        if (hw<MIN_WIDTH || hh<MIN_HEIGHT) {
             g2d_objects.push(p_object);
             return this;
         }
@@ -83,14 +83,14 @@ class GQuadTreeNode {
         for (i in 0...count) {
             var container:Container = g2d_objects[i];
 
-            if (container.object == object) {
+            if (container.object == p_object) {
                 g2d_objects.remove(container);
                 return;
             }
         }
     }
 
-    private function getObjectsInBounds(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float, p_result:Array<Dynamic>):Void {
+    public function getObjectsInBounds(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float, p_result:Array<Dynamic>):Void {
         if (!intersects(g2d_left, g2d_top, g2d_right, g2d_bottom, p_left, p_top, p_right, p_bottom)) {
             return;
         }

@@ -1,5 +1,6 @@
 package com.genome2d.components.renderables.tilemap;
 
+import com.genome2d.textures.GTexture;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GContextCamera;
 import com.genome2d.error.GError;
@@ -55,28 +56,28 @@ class GTileMap extends GComponent implements IRenderable
         var firstY:Float = -mapHalfHeight + (g2d_iso ? g2d_tileHeight/2 : 0);
 
         // Index of top left visible tile
-        var indexX:Int = (startX - firstX) / g2d_tileWidth;
+        var indexX:Int = Std.int((startX - firstX) / g2d_tileWidth);
         if (indexX<0) indexX = 0;
-        var indexY:Int = (startY - firstY) / (g2d_iso ? g2d_tileHeight/2 : g2d_tileHeight);
+        var indexY:Int = Std.int((startY - firstY) / (g2d_iso ? g2d_tileHeight/2 : g2d_tileHeight));
         if (indexY<0) indexY = 0;
 
         // Position of bottom right tile from map center
         var endX:Float = p_camera.x - g2d_node.transform.g2d_worldX + cameraWidth * .5 - (g2d_iso ? g2d_tileWidth/2 : g2d_tileWidth);
         var endY:Float = p_camera.y - g2d_node.transform.g2d_worldY + cameraHeight * .5 - (g2d_iso ? 0 : g2d_tileHeight);
 
-        var indexWidth:Int = (endX - firstX) / g2d_tileWidth - indexX+2;
+        var indexWidth:Int = Std.int((endX - firstX) / g2d_tileWidth - indexX+2);
         if (indexWidth>g2d_width-indexX) indexWidth = g2d_width - indexX;
 
-        var indexHeight:Int = (endY - firstY) / (g2d_iso ? g2d_tileHeight/2 : g2d_tileHeight) - indexY+2;
+        var indexHeight:Int = Std.int((endY - firstY) / (g2d_iso ? g2d_tileHeight/2 : g2d_tileHeight) - indexY+2);
         if (indexHeight>g2d_height-indexY) indexHeight = g2d_height - indexY;
         //trace(indexX, indexY, indexWidth, indexHeight);
         var tileCount:Int = indexWidth*indexHeight;
-        for (var i:Int=0; i<tileCount; ++i) {
-            var row:Int = Int(i / indexWidth);
+        for (i in 0...tileCount) {
+            var row:Int = Std.int(i / indexWidth);
             var x:Float = g2d_node.transform.g2d_worldX + (indexX + (i % indexWidth)) * g2d_tileWidth - mapHalfWidth + (g2d_iso && (indexY+row)%2 == 1 ? g2d_tileWidth : g2d_tileWidth/2);
             var y:Float = g2d_node.transform.g2d_worldY + (indexY + row) * (g2d_iso ? g2d_tileHeight/2 : g2d_tileHeight) - mapHalfHeight + g2d_tileHeight/2;
 
-            var index:Int = indexY * g2d_width + indexX + Int(i / indexWidth) * g2d_width + i % indexWidth;
+            var index:Int = indexY * g2d_width + indexX + Std.int(i / indexWidth) * g2d_width + i % indexWidth;
             var tile:GTile = g2d_tiles[index];
             // TODO: All transforms
             if (tile != null && tile.textureId != null) node.core.getContext().draw(GTexture.getTextureById(tile.textureId), x, y, 1, 1, 0, 1, 1, 1, 1, 1);
