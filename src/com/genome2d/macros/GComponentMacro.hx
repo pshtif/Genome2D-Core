@@ -38,10 +38,14 @@ class GComponentMacro {
                         case TPath(p):
                             switch (Context.getType(p.name)) {
                                 case TInst(type, params):
-                                    for (inter in type.get().interfaces) {
-                                        if (inter.t.toString() == "com.genome2d.components.IGPrototypable") {
-                                            prototypes.push(i.name+"|"+type.toString());
+                                    if (type.toString() != "String") {
+                                        for (inter in type.get().interfaces) {
+                                            if (inter.t.toString() == "com.genome2d.components.IGPrototypable") {
+                                                prototypes.push(i.name+"|"+type.toString());
+                                            }
                                         }
+                                    } else {
+                                        prototypes.push(i.name+"|"+type.toString());
                                     }
                                 case TAbstract(type, params):
                                     prototypes.push(i.name+"|"+type.toString());
@@ -55,10 +59,14 @@ class GComponentMacro {
                         case TPath(p):
                             switch (Context.getType(p.name)) {
                                 case TInst(type, params):
-                                    for (inter in type.get().interfaces) {
-                                        if (inter.t.toString() == "com.genome2d.components.IGPrototypable") {
-                                            prototypes.push(i.name+"|"+type.toString());
+                                    if (type.toString() != "String") {
+                                        for (inter in type.get().interfaces) {
+                                            if (inter.t.toString() == "com.genome2d.components.IGPrototypable") {
+                                                prototypes.push(i.name+"|"+type.toString());
+                                            }
                                         }
+                                    } else {
+                                        prototypes.push(i.name+"|"+type.toString());
                                     }
                                 case TAbstract(type, params):
                                     prototypes.push(i.name+"|"+type.toString());
