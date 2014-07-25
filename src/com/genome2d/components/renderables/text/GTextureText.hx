@@ -40,7 +40,7 @@ class GTextureText extends GComponent implements IRenderable
      *  Default 0
      */
     #if swc @:extern #end
-	public var tracking(get, set):Float;
+	@prototype public var tracking(get, set):Float;
     #if swc @:getter(tracking) #end
 	inline private function get_tracking():Float {
 		return g2d_tracking;
@@ -58,7 +58,7 @@ class GTextureText extends GComponent implements IRenderable
      *  Default 0
      */
     #if swc @:extern #end
-	public var lineSpace(get, set):Float;
+	@prototype public var lineSpace(get, set):Float;
     #if swc @:getter(lineSpace) #end
 	inline private function get_lineSpace():Float {
 		return g2d_lineSpace;
@@ -72,7 +72,7 @@ class GTextureText extends GComponent implements IRenderable
 	
 	private var g2d_vAlign:Int = 0;
     #if swc @:extern #end
-	public var vAlign(get,set):Int;
+	@prototype public var vAlign(get,set):Int;
     #if swc @:getter(vAlign) #end
 	inline private function get_vAlign():Int {
 		return g2d_vAlign;
@@ -86,7 +86,7 @@ class GTextureText extends GComponent implements IRenderable
 
     private var g2d_hAlign:Int = 0;
     #if swc @:extern #end
-    public var hAlign(get,set):Int;
+    @prototype public var hAlign(get,set):Int;
     #if swc @:getter(hAlign) #end
     inline private function get_hAlign():Int {
         return g2d_hAlign;
@@ -103,7 +103,7 @@ class GTextureText extends GComponent implements IRenderable
      *  Texture atlas id used for character textures lookup
      */
     #if swc @:extern #end
-	public var textureAtlasId(get, set):String;
+	@prototype public var textureAtlasId(get, set):String;
     #if swc @:getter(textureAtlasId) #end
 	inline private function get_textureAtlasId():String {
 		if (g2d_textureAtlas != null) return g2d_textureAtlas.getId();
@@ -128,7 +128,7 @@ class GTextureText extends GComponent implements IRenderable
      *  Text
      */
     #if swc @:extern #end
-	public var text(get, set):String;
+	@prototype public var text(get, set):String;
     #if swc @:getter(text) #end
 	inline private function get_text():String {
 		return g2d_text;
@@ -145,7 +145,7 @@ class GTextureText extends GComponent implements IRenderable
         Text should automatically resize width/height
      */
     #if swc @:extern #end
-    public var autoSize(get, set):Bool;
+    @prototype public var autoSize(get, set):Bool;
     #if swc @:getter(autoSize) #end
     inline private function get_autoSize():Bool {
         return g2d_autoSize;
@@ -162,7 +162,7 @@ class GTextureText extends GComponent implements IRenderable
         Width of the text
      */
     #if swc @:extern #end
-	public var width(get, set):Float;
+	@prototype public var width(get, set):Float;
     #if swc @:getter(width) #end
 	inline private function get_width():Float {
 		if (g2d_autoSize && g2d_invalidate) invalidateText();
@@ -181,7 +181,7 @@ class GTextureText extends GComponent implements IRenderable
         Height of the text
      */
     #if swc @:extern #end
-	public var height(get, set):Float;
+	@prototype public var height(get, set):Float;
     #if swc @:getter(height) #end
 	public function get_height():Float {		
 		if (g2d_autoSize && g2d_invalidate) invalidateText();

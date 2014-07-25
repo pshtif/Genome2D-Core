@@ -96,7 +96,7 @@ class GNode
 
 	public function setActive(p_value:Bool):Void {
 		if (p_value != g2d_active) {
-			if (g2d_disposed) throw new GError();
+			if (g2d_disposed) new GError("Node already disposed.");
 			
 			g2d_active = p_value;
 			g2d_transform.setActive(g2d_active);
@@ -155,6 +155,9 @@ class GNode
 	}
 
 	private var g2d_disposed:Bool = false;
+    inline private function isDisposed():Bool {
+        return g2d_disposed;
+    }
 
 	static private var g2d_nodeCount:Int = 0;
 
@@ -266,6 +269,62 @@ class GNode
 		if (parent != null) {
 			parent.removeChild(this);
 		}
+
+		// Dispose signals
+        if (g2d_onAddedToStage != null) {
+            g2d_onAddedToStage.removeAll();
+            g2d_onAddedToStage = null;
+        }
+
+        if (g2d_onRemovedFromStage != null) {
+            g2d_onRemovedFromStage.removeAll();
+            g2d_onRemovedFromStage = null;
+        }
+
+        if (g2d_onMouseClick != null) {
+            g2d_onMouseClick.removeAll();
+            g2d_onMouseClick = null;
+        }
+
+        if (g2d_onMouseDown != null) {
+            g2d_onMouseDown.removeAll();
+            g2d_onMouseDown = null;
+        }
+
+        if (g2d_onMouseMove != null) {
+            g2d_onMouseMove.removeAll();
+            g2d_onMouseMove = null;
+        }
+
+        if (g2d_onMouseOut != null) {
+            g2d_onMouseOut.removeAll();
+            g2d_onMouseOut = null;
+        }
+
+        if (g2d_onMouseOver != null) {
+            g2d_onMouseOver.removeAll();
+            g2d_onMouseOver = null;
+        }
+
+        if (g2d_onMouseUp != null) {
+            g2d_onMouseUp.removeAll();
+            g2d_onMouseUp = null;
+        }
+
+        if (g2d_onRightMouseClick != null) {
+            g2d_onRightMouseClick.removeAll();
+            g2d_onRightMouseClick = null;
+        }
+
+        if (g2d_onRightMouseDown != null) {
+            g2d_onRightMouseDown.removeAll();
+            g2d_onRightMouseDown = null;
+        }
+
+        if (g2d_onRightMouseUp != null) {
+            g2d_onRightMouseUp.removeAll();
+            g2d_onRightMouseUp = null;
+        }
 		
 		g2d_disposed = true;
 	}
@@ -440,7 +499,7 @@ class GNode
 	 */
 	public function getComponent(p_componentLookupClass:Class<GComponent>):GComponent {
         // TODO use Lambda
-		if (g2d_disposed) throw new GError();
+		if (g2d_disposed) new GError("Node already disposed.");
         for (i in 0...g2d_numComponents) {
             var component:GComponent = g2d_components[i];
             if (component.g2d_lookupClass == p_componentLookupClass) return component;
@@ -456,7 +515,7 @@ class GNode
      *  Has component
      **/
 	public function hasComponent(p_componentLookupClass:Class<GComponent>):Bool {
-		if (g2d_disposed) throw new GError();
+		if (g2d_disposed) new GError("Node already disposed.");
         return getComponent(p_componentLookupClass) != null;
 	}
 	
@@ -466,13 +525,13 @@ class GNode
 	 *	@param p_componentClass Component type that should be instanced and attached to this node
 	 */
 	public function addComponent(p_componentClass:Class<GComponent>, p_componentLookupClass:Class<GComponent> = null):GComponent {
-		if (g2d_disposed) throw new GError();
+		if (g2d_disposed) new GError("Node already disposed.");
 		if (p_componentLookupClass == null) p_componentLookupClass = p_componentClass;
         var lookup:GComponent = getComponent(p_componentLookupClass);
 		if (lookup != null) return lookup;
 
         var component:GComponent = Type.createInstance(p_componentClass,[]);
-        if (component == null) throw new GError();
+        if (component == null) new GError("Invalid component.");
         component.g2d_node = this;
         component.g2d_lookupClass = p_componentLookupClass;
 
@@ -491,10 +550,16 @@ class GNode
 	}
 
     public function addComponentPrototype(p_prototype:Xml):GComponent {
-        if (g2d_disposed) throw new GError();
+        if (g2d_disposed) new GError("Node already disposed.");
 
         var componentClass:Class<GComponent> = cast Type.resolveClass(p_prototype.get("componentClass"));
+        if (componentClass == null) {
+            new GError("Non existing componentClass "+p_prototype.get("componentClass"));
+        }
         var componentLookupClass:Class<GComponent> = cast Type.resolveClass(p_prototype.get("componentLookupClass"));
+        if (componentLookupClass == null) {
+            new GError("Non existing componentLookupClass "+p_prototype.get("componentLookupClass"));
+        }
         var component:GComponent = addComponent(componentClass, componentLookupClass);
 
         component.initPrototype(p_prototype);
@@ -509,7 +574,7 @@ class GNode
 	 * 	@param p_componentClass Component type that should be removed
 	 */
 	public function removeComponent(p_componentLookupClass:Class<GComponent>):Void {
-		if (g2d_disposed) throw new GError();
+		if (g2d_disposed) new GError("Node already disposed.");
 		var component:GComponent = getComponent(p_componentLookupClass);
 
 		if (component == null || component == transform) return;

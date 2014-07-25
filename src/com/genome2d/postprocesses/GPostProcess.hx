@@ -8,6 +8,7 @@
  */
 package com.genome2d.postprocesses;
 
+import com.genome2d.error.GError;
 import com.genome2d.geom.GMatrix3D;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.IContext;
@@ -41,7 +42,7 @@ class GPostProcess {
     private var g2d_id:String;
     public function new(p_passes:Int = 1, p_filters:Array<GFilter> = null) {
         g2d_id = Std.string(g2d_count++);
-        if (p_passes<1) throw "There are no passes";
+        if (p_passes<1) new GError("There are no passes.");
 
         g2d_passes = p_passes;
         g2d_matrix = new GMatrix3D();

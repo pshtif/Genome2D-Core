@@ -27,8 +27,14 @@ class GNodeFactory
 	}
 	
 	static public function createFromPrototype(p_prototypeXml:Xml):GNode {
-		if (p_prototypeXml == null) throw new GError("Null prototype");
-		
+		if (p_prototypeXml == null) new GError("Null prototype");
+
+        if (p_prototypeXml.nodeType == Xml.Document) {
+            p_prototypeXml = p_prototypeXml.firstChild();
+        }
+
+        if (p_prototypeXml.nodeName != "node") new GError("Incorrect GNode prototype XML");
+
 		var node:GNode = new GNode();
 		node.mouseEnabled = (p_prototypeXml.get("mouseEnabled") == "true") ? true : false;
 		node.mouseChildren = (p_prototypeXml.get("mouseChildren") == "true") ? true : false;

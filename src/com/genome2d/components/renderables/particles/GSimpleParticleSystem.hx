@@ -109,8 +109,6 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 
 	public var burst:Bool = false;
 
-	public var special:Bool = false;
-
 	private var g2d_accumulatedTime:Float = 0;
 	private var g2d_accumulatedEmission:Float = 0;
 
@@ -120,6 +118,71 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 	private var g2d_activeParticles:Int = 0;
 
 	private var g2d_lastUpdateTime:Float;
+
+    #if swc @:extern #end
+    @prototype public var settings(get,set):String;
+    #if swc @:getter(settings) #end
+    inline private function get_settings():String {
+        return blendMode+"|"+emit+"|"+useWorldSpace+"|"+initialScale+"|"+initialScaleVariance+"|"+endScale+"|"+endScaleVariance+"|"+energy+"|"+energyVariance+"|"+emission+"|"+emissionVariance+"|"+emissionTime+"|"+emissionDelay+"|"+initialVelocity+"|"+initialVelocityVariance+"|"+initialAcceleration+"|"+initialAccelerationVariance+"|"+initialAngularVelocity+"|"+initialAngularVelocityVariance+"|"+
+        initialRed+"|"+initialRedVariance+"|"+initialGreen+"|"+initialGreenVariance+"|"+initialBlue+"|"+initialBlueVariance+"|"+initialAlpha+"|"+initialAlphaVariance+"|"+
+        endRed+"|"+endRedVariance+"|"+endGreen+"|"+endGreenVariance+"|"+endBlue+"|"+endBlueVariance+"|"+endAlpha+"|"+endAlphaVariance+"|"+
+        dispersionXVariance+"|"+dispersionYVariance+"|"+dispersionAngle+"|"+dispersionAngleVariance+"|"+initialAngle+"|"+initialAngleVariance+"|"+burst+"|"+textureId;
+    }
+    #if swc @:setter(settings) #end
+    inline private function set_settings(p_value:String):String {
+        var split:Array<String> = p_value.split("|");
+
+        blendMode = Std.parseInt(split[0]);
+        emit = split[1]=="true" ? true : false;
+        useWorldSpace = split[2]=="true" ? true : false;
+        initialScale = Std.parseFloat(split[3]);
+        initialScaleVariance = Std.parseFloat(split[4]);
+        endScale = Std.parseFloat(split[5]);
+        endScaleVariance = Std.parseFloat(split[6]);
+        energy = Std.parseFloat(split[7]);
+        energyVariance = Std.parseFloat(split[8]);
+        emission = Std.parseInt(split[9]);
+        emissionVariance = Std.parseInt(split[10]);
+        emissionTime = Std.parseFloat(split[11]);
+        emissionDelay = Std.parseFloat(split[12]);
+
+        initialVelocity = Std.parseFloat(split[13]);
+        initialVelocityVariance = Std.parseFloat(split[14]);
+        initialAcceleration = Std.parseFloat(split[15]);
+        initialAccelerationVariance = Std.parseFloat(split[16]);
+        initialAngularVelocity = Std.parseFloat(split[17]);
+        initialAngularVelocityVariance = Std.parseFloat(split[18]);
+
+        initialRed = Std.parseFloat(split[19]);
+        initialRedVariance = Std.parseFloat(split[20]);
+        initialGreen = Std.parseFloat(split[21]);
+        initialGreenVariance = Std.parseFloat(split[22]);
+        initialBlue = Std.parseFloat(split[23]);
+        initialBlueVariance = Std.parseFloat(split[24]);
+        initialAlpha = Std.parseFloat(split[25]);
+        initialAlphaVariance = Std.parseFloat(split[26]);
+
+        endRed = Std.parseFloat(split[27]);
+        endRedVariance = Std.parseFloat(split[28]);
+        endGreen = Std.parseFloat(split[29]);
+        endGreenVariance = Std.parseFloat(split[30]);
+        endBlue = Std.parseFloat(split[31]);
+        endBlueVariance = Std.parseFloat(split[32]);
+        endAlpha = Std.parseFloat(split[33]);
+        endAlphaVariance = Std.parseFloat(split[34]);
+
+        dispersionXVariance = Std.parseFloat(split[35]);
+        dispersionYVariance = Std.parseFloat(split[36]);
+        dispersionAngle = Std.parseFloat(split[37]);
+        dispersionAngleVariance = Std.parseFloat(split[38]);
+        initialAngle = Std.parseFloat(split[39]);
+        initialAngleVariance = Std.parseFloat(split[40]);
+        burst = split[41]=="true" ? true : false;
+
+        textureId = split[42];
+
+        return p_value;
+    }
 	
 	public var texture:GTexture;
 	

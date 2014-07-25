@@ -146,7 +146,7 @@ import com.genome2d.signals.GMouseSignal;
 		try {
 			Reflect.setProperty(this, p_propertyXml.get("name"), value);
 		} catch (e:Dynamic) {
-			trace("bindPrototypeProperty error", e, p_propertyXml.get("name"), value);
+			//trace("bindPrototypeProperty error", e, p_propertyXml.get("name"), value);
 		}
 	}
 	

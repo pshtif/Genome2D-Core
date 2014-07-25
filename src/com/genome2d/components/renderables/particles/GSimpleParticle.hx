@@ -217,7 +217,7 @@ class GSimpleParticle
 		/*
 		if (nX<=0 || nX>=800) nVelocityX = -nVelocityX;
 		if (nY<=0 || nY>=600) nVelocityY = -nVelocityY;
-		/**/
+		/*
 		
 		if (p_emitter.special) {
 			var n:Float = Math.sqrt(g2d_velocityX*g2d_velocityX+g2d_velocityY*g2d_velocityY);

@@ -20,7 +20,7 @@ class GTileMap extends GComponent implements IRenderable
     private var g2d_iso:Bool = false;
 
     public function setTiles(p_tiles:Array<GTile>, p_mapWidth:Int, p_mapHeight:Int, p_tileWidth:Int, p_tileHeight:Int,  p_iso:Bool = false):Void {
-        if (p_mapWidth*p_mapHeight != p_tiles.length) throw new GError("Invalid tile map.");
+        if (p_mapWidth*p_mapHeight != p_tiles.length) new GError("Invalid tile map.");
     
         g2d_tiles = p_tiles;
         g2d_width = p_mapWidth;
