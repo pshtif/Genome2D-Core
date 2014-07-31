@@ -62,6 +62,18 @@ class GParticleSystem extends GComponent implements IRenderable
 
     public var texture:GTexture;
 
+    #if swc @:extern #end
+    public var textureId(get, set):String;
+    #if swc @:getter(textureId) #end
+    inline private function get_textureId():String {
+        return (texture != null) ? texture.getId() : "";
+    }
+    #if swc @:setter(textureId) #end
+    inline private function set_textureId(p_value:String):String {
+        texture = GTexture.getTextureById(p_value);
+        return p_value;
+    }
+
     override public function init():Void {
         particlePool = GParticlePool.g2d_defaultPool;
 
@@ -83,7 +95,7 @@ class GParticleSystem extends GComponent implements IRenderable
         }
     }
 
-    private function update(p_deltaTime:Float):Void {
+    public function update(p_deltaTime:Float):Void {
         if (emit && emission != null ) {
             var dt:Float = p_deltaTime * .001;
             g2d_accumulatedTime += dt;
@@ -177,5 +189,12 @@ class GParticleSystem extends GComponent implements IRenderable
 
     public function getBounds(p_target:GRectangle = null):GRectangle {
         return null;
+    }
+
+    override public function dispose():Void {
+        while (g2d_firstParticle != null) deactivateParticle(g2d_firstParticle);
+        node.core.onUpdate.remove(update);
+
+        super.dispose();
     }
 }
