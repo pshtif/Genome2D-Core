@@ -34,7 +34,7 @@ class Genome2D
     /**
         Genome2D Version
     **/
-	inline static public var VERSION:String = "1.0.268";
+	inline static public var VERSION:String = "1.0.271";
 
 	static private var g2d_instance:Genome2D;
 	static private var g2d_instantiable:Bool = false;
