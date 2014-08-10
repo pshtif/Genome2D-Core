@@ -1,5 +1,6 @@
 package com.genome2d.components.renderables.tilemap;
 
+import com.genome2d.context.GBlendMode;
 import com.genome2d.textures.GTexture;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GContextCamera;
@@ -8,6 +9,8 @@ import com.genome2d.node.GNode;
 
 class GTileMap extends GComponent implements IRenderable
 {
+    public var blendMode:Int = GBlendMode.NORMAL;
+
     private var g2d_width:Int;
     private var g2d_height:Int;
     private var g2d_tiles:Array<GTile>;
@@ -15,29 +18,30 @@ class GTileMap extends GComponent implements IRenderable
         return g2d_tiles;
     }
 
+    private var mustRenderTiles:Array<GTile>;
+
     private var g2d_tileWidth:Int = 0;
     private var g2d_tileHeight:Int = 0;
     private var g2d_iso:Bool = false;
 
+    public var horizontalMargin:Float = 0;
+    public var verticalMargin:Float = 0;
+
     public function setTiles(p_tiles:Array<GTile>, p_mapWidth:Int, p_mapHeight:Int, p_tileWidth:Int, p_tileHeight:Int,  p_iso:Bool = false):Void {
-        if (p_mapWidth*p_mapHeight != p_tiles.length) new GError("Invalid tile map.");
+        if (p_mapWidth*p_mapHeight != p_tiles.length) new GError("Not enough tiles provided for that map size.");
     
         g2d_tiles = p_tiles;
         g2d_width = p_mapWidth;
         g2d_height = p_mapHeight;
         g2d_iso = p_iso;
-    
-        setTileSize(p_tileWidth, p_tileHeight);
+
+        g2d_tileWidth = p_tileWidth;
+        g2d_tileHeight = p_tileHeight;
     }
 
     public function setTile(p_tileIndex:Int, p_tile:GTile):Void {
         if (p_tileIndex<0 || p_tileIndex>= g2d_tiles.length) return;
         g2d_tiles[p_tileIndex] = p_tile;
-    }
-
-    public function setTileSize(p_width:Int, p_height:Int):Void {
-        g2d_tileWidth = p_width;
-        g2d_tileHeight = p_height;
     }
 
     public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
@@ -47,10 +51,11 @@ class GTileMap extends GComponent implements IRenderable
         var mapHalfHeight:Float = g2d_tileHeight * g2d_height * (g2d_iso ? .25 : .5);
 
         // Position of top left visible tile from 0,0
-        var cameraWidth:Float = node.core.getContext().getStageViewRect().width*p_camera.normalizedViewWidth / p_camera.scaleX;
-        var cameraHeight:Float = node.core.getContext().getStageViewRect().height*p_camera.normalizedViewHeight / p_camera.scaleY;
-        var startX:Float =	p_camera.x - g2d_node.transform.g2d_worldX - cameraWidth *.5;
-        var startY:Float = p_camera.y - g2d_node.transform.g2d_worldY - cameraHeight *.5;
+        var viewRect:GRectangle = node.core.getContext().getStageViewRect();
+        var cameraWidth:Float = viewRect.width*p_camera.normalizedViewWidth / p_camera.scaleX;
+        var cameraHeight:Float = viewRect.height*p_camera.normalizedViewHeight / p_camera.scaleY;
+        var startX:Float =	p_camera.x - g2d_node.transform.g2d_worldX - cameraWidth *.5 - horizontalMargin;
+        var startY:Float = p_camera.y - g2d_node.transform.g2d_worldY - cameraHeight *.5 - verticalMargin;
         // Position of top left tile from map center
         var firstX:Float = -mapHalfWidth + (g2d_iso ? g2d_tileWidth/2 : 0);
         var firstY:Float = -mapHalfHeight + (g2d_iso ? g2d_tileHeight/2 : 0);
@@ -62,8 +67,8 @@ class GTileMap extends GComponent implements IRenderable
         if (indexY<0) indexY = 0;
 
         // Position of bottom right tile from map center
-        var endX:Float = p_camera.x - g2d_node.transform.g2d_worldX + cameraWidth * .5 - (g2d_iso ? g2d_tileWidth/2 : g2d_tileWidth);
-        var endY:Float = p_camera.y - g2d_node.transform.g2d_worldY + cameraHeight * .5 - (g2d_iso ? 0 : g2d_tileHeight);
+        var endX:Float = p_camera.x - g2d_node.transform.g2d_worldX + cameraWidth * .5 - (g2d_iso ? g2d_tileWidth/2 : g2d_tileWidth) + horizontalMargin;
+        var endY:Float = p_camera.y - g2d_node.transform.g2d_worldY + cameraHeight * .5 - (g2d_iso ? 0 : g2d_tileHeight) + verticalMargin;
 
         var indexWidth:Int = Std.int((endX - firstX) / g2d_tileWidth - indexX+2);
         if (indexWidth>g2d_width-indexX) indexWidth = g2d_width - indexX;
@@ -80,17 +85,30 @@ class GTileMap extends GComponent implements IRenderable
             var index:Int = indexY * g2d_width + indexX + Std.int(i / indexWidth) * g2d_width + i % indexWidth;
             var tile:GTile = g2d_tiles[index];
             // TODO: All transforms
-            if (tile != null && tile.textureId != null) node.core.getContext().draw(GTexture.getTextureById(tile.textureId), x, y, 1, 1, 0, 1, 1, 1, 1, 1);
+            if (tile != null && tile.texture != null) {
+                var frameId:Int = node.core.getCurrentFrameId();
+                var time:Float = node.core.getRunTime();
+                if (tile.rows != 1 || tile.cols != 1) {
+                    if (tile.g2d_lastFrameRendered != frameId) {
+                        x -= (indexX +  i % indexWidth - tile.mapX) * g2d_tileWidth;
+                        y -= (indexY+row-tile.mapY) * g2d_tileHeight;
+                        tile.render(node.core.getContext(), x, y, frameId, time, blendMode);
+                    }
+                } else {
+                    tile.render(node.core.getContext(), x, y, frameId, time, blendMode);
+                }
+            }
         }
     }
 
     public function getTileAt(p_x:Float, p_y:Float, p_camera:GContextCamera = null):GTile {
         if (p_camera == null) p_camera = node.core.getContext().getDefaultCamera();
 
-        var cameraX:Float = node.core.getContext().getStageViewRect().width*p_camera.normalizedViewX;
-        var cameraY:Float = node.core.getContext().getStageViewRect().height*p_camera.normalizedViewY;
-        var cameraWidth:Float = node.core.getContext().getStageViewRect().width*p_camera.normalizedViewWidth;
-        var cameraHeight:Float = node.core.getContext().getStageViewRect().height*p_camera.normalizedViewHeight;
+        var viewRect:GRectangle = node.core.getContext().getStageViewRect();
+        var cameraX:Float = viewRect.width*p_camera.normalizedViewX;
+        var cameraY:Float = viewRect.height*p_camera.normalizedViewY;
+        var cameraWidth:Float = viewRect.width*p_camera.normalizedViewWidth;
+        var cameraHeight:Float = viewRect.height*p_camera.normalizedViewHeight;
         p_x -= cameraX + cameraWidth*.5;
         p_y -= cameraY + cameraHeight*.5;
 
