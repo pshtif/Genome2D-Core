@@ -34,7 +34,7 @@ class Genome2D
     /**
         Genome2D Version
     **/
-	inline static public var VERSION:String = "1.0.271";
+	inline static public var VERSION:String = "1.0.272";
 
 	static private var g2d_instance:Genome2D;
 	static private var g2d_instantiable:Bool = false;
@@ -146,6 +146,14 @@ class Genome2D
     **/
     inline public function getCurrentFrameId():Int {
         return g2d_currentFrameId;
+    }
+
+    private var g2d_runTime:Float = 0;
+    /**
+        Return current Genome2D time from start
+    **/
+    inline public function getRunTime():Float {
+        return g2d_runTime;
     }
 
     private var g2d_currentFrameDeltaTime:Float;
@@ -315,6 +323,7 @@ class Genome2D
     private function g2d_frameHandler(p_deltaTime:Float):Void {
         if (autoUpdateAndRender) {
             g2d_currentFrameId++;
+            g2d_runTime += p_deltaTime;
             update(p_deltaTime);
             render();
         }
