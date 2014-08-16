@@ -12,7 +12,7 @@ import com.genome2d.utils.GVAlignType;
 import com.genome2d.utils.GHAlignType;
 import com.genome2d.error.GError;
 import com.genome2d.textures.GCharTexture;
-import com.genome2d.textures.GFontTextureAtlas;
+import com.genome2d.textures.GTextureFontAtlas;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.node.GNode;
@@ -98,7 +98,7 @@ class GTextureText extends GComponent implements IRenderable
         return g2d_hAlign;
     }
 
-    private var g2d_textureAtlas:GFontTextureAtlas;
+    private var g2d_textureAtlas:GTextureFontAtlas;
     /*
      *  Texture atlas id used for character textures lookup
      */
@@ -111,14 +111,14 @@ class GTextureText extends GComponent implements IRenderable
 	}
     #if swc @:setter(textureAtlasId) #end
 	inline private function set_textureAtlasId(p_value:String):String {
-		setTextureAtlas(GTextureAtlas.getFontTextureAtlasById(p_value));
+		setTextureAtlas(GTextureFontAtlas.getTextureFontAtlasById(p_value));
 		return p_value;
 	}
 
     /*
      *  Set texture atlas that will be used for character textures lookup
      */
-	public function setTextureAtlas(p_textureAtlas:GFontTextureAtlas):Void {
+	public function setTextureAtlas(p_textureAtlas:GTextureFontAtlas):Void {
 		g2d_textureAtlas = p_textureAtlas;
 		g2d_invalidate = true;
 	}

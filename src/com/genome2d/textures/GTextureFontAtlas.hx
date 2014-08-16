@@ -9,10 +9,14 @@
 package com.genome2d.textures;
 
 import com.genome2d.geom.GRectangle;
-class GFontTextureAtlas extends GTextureAtlas
+class GTextureFontAtlas extends GTextureAtlas
 {
     public var lineHeight:Int = 0;
     public var g2d_kerning:Map<Int,Map<Int,Int>>;
+
+    static public function getTextureFontAtlasById(p_id:String):GTextureFontAtlas {
+        return cast GContextTexture.getContextTextureById(p_id);
+    }
 
     #if swc
     override public function getSubTexture(p_subId:String):GCharTexture {

@@ -21,10 +21,6 @@ class GTextureAtlas extends GContextTexture {
         return cast GContextTexture.getContextTextureById(p_id);
     }
 
-    static public function getFontTextureAtlasById(p_id:String):GFontTextureAtlas {
-        return cast GContextTexture.getContextTextureById(p_id);
-    }
-
     #if swc
     private var g2d_textures:Dictionary;
     public function getSubTexture(p_subId:String):GTexture {
