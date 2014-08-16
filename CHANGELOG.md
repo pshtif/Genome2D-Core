@@ -170,3 +170,8 @@ version 1.0.237 - 2014-02-14
 - GMovieClip frameTextures setter to allow directly setting textures without the ID lookup
 - New context low level draw method drawMatrixSource similar to drawSource which enables you to override texture source rectangle when drawing using matrix
 - more cleanup and refactoring of internal methods
+
+VERSIONS BEFORE 2014-02-14
+--------------------------
+
+Genome2D is already over 4 years in development and past this date it went from AS3 to Haxe so I am no longer listing it.  
