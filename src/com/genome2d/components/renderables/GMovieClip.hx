@@ -8,6 +8,7 @@
  */
 package com.genome2d.components.renderables;
 
+import com.genome2d.error.GError;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.GContextCamera;
 import com.genome2d.node.GNode;
@@ -47,7 +48,9 @@ class GMovieClip extends GTexturedQuad
         g2d_frameTextures = new Array<GTexture>();
 	    g2d_frameTexturesCount = p_value.length;
         for (i in 0...g2d_frameTexturesCount) {
-            g2d_frameTextures.push(GTexture.getTextureById(p_value[i]));
+            var frameTexture:GTexture = GTexture.getTextureById(p_value[i]);
+            if (frameTexture == null) new GError("Invalid texture id "+p_value[i]);
+            g2d_frameTextures.push(frameTexture);
         }
 		g2d_currentFrame = 0;
         if (g2d_frameTextures.length>0) {
@@ -82,6 +85,11 @@ class GMovieClip extends GTexturedQuad
         Is movieclip repeating after reaching the last frame, default true
     **/
 	public var repeatable:Bool = true;
+
+    /**
+        Is playback reversed, default false
+    **/
+    public var reversed:Bool = false;
 
     /**
         Framerate the movieclips is playing at, default 30
@@ -157,11 +165,11 @@ class GMovieClip extends GTexturedQuad
                 g2d_accumulatedTime += g2d_node.core.getCurrentFrameDeltaTime();
 
                 if (g2d_accumulatedTime >= g2d_speed) {
-                    g2d_currentFrame += Std.int(g2d_accumulatedTime / g2d_speed);
-                    if (g2d_currentFrame<g2d_frameTexturesCount || repeatable) {
-                        g2d_currentFrame %= g2d_frameTexturesCount;
-                    } else {
-                        g2d_currentFrame = g2d_frameTexturesCount-1;
+                    g2d_currentFrame += (reversed) ? -Std.int(g2d_accumulatedTime / g2d_speed) : Std.int(g2d_accumulatedTime / g2d_speed);
+                    if (reversed && g2d_currentFrame<0) {
+                        g2d_currentFrame = (repeatable) ? g2d_frameTexturesCount+g2d_currentFrame%g2d_frameTexturesCount : 0;
+                    } else if (!reversed && g2d_currentFrame>=g2d_frameTexturesCount) {
+                        g2d_currentFrame = (repeatable) ? g2d_currentFrame%g2d_frameTexturesCount : g2d_frameTexturesCount-1;
                     }
                     texture = g2d_frameTextures[g2d_currentFrame];
                 }
