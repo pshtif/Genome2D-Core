@@ -29,6 +29,16 @@ class GMovieClip extends GTexturedQuad
     private var g2d_frameTexturesCount:Int;
 
     /**
+        Get the current frame count
+    **/
+    #if swc @:extern #end
+    public var frameCount(get, never):Int;
+    #if swc @:getter(frameCount) #end
+    inline private function get_frameCount():Int {
+        return g2d_frameTexturesCount;
+    }
+
+    /**
         Get the current frame index the movieclip is at
     **/
     #if swc @:extern #end
