@@ -23,12 +23,13 @@ class GTextureAtlas extends GContextTexture {
 
     #if swc
     private var g2d_textures:Dictionary;
+    private var g2d_textureIds:Array<String>;
     public function getSubTexture(p_subId:String):GTexture {
         return untyped g2d_textures[p_subId];
     }
     public function getSubTextures(p_regExp:RegExp = null):Array<GTexture> {
         var found:Array<GTexture> = new Array<GTexture>();
-        var textureIds:Array<String> = untyped __keys__(g2d_textures);
+        var textureIds:Array<String> = g2d_textureIds;
         for (i in 0...textureIds.length) {
             var texture:GTexture = untyped g2d_textures[textureIds[i]];
             if (p_regExp != null) {
@@ -69,6 +70,7 @@ class GTextureAtlas extends GContextTexture {
         g2d_type = GTextureType.ATLAS;
         #if swc
         g2d_textures = new Dictionary(false);
+        g2d_textureIds = new Array<String>();
         #else
         g2d_textures = new Map<String,GTexture>();
         #end
@@ -102,6 +104,7 @@ class GTextureAtlas extends GContextTexture {
 
         #if swc
         untyped g2d_textures[p_subId] = texture;
+        g2d_textureIds.push(p_subId);
         #else
         g2d_textures.set(p_subId, texture);
         #end
