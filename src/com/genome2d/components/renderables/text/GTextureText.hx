@@ -260,7 +260,10 @@ class GTextureText extends GComponent implements IRenderable
             } else {
                 currentCharCode = g2d_text.charCodeAt(i);
                 texture = g2d_textureAtlas.getSubTexture(Std.string(currentCharCode));
-                if (texture == null) continue;// throw new GError("Texture for character "+g2d_text.charAt(i)+" with code "+g2d_text.charCodeAt(i)+" not found!");
+                if (texture == null) {
+                    //++i;
+                    continue;// throw new GError("Texture for character "+g2d_text.charAt(i)+" with code "+g2d_text.charCodeAt(i)+" not found!");
+                }
 
                 if (previousCharCode != -1) {
                     offsetX += g2d_textureAtlas.getKerning(previousCharCode,currentCharCode);
