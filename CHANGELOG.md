@@ -1,6 +1,19 @@
 Genome2D Changelog
 ===================
 
+version 1.0.276 - 2014-09-15
+--------------------------
+
+- ADDED support for pivots in drawSource calls
+- ADDED support for rendering specific camera in Genome2D render call, used for multilayering 3rd party frameworks
+- ADDED support for nested render to texture calls
+- ADDED post processes can now be used hierarchically and nested within each other
+- ADDED GTiledSprite, GSlice3Sprite, GSlice9Sprite renderable components
+
+- FIXED problem with camera invalidation in some cases, for example with usage of 3rd party frameworks
+- FIXED GTexture gpuWidth/Height now correctly invalidates when changing region
+- FIXED batching now correctly works with consequent drawSource call on same texture with different source rectangle
+
 version 1.0.274 - 2014-08-16
 --------------------------
 
