@@ -1,7 +1,7 @@
 Genome2D Changelog
 ===================
 
-version 1.0.276 - 2014-09-15
+version 1.0.277 - 2014-09-15
 --------------------------
 
 - ADDED support for pivots in drawSource calls
