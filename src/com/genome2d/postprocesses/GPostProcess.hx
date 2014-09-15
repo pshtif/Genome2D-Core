@@ -8,6 +8,8 @@
  */
 package com.genome2d.postprocesses;
 
+import com.genome2d.context.stage3d.GStage3DContext;
+import com.genome2d.utils.GRenderTargetStack;
 import com.genome2d.error.GError;
 import com.genome2d.geom.GMatrix3D;
 import com.genome2d.geom.GRectangle;
@@ -75,12 +77,13 @@ class GPostProcess {
 
         updatePassTextures(bounds);
 
-        var context:IContext = Genome2D.getInstance().getContext();
+        var context:GStage3DContext = cast Genome2D.getInstance().getContext();
 
+        GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.g2d_renderTargetTransform);
         if (p_source == null) {
             g2d_matrix.identity();
             g2d_matrix.prependTranslation(-bounds.x+g2d_leftMargin, -bounds.y+g2d_topMargin, 0);
-            context.setRenderTarget(g2d_passTextures[0], g2d_matrix);
+            context.setRenderTarget(g2d_passTextures[0], g2d_matrix, true);
             p_node.render(true, true, p_camera, false, false);
         }
 
@@ -88,15 +91,16 @@ class GPostProcess {
         if (p_source != null) g2d_passTextures[0] = p_source;
 
         for (i in 1...g2d_passes) {
-            context.setRenderTarget(g2d_passTextures[i]);
+            context.setRenderTarget(g2d_passTextures[i],null,true);
             context.draw(g2d_passTextures[i-1], 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[i-1]);
         }
 
-        context.setRenderTarget(p_target);
         if (p_target == null) {
-            context.setCamera(p_camera);
+            GRenderTargetStack.popRenderTarget(context);
+            if (context.getRenderTarget()==null) context.setCamera(p_camera);
             context.draw(g2d_passTextures[g2d_passes-1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
         } else {
+            context.setRenderTarget(p_target);
             context.draw(g2d_passTextures[g2d_passes-1], 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
         }
         g2d_passTextures[0] = zero;
