@@ -8,6 +8,7 @@
  */
 package com.genome2d.textures;
 
+import com.genome2d.context.GContextFeature;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
 
@@ -28,6 +29,10 @@ class GTexture extends GContextTexture
     }
     public function setRegion(p_value:GRectangle):Void {
         g2d_region = p_value;
+
+        var useRectangle:Bool = !g2d_repeatable && g2d_context.hasFeature(GContextFeature.RECTANGLE_TEXTURES);
+        g2d_gpuWidth = useRectangle ? width : GTextureUtils.getNextValidTextureSize(width);
+        g2d_gpuHeight = useRectangle ? height : GTextureUtils.getNextValidTextureSize(height);
 
         g2d_invalidateUV();
     }
