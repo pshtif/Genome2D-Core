@@ -27,14 +27,14 @@ import com.genome2d.context.GContextConfig;
 **/
 class Genome2D
 {
-    static public function main():Void {
+//    static public function main():Void {
         // Abstract method to enable Haxe direct build
-    }
+//    }
 
     /**
         Genome2D Version
     **/
-	inline static public var VERSION:String = "1.0.276";
+	inline static public var VERSION:String = "1.0.277";
 
 	static private var g2d_instance:Genome2D;
 	static private var g2d_instantiable:Bool = false;
@@ -247,7 +247,7 @@ class Genome2D
         This method is called automatically if `autoUpdateAndRender` is true
     **/
     @:access(com.genome2d.components.GTransform)
-	public function render():Void {
+	public function render(p_camera:GCameraController = null):Void {
         var cameraCount:Int = g2d_cameras.length;
 		g2d_context.begin();
 		onPreRender.dispatch();
@@ -258,15 +258,19 @@ class Genome2D
             g2d_renderMatrixArray = [];
         }
 
-        // If there is no camera render the root node directly
-		if (cameraCount==0) {
-			root.render(false, false, g2d_context.getDefaultCamera(), false, false);
-        // If there are cameras render the root through them
-		} else {
-			for (i in 0...cameraCount) {
-				g2d_cameras[i].render();
-			}
-		}
+        if (p_camera != null) {
+            p_camera.render();
+        } else {
+            // If there is no camera render the root node directly
+            if (cameraCount==0) {
+                root.render(false, false, g2d_context.getDefaultCamera(), false, false);
+            // If there are cameras render the root through them
+            } else {
+                for (i in 0...cameraCount) {
+                    g2d_cameras[i].render();
+                }
+            }
+        }
 
         if (onPostRender.numListeners>0) {
             g2d_context.setCamera(g2d_context.getDefaultCamera());
