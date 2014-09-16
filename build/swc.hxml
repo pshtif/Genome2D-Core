@@ -12,7 +12,7 @@
 -dce no
 
 # Genome2D flags
-#-D stage3Donly
+-D stage3Donly
 
 # Flash Swc flags
 -swf-version 12
