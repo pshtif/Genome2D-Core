@@ -6,7 +6,7 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderables.particles;
+package com.genome2d.particles;
 
 import com.genome2d.context.GContextCamera;
 import com.genome2d.node.GNode;
@@ -15,7 +15,7 @@ import com.genome2d.textures.GTexture;
 /**
     Particle element class used by `GParticlePool` and `GParticleSystem`
  **/
-@:allow(com.genome2d.components.renderables.particles.GParticlePool)
+@:allow(GParticlePool)
 @:allow(com.genome2d.components.renderables.particles.GParticleSystem)
 class GParticle
 {

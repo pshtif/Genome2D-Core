@@ -8,6 +8,7 @@
  */
 package com.genome2d.components.renderables.particles;
 
+import com.genome2d.particles.GSimpleParticle;
 import com.genome2d.error.GError;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.components.GComponent;

@@ -6,17 +6,18 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderables.particles;
+package com.genome2d.particles;
 
 /**
     Simple particle element used by `GSimpleParticleSystem`
 **/
+import com.genome2d.components.renderables.particles.GSimpleParticleSystem;
 @:allow(com.genome2d.components.renderables.particles.GSimpleParticleSystem)
 class GSimpleParticle
 {
 	private var g2d_next:GSimpleParticle;
 	private var g2d_previous:GSimpleParticle;
-	
+
 	private var g2d_x:Float;
 	private var g2d_y:Float;
 	private var g2d_rotation:Float;

@@ -6,7 +6,7 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderables.particles;
+package com.genome2d.particles;
 
 /**
     Particle pool management class, used for pooling `GParticle` instances for `GParticleSystem` component instances

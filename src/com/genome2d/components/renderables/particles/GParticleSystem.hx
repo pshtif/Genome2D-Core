@@ -8,6 +8,10 @@
  */
 package com.genome2d.components.renderables.particles;
 
+import com.genome2d.particles.GParticlePool;
+import com.genome2d.particles.IGInitializer;
+import com.genome2d.particles.IGAffector;
+import com.genome2d.particles.GParticle;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GCurve;
 import com.genome2d.components.GComponent;
