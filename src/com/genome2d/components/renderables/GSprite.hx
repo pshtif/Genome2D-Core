@@ -27,8 +27,12 @@ class GSprite extends GTexturedQuad
     }
     #if swc @:setter(textureId) #end
     inline private function set_textureId(p_value:String):String {
-        texture = GTexture.getTextureById(p_value);
-        if (texture == null) new GError("Invalid texture with id "+p_value);
+        if (p_value == "") {
+            texture = null;
+        } else {
+            texture = GTexture.getTextureById(p_value);
+            if (texture == null) new GError("Invalid texture with id "+p_value);
+        }
         return p_value;
     }
 }
