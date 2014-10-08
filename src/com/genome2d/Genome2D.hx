@@ -34,7 +34,7 @@ class Genome2D
     /**
         Genome2D Version
     **/
-	inline static public var VERSION:String = "1.0.277";
+	inline static public var VERSION:String = "1.0.278";
 
 	static private var g2d_instance:Genome2D;
 	static private var g2d_instantiable:Bool = false;
@@ -42,7 +42,7 @@ class Genome2D
     /**
         Get the singleton instance of Genome2D
     **/
-	static public function getInstance():Genome2D {
+	inline static public function getInstance():Genome2D {
 		g2d_instantiable = true;
 		if (g2d_instance == null) new Genome2D();
 		g2d_instantiable = false;
@@ -355,11 +355,14 @@ class Genome2D
             root.processContextMouseSignal(p_signal.nativeCaptured, p_signal.x, p_signal.y, p_signal, null);
         // If there are cameras we need to process the signal through them
 		} else {
+            var captured:Bool = p_signal.nativeCaptured;
 		    for (i in 0...g2d_cameras.length) {
 				g2d_cameras[i].g2d_capturedThisFrame = false;
 			}
-            for (i in 0...g2d_cameras.length) {
-                g2d_cameras[i].captureMouseEvent(g2d_context, p_signal.nativeCaptured, p_signal);
+            var i:Int = g2d_cameras.length-1;
+            while (i>=0) {
+                captured = captured || g2d_cameras[i].captureMouseEvent(g2d_context, captured, p_signal);
+                i--;
             }
 		}
 	}
