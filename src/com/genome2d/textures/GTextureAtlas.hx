@@ -12,6 +12,7 @@ package com.genome2d.textures;
 import flash.utils.Dictionary;
 import flash.utils.RegExp;
 #end
+import UInt;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
@@ -63,8 +64,8 @@ class GTextureAtlas extends GContextTexture {
     }
     #end
 
-    public function new(p_context:IContext, p_id:String, p_sourceType:Int, p_source:Dynamic, p_region:GRectangle, p_format:String, p_uploadCallback:Void->Void) {
-        super(p_context, p_id, p_sourceType, p_source, p_region, p_format, false, 0, 0);
+    public function new(p_context:IContext, p_id:String, p_sourceType:Int, p_source:Dynamic, p_region:GRectangle, p_format:String, p_scaleFactor:Float, p_uploadCallback:Void->Void) {
+        super(p_context, p_id, p_sourceType, p_source, p_region, p_format, false, 0, 0, p_scaleFactor);
 
         g2d_type = GTextureType.ATLAS;
         #if swc
@@ -94,11 +95,18 @@ class GTextureAtlas extends GContextTexture {
         #end
     }
 
-    public function addSubTexture(p_subId:String, p_region:GRectangle, p_pivotX:Float = 0, p_pivotY:Float = 0):GTexture {
-        var texture:GTexture = new GTexture(g2d_context, g2d_id+"_"+p_subId, g2d_sourceType, g2d_nativeSource, p_region, g2d_format, false, p_pivotX, p_pivotY, this);
+    public function addSubTexture(p_subId:String, p_region:GRectangle, p_frameX:Int, p_frameY:Int, p_frameWidth:Int, p_frameHeight:Int):GTexture {
+        var texture:GTexture = new GTexture(g2d_context, g2d_id+"_"+p_subId, g2d_sourceType, g2d_nativeSource, p_region, g2d_format, false, 0, 0, g2d_scaleFactor, this);
         texture.g2d_subId = p_subId;
         texture.g2d_filteringType = g2d_filteringType;
         texture.nativeTexture = nativeTexture;
+
+        texture.pivotX = (p_frameWidth-p_region.width)*.5 + p_frameX;
+        texture.pivotY = (p_frameHeight-p_region.height)*.5 + p_frameY;
+        texture.frameX = p_frameX;
+        texture.frameY = p_frameY;
+        texture.frameWidth = p_frameWidth;
+        texture.frameHeight = p_frameHeight;
 
         #if swc
         untyped g2d_textures[p_subId] = texture;

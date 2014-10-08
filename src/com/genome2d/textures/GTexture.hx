@@ -30,9 +30,11 @@ class GTexture extends GContextTexture
     public function setRegion(p_value:GRectangle):Void {
         g2d_region = p_value;
 
+        var wi:Int = Std.int(g2d_region.width);
+        var hi:Int = Std.int(g2d_region.height);
         var useRectangle:Bool = !g2d_repeatable && g2d_context.hasFeature(GContextFeature.RECTANGLE_TEXTURES);
-        g2d_gpuWidth = useRectangle ? width : GTextureUtils.getNextValidTextureSize(width);
-        g2d_gpuHeight = useRectangle ? height : GTextureUtils.getNextValidTextureSize(height);
+        g2d_gpuWidth = useRectangle ? wi : GTextureUtils.getNextValidTextureSize(wi);
+        g2d_gpuHeight = useRectangle ? hi : GTextureUtils.getNextValidTextureSize(hi);
 
         g2d_invalidateUV();
     }
@@ -42,16 +44,16 @@ class GTexture extends GContextTexture
 			uvX = g2d_region.x / g2d_parentAtlas.width;
 			uvY = g2d_region.y / g2d_parentAtlas.height;
 			
-			uvScaleX = width / g2d_parentAtlas.width;
-			uvScaleY = height / g2d_parentAtlas.height;	
+			uvScaleX = g2d_region.width / g2d_parentAtlas.width;
+			uvScaleY = g2d_region.height / g2d_parentAtlas.height;
 		} else {
-            uvScaleX = width / g2d_gpuWidth;
-            uvScaleY = height / g2d_gpuHeight;
+            uvScaleX = g2d_region.width / g2d_gpuWidth;
+            uvScaleY = g2d_region.height / g2d_gpuHeight;
         }
 	}
 
-	public function new(p_context:IContext, p_id:String, p_sourceType:Int, p_source:Dynamic, p_region:GRectangle, p_format:String, p_repeatable:Bool, p_pivotX:Float, p_pivotY:Float, p_parentAtlas:GTextureAtlas) {
-		super(p_context, p_id, p_sourceType, p_source, p_region, p_format, p_repeatable, p_pivotX, p_pivotY);
+	public function new(p_context:IContext, p_id:String, p_sourceType:Int, p_source:Dynamic, p_region:GRectangle, p_format:String, p_repeatable:Bool, p_pivotX:Float, p_pivotY:Float, p_scaleFactor:Float, p_parentAtlas:GTextureAtlas) {
+		super(p_context, p_id, p_sourceType, p_source, p_region, p_format, p_repeatable, p_pivotX, p_pivotY, p_scaleFactor);
 		
 		g2d_parentAtlas = p_parentAtlas;
 

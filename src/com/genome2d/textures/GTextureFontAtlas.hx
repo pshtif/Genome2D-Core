@@ -28,8 +28,8 @@ class GTextureFontAtlas extends GTextureAtlas
     }
     #end
 
-    override public function addSubTexture(p_subId:String, p_region:GRectangle, p_pivotX:Float = 0, p_pivotY:Float = 0):GCharTexture {
-        var texture:GCharTexture = new GCharTexture(g2d_context, g2d_id+"_"+p_subId, g2d_sourceType, g2d_nativeSource, p_region, g2d_format, false, p_pivotX, p_pivotY, this);
+    override public function addSubTexture(p_subId:String, p_region:GRectangle, p_frameX:UInt, p_frameY:UInt, p_frameWidth:UInt, p_frameHeight:UInt):GCharTexture {
+        var texture:GCharTexture = new GCharTexture(g2d_context, g2d_id+"_"+p_subId, g2d_sourceType, g2d_nativeSource, p_region, g2d_format, false, 0, 0, g2d_scaleFactor, this);
         texture.g2d_subId = p_subId;
         texture.g2d_filteringType = g2d_filteringType;
         texture.nativeTexture = nativeTexture;
