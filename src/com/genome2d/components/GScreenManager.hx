@@ -55,8 +55,6 @@ class GScreenManager extends GComponent {
         stageRight = p_stageWidth;
         stageBottom = p_stageHeight;
 
-        g2d_cameraController.node.transform.setPosition(stageRight*.5, stageBottom*.5);
-
         if (p_resize) {
             node.core.getContext().onResize.add(resizeHandler);
         }
@@ -81,24 +79,30 @@ class GScreenManager extends GComponent {
                 case GVAlignType.MIDDLE:
                     screenTop = (stageBottom*a-p_height)/(2*a);
                     screenBottom = stageBottom+(p_height-a*stageBottom)/(2*a);
+                    g2d_cameraController.node.transform.setPosition(stageRight*.5, stageBottom*.5);
                 case GVAlignType.TOP:
                     screenTop = 0;
                     screenBottom = stageBottom+(p_height-a*stageBottom)/a;
+                    g2d_cameraController.node.transform.setPosition(stageRight*.5, stageBottom*.5 + (p_height-a*stageBottom)/(2*a));
                 case GVAlignType.BOTTOM:
                     screenTop = (stageBottom*a-p_height)/a;
                     screenBottom = p_height;
+                    g2d_cameraController.node.transform.setPosition(stageRight*.5, stageBottom*.5 - (p_height-a*stageBottom)/(2*a));
             }
         } else {
             switch (hAlign) {
                 case GHAlignType.CENTER:
                     screenLeft = (a*stageRight-p_width)/(2*a);
                     screenRight = stageRight+(p_width-a*stageRight)/(2*a);
+                    g2d_cameraController.node.transform.setPosition(stageRight*.5, stageBottom*.5);
                 case GHAlignType.LEFT:
                     screenLeft = 0;
                     screenRight = stageRight+(p_width-a*stageRight)/a;
+                    g2d_cameraController.node.transform.setPosition(stageRight*.5 + (p_width-a*stageRight)/(2*a), stageBottom*.5);
                 case GHAlignType.RIGHT:
                     screenLeft = (a*stageRight-p_width)/a;
                     screenRight = p_width;
+                    g2d_cameraController.node.transform.setPosition(stageRight*.5 - (p_width-a*stageRight)/(2*a), stageBottom*.5);
             }
             screenTop = 0;
             screenBottom = stageBottom;
