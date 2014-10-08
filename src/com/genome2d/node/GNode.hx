@@ -900,10 +900,11 @@ class GNode
         if (p_targetSpace == null) p_targetSpace = core.root;
         if (p_bounds == null) p_bounds = new GRectangle();
         var found:Bool = false;
-        var minX:Float = Math.POSITIVE_INFINITY;
-        var maxX:Float = Math.NEGATIVE_INFINITY;
-        var minY:Float = Math.POSITIVE_INFINITY;
-        var maxY:Float = Math.NEGATIVE_INFINITY;
+        // Reverted back to using constants as Math.POSITIVE_INFINITY/NEGATIVE_INFINITY doesn't work well with SWC target
+        var minX:Float = 10000000;
+        var maxX:Float = -10000000;
+        var minY:Float = 10000000;
+        var maxY:Float = -10000000;
         var aabb:GRectangle = new GRectangle(0,0,0,0);
 
         if (g2d_renderable != null) {
@@ -923,6 +924,7 @@ class GNode
                 if (minY > ty1) minY = ty1; if (minY > ty2) minY = ty2; if (minY > ty3) minY = ty3; if (minY > ty4) minY = ty4;
                 if (maxX < tx1) maxX = tx1; if (maxX < tx2) maxX = tx2; if (maxX < tx3) maxX = tx3; if (maxX < tx4) maxX = tx4;
                 if (maxY < ty1) maxY = ty1; if (maxY < ty2) maxY = ty2; if (maxY < ty3) maxY = ty3; if (maxY < ty4) maxY = ty4;
+
                 found = true;
             }
         }
@@ -939,6 +941,7 @@ class GNode
             if (maxX < aabb.right) maxX = aabb.right;
             if (minY > aabb.y) minY = aabb.y;
             if (maxY < aabb.bottom) maxY = aabb.bottom;
+
             found = true;
             child = next;
         }
