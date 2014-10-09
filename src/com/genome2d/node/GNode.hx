@@ -678,9 +678,6 @@ class GNode
     public function addChildAt(p_child:GNode, p_index:Int):Void {
         if (g2d_disposed) new GError("Node already disposed.");
         if (p_child == this) new GError("Can't add child to itself.");
-        if (p_child.parent != null) p_child.parent.removeChild(p_child);
-
-        p_child.g2d_parent = this;
 
         var i:Int = 0;
         var after:GNode = g2d_firstChild;
