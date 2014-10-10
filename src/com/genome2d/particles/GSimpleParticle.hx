@@ -11,6 +11,7 @@ package com.genome2d.particles;
 /**
     Simple particle element used by `GSimpleParticleSystem`
 **/
+import com.genome2d.textures.GTexture;
 import com.genome2d.components.renderables.particles.GSimpleParticleSystem;
 @:allow(com.genome2d.components.renderables.particles.GSimpleParticleSystem)
 class GSimpleParticle
@@ -68,6 +69,8 @@ class GSimpleParticle
 	private var g2d_nextInstance:GSimpleParticle;
 	private var g2d_id:Int = 0;
 
+    private var g2d_texture:GTexture;
+
     static private var g2d_availableInstance:GSimpleParticle;
     static private var g2d_instanceCount:Int = 0;
 
@@ -108,6 +111,8 @@ class GSimpleParticle
 
 	private function g2d_init(p_emitter:GSimpleParticleSystem, p_invalidate:Bool = true):Void {
 		g2d_accumulatedEnergy = 0;
+
+        g2d_texture = p_emitter.texture;
 		
 		g2d_energy = p_emitter.energy * 1000;
 		if (p_emitter.energyVariance>0) g2d_energy += (p_emitter.energyVariance * 1000) * Math.random();

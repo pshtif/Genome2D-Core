@@ -1,6 +1,9 @@
 Genome2D Changelog
 ===================
 
+- ADDED support for content scale factor, now all texture factory methods contain scale factor parameter
+- ADDED GSimpleParticle now contains texture information which enables GSimpleParticleSystem to force burst particles with different textures
+
 version 1.0.277 - 2014-09-15
 --------------------------
 
