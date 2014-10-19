@@ -2,7 +2,10 @@ Genome2D Changelog
 ===================
 
 - ADDED support for content scale factor, now all texture factory methods contain scale factor parameter
+- ADDED GScreenManager component for easy management of virtual screens
 - ADDED GSimpleParticle now contains texture information which enables GSimpleParticleSystem to force burst particles with different textures
+- CHANGED moved all classes that are not components out of the com.genome2d.components package to their own packages
+- CHANGED GTextureText was now divided to GTextureTextRenderer which handles the actual rendering and GText which is a component managing it, this way you can render such text even without using node/component system (further changes still coming)
 
 version 1.0.277 - 2014-09-15
 --------------------------
