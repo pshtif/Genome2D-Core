@@ -1,6 +1,9 @@
 Genome2D Changelog
 ===================
 
+version 1.0.279 - 2014-10-19
+--------------------------
+
 - ADDED support for content scale factor, now all texture factory methods contain scale factor parameter
 - ADDED GScreenManager component for easy management of virtual screens
 - ADDED GSimpleParticle now contains texture information which enables GSimpleParticleSystem to force burst particles with different textures
