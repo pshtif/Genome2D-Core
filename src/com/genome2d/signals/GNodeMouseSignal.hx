@@ -21,6 +21,14 @@ class GNodeMouseSignal {
     public var localX:Float;
     public var localY:Float;
 
+    private var _contextSignal:GMouseSignal;
+    #if swc @:extern #end
+    @prototype public var contextSignal(get, never):GMouseSignal;
+    #if swc @:getter(contextSignal) #end
+    public function get_contextSignal():GMouseSignal {
+        return _contextSignal;
+    }
+
     public function new(p_type:String, p_target:GNode, p_dispatcher:GNode, p_localX:Float, p_localY:Float, p_contextSignal:GMouseSignal) {
         type = p_type;
         target = p_target;
@@ -28,5 +36,7 @@ class GNodeMouseSignal {
 
         localX = p_localX;
         localY = p_localY;
+
+        _contextSignal = p_contextSignal;
     }
 }
