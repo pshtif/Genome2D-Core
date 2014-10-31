@@ -17,7 +17,7 @@ import haxe.macro.Context;
     Not used by user
 **/
 class GComponentMacro {
-    @:macro public static function build() : Array<Field> {
+    macro public static function build() : Array<Field> {
         var pos = Context.currentPos();
         var fields = Context.getBuildFields();
 

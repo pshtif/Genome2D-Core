@@ -20,7 +20,8 @@ class GSprite extends GTexturedQuad
         Texture id used by this sprite
     **/
     #if swc @:extern #end
-    @prototype public var textureId(get, set):String;
+    @prototype
+    public var textureId(get, set):String;
     #if swc @:getter(textureId) #end
     inline private function get_textureId():String {
         return (texture != null) ? texture.getId() : "";

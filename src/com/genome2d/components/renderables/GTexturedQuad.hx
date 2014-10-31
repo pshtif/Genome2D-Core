@@ -26,6 +26,7 @@ class GTexturedQuad extends GComponent implements IRenderable
     /**
         Blend mode used for rendering
     **/
+    @prototype
     public var blendMode:Int = 1;
 
     /**
