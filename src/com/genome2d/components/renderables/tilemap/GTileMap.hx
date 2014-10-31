@@ -1,5 +1,7 @@
 package com.genome2d.components.renderables.tilemap;
 
+import com.genome2d.signals.GMouseSignal;
+import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.textures.GTexture;
 import com.genome2d.geom.GRectangle;
@@ -126,6 +128,48 @@ class GTileMap extends GComponent implements IRenderable
 
         if (indexX<0 || indexX>=g2d_width || indexY<0 || indexY>=g2d_height) return null;
         return g2d_tiles[indexY*g2d_width+indexX];
+    }
+
+    override public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
+        if (p_captured && p_contextSignal.type == GMouseSignalType.MOUSE_UP) node.g2d_mouseDownNode = null;
+
+        if (p_captured || node.transform.g2d_worldScaleX == 0 || node.transform.g2d_worldScaleY == 0) {
+            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, 0, 0, p_contextSignal);
+            return false;
+        }
+
+        // Invert translations
+        var tx:Float = p_cameraX - node.transform.g2d_worldX;
+        var ty:Float = p_cameraY - node.transform.g2d_worldY;
+
+        if (node.transform.g2d_worldRotation != 0) {
+            var cos:Float = Math.cos(-node.transform.g2d_worldRotation);
+            var sin:Float = Math.sin(-node.transform.g2d_worldRotation);
+
+            var ox:Float = tx;
+            tx = (tx*cos - ty*sin);
+            ty = (ty*cos + ox*sin);
+        }
+
+        tx /= node.transform.g2d_worldScaleX*g2d_width*g2d_tileWidth;
+        ty /= node.transform.g2d_worldScaleY*g2d_height*g2d_tileHeight;
+        tx += .5;
+        ty += .5;
+
+        if (tx >= 0 && tx <= 1 && ty >= 0 && ty <= 1) {
+            node.dispatchNodeMouseSignal(p_contextSignal.type, node, tx*g2d_width*g2d_tileWidth, ty*g2d_height*g2d_tileHeight, p_contextSignal);
+            if (node.g2d_mouseOverNode != node) {
+                node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OVER, node, tx*g2d_width*g2d_tileWidth, ty*g2d_height*g2d_tileHeight, p_contextSignal);
+            }
+
+            return true;
+        } else {
+            if (node.g2d_mouseOverNode == node) {
+                node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, tx*g2d_width*g2d_tileWidth, ty*g2d_height*g2d_tileHeight, p_contextSignal);
+            }
+        }
+
+        return false;
     }
 
     public function getBounds(p_bounds:GRectangle = null):GRectangle {

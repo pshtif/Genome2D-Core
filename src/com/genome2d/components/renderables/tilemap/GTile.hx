@@ -159,7 +159,7 @@ class GTile
                 if (g2d_accumulatedTime >= g2d_speed) {
                     g2d_currentFrame += (reversed) ? -Std.int(g2d_accumulatedTime / g2d_speed) : Std.int(g2d_accumulatedTime / g2d_speed);
                     if (reversed && g2d_currentFrame<0) {
-                        g2d_currentFrame = (repeatable) ? g2d_frameTexturesCount+g2d_currentFrame%g2d_frameTexturesCount : 0;
+                        g2d_currentFrame = (repeatable) ? (g2d_frameTexturesCount+g2d_currentFrame%g2d_frameTexturesCount)%g2d_frameTexturesCount : 0;
                     } else if (!reversed && g2d_currentFrame>=g2d_frameTexturesCount) {
                         g2d_currentFrame = (repeatable) ? g2d_currentFrame%g2d_frameTexturesCount : g2d_frameTexturesCount-1;
                     }
@@ -167,7 +167,6 @@ class GTile
                 }
                 g2d_accumulatedTime %= g2d_speed;
             }
-
             p_context.draw(texture, p_x, p_y, 1, 1, rotation, 1, 1, 1, alpha, p_blendMode);
             g2d_lastTimeRendered = p_time;
             g2d_lastFrameRendered = p_frameId;
