@@ -245,35 +245,36 @@ class Genome2D
     @:access(com.genome2d.components.GTransform)
 	public function render(p_camera:GCameraController = null):Void {
         var cameraCount:Int = g2d_cameras.length;
-		g2d_context.begin();
-		onPreRender.dispatch();
+		if (g2d_context.begin()) {
+            onPreRender.dispatch();
 
-        // Check if there is matrix usage in the pipeline
-        if (root.transform.g2d_useMatrix > 0) {
-            g2d_renderMatrix.identity();
-            g2d_renderMatrixArray = [];
-        }
+            // Check if there is matrix usage in the pipeline
+            if (root.transform.g2d_useMatrix > 0) {
+                g2d_renderMatrix.identity();
+                g2d_renderMatrixArray = [];
+            }
 
-        if (p_camera != null) {
-            p_camera.render();
-        } else {
-            // If there is no camera render the root node directly
-            if (cameraCount==0) {
-                root.render(false, false, g2d_context.getDefaultCamera(), false, false);
-            // If there are cameras render the root through them
+            if (p_camera != null) {
+                p_camera.render();
             } else {
-                for (i in 0...cameraCount) {
-                    g2d_cameras[i].render();
+                // If there is no camera render the root node directly
+                if (cameraCount==0) {
+                    root.render(false, false, g2d_context.getDefaultCamera(), false, false);
+                // If there are cameras render the root through them
+                } else {
+                    for (i in 0...cameraCount) {
+                        g2d_cameras[i].render();
+                    }
                 }
             }
-        }
 
-        if (onPostRender.numListeners>0) {
-            g2d_context.setCamera(g2d_context.getDefaultCamera());
-            g2d_context.setRenderTarget(null);
-		    onPostRender.dispatch();
+            if (onPostRender.numListeners>0) {
+                g2d_context.setCamera(g2d_context.getDefaultCamera());
+                g2d_context.setRenderTarget(null);
+                onPostRender.dispatch();
+            }
+            g2d_context.end();
         }
-		g2d_context.end();
 	}
 
     /**
