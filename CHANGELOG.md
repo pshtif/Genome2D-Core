@@ -5,9 +5,14 @@ WIP
 --------------------------
 - CHECK hierarchical AABB masking for nonconsecutively masked hierarchy
 
+- CHANGED GTileMap setTiles p_tiles argument is now optional and it will generate null map for you
+- CHANGED GTileMap setTile will now set multi tile size tiles to all their indices automatically
+- CHANGED IContext begin call now returns boolean which indicates that context was able to start rendering (no context loss)
 - ADDED support for mouse signal in GTileMap
 - ADDED contextSignal property to GNodeMouseSignal to reference the original context mouse signal
+- FIXED setting a camera will set scissoring even for fullscreen as there seem to be Stage3D bug when using null
 - FIXED crash when trying to calculate animated frame for GTile reentering viewport from outside while having reversed playback
+- FIXED minor changes to context loss handling and pipeline propagation fixing problems with context loss in some cases (GShape, drawPoly etc.)
 
 version 1.0.279 - 2014-10-19
 --------------------------
