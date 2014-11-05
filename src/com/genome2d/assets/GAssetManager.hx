@@ -9,13 +9,24 @@
 package com.genome2d.assets;
 
 import msignal.Signal.Signal0;
+import msignal.Signal.Signal1;
 
 class GAssetManager {
     static public var PATH_REGEX:EReg = ~/([^\?\/\\]+?)(?:\.([\w\-]+))?(?:\?.*)?$/;
 
+    public var ignoreFailed:Bool = false;
+
     private var g2d_assetsQueue:Array<GAsset>;
     private var g2d_loading:Bool;
     private var g2d_assets:Array<GAsset>;
+
+    private var g2d_onFailed:Signal1<GAsset>;
+    #if swc @:extern #end
+    public var onFailed(get,never):Signal1<GAsset>;
+    #if swc @:getter(onFailed) #end
+    inline private function get_onFailed():Signal1<GAsset> {
+        return g2d_onFailed;
+    }
 
     private var g2d_onAllLoaded:Signal0;
     #if swc @:extern #end
@@ -30,6 +41,7 @@ class GAssetManager {
         g2d_assets = new Array<GAsset>();
 
         g2d_onAllLoaded = new Signal0();
+        g2d_onFailed = new Signal1(GAsset);
     }
 
     public function getAssetById(p_id:String):GAsset {
@@ -89,6 +101,7 @@ class GAssetManager {
             g2d_loading = true;
             var asset:GAsset = g2d_assetsQueue.shift();
             asset.onLoaded.addOnce(g2d_hasAssetLoaded);
+            asset.onFailed.addOnce(g2d_hasAssetFailed);
             asset.load();
         }
     }
@@ -106,5 +119,10 @@ class GAssetManager {
     private function g2d_hasAssetLoaded(p_asset:GAsset):Void {
         g2d_assets.push(p_asset);
         g2d_loadNext();
+    }
+
+    private function g2d_hasAssetFailed(p_asset:GAsset):Void {
+        g2d_onFailed.dispatch(p_asset);
+        if (ignoreFailed) g2d_loadNext();
     }
 }
