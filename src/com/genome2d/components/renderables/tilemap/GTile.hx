@@ -41,8 +41,8 @@ class GTile
 
     public var mapX:Int = 0;
     public var mapY:Int = 0;
-    public var rows:Int = 1;
-    public var cols:Int = 1;
+    public var sizeX:Int = 1;
+    public var sizeY:Int = 1;
 
     private var g2d_lastFrameRendered:Int = 0;
     private var g2d_lastTimeRendered:Float = 0;
@@ -117,11 +117,11 @@ class GTile
         return p_value;
     }
 
-    public function new(p_cols:Int = 1, p_rows:Int = 1, p_mapX:Int = -1, p_mapY:Int = -1) {
-        if ((p_rows != 1 || p_cols != 1) && (p_mapX == -1 || p_mapY == -1)) new GError("Invalid tile definition.");
+    public function new(p_sizeX:Int = 1, p_sizeY:Int = 1, p_mapX:Int = -1, p_mapY:Int = -1) {
+        if ((p_sizeX != 1 || p_sizeY != 1) && (p_mapX == -1 || p_mapY == -1)) new GError("Invalid tile definition.");
 
-        rows = p_rows;
-        cols = p_cols;
+        sizeX = p_sizeX;
+        sizeY = p_sizeY;
         mapX = p_mapX;
         mapY = p_mapY;
     }

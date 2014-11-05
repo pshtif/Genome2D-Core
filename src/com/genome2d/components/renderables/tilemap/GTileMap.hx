@@ -29,21 +29,52 @@ class GTileMap extends GComponent implements IRenderable
     public var horizontalMargin:Float = 0;
     public var verticalMargin:Float = 0;
 
-    public function setTiles(p_tiles:Array<GTile>, p_mapWidth:Int, p_mapHeight:Int, p_tileWidth:Int, p_tileHeight:Int,  p_iso:Bool = false):Void {
-        if (p_mapWidth*p_mapHeight != p_tiles.length) new GError("Incorrect number of tiles provided for that map size.");
-    
-        g2d_tiles = p_tiles;
+    public function setTiles(p_mapWidth:Int, p_mapHeight:Int, p_tileWidth:Int, p_tileHeight:Int, p_tiles:Array<GTile> = null,  p_iso:Bool = false):Void {
+        if (p_tiles != null && p_mapWidth*p_mapHeight != p_tiles.length) new GError("Incorrect number of tiles provided for that map size.");
+
         g2d_width = p_mapWidth;
         g2d_height = p_mapHeight;
-        g2d_iso = p_iso;
-
         g2d_tileWidth = p_tileWidth;
         g2d_tileHeight = p_tileHeight;
+        if (p_tiles != null) {
+            g2d_tiles = p_tiles;
+        } else {
+            g2d_tiles = new Array<GTile>();
+            for (i in 0...g2d_width*g2d_height) g2d_tiles.push(null);
+        }
+        g2d_iso = p_iso;
     }
 
     public function setTile(p_tileIndex:Int, p_tile:GTile):Void {
-        if (p_tileIndex<0 || p_tileIndex>= g2d_tiles.length) return;
-        g2d_tiles[p_tileIndex] = p_tile;
+        if (p_tileIndex<0 || p_tileIndex>= g2d_tiles.length) new GError("Tile index out of bounds.");
+        if (p_tile != null && (p_tile.mapX!=-1 || p_tile.mapY!=-1) && (p_tile.mapX+p_tile.mapY*g2d_width != p_tileIndex)) new GError("Tile map position doesn't match its index.");
+
+        if (p_tile != null) {
+            for (i in 0...p_tile.sizeX) {
+                for (j in 0...p_tile.sizeY) {
+                    if (g2d_tiles[p_tileIndex+i+j*g2d_width] != null) removeTile(p_tileIndex+i+j*g2d_width);
+                    g2d_tiles[p_tileIndex+i+j*g2d_width] = p_tile;
+                }
+            }
+        } else {
+            removeTile(p_tileIndex);
+        }
+    }
+
+    public function removeTile(p_tileIndex:Int):Void {
+        if (p_tileIndex<0 || p_tileIndex>= g2d_tiles.length) new GError("Tile index out of bounds.");
+        var tile:GTile = g2d_tiles[p_tileIndex];
+        if (tile != null) {
+            if (tile.mapX != -1 && tile.mapY != -1) {
+                for (i in 0...tile.sizeX) {
+                    for (j in 0...tile.sizeY) {
+                        if (g2d_tiles[tile.mapX+i+(tile.mapY+j)*g2d_width] == tile) g2d_tiles[tile.mapX+i+(tile.mapY+j)*g2d_width] = null;
+                    }
+                }
+            } else {
+                g2d_tiles[p_tileIndex] = null;
+            }
+        }
     }
 
     public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
@@ -90,7 +121,7 @@ class GTileMap extends GComponent implements IRenderable
             if (tile != null && tile.texture != null) {
                 var frameId:Int = node.core.getCurrentFrameId();
                 var time:Float = node.core.getRunTime();
-                if (tile.rows != 1 || tile.cols != 1) {
+                if (tile.sizeX != 1 || tile.sizeY != 1) {
                     if (tile.g2d_lastFrameRendered != frameId) {
                         x -= (indexX +  i % indexWidth - tile.mapX) * g2d_tileWidth;
                         y -= (indexY+row-tile.mapY) * g2d_tileHeight;
