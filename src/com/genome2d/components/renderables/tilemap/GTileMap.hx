@@ -5,7 +5,7 @@ import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.textures.GTexture;
 import com.genome2d.geom.GRectangle;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.error.GError;
 import com.genome2d.node.GNode;
 
@@ -77,7 +77,7 @@ class GTileMap extends GComponent implements IRenderable
         }
     }
 
-    public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
+    public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         if (g2d_tiles == null) return;
 
         var mapHalfWidth:Float = g2d_tileWidth * g2d_width * .5;
@@ -134,7 +134,7 @@ class GTileMap extends GComponent implements IRenderable
         }
     }
 
-    public function getTileAt(p_x:Float, p_y:Float, p_camera:GContextCamera = null):GTile {
+    public function getTileAt(p_x:Float, p_y:Float, p_camera:GCamera = null):GTile {
         if (p_camera == null) p_camera = node.core.getContext().getDefaultCamera();
 
         var viewRect:GRectangle = node.core.getContext().getStageViewRect();

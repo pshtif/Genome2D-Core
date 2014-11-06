@@ -11,7 +11,7 @@ package com.genome2d.components.renderables;
 import com.genome2d.error.GError;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GBlendMode;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 
@@ -28,7 +28,7 @@ class GShape extends GComponent implements IRenderable
 
     private var g2d_shapeRenderer:Dynamic;
 
-    public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
+    public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         if (texture == null || g2d_vertices == null || g2d_uvs == null) return;
         var transform:GTransform = node.transform;
         if (g2d_shapeRenderer == null) {

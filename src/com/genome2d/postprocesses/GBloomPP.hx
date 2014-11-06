@@ -10,7 +10,7 @@ package com.genome2d.postprocesses;
 
 import com.genome2d.context.IContext;
 import com.genome2d.node.GNode;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.filters.GBloomPassFilter;
 import com.genome2d.context.filters.GBrightPassFilter;
@@ -37,7 +37,7 @@ class GBloomPP extends GPostProcess
         g2d_bright.setMargins(g2d_leftMargin, g2d_rightMargin, g2d_topMargin, g2d_bottomMargin);
     }
 
-    override public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GContextCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
+    override public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
         var bounds:GRectangle = (g2d_definedBounds != null) ? g2d_definedBounds : p_node.getBounds(null, g2d_activeBounds);
 
         // Invalid bounds

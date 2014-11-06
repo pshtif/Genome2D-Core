@@ -3,7 +3,7 @@ import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.signals.GMouseSignal;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GMatrix;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.context.filters.GFilter;
 import com.genome2d.textures.GTexture;
 class GTiledSprite extends GComponent implements IRenderable {
@@ -52,7 +52,7 @@ class GTiledSprite extends GComponent implements IRenderable {
     }
 
     @:dox(hide)
-    public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
+    public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         if (texture == null) return;
 
         // Check rotations

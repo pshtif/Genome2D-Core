@@ -19,7 +19,7 @@ import com.genome2d.geom.GMatrixUtils;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.components.GTransform;
 import com.genome2d.components.renderables.IRenderable;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.signals.GNodeMouseSignal;
 import msignal.Signal;
@@ -177,7 +177,7 @@ class GNode
 	/**
 	 * 	@private
 	 */
-	public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GContextCamera, p_renderAsMask:Bool, p_useMatrix:Bool):Void {
+	public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_renderAsMask:Bool, p_useMatrix:Bool):Void {
 		if (g2d_active) {
             var context:IContext = core.getContext();
             var previousMaskRect:GRectangle = null;
@@ -432,7 +432,7 @@ class GNode
 	/**
      *  Process context mouse signal
      **/
-	public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_signal:GMouseSignal, p_camera:GContextCamera):Bool {
+	public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_signal:GMouseSignal, p_camera:GCamera):Bool {
 		if (!isActive() || !transform.visible || (p_camera != null && (cameraGroup&p_camera.mask) == 0 && cameraGroup != 0)) return false;
 
 		if (mouseChildren) {

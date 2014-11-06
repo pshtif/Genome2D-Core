@@ -10,7 +10,7 @@ package com.genome2d.components.renderables;
 
 import com.genome2d.error.GError;
 import com.genome2d.textures.GTexture;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.node.GNode;
 
 /**
@@ -167,7 +167,7 @@ class GMovieClip extends GTexturedQuad
 	}
 	
 	@:doc(hide)
-	override public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
+	override public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
 		if (texture != null) {
             var currentFrameId:Int = node.core.getCurrentFrameId();
             if (g2d_playing && currentFrameId != g2d_lastUpdatedFrameId) {

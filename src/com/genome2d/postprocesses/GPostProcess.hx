@@ -15,7 +15,7 @@ import com.genome2d.geom.GMatrix3D;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.textures.GTextureFilteringType;
 import com.genome2d.textures.factories.GTextureFactory;
 import com.genome2d.node.GNode;
@@ -68,7 +68,7 @@ class GPostProcess {
         g2d_bottomMargin = p_bottomMargin;
     }
 
-    public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GContextCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
+    public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
         var bounds:GRectangle = p_bounds;
         if (bounds == null) bounds = (g2d_definedBounds != null) ? g2d_definedBounds : p_node.getBounds(null, g2d_activeBounds);
 

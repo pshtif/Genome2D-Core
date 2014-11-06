@@ -11,7 +11,7 @@ package com.genome2d.components.renderables;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.context.filters.GFilter;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.node.GNode;
 import com.genome2d.components.GComponent;
@@ -53,7 +53,7 @@ class GTexturedQuad extends GComponent implements IRenderable
     public var ignoreMatrix:Bool = true;
 
     @:dox(hide)
-	public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
+	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
 		if (texture != null) {
             if (p_useMatrix && !ignoreMatrix) {
                 var matrix:GMatrix = node.core.g2d_renderMatrix;

@@ -18,7 +18,7 @@ import com.genome2d.components.GComponent;
 import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 import com.genome2d.components.renderables.IRenderable;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 
 /**
     Component handling advanced particle systems with unlimited extendibility using custom particle instances and user defined affectors and initializers
@@ -132,7 +132,7 @@ class GParticleSystem extends GComponent implements IRenderable
         }
     }
 
-    public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
+    public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         // TODO add matrix transformations
         var particle:GParticle = g2d_firstParticle;
         while (particle!=null) {

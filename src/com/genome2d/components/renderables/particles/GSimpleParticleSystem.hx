@@ -15,7 +15,7 @@ import com.genome2d.components.GComponent;
 import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 import com.genome2d.components.renderables.IRenderable;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 
 /**
     Component handling simple particle systems used for best performance
@@ -280,7 +280,7 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 		}	
 	}
 
-	public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
+	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         // TODO add matrix transformations
 		if (texture == null) return;
 		

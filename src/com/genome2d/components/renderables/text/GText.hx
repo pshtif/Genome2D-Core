@@ -13,7 +13,7 @@ import com.genome2d.geom.GRectangle;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.node.GNode;
 import com.genome2d.signals.GMouseSignal;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 
 /**
     Component used for rendering texture based text
@@ -143,7 +143,7 @@ class GText extends GComponent implements IRenderable
     }
 
     @:dox(hide)
-	public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
+	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
 		if (renderer.isDirty()) renderer.invalidate();
 
         if (renderer != null) renderer.render(node.transform.g2d_worldX, node.transform.g2d_worldY, node.transform.g2d_worldScaleX, node.transform.g2d_worldScaleY, node.transform.g2d_worldRotation);

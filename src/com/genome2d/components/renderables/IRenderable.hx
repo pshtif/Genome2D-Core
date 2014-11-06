@@ -9,7 +9,7 @@
 package com.genome2d.components.renderables;
 
 import com.genome2d.geom.GRectangle;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 
 /**
     Interfaces implemented by all renderable components
@@ -21,7 +21,7 @@ interface IRenderable {
     /**
         Render the component
     **/
-    function render(p_camera:GContextCamera, p_useMatrix:Bool):Void;
+    function render(p_camera:GCamera, p_useMatrix:Bool):Void;
 
     /**
         Get local bounds of the renderable component

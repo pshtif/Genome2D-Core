@@ -8,10 +8,11 @@
  */
 package com.genome2d.components;
 
+import com.genome2d.context.GViewPort;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.node.GNode;
 import com.genome2d.signals.GMouseSignal;
 
@@ -47,6 +48,8 @@ class GCameraController extends GComponent
         Default `null`
 	**/
     public var renderTarget:GTexture = null;
+
+    public var viewport:GViewPort;
 	
 	/**
 	    Get a viewport color
@@ -60,11 +63,11 @@ class GCameraController extends GComponent
 		return alpha+red+green+blue;
 	}
 
-    private var g2d_contextCamera:GContextCamera;
+    private var g2d_contextCamera:GCamera;
     #if swc @:extern #end
-    public var contextCamera(get, never):GContextCamera;
+    public var contextCamera(get, never):GCamera;
     #if swc @:getter(contextCamera) #end
-    inline private function get_contextCamera():GContextCamera {
+    inline private function get_contextCamera():GCamera {
         return g2d_contextCamera;
     }
 
@@ -88,7 +91,7 @@ class GCameraController extends GComponent
 	}
 
 	override public function init():Void {
-        g2d_contextCamera = new GContextCamera();
+        g2d_contextCamera = new GCamera();
         g2d_viewRectangle = new GRectangle();
 
 		if (node != node.core.root && node.isOnStage()) node.core.g2d_addCameraController(this);
@@ -153,4 +156,8 @@ class GCameraController extends GComponent
 	private function g2d_onRemovedFromStage():Void {
 		node.core.g2d_removeCameraController(this);
 	}
+
+    public function setViewport(p_width:Int, p_height:Int, p_resize:Bool = true):Void {
+        viewport = new GViewPort(this, p_width, p_height, p_resize);
+    }
 }

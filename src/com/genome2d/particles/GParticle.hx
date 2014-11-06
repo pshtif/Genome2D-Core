@@ -9,7 +9,7 @@
 package com.genome2d.particles;
 
 import com.genome2d.components.renderables.particles.GParticleSystem;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 
@@ -95,5 +95,5 @@ class GParticle
         g2d_pool.g2d_availableInstance = this;
     }
 
-    public function render(p_camera:GContextCamera, p_particleSystem:GParticleSystem):Void {}
+    public function render(p_camera:GCamera, p_particleSystem:GParticleSystem):Void {}
 }

@@ -9,7 +9,7 @@
 package com.genome2d.postprocesses;
 
 import com.genome2d.context.filters.GFilter;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.textures.GTexture;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.node.GNode;
@@ -139,7 +139,7 @@ class GBlurPP extends GPostProcess
         }
     }
 
-    override public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GContextCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
+    override public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
         if (g2d_invalidate) invalidateBlurFilters();
 
         super.render(p_parentTransformUpdate, p_parentColorUpdate, p_camera, p_node, p_bounds, p_source, p_target);

@@ -2,7 +2,7 @@ package com.genome2d.components.renderables;
 import com.genome2d.signals.GMouseSignal;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GMatrix;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.context.filters.GFilter;
 import com.genome2d.textures.GTexture;
 class GSlice3Sprite extends GTiledSprite {
@@ -11,7 +11,7 @@ class GSlice3Sprite extends GTiledSprite {
     public var texture3:GTexture;
 
     @:dox(hide)
-    override public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
+    override public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         // Calculate rotation
         var sin:Float = 0;
         var cos:Float = 1;

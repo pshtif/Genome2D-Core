@@ -3,7 +3,7 @@ import com.genome2d.utils.GHAlignType;
 import com.genome2d.utils.GVAlignType;
 import com.genome2d.context.IContext;
 import com.genome2d.textures.GCharTexture;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.textures.GTextureFontAtlas;
 class GTextureTextRenderer extends GTextRenderer {
 
