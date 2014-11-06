@@ -41,11 +41,11 @@ class GTexture extends GContextTexture
 
 	private function g2d_invalidateUV():Void {
 		if (g2d_parentAtlas != null) {
-			uvX = g2d_region.x / g2d_parentAtlas.width;
-			uvY = g2d_region.y / g2d_parentAtlas.height;
+			uvX = g2d_region.x / g2d_parentAtlas.gpuWidth;
+			uvY = g2d_region.y / g2d_parentAtlas.gpuHeight;
 			
-			uvScaleX = g2d_region.width / g2d_parentAtlas.width;
-			uvScaleY = g2d_region.height / g2d_parentAtlas.height;
+			uvScaleX = g2d_region.width / g2d_parentAtlas.gpuWidth;
+			uvScaleY = g2d_region.height / g2d_parentAtlas.gpuHeight;
 		} else {
             uvScaleX = g2d_region.width / g2d_gpuWidth;
             uvScaleY = g2d_region.height / g2d_gpuHeight;

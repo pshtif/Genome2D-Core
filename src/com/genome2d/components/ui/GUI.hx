@@ -1,7 +1,7 @@
 package com.genome2d.components.ui;
 import com.genome2d.ui.GUIContainer;
 import com.genome2d.geom.GRectangle;
-import com.genome2d.context.GContextCamera;
+import com.genome2d.context.GCamera;
 import com.genome2d.components.renderables.IRenderable;
 class GUI extends GComponent implements IRenderable {
     public var root:GUIContainer;
@@ -10,7 +10,7 @@ class GUI extends GComponent implements IRenderable {
         root = new GUIContainer();
     }
 
-    public function render(p_camera:GContextCamera, p_useMatrix:Bool):Void {
+    public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         root.render(node.transform.g2d_worldX, node.transform.g2d_worldY);
     }
 
