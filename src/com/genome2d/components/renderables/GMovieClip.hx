@@ -8,6 +8,7 @@
  */
 package com.genome2d.components.renderables;
 
+import msignal.Signal.Signal1;
 import com.genome2d.error.GError;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.GCamera;
@@ -27,6 +28,15 @@ class GMovieClip extends GTexturedQuad
     private var g2d_playing:Bool = true;
     private var g2d_frameTextures:Array<GTexture>;
     private var g2d_frameTexturesCount:Int;
+
+    private var g2d_onPlaybackEnd:Signal1<GMovieClip>;
+    #if swc @:extern #end
+    public var onPlaybackEnd(get, never):Signal1<GMovieClip>;
+    #if swc @:getter(onPlaybackEnd) #end
+    private function get_onPlaybackEnd():Signal1<GMovieClip> {
+        if (g2d_onPlaybackEnd == null) g2d_onPlaybackEnd = new Signal1(GMovieClip);
+        return g2d_onPlaybackEnd;
+    }
 
     /**
         Get the current frame count
@@ -169,6 +179,7 @@ class GMovieClip extends GTexturedQuad
 	@:doc(hide)
 	override public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
 		if (texture != null) {
+            var dispatchEnd:Bool = false;
             var currentFrameId:Int = node.core.getCurrentFrameId();
             if (g2d_playing && currentFrameId != g2d_lastUpdatedFrameId) {
                 g2d_lastUpdatedFrameId = currentFrameId;
@@ -177,15 +188,33 @@ class GMovieClip extends GTexturedQuad
                 if (g2d_accumulatedTime >= g2d_speed) {
                     g2d_currentFrame += (reversed) ? -Std.int(g2d_accumulatedTime / g2d_speed) : Std.int(g2d_accumulatedTime / g2d_speed);
                     if (reversed && g2d_currentFrame<0) {
-                        g2d_currentFrame = (repeatable) ? g2d_frameTexturesCount+g2d_currentFrame%g2d_frameTexturesCount : 0;
+                        if (repeatable) {
+                            g2d_currentFrame = g2d_frameTexturesCount+g2d_currentFrame%g2d_frameTexturesCount;
+                        } else {
+                            g2d_currentFrame = 0;
+                            g2d_playing = false;
+                            dispatchEnd = true;
+                        }
                     } else if (!reversed && g2d_currentFrame>=g2d_frameTexturesCount) {
-                        g2d_currentFrame = (repeatable) ? g2d_currentFrame%g2d_frameTexturesCount : g2d_frameTexturesCount-1;
+                        if (repeatable) {
+                            g2d_currentFrame = g2d_currentFrame%g2d_frameTexturesCount;
+                        } else {
+                            g2d_currentFrame = g2d_frameTexturesCount-1;
+                            g2d_playing = false;
+                            dispatchEnd = true;
+                        }
                     }
                     texture = g2d_frameTextures[g2d_currentFrame];
                 }
                 g2d_accumulatedTime %= g2d_speed;
             }
             super.render(p_camera, p_useMatrix);
+
+            if (dispatchEnd && g2d_onPlaybackEnd != null) g2d_onPlaybackEnd.dispatch(this);
         }
 	}
+
+    override public function dispose():Void {
+        if (g2d_onPlaybackEnd != null) g2d_onPlaybackEnd.removeAll();
+    }
 }
