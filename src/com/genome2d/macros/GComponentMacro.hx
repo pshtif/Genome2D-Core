@@ -22,6 +22,33 @@ class GComponentMacro {
         var fields = Context.getBuildFields();
 
         var prototypes:Array<String> = [];
+        var superCls = Context.getLocalClass().get().superClass;
+        while (superCls != null) {
+            var c = superCls.t.get();
+            if (c.fields.get().length == 0) Context.getType(c.name);
+            for (field in c.fields.get()) {
+                for (meta in field.meta.get()) if (meta.name == 'prototype' && meta.params != null) {
+                    switch (field.type) {
+                        case TInst(type, params):
+                            if (type.toString() != "String") {
+                                for (inter in type.get().interfaces) {
+                                    if (inter.t.toString() == "com.genome2d.components.IGPrototypable") {
+                                        prototypes.push(field.name+"|"+type.toString());
+                                    }
+                                }
+                            } else {
+                                prototypes.push(field.name+"|"+type.toString());
+                            }
+                        case TAbstract(type, params):
+                            prototypes.push(field.name+"|"+type.toString());
+                        case _:
+                            prototypes.push(field.name+"|NA");
+                    }
+                }
+            }
+            superCls = c.superClass;
+        }
+
         for (i in fields) {
             if (i.meta.length==0 || i.access.indexOf(APublic) == -1) continue;
             var isPrototype:Bool = false;
@@ -78,7 +105,7 @@ class GComponentMacro {
                 case FFun(e):
             }
         }
-
+        //if (prototypes.length>0) trace( Context.getLocalClass().get().name, prototypes);
         var kind = TPath({ pack : [], name : "Array", params : [TPType(TPath({name:"String", pack:[], params:[]}))] });
         var decl:Array<Expr> = [];
         for (i in prototypes) {
