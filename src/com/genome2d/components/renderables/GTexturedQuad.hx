@@ -71,7 +71,7 @@ class GTexturedQuad extends GComponent implements IRenderable
         var tx:Float = p_x - node.transform.g2d_worldX;
         var ty:Float = p_y - node.transform.g2d_worldY;
 
-        if (g2d_node.transform.g2d_worldRotation != 0) {
+        if (node.transform.g2d_worldRotation != 0) {
             var cos:Float = Math.cos(-node.transform.g2d_worldRotation);
             var sin:Float = Math.sin(-node.transform.g2d_worldRotation);
 
@@ -80,11 +80,11 @@ class GTexturedQuad extends GComponent implements IRenderable
             ty = (ty*cos + ox*sin);
         }
 
-        tx /= g2d_node.transform.g2d_worldScaleX*texture.width;
-        ty /= g2d_node.transform.g2d_worldScaleY*texture.height;
+        tx /= node.transform.g2d_worldScaleX*texture.width;
+        ty /= node.transform.g2d_worldScaleY*texture.height;
 
-        if (p_w != 0) p_w /= g2d_node.transform.g2d_worldScaleX*texture.width;
-        if (p_h != 0) p_h /= g2d_node.transform.g2d_worldScaleY*texture.height;
+        if (p_w != 0) p_w /= node.transform.g2d_worldScaleX*texture.width;
+        if (p_h != 0) p_h /= node.transform.g2d_worldScaleY*texture.height;
 
         tx += .5;
         ty += .5;
