@@ -15,6 +15,7 @@ WIP
 - ADDED support for mouse signal in GTileMap
 - ADDED contextSignal property to GNodeMouseSignal to reference the original context mouse signal
 - ADDED onPlaybackEnd signal for GMovieClip to dispatch when nonrepeatable movieclip animation ends
+- ADDED getActiveCamera method to IContext
 - FIXED incorrect calculation of UV coordinates using different scalefactors
 - FIXED setting a camera will set scissoring even for fullscreen as there seem to be Stage3D bug when using null
 - FIXED crash when trying to calculate animated frame for GTile reentering viewport from outside while having reversed playback
