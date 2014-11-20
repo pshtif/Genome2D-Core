@@ -143,7 +143,6 @@ class GUIContainer extends GUIControl {
 
             for (i in 0...g2d_childCount) {
                 var child:GUIControl = g2d_children[i];
-                trace(child);
                 if (child.visible) child.render(x, y);
             }
 

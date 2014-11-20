@@ -11,6 +11,8 @@ WIP
 - CHANGED GContextCamera renamed to GCamera
 - CHANGED moved GScreenManager functionality to GCamera as viewport, can be also set through GCameraController setViewport.
 - CHANGED some of the util classes moved to the common repository
+- CHANGED GComponentMacro to MGPrototypeProcessor from now on all macros will start with M and also this macro is now used for more than just components
+- CHANGED IGPrototypable moved from components to utils
 - ADDED prototypable support for inheritance chain variables and properties
 - ADDED support for mouse signal in GTileMap
 - ADDED contextSignal property to GNodeMouseSignal to reference the original context mouse signal

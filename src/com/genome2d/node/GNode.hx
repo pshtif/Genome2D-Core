@@ -552,13 +552,13 @@ class GNode
     public function addComponentPrototype(p_prototype:Xml):GComponent {
         if (g2d_disposed) new GError("Node already disposed.");
 
-        var componentClass:Class<GComponent> = cast Type.resolveClass(p_prototype.get("componentClass"));
+        var componentClass:Class<GComponent> = cast Type.resolveClass(p_prototype.get("class"));
         if (componentClass == null) {
-            new GError("Non existing componentClass "+p_prototype.get("componentClass"));
+            new GError("Non existing componentClass "+p_prototype.get("class"));
         }
-        var componentLookupClass:Class<GComponent> = cast Type.resolveClass(p_prototype.get("componentLookupClass"));
+        var componentLookupClass:Class<GComponent> = cast Type.resolveClass(p_prototype.get("lookupClass"));
         if (componentLookupClass == null) {
-            new GError("Non existing componentLookupClass "+p_prototype.get("componentLookupClass"));
+            new GError("Non existing componentLookupClass "+p_prototype.get("lookupClass"));
         }
         var component:GComponent = addComponent(componentClass, componentLookupClass);
 

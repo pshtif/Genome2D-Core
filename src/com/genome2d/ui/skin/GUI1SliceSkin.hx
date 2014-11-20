@@ -6,6 +6,18 @@ import com.genome2d.textures.GTexture;
 class GUI1SliceSkin extends GUISkin {
     public var texture:GTexture;
 
+    #if swc @:extern #end
+    @prototype public var textureId(get, set):String;
+    #if swc @:getter(textureId) #end
+    inline private function get_textureId():String {
+        return (texture != null) ? texture.getId() : "";
+    }
+    #if swc @:setter(textureId) #end
+    inline private function set_textureId(p_value:String):String {
+        texture = GTexture.getTextureById(p_value);
+        return p_value;
+    }
+
     override public function getMinWidth():Float {
         return texture.width;
     }
@@ -25,7 +37,6 @@ class GUI1SliceSkin extends GUISkin {
     }
 
     override public function render(p_x:Float, p_y:Float, p_width:Float, p_height:Float):Void {
-        trace(p_x, p_y, p_width, p_height);
         var context:IContext = Genome2D.getInstance().getContext();
         context.draw(texture, p_x, p_y, p_width/texture.width, p_height/texture.height, 0, 1, 1, 1, 1, 1, null);
     }

@@ -8,7 +8,7 @@
  */
 package com.genome2d.components;
 
-import com.genome2d.macros.GComponentMacro;
+import com.genome2d.utils.IGPrototypable;
 import com.genome2d.node.GNode;
 import Type.ValueType;
 import com.genome2d.signals.GMouseSignal;
@@ -17,7 +17,6 @@ import com.genome2d.signals.GMouseSignal;
     Component super class all components need to extend it
 **/
 @:allow(com.genome2d.node.GNode)
-@:autoBuild(com.genome2d.macros.GComponentMacro.build())
 class GComponent implements IGPrototypable
 {
 	private var g2d_active:Bool = true;
@@ -32,7 +31,7 @@ class GComponent implements IGPrototypable
 		g2d_active = p_value;
 	}
 
-	public var id:String = "";
+	//public var id:String = "";
 
 	private var g2d_node:GNode;
     /**
@@ -52,13 +51,13 @@ class GComponent implements IGPrototypable
 	 * 	PROTOTYPE CODE
 	 ****************************************************************************************************/
 	public function getPrototype():Xml {
-		var prototypeXml:Xml = Xml.parse("<component/>").firstElement();
+		var prototypeXml:Xml = Xml.createElement("component");
 
-		prototypeXml.set("id", id);
-		prototypeXml.set("componentClass", Type.getClassName(Type.getClass(this)));
-		prototypeXml.set("componentLookupClass", Type.getClassName(g2d_lookupClass));
+		//prototypeXml.set("id", id);
+		prototypeXml.set("class", Type.getClassName(Type.getClass(this)));
+		prototypeXml.set("lookupClass", Type.getClassName(g2d_lookupClass));
 		
-		var propertiesXml:Xml = Xml.parse("<properties/>").firstElement();
+		var propertiesXml:Xml = Xml.createElement("properties");
 
         var properties:Array<String> = Reflect.field(Type.getClass(this), "PROTOTYPE_PROPERTIES");
 
@@ -74,9 +73,9 @@ class GComponent implements IGPrototypable
 		return prototypeXml;
 	}
 	
-	private function g2d_addPrototypeProperty(p_name:String, p_type:String, p_propertiesXml:Xml = null):Void {
+	private function g2d_addPrototypeProperty(p_name:String, p_type:String, p_parentXml:Xml = null):Void {
 		// Discard complex types
-		var propertyXml:Xml = Xml.parse("<property/>").firstElement();
+		var propertyXml:Xml = Xml.createElement("property");
 
         propertyXml.set("name", p_name);
         propertyXml.set("type", p_type);
@@ -88,7 +87,7 @@ class GComponent implements IGPrototypable
             propertyXml.set("value", Std.string(Reflect.getProperty(this, p_name)));
         }
 
-		p_propertiesXml.addChild(propertyXml);
+		p_parentXml.addChild(propertyXml);
 	}
 
 	/**
@@ -112,7 +111,7 @@ class GComponent implements IGPrototypable
 
     **/
 	public function initPrototype(p_prototypeXml:Xml):Void {
-		id = p_prototypeXml.get("id");
+		//id = p_prototypeXml.get("id");
 
 		var propertiesXml:Xml = p_prototypeXml.firstElement();
 		

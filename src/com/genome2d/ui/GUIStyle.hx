@@ -1,4 +1,5 @@
 package com.genome2d.ui;
+import com.genome2d.utils.IGPrototypable;
 import com.genome2d.ui.GUIStyleManager;
 import com.genome2d.ui.GUIStyleManager;
 import com.genome2d.ui.GUIStyleManager;
@@ -8,7 +9,8 @@ import msignal.Signal;
 import com.genome2d.ui.skin.GUISkin;
 import com.genome2d.utils.GHAlignType;
 import com.genome2d.utils.GVAlignType;
-class GUIStyle {
+class GUIStyle implements IGPrototypable {
+
     private var g2d_id:String;
     inline public function getId():String {
         return g2d_id;
@@ -30,7 +32,7 @@ class GUIStyle {
 
     public var g2d_marginLeft:Float = 0;
     #if swc @:extern #end
-    public var marginLeft(get, set):Float;
+    @prototype public var marginLeft(get, set):Float;
     #if swc @:getter(marginLeft) #end
     inline private function get_marginLeft():Float {
         return g2d_marginLeft;
@@ -84,10 +86,62 @@ class GUIStyle {
         return g2d_marginBottom;
     }
 
-    public var autoSize:Bool = false;
-    public var textVAlign:Int = GVAlignType.TOP;
-    public var textHAlign:Int = GHAlignType.LEFT;
-    public var fontAtlasId:String = "uiFont";
+    public var g2d_autoSize:Bool = false;
+    #if swc @:extern #end
+    public var autoSize(get, set):Bool;
+    #if swc @:getter(autoSize) #end
+    inline private function get_autoSize():Bool {
+        return g2d_autoSize;
+    }
+    #if swc @:setter(autoSize) #end
+    inline private function set_autoSize(p_value:Bool):Bool {
+        g2d_autoSize = p_value;
+        onChange.dispatch();
+        return g2d_autoSize;
+    }
+
+    private var g2d_textVAlign:Int = GVAlignType.TOP;
+    #if swc @:extern #end
+    public var textVAlign(get, set):Int;
+    #if swc @:getter(textVAlign) #end
+    inline private function get_textVAlign():Int {
+        return g2d_textVAlign;
+    }
+    #if swc @:setter(textVAlign) #end
+    inline private function set_textVAlign(p_value:Int):Int {
+        g2d_textVAlign = p_value;
+        onChange.dispatch();
+        return g2d_textVAlign;
+    }
+
+    private var g2d_textHAlign:Int = GHAlignType.LEFT;
+    #if swc @:extern #end
+    public var textHAlign(get, set):Int;
+    #if swc @:getter(textHAlign) #end
+    inline private function get_textHAlign():Int {
+        return g2d_textHAlign;
+    }
+    #if swc @:setter(textHAlign) #end
+    inline private function set_textHAlign(p_value:Int):Int {
+        g2d_textHAlign = p_value;
+        onChange.dispatch();
+        return g2d_textHAlign;
+    }
+
+    private var g2d_fontAtlasId:String = "uiFont";
+    #if swc @:extern #end
+    public var fontAtlasId(get, set):String;
+    #if swc @:getter(fontAtlasId) #end
+    inline private function get_fontAtlasId():String {
+        return g2d_fontAtlasId;
+    }
+    #if swc @:setter(fontAtlasId) #end
+    inline private function set_fontAtlasId(p_value:String):String {
+        g2d_fontAtlasId = p_value;
+        onChange.dispatch();
+        return g2d_fontAtlasId;
+    }
+
     public var fontScale:Float = 1;
 
     private var g2d_onChange:Signal0;
@@ -116,7 +170,7 @@ class GUIStyle {
     private var g2d_usePercentageWidth:Bool = false;
     private var g2d_minWidth:Float = 0;
     #if swc @:extern #end
-    public var minWidth(get, set):Float;
+    @prototype public var minWidth(get, set):Float;
     #if swc @:getter(minWidth) #end
     inline private function get_minWidth():Float {
         return g2d_minWidth;
@@ -299,17 +353,26 @@ class GUIStyle {
 
         return style;
     }
-
+/*
     public function getPrototype():Xml {
-        var source:String = "<style" +
-        " marginLeft=\""+marginLeft+"\" marginRight=\""+marginRight+"\" marginTop=\""+marginTop+"\" marginBottom=\""+marginBottom+"\"" +
-        " autoSize=\""+autoSize+"\" textHAlign=\""+textHAlign+"\" textVAlign=\""+textVAlign+" fontScale=\""+fontScale+"\" fontAtlasId=\""+fontAtlasId+"\"" +
-        ">";
-        source+="</style>";
-        return Xml.parse(source);
+        var prototypeXml:Xml = Xml.createElement("style");
+        prototypeXml.set("id", g2d_id);
+        prototypeXml.set("class", Type.getClassName(Type.getClass(this)));
+
+        var properties:Array<String> = Reflect.field(Type.getClass(this), "PROTOTYPE_PROPERTIES");
+
+        if (properties != null) {
+            for (i in 0...properties.length) {
+                var property:Array<String> = properties[i].split("|");
+                prototypeXml.set(property[0],Std.string(Reflect.getProperty(this, property[0])));
+            }
+        }
+
+        return prototypeXml;
     }
 
     public function initPrototype(p_xml:Xml):Void {
 
     }
+    /**/
 }
