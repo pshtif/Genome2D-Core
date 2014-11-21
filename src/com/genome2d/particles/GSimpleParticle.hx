@@ -9,7 +9,7 @@
 package com.genome2d.particles;
 
 /**
-    Simple particle element used by `GSimpleParticleSystem`
+    Simple particles element used by `GSimpleParticleSystem`
 **/
 import com.genome2d.textures.GTexture;
 import com.genome2d.components.renderables.particles.GSimpleParticleSystem;

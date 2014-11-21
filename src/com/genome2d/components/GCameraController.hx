@@ -26,24 +26,24 @@ class GCameraController extends GComponent
     private var g2d_renderedNodesCount:Int;
 
 	/**
-	    Red component of viewport background color
+	    Red components of viewport background color
 	**/
 	public var backgroundRed:Float = 0;
 
 	/**
-	    Green component of viewport background color
+	    Green components of viewport background color
 	**/
 	public var backgroundGreen:Float = 0;
 
 	/**
-	    Blue component of viewport background color
+	    Blue components of viewport background color
 	**/
 	public var backgroundBlue:Float = 0;
 
 	public var backgroundAlpha:Float = 0;
 
     /**
-        Render texture used as a target for rendering this camera
+        Render textures used as a target for rendering this camera
 
         Default `null`
 	**/

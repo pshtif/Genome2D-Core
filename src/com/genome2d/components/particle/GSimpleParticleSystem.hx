@@ -18,7 +18,7 @@ import com.genome2d.components.renderables.IRenderable;
 import com.genome2d.context.GCamera;
 
 /**
-    Component handling simple particle systems used for best performance
+    Component handling simple particles systems used for best performance
  **/
 class GSimpleParticleSystem extends GComponent implements IRenderable
 {
@@ -197,7 +197,7 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 	#if swc @:setter(textureId) #end
 	inline private function set_textureId(p_value:String):String {
 		texture = GTexture.getTextureById(p_value);
-        if (texture == null) new GError("Invalid texture with id "+p_value);
+        if (texture == null) new GError("Invalid textures with id "+p_value);
 		return p_value;
 	}
 

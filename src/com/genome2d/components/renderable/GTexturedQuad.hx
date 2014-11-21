@@ -6,7 +6,7 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderables;
+package com.genome2d.components.renderable;
 
 import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GMatrix;
@@ -26,8 +26,7 @@ class GTexturedQuad extends GComponent implements IRenderable
     /**
         Blend mode used for rendering
     **/
-    @prototype
-    public var blendMode:Int = 1;
+    @prototype public var blendMode:Int = 1;
 
     /**
         Enable/disable pixel perfect mouse detection, not supported by all contexts.

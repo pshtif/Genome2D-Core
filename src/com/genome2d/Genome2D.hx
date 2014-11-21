@@ -127,7 +127,7 @@ class Genome2D
 
     private var g2d_onKeySignal:Signal1<GKeyboardSignal>;
     /**
-        Signal dispatched when Genome2D processes keyboard signal
+        Signal dispatched when Genome2D processes keyboard signals
     **/
     #if swc @:extern #end
     public var onKeySignal(get, never):Signal1<GKeyboardSignal>;
@@ -176,7 +176,7 @@ class Genome2D
 		return g2d_context;
 	}
 
-    @:allow(com.genome2d.components.renderables.GTexturedQuad)
+    @:allow(com.genome2d.components.renderable.GTexturedQuad)
     private var g2d_renderMatrix:GMatrix;
     private var g2d_renderMatrixIndex:Int = 0;
     private var g2d_renderMatrixArray:Array<GMatrix>;
@@ -347,10 +347,10 @@ class Genome2D
 
     @:access(com.genome2d.components.GCameraController)
 	private function g2d_contextMouseSignalHandler(p_signal:GMouseSignal):Void {
-        // If there is no camera process the signal directly by root node
+        // If there is no camera process the signals directly by root node
 		if (g2d_cameras.length == 0) {
             root.processContextMouseSignal(p_signal.nativeCaptured, p_signal.x, p_signal.y, p_signal, null);
-        // If there are cameras we need to process the signal through them
+        // If there are cameras we need to process the signals through them
 		} else {
             var captured:Bool = p_signal.nativeCaptured;
 		    for (i in 0...g2d_cameras.length) {

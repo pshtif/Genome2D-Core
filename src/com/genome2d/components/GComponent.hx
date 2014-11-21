@@ -8,7 +8,7 @@
  */
 package com.genome2d.components;
 
-import com.genome2d.utils.IGPrototypable;
+import com.genome2d.prototype.IGPrototypable;
 import com.genome2d.node.GNode;
 import Type.ValueType;
 import com.genome2d.signals.GMouseSignal;
@@ -51,7 +51,7 @@ class GComponent implements IGPrototypable
 	 * 	PROTOTYPE CODE
 	 ****************************************************************************************************/
 	public function getPrototype():Xml {
-		var prototypeXml:Xml = Xml.createElement("component");
+		var prototypeXml:Xml = Xml.createElement("components");
 
 		//prototypeXml.set("id", id);
 		prototypeXml.set("class", Type.getClassName(Type.getClass(this)));
@@ -91,13 +91,13 @@ class GComponent implements IGPrototypable
 	}
 
 	/**
-        Abstract method called after component is initialized on the node
+        Abstract method called after components is initialized on the node
     **/
     public function init():Void {
     }
 
     /**
-	    Abstract method that should be overriden and implemented if you are creating your own components, its called each time a node that uses this component is processing mouse events
+	    Abstract method that should be overriden and implemented if you are creating your own components, its called each time a node that uses this components is processing mouse events
 	**/
     public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
         return false;
@@ -151,7 +151,7 @@ class GComponent implements IGPrototypable
 	}
 	
 	/**
-	    Base dispose method, if there is a disposing you need to do in your extending component you should override it and always call super.dispose() its used when a node using this component is being disposed
+	    Base dispose method, if there is a disposing you need to do in your extending components you should override it and always call super.dispose() its used when a node using this components is being disposed
 	**/
 	private function g2d_dispose():Void {
         dispose();

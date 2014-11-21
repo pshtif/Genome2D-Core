@@ -16,7 +16,7 @@ import com.genome2d.signals.GMouseSignal;
 import com.genome2d.context.GCamera;
 
 /**
-    Component used for rendering texture based text
+    Component used for rendering textures based text
 **/
 class GText extends GComponent implements IRenderable
 {

@@ -16,7 +16,7 @@ class GTile
     #if swc @:setter(textureId) #end
     inline private function set_textureId(p_value:String):String {
         texture = GTexture.getTextureById(p_value);
-        if (texture == null) new GError("Invalid texture with id "+p_value);
+        if (texture == null) new GError("Invalid textures with id "+p_value);
         return p_value;
     }
 
@@ -92,7 +92,7 @@ class GTile
         g2d_frameTexturesCount = p_value.length;
         for (i in 0...g2d_frameTexturesCount) {
             var frameTexture:GTexture = GTexture.getTextureById(p_value[i]);
-            if (frameTexture == null) new GError("Invalid texture id "+p_value[i]);
+            if (frameTexture == null) new GError("Invalid textures id "+p_value[i]);
             g2d_frameTextures.push(frameTexture);
         }
         g2d_currentFrame = 0;

@@ -69,7 +69,7 @@ class GMovieClip extends GTexturedQuad
 	    g2d_frameTexturesCount = p_value.length;
         for (i in 0...g2d_frameTexturesCount) {
             var frameTexture:GTexture = GTexture.getTextureById(p_value[i]);
-            if (frameTexture == null) new GError("Invalid texture id "+p_value[i]);
+            if (frameTexture == null) new GError("Invalid textures id "+p_value[i]);
             g2d_frameTextures.push(frameTexture);
         }
 		g2d_currentFrame = 0;

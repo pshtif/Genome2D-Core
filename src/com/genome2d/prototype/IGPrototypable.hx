@@ -6,14 +6,14 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.utils;
+package com.genome2d.prototype;
 
-import com.genome2d.macros.MGPrototypeProcessor;
+import com.genome2d.prototype.MGPrototypeProcessor;
 
 /**
     Prototypable interface
 **/
-@:autoBuild(com.genome2d.macros.MGPrototypeProcessor.build())
+@:autoBuild(com.genome2d.prototype.MGPrototypeProcessor.build())
 interface IGPrototypable {
     function getPrototype():Xml;
     function initPrototype(p_xml:Xml):Void;

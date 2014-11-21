@@ -1,5 +1,5 @@
 package com.genome2d.ui;
-import com.genome2d.utils.IGPrototypable;
+import com.genome2d.prototype.IGPrototypable;
 import com.genome2d.ui.GUIStyleManager;
 import com.genome2d.ui.GUIStyleManager;
 import com.genome2d.ui.GUIStyleManager;
@@ -9,6 +9,9 @@ import msignal.Signal;
 import com.genome2d.ui.skin.GUISkin;
 import com.genome2d.utils.GHAlignType;
 import com.genome2d.utils.GVAlignType;
+
+
+@prototypeName("style")
 class GUIStyle implements IGPrototypable {
 
     private var g2d_id:String;
@@ -16,9 +19,11 @@ class GUIStyle implements IGPrototypable {
         return g2d_id;
     }
 
+    @prototype public var test:Array<Int>;
+
     public var g2d_autoMargin:Bool = false;
     #if swc @:extern #end
-    public var autoMargin(get, set):Bool;
+    @prototype public var autoMargin(get, set):Bool;
     #if swc @:getter(autoMargin) #end
     inline private function get_autoMargin():Bool {
         return g2d_autoMargin;

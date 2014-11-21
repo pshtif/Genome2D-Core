@@ -1,15 +1,15 @@
 #if flash
-package com.genome2d.components.renderables.flash;
+package com.genome2d.componentrenderables.flash;
 
-import com.genome2d.utils.GVAlignType;
+import com.genome2d.utilGVAlignType;
 import com.genome2d.geom.GRectangle;
-import com.genome2d.utils.GHAlignType;
-import com.genome2d.utils.GVAlignType;
+import com.genome2d.utilGHAlignType;
+import com.genome2d.utilGVAlignType;
 import flash.display.DisplayObject;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.node.GNode;
-import com.genome2d.textures.factories.GTextureFactory;
-import com.genome2d.textures.GTextureUtils;
+import com.genome2d.texturefactories.GTextureFactory;
+import com.genome2d.textureGTextureUtils;
 import flash.display.BitmapData;
 import com.genome2d.geom.GMatrix;
 
@@ -107,12 +107,12 @@ class GFlashObject extends GTexturedQuad {
             g2d_accumulatedTime += p_deltaTime;
             var updateTime:Float = 1000/updateFrameRate;
             if (g2d_invalidate || g2d_accumulatedTime > updateTime) {
-                texture.g2d_bitmapData.fillRect(texture.g2d_bitmapData.rect, 0x0);
+                textures.g2d_bitmapData.fillRect(textures.g2d_bitmapData.rect, 0x0);
                 var bounds:GRectangle = nativeObject.getBounds(nativeObject);
                 g2d_nativeMatrix.tx = -bounds.x;
                 g2d_nativeMatrix.ty = -bounds.y;
-                texture.g2d_bitmapData.draw(nativeObject, g2d_nativeMatrix);
-                texture.invalidateNativeTexture(false);
+                textures.g2d_bitmapData.draw(nativeObject, g2d_nativeMatrix);
+                textures.invalidateNativeTexture(false);
 
                 g2d_accumulatedTime %= updateTime;
             }
@@ -135,12 +135,12 @@ class GFlashObject extends GTexturedQuad {
             bitmapData = new BitmapData(g2d_lastNativeWidth, g2d_lastNativeHeight, g2d_transparent, 0x0);
         }
 
-        if (texture == null || texture.gpuWidth != GTextureUtils.getNextValidTextureSize(g2d_lastNativeWidth) || texture.gpuHeight != GTextureUtils.getNearestValidTextureSize(g2d_lastNativeHeight)) {
-            if(texture != null) texture.dispose();
-            texture = GTextureFactory.createFromBitmapData(g2d_textureId, bitmapData);
+        if (textures == null || textures.gpuWidth != GTextureUtils.getNextValidTextureSize(g2d_lastNativeWidth) || textures.gpuHeight != GTextureUtils.getNearestValidTextureSize(g2d_lastNativeHeight)) {
+            if(textures != null) textures.dispose();
+            textures = GTextureFactory.createFromBitmapData(g2d_textureId, bitmapData);
         } else {
-            texture.g2d_bitmapData = bitmapData;
-            texture.setRegion(bitmapData.rect);
+            textures.g2d_bitmapData = bitmapData;
+            textures.setRegion(bitmapData.rect);
         }
 
         g2d_invalidateAlign();
@@ -151,25 +151,25 @@ class GFlashObject extends GTexturedQuad {
     private function g2d_invalidateAlign():Void {
         switch (vAlign) {
             case GVAlignType.TOP:
-                texture.pivotY = -texture.height*.5;
+                textures.pivotY = -textures.height*.5;
             case GVAlignType.MIDDLE:
-                texture.pivotY = 0;
+                textures.pivotY = 0;
             case GVAlignType.BOTTOM:
-                texture.pivotY = texture.height*.5;
+                textures.pivotY = textures.height*.5;
         }
         switch (hAlign) {
             case GHAlignType.LEFT:
-                texture.pivotX = -texture.width*.5;
+                textures.pivotX = -textures.width*.5;
             case GHAlignType.CENTER:
-                texture.pivotX = 0;
+                textures.pivotX = 0;
             case GHAlignType.RIGHT:
-                texture.pivotX = texture.width*.5;
+                textures.pivotX = textures.width*.5;
         }
     }
 
     override public function dispose():Void {
         node.core.onUpdate.remove(g2d_updateHandler);
-        texture.dispose();
+        textures.dispose();
 
         super.dispose();
     }

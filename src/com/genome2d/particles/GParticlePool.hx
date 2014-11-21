@@ -9,7 +9,7 @@
 package com.genome2d.particles;
 
 /**
-    Particle pool management class, used for pooling `GParticle` instances for `GParticleSystem` component instances
+    Particle pool management class, used for pooling `GParticle` instances for `GParticleSystem` components instances
 **/
 import com.genome2d.particles.GParticle;
 @:allow(com.genome2d.components.renderables.particles.GParticleSystem)
@@ -23,7 +23,7 @@ class GParticlePool
     private var g2d_particleClass:Class<GParticle>;
 
     /**
-        Create new particle pool, only if you want to implement pooling of custom particles otherwise let Genome2D
+        Create new particles pool, only if you want to implement pooling of custom particles otherwise let Genome2D
         use the default precreated pool shared by all `GParticleSystem` instances to save memory
     **/
     public function new(p_particleClass:Class<GParticle> = null):Void {
@@ -31,7 +31,7 @@ class GParticlePool
     }
 
     /**
-        Precache particle instances
+        Precache particles instances
     **/
     public function precache(p_precacheCount:Int):Void {
         if (p_precacheCount < g2d_count) return;

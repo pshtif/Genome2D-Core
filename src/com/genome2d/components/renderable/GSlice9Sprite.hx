@@ -1,4 +1,4 @@
-package com.genome2d.components.renderables;
+package com.genome2d.components.renderable;
 import com.genome2d.signals.GMouseSignal;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GMatrix;

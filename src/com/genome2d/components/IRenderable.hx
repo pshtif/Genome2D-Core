@@ -6,7 +6,7 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderables;
+package com.genome2d.components;
 
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GCamera;
@@ -14,17 +14,17 @@ import com.genome2d.context.GCamera;
 /**
     Interfaces implemented by all renderable components
 
-    Every `GNode` can have a single `IRenderable` component at any given time
+    Every `GNode` can have a single `IRenderable` components at any given time
 **/
 interface IRenderable {
 
     /**
-        Render the component
+        Render the components
     **/
     function render(p_camera:GCamera, p_useMatrix:Bool):Void;
 
     /**
-        Get local bounds of the renderable component
+        Get local bounds of the renderable components
     **/
     function getBounds(p_target:GRectangle = null):GRectangle;
 }

@@ -1,5 +1,5 @@
 package com.genome2d.ui.skin;
-import com.genome2d.utils.IGPrototypable;
+import com.genome2d.prototype.IGPrototypable;
 import com.genome2d.textures.GContextTexture;
 import com.genome2d.ui.GUISkinManager;
 import com.genome2d.ui.GUISkinManager;
@@ -8,6 +8,7 @@ import com.genome2d.ui.GUISkinManager;
 import com.genome2d.textures.GTexture;
 import com.genome2d.error.GError;
 
+@prototypeName("skin")
 class GUISkin implements IGPrototypable {
     public var type:Float = 0;
 

@@ -1,5 +1,5 @@
 #if flash
-package com.genome2d.components.renderables.flash;
+package com.genome2d.componentrenderables.flash;
 
 import flash.text.TextField;
 import flash.text.TextFormat;

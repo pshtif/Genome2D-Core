@@ -13,12 +13,12 @@ import com.genome2d.context.GContextFeature;
 import com.genome2d.context.IContext;
 import com.genome2d.context.stats.GStats;
 import com.genome2d.geom.GRectangle;
-import com.genome2d.postprocesses.GPostProcess;
+import com.genome2d.postprocess.GPostProcess;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.geom.GMatrixUtils;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.components.GTransform;
-import com.genome2d.components.renderables.IRenderable;
+import com.genome2d.components.IRenderable;
 import com.genome2d.context.GCamera;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.signals.GNodeMouseSignal;
@@ -336,7 +336,7 @@ class GNode
 	public function getPrototype():Xml {
 		if (g2d_disposed) new GError("Node already disposed.");
 
-		var prototypeXml:Xml = Xml.parse("<node/>").firstElement();
+		var prototypeXml:Xml = Xml.createElement("node");
 		prototypeXml.set("name", name);
 		prototypeXml.set("mouseEnabled", Std.string(mouseEnabled));
 		prototypeXml.set("mouseChildren", Std.string(mouseChildren));
@@ -348,7 +348,7 @@ class GNode
 		}
 		prototypeXml.addChild(componentsXml);
 
-		var childrenXml:Xml = Xml.parse("<children/>").firstElement();
+		var childrenXml:Xml = Xml.createElement("children");
 
         var child:GNode = g2d_firstChild;
         while (child != null) {
@@ -430,7 +430,7 @@ class GNode
 	public var g2d_rightMouseDownNode:GNode;
 
 	/**
-     *  Process context mouse signal
+     *  Process context mouse signals
      **/
 	public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_signal:GMouseSignal, p_camera:GCamera):Bool {
 		if (!isActive() || !transform.visible || (p_camera != null && (cameraGroup&p_camera.mask) == 0 && cameraGroup != 0)) return false;
@@ -454,7 +454,7 @@ class GNode
 	}
 
 	/**
-     *  Dispatch node mouse signal
+     *  Dispatch node mouse signals
      **/
 	public function dispatchNodeMouseSignal(p_type:String, p_object:GNode, p_localX:Float, p_localY:Float, p_contextSignal:GMouseSignal):Void {
 		if (mouseEnabled) { 
@@ -493,7 +493,7 @@ class GNode
 	private var g2d_numComponents:Int = 0;
 	
 	/**
-	 * 	Get a component of specified type attached to this node
+	 * 	Get a components of specified type attached to this node
 	 * 
 	 * 	@param p_componentClass Component type that should be retrieved
 	 */
@@ -512,7 +512,7 @@ class GNode
     }
 
 	/**
-     *  Has component
+     *  Has components
      **/
 	public function hasComponent(p_componentLookupClass:Class<GComponent>):Bool {
 		if (g2d_disposed) new GError("Node already disposed.");
@@ -520,7 +520,7 @@ class GNode
 	}
 	
 	/**
-	 * 	Add a component of specified type to this node, node can always have only a single component of a specific class to avoid redundancy
+	 * 	Add a components of specified type to this node, node can always have only a single components of a specific class to avoid redundancy
 	 * 
 	 *	@param p_componentClass Component type that should be instanced and attached to this node
 	 */
@@ -531,7 +531,7 @@ class GNode
 		if (lookup != null) return lookup;
 
         var component:GComponent = Type.createInstance(p_componentClass,[]);
-        if (component == null) new GError("Invalid component.");
+        if (component == null) new GError("Invalid components.");
         component.g2d_node = this;
         component.g2d_lookupClass = p_componentLookupClass;
 
@@ -569,7 +569,7 @@ class GNode
 
 	
 	/**
-	 * 	Remove component of specified type from this node
+	 * 	Remove components of specified type from this node
 	 * 
 	 * 	@param p_componentClass Component type that should be removed
 	 */

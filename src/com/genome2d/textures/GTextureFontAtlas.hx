@@ -35,7 +35,7 @@ class GTextureFontAtlas extends GTextureAtlas
         texture.nativeTexture = nativeTexture;
 
         #if swc
-        untyped g2d_textures[p_subId] = texture;
+        untyped g2d_textures[p_subId] = textures;
         #else
         g2d_textures.set(p_subId, texture);
         #end

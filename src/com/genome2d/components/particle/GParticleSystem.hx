@@ -21,7 +21,7 @@ import com.genome2d.components.renderables.IRenderable;
 import com.genome2d.context.GCamera;
 
 /**
-    Component handling advanced particle systems with unlimited extendibility using custom particle instances and user defined affectors and initializers
+    Component handling advanced particles systems with unlimited extendibility using custom particles instances and user defined affectors and initializers
  **/
 class GParticleSystem extends GComponent implements IRenderable
 {
@@ -44,11 +44,11 @@ class GParticleSystem extends GComponent implements IRenderable
     }
 
     /**
-     *  Duration of the particle system in seconds
+     *  Duration of the particles system in seconds
      */
     public var duration:Float = 0;
     /**
-     *  Loop particle emission
+     *  Loop particles emission
      */
     public var loop:Bool = true;
 
@@ -126,7 +126,7 @@ class GParticleSystem extends GComponent implements IRenderable
             for (i in 0...g2d_affectorsCount) {
                 g2d_affectors[i].update(this, particle, p_deltaTime);
             }
-            // If particle died during update remove it
+            // If particles died during update remove it
             if (particle.die) deactivateParticle(particle);
             particle = next;
         }

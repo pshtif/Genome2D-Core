@@ -13,7 +13,7 @@ import com.genome2d.geom.GMatrix;
 import com.genome2d.node.GNode;
 
 /**
-    Transform component, initialized automatically for every `GNode` used for handling all transformations
+    Transform components, initialized automatically for every `GNode` used for handling all transformations
 **/
 class GTransform extends GComponent
 {

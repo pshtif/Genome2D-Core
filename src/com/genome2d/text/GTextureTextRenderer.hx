@@ -25,7 +25,7 @@ class GTextureTextRenderer extends GTextRenderer {
     }
 
     /*
-     *  Set texture atlas that will be used for character textures lookup
+     *  Set textures atlas that will be used for character textures lookup
      */
     public function setTextureAtlas(p_textureAtlas:GTextureFontAtlas):Void {
         g2d_textureAtlas = p_textureAtlas;

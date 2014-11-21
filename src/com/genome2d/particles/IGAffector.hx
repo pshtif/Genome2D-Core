@@ -11,7 +11,7 @@ package com.genome2d.particles;
 import com.genome2d.components.renderables.particles.GParticleSystem;
 
 /**
-    Interface providing method for `GParticleSystem` particle update
+    Interface providing method for `GParticleSystem` particles update
 **/
 interface IGAffector {
 

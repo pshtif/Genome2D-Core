@@ -31,13 +31,13 @@ class GTextureAtlas extends GContextTexture {
         var found:Array<GTexture> = new Array<GTexture>();
         var textureIds:Array<String> = untyped __keys__(g2d_textures);
         for (i in 0...textureIds.length) {
-            var texture:GTexture = untyped g2d_textures[textureIds[i]];
+            var textures:GTexture = untyped g2d_textures[textureIds[i]];
             if (p_regExp != null) {
-                if (p_regExp.test(texture.getId())) {
-                    found.push(texture);
+                if (p_regExp.test(textures.getId())) {
+                    found.push(textures);
                 }
             } else {
-                found.push(texture);
+                found.push(textures);
             }
         }
 
@@ -81,10 +81,10 @@ class GTextureAtlas extends GContextTexture {
         #if swc
         var textureIds:Array<String> = untyped __keys__(g2d_textures);
         for (i in 0...textureIds.length) {
-            var texture:GTexture = untyped g2d_textures[textureIds[i]];
-            texture.nativeTexture = nativeTexture;
-            texture.g2d_gpuWidth = g2d_gpuWidth;
-            texture.g2d_gpuHeight = g2d_gpuHeight;
+            var textures:GTexture = untyped g2d_textures[textureIds[i]];
+            textures.nativeTexture = nativeTexture;
+            textures.g2d_gpuWidth = g2d_gpuWidth;
+            textures.g2d_gpuHeight = g2d_gpuHeight;
         }
         #else
         for (tex in g2d_textures) {
@@ -109,7 +109,7 @@ class GTextureAtlas extends GContextTexture {
         texture.frameHeight = p_frameHeight;
 
         #if swc
-        untyped g2d_textures[p_subId] = texture;
+        untyped g2d_textures[p_subId] = textures;
         #else
         g2d_textures.set(p_subId, texture);
         #end
