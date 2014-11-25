@@ -11,8 +11,7 @@ package com.genome2d.textures;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
 
-class GCharTexture extends GTexture
-{
+class GCharTexture extends GTexture {
     public var xoffset:Int = 0;
     public var yoffset:Int = 0;
     public var xadvance:Int = 0;

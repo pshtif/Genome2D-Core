@@ -12,7 +12,6 @@ class GPrototypeFactory {
 
             var fields:Dynamic = Meta.getType(IGPrototypable);
             for (i in Reflect.fields(fields)) {
-                trace(i, Reflect.field(fields,i));
                 var className:String = Reflect.field(fields,i)[0];
                 var cls:Class<IGPrototypable> = cast Type.resolveClass(className);
                 lookups.set(i, cls);
@@ -24,7 +23,8 @@ class GPrototypeFactory {
         if (prototypeClass == null) {
             new GError("Non existing prototype class "+prototypeName);
         }
-        var prototype:IGPrototypable = Type.createInstance(prototypeClass,[]);
+        //var prototype:IGPrototypable = Type.createInstance(prototypeClass,[]);
+        var prototype:IGPrototypable = Type.createEmptyInstance(prototypeClass);
         if (prototype == null) new GError("Invalid prototype.");
 
         prototype.initPrototype(p_prototypeXml);

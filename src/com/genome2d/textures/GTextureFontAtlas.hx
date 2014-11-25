@@ -14,31 +14,17 @@ class GTextureFontAtlas extends GTextureAtlas
     public var lineHeight:Int = 0;
     public var g2d_kerning:Map<Int,Map<Int,Int>>;
 
-    static public function getTextureFontAtlasById(p_id:String):GTextureFontAtlas {
-        return cast GContextTexture.getContextTextureById(p_id);
-    }
-
-    #if swc
-    override public function getSubTexture(p_subId:String):GCharTexture {
-        return untyped g2d_textures[p_subId];
-    }
-    #else
     override public function getSubTexture(p_subId:String):GCharTexture {
         return cast g2d_textures.get(p_subId);
     }
-    #end
 
-    override public function addSubTexture(p_subId:String, p_region:GRectangle, p_frameX:UInt, p_frameY:UInt, p_frameWidth:UInt, p_frameHeight:UInt):GCharTexture {
-        var texture:GCharTexture = new GCharTexture(g2d_context, g2d_id+"_"+p_subId, g2d_sourceType, g2d_nativeSource, p_region, g2d_format, false, 0, 0, g2d_scaleFactor, this);
+    override public function addSubTexture(p_subId:String, p_region:GRectangle, p_frame:GRectangle):GCharTexture {
+        var texture:GCharTexture = new GCharTexture(g2d_id+"_"+p_subId, g2d_nativeSourceType, g2d_nativeSource, p_region, g2d_format, false, 0, 0, g2d_scaleFactor, this);
         texture.g2d_subId = p_subId;
         texture.g2d_filteringType = g2d_filteringType;
-        texture.nativeTexture = nativeTexture;
+        texture.g2d_nativeTexture = nativeTexture;
 
-        #if swc
-        untyped g2d_textures[p_subId] = textures;
-        #else
         g2d_textures.set(p_subId, texture);
-        #end
 
         return texture;
     }

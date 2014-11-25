@@ -14,12 +14,8 @@ import com.genome2d.utils.GVAlignType;
 @prototypeName("style")
 class GUIStyle implements IGPrototypable {
 
-    private var g2d_id:String;
-    inline public function getId():String {
-        return g2d_id;
-    }
-
-    @prototype public var test:Array<Int>;
+    #if swc @:extern #end
+    @prototype public var id(default, null):String;
 
     public var g2d_autoMargin:Bool = false;
     #if swc @:extern #end
@@ -192,7 +188,7 @@ class GUIStyle implements IGPrototypable {
     private var g2d_usePercentageHeight:Bool = false;
     private var g2d_minHeight:Float = 0;
     #if swc @:extern #end
-    public var minHeight(get, set):Float;
+    @prototype public var minHeight(get, set):Float;
     #if swc @:getter(minHeight) #end
     inline private function get_minHeight():Float {
         return g2d_minHeight;
@@ -304,15 +300,15 @@ class GUIStyle implements IGPrototypable {
 
     public var normalSkin:GUISkin;
     #if swc @:extern #end
-    public var normalSkinId(get, set):String;
+    @prototype public var normalSkinId(get, set):String;
     #if swc @:getter(normalSkinId) #end
     inline private function get_normalSkinId():String {
-        return (normalSkin!=null) ? normalSkin.getId() : "";
+        return (normalSkin!=null) ? normalSkin.id : "";
     }
     #if swc @:setter(normalSkinId) #end
     inline private function set_normalSkinId(p_value:String):String {
         normalSkin = GUISkinManager.getSkinById(p_value);
-        return (normalSkin != null) ? normalSkin.getId() : "";
+        return (normalSkin != null) ? normalSkin.id : "";
     }
 
     public var overSkin:GUISkin;
@@ -320,28 +316,33 @@ class GUIStyle implements IGPrototypable {
     public var overSkinId(get, set):String;
     #if swc @:getter(overSkinId) #end
     inline private function get_overSkinId():String {
-        return (overSkin!=null) ? overSkin.getId() : "";
+        return (overSkin!=null) ? overSkin.id : "";
     }
     #if swc @:setter(overSkinId) #end
     inline private function set_overSkinId(p_value:String):String {
         overSkin = GUISkinManager.getSkinById(p_value);
-        return (overSkin != null) ? overSkin.getId() : "";
+        return (overSkin != null) ? overSkin.id : "";
+    }
+
+    public function new(p_id:String) {
+        id = p_id;
+        init();
     }
 
     @:access(com.genome2d.ui.GUIStyleManager)
-    public function new(p_id:String = null) {
-        if (p_id != null && p_id.length>0) {
+    public function init():Void {
+        if (id != null && id.length>0) {
             if (GUIStyleManager.g2d_references == null) GUIStyleManager.g2d_references = new Map<String, GUIStyle>();
-            if (GUIStyleManager.g2d_references[p_id] != null) new GError("Duplicate skin id: "+p_id);
-            g2d_id = p_id;
-            GUIStyleManager.g2d_references[g2d_id] = this;
+            //if (GUIStyleManager.g2d_references[id] != null) new GError("Duplicate style id: "+id);
+            GUIStyleManager.g2d_references[id] = this;
         }
 
         g2d_onChange = new Signal0();
     }
 
     public function clone():GUIStyle {
-        var style:GUIStyle = new GUIStyle();
+        trace(marginTop, id);
+        var style:GUIStyle = new GUIStyle("");
         style.marginLeft = marginLeft;
         style.marginRight = marginRight;
         style.marginTop = marginTop;

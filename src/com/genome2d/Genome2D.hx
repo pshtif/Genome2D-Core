@@ -8,10 +8,9 @@
  */
 package com.genome2d;
 
+import com.genome2d.textures.GTextureManager;
 import com.genome2d.signals.GKeyboardSignal;
 import com.genome2d.components.GTransform;
-import com.genome2d.textures.factories.GTextureAtlasFactory;
-import com.genome2d.textures.factories.GTextureFactory;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.components.GCameraController;
@@ -297,7 +296,7 @@ class Genome2D
     }
 
     private function g2d_contextInitializedHandler():Void {
-        GTextureFactory.g2d_context = GTextureAtlasFactory.g2d_context = g2d_context;
+        GTextureManager.init();
 
         g2d_context.onFrame.add(g2d_frameHandler);
         g2d_context.onMouseSignal.add(g2d_contextMouseSignalHandler);

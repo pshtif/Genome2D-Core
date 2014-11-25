@@ -8,6 +8,7 @@
  */
 package com.genome2d.components.renderable;
 
+import com.genome2d.textures.GTextureManager;
 import com.genome2d.error.GError;
 import com.genome2d.textures.GTexture;
 
@@ -23,14 +24,14 @@ class GSprite extends GTexturedQuad
     @prototype public var textureId(get, set):String;
     #if swc @:getter(textureId) #end
     inline private function get_textureId():String {
-        return (texture != null) ? texture.getId() : "";
+        return (texture != null) ? texture.id : "";
     }
     #if swc @:setter(textureId) #end
     inline private function set_textureId(p_value:String):String {
         if (p_value == "") {
             texture = null;
         } else {
-            texture = GTexture.getTextureById(p_value);
+            texture = GTextureManager.getTextureById(p_value);
             if (texture == null) new GError("Invalid textures with id "+p_value);
         }
         return p_value;

@@ -151,6 +151,7 @@ class GUIControl {
     public function render(p_x:Float, p_y:Float):Bool {
         g2d_worldX = p_x;
         g2d_worldY = p_y;
+
         if (smartBatching) {
             if (forceBreakBatch || !checkBatchState(this)) {
                 if (forceBreakBatch) flushBatch();

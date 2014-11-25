@@ -1,8 +1,10 @@
 package com.genome2d.ui.skin;
+import com.genome2d.textures.GTextureManager;
 import com.genome2d.textures.GContextTexture;
 import com.genome2d.context.IContext;
 import com.genome2d.textures.GTexture;
 
+@prototypeName("skin1")
 class GUI1SliceSkin extends GUISkin {
     public var texture:GTexture;
 
@@ -10,11 +12,11 @@ class GUI1SliceSkin extends GUISkin {
     @prototype public var textureId(get, set):String;
     #if swc @:getter(textureId) #end
     inline private function get_textureId():String {
-        return (texture != null) ? texture.getId() : "";
+        return (texture != null) ? texture.id : "";
     }
     #if swc @:setter(textureId) #end
     inline private function set_textureId(p_value:String):String {
-        texture = GTexture.getTextureById(p_value);
+        texture = GTextureManager.getTextureById(p_value);
         return p_value;
     }
 
@@ -29,7 +31,7 @@ class GUI1SliceSkin extends GUISkin {
     public function new(p_id:String, p_textureId:String) {
         super(p_id);
         type = GUISkinType.SLICE1;
-        texture = GTexture.getTextureById(p_textureId);
+        texture = GTextureManager.getTextureById(p_textureId);
         if (texture != null) {
             texture.pivotX = -texture.width/2;
             texture.pivotY = -texture.height/2;

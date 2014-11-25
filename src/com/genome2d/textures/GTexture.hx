@@ -14,10 +14,6 @@ import com.genome2d.geom.GRectangle;
 
 class GTexture extends GContextTexture
 {
-    static public function getTextureById(p_id:String):GTexture {
-        return cast GContextTexture.getContextTextureById(p_id);
-    }
-
     inline public function getParentAtlas():GTextureAtlas {
         return cast g2d_parentAtlas;
     }
@@ -32,7 +28,7 @@ class GTexture extends GContextTexture
 
         var wi:Int = Std.int(g2d_region.width);
         var hi:Int = Std.int(g2d_region.height);
-        var useRectangle:Bool = !g2d_repeatable && g2d_context.hasFeature(GContextFeature.RECTANGLE_TEXTURES);
+        var useRectangle:Bool = !g2d_repeatable && Genome2D.getInstance().getContext().hasFeature(GContextFeature.RECTANGLE_TEXTURES);
         g2d_gpuWidth = useRectangle ? wi : GTextureUtils.getNextValidTextureSize(wi);
         g2d_gpuHeight = useRectangle ? hi : GTextureUtils.getNextValidTextureSize(hi);
 
@@ -41,19 +37,19 @@ class GTexture extends GContextTexture
 
 	private function g2d_invalidateUV():Void {
 		if (g2d_parentAtlas != null) {
-			uvX = g2d_region.x / g2d_parentAtlas.gpuWidth;
-			uvY = g2d_region.y / g2d_parentAtlas.gpuHeight;
+			g2d_uvX = g2d_region.x / g2d_parentAtlas.gpuWidth;
+			g2d_uvY = g2d_region.y / g2d_parentAtlas.gpuHeight;
 			
-			uvScaleX = g2d_region.width / g2d_parentAtlas.gpuWidth;
-			uvScaleY = g2d_region.height / g2d_parentAtlas.gpuHeight;
+			g2d_uvScaleX = g2d_region.width / g2d_parentAtlas.gpuWidth;
+			g2d_uvScaleY = g2d_region.height / g2d_parentAtlas.gpuHeight;
 		} else {
-            uvScaleX = g2d_region.width / g2d_gpuWidth;
-            uvScaleY = g2d_region.height / g2d_gpuHeight;
+            g2d_uvScaleX = g2d_region.width / g2d_gpuWidth;
+            g2d_uvScaleY = g2d_region.height / g2d_gpuHeight;
         }
 	}
 
-	public function new(p_context:IContext, p_id:String, p_sourceType:Int, p_source:Dynamic, p_region:GRectangle, p_format:String, p_repeatable:Bool, p_pivotX:Float, p_pivotY:Float, p_scaleFactor:Float, p_parentAtlas:GTextureAtlas) {
-		super(p_context, p_id, p_sourceType, p_source, p_region, p_format, p_repeatable, p_pivotX, p_pivotY, p_scaleFactor);
+	public function new(p_id:String, p_sourceType:Int, p_source:Dynamic, p_region:GRectangle, p_format:String, p_repeatable:Bool, p_pivotX:Float, p_pivotY:Float, p_scaleFactor:Float, p_parentAtlas:GTextureAtlas) {
+		super(p_id, p_sourceType, p_source, p_region, p_format, p_repeatable, p_pivotX, p_pivotY, p_scaleFactor);
 		
 		g2d_parentAtlas = p_parentAtlas;
 

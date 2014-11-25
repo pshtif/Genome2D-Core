@@ -12,6 +12,7 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.ExprTools;
 import haxe.macro.Context;
+import haxe.macro.TypeTools;
 
 /**
     Genome2D components build macro to enumerate prototypable properties
@@ -24,53 +25,64 @@ class MGPrototypeProcessor {
         var pos = Context.currentPos();
         var fields = Context.getBuildFields();
         //trace(Context.getLocalClass());
-        var prototypes:Array<String> = [];
+        var prototypeNames:Array<String> = [];
         var prototypeTypes:Array<String> = [];
 
         var prototypeName:String = "prototype";
+        var prototypeOverride:Bool = false;
         var localClass = Context.getLocalClass().get();
 
-        for (meta in localClass.meta.get()) if (meta.name == 'prototypeName' && meta.params != null) prototypeName = ExprTools.getValue(meta.params[0]);
+        for (meta in localClass.meta.get()) {
+            // Check for prototypeName within this class
+            if (meta.name == 'prototypeName' && meta.params != null) {
+                prototypeName = ExprTools.getValue(meta.params[0]);
+                prototypeOverride = true;
+            }
+        }
 
         var superClass = localClass.superClass;
-        var needsPrototypeMethods = true;
+        var superPrototypeMethods = false;
         while (superClass != null) {
             var c = superClass.t.get();
 
-            if (prototypeName == "prototype") for (meta in localClass.meta.get()) if (meta.name == 'prototypeName' && meta.params != null) prototypeName = ExprTools.getValue(meta.params[0]);
+            if (prototypeName == "prototype") for (meta in localClass.meta.get()) {
+                if (meta.name == 'prototypeName' && meta.params != null) prototypeName = ExprTools.getValue(meta.params[0]);
+            }
 
             if (c.fields.get().length == 0) Context.getType(c.name);
             for (field in c.fields.get()) {
-                if (field.name == "getPrototype") needsPrototypeMethods = false;
+                if (field.name == "getPrototype") superPrototypeMethods = true;
                 for (meta in field.meta.get()) if (meta.name == 'prototype' && meta.params != null) {
                     switch (field.type) {
                         case TInst(type, params):
                             if (type.toString() != "String") {
                                 for (inter in type.get().interfaces) {
                                     if (inter.t.toString() == "com.genome2d.prototype.IGPrototypable") {
-                                        prototypes.push(field.name);
+                                        prototypeNames.push(field.name);
                                         prototypeTypes.push(type.toString());
                                     }
                                 }
                             } else {
-                                prototypes.push(field.name);
+                                prototypeNames.push(field.name);
                                 prototypeTypes.push(type.toString());
                             }
                         case TAbstract(type, params):
-                            prototypes.push(field.name);
+                            prototypeNames.push(field.name);
                             prototypeTypes.push(type.toString());
                         case _:
-                            prototypes.push(field.name);
+                            prototypeNames.push(field.name);
                             prototypeTypes.push("NA");
                     }
+                    /**/
                 }
             }
             superClass = c.superClass;
         }
 
+        var hasPrototypeMethods = false;
         for (i in fields) {
             // Check if we need prototype method
-            if (i.name == "getPrototype") needsPrototypeMethods = false;
+            if (i.name == "getPrototype") hasPrototypeMethods = true;
 
             if (i.meta.length==0 || i.access.indexOf(APublic) == -1) continue;
             var isPrototype:Bool = false;
@@ -81,83 +93,49 @@ class MGPrototypeProcessor {
             }
             if (!isPrototype) continue;
 
+            prototypeNames.push(i.name);
+            prototypeTypes.push("NA");
             switch (i.kind) {
                 case FVar(t,e):
                     switch (t) {
                         case TPath(p):
-                            switch (Context.getType(p.name)) {
-                                case TInst(type, params):
-                                    if (type.toString() == "Array") {
-                                        trace(type, params);
-                                    } else if (type.toString() != "String") {
-                                        for (inter in type.get().interfaces) {
-                                            if (inter.t.toString() == "com.genome2d.component.IGPrototypable") {
-                                                prototypes.push(i.name);
-                                                prototypeTypes.push(type.toString());
-                                            }
-                                        }
-                                    } else {
-                                        prototypes.push(i.name);
-                                        prototypeTypes.push(type.toString());
-                                    }
-                                case TAbstract(type, params):
-                                    prototypes.push(i.name);
-                                    prototypeTypes.push(type.toString());
-                                case _:
-                                    prototypes.push(i.name);
-                                    prototypeTypes.push("NA");
-                            }
+                            var typeName = extractType(p);
+                            prototypeTypes[prototypeTypes.length-1] = typeName;
                         case _:
                     }
                 case FProp(get,set,t,e):
                     switch (t) {
                         case TPath(p):
-                            switch (Context.getType(p.name)) {
-                                case TInst(type, params):
-                                    if (type.toString() != "String") {
-                                        for (inter in type.get().interfaces) {
-                                            if (inter.t.toString() == "com.genome2d.componentIGPrototypable") {
-                                                prototypes.push(i.name);
-                                                prototypeTypes.push(type.toString());
-                                            }
-                                        }
-                                    } else {
-                                        prototypes.push(i.name);
-                                        prototypeTypes.push(type.toString());
-                                    }
-                                case TAbstract(type, params):
-                                    prototypes.push(i.name);
-                                    prototypeTypes.push(type.toString());
-                                case _:
-                                    prototypes.push(i.name);
-                                    prototypeTypes.push("NA");
-                            }
+                            var typeName = extractType(p);
+                            prototypeTypes[prototypeTypes.length-1] = typeName;
                         case _:
                     }
-                case FFun(e):
+                case _:
             }
         }
 
-        if (needsPrototypeMethods) {
-            var getPrototype = generateGetPrototype(prototypeName);
+        if (!hasPrototypeMethods && (!superPrototypeMethods || prototypeOverride)) {
+            var getPrototype = generateGetPrototype();
             switch (getPrototype) {
                 case TAnonymous(f):
+                    if (prototypeOverride && superPrototypeMethods) f[0].access.push(AOverride);
                     fields = fields.concat(f);
                 default:
-                    throw "NA";
+                    throw "Prototype error!";
             }
             var initPrototype = generateInitPrototype();
                 switch (initPrototype) {
                     case TAnonymous(f):
+                        if (prototypeOverride && superPrototypeMethods) f[0].access.push(AOverride);
                         fields = fields.concat(f);
                     default:
-                        throw "NA";
+                        throw "Prototype error!";
             }
         }
 
         //if (prototype.length>0) trace( Context.getLocalClass().get().name, prototype);
         var decl:Array<Expr> = [];
-        for (i in prototypes) {
+        for (i in prototypeNames) {
             decl.push({expr:EConst(CString(i)),pos:pos});
         }
         var declTypes:Array<Expr> = [];
@@ -166,10 +144,9 @@ class MGPrototypeProcessor {
         }
         var kind = TPath({ pack : [], name : "Array", params : [TPType(TPath({name:"String", pack:[], params:[]}))] });
         fields.push({ name : "PROTOTYPE_PROPERTIES", doc : null, meta : [], access : [APublic,AStatic], kind : FVar(kind,{expr:EArrayDecl(decl),pos:pos}), pos : pos });
-        fields.push({ name : "PROTOTYPE_TYPES", doc : null, meta : [], access : [APublic,AStatic], kind : FVar(kind,{expr:EArrayDecl(declTypes),pos:pos}), pos : pos });
+        fields.push({ name : "PROTOTYPE_TYPES",      doc : null, meta : [], access : [APublic,AStatic], kind : FVar(kind,{expr:EArrayDecl(declTypes),pos:pos}), pos : pos });
         fields.push({ name : "PROTOTYPE_NAME",       doc : null, meta : [], access : [APublic,AStatic], kind : FVar(macro : String, macro $v{prototypeName}), pos : pos});
 
-        var test:String = "aaaa";
         switch (Context.getType("com.genome2d.prototype.IGPrototypable")) {
             case TInst(c,_):
                 if (!c.get().meta.has(prototypeName)) c.get().meta.add(prototypeName, [macro $v{localClass.module}], pos);
@@ -180,17 +157,34 @@ class MGPrototypeProcessor {
         return fields;
     }
 
-    static private function generateGetPrototype(p_prototypeName) {
+    static private function extractType(type) {
+        var typeName = type.name;
+
+        if (type.name == "Array") {
+            switch (type.params[0]) {
+                case TPType(tp):
+                    switch (tp) {
+                        case TPath(t):
+                            typeName += ";" + t.name;
+                        case _:
+                            trace("Warning unknown prototypable property "+type.name);
+                    }
+                case _:
+                    trace("Warning unknown prototypable property "+type.name);
+            }
+        }
+
+        return typeName;
+    }
+
+    static private function generateGetPrototype() {
         return macro : {
              public function getPrototype():Xml {
-                //var name:String = ExprTools.getValue($v{p_prototypeName});
                 var prototypeXml:Xml = Xml.createElement(PROTOTYPE_NAME);
 
-                var properties:Array<String> = Reflect.field(Type.getClass(this), "PROTOTYPE_PROPERTIES");
-
-                if (properties != null) {
-                    for (i in 0...properties.length) {
-                        var name:String = properties[i];
+                if (PROTOTYPE_PROPERTIES != null) {
+                    for (i in 0...PROTOTYPE_PROPERTIES.length) {
+                        var name:String = PROTOTYPE_PROPERTIES[i];
                         prototypeXml.set(name,Std.string(Reflect.getProperty(this, name)));
                     }
                 }
@@ -211,7 +205,7 @@ class MGPrototypeProcessor {
                     var value:String = p_prototypeXml.get(attribute);
                     var type:String = types[properties.indexOf(attribute)];
                     var realValue:Dynamic = null;
-                    trace(attribute, value, type);
+
                     switch (type) {
                         case "Bool":
                             realValue = (value != "false");
@@ -222,6 +216,7 @@ class MGPrototypeProcessor {
                         case "String":
                             realValue = value;
                         default:
+
                     }
                     try {
                         Reflect.setProperty(this, attribute, realValue);
@@ -229,43 +224,10 @@ class MGPrototypeProcessor {
 
                     }
                 }
-                //id = p_prototypeXml.get("id");
 
-                /*
-                var propertiesXml:Xml = p_prototypeXml.firstElement();
-
-                var it:Iterator<Xml> = propertiesXml.elements();
-                while (it.hasNext()) {
-                    var propertyXml:Xml = it.next();
-                    var value:Dynamic = null;
-                    var type:Array<String> = propertyXml.get("type").split(":");
-
-                    switch (type[0]) {
-                        case "Bool":
-                            value = (propertyXml.get("value") == "false") ? false : true;
-                        case "Int":
-                            value = Std.parseInt(propertyXml.get("value"));
-                        case "Float":
-                            value = Std.parseFloat(propertyXml.get("value"));
-                        case "String":
-                            value = propertyXml.get("value");
-                        case _:
-                            var property:String = propertyXml.get("value");
-                            if (value != "null") {
-                                var c:Class<Dynamic> = cast Type.resolveClass(type[0]);
-                                value = Type.createInstance(c,[]);
-                                value.initPrototype(Xml.parse(property));
-                            }
-                    }
-
-                    try {
-                        Reflect.setProperty(this, propertyXml.get("name"), value);
-                    } catch (e:Dynamic) {
-                        //trace("bindPrototypeProperty error", e, p_propertyXml.get("name"), value);
-                    }
-                }
-                /**/
+                init();
             }
         }
     }
+
 }

@@ -8,6 +8,7 @@
  */
 package com.genome2d.postprocess;
 
+import com.genome2d.textures.GTextureManager;
 import com.genome2d.context.stage3d.GStage3DContext;
 import com.genome2d.utils.GRenderTargetStack;
 import com.genome2d.error.GError;
@@ -17,7 +18,6 @@ import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GCamera;
 import com.genome2d.textures.GTextureFilteringType;
-import com.genome2d.textures.factories.GTextureFactory;
 import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.filters.GFilter;
@@ -132,8 +132,8 @@ class GPostProcess {
 
     private function createPassTextures():Void {
         for (i in 0...g2d_passes) {
-            var texture:GTexture = GTextureFactory.createRenderTexture("g2d_pp_"+g2d_id+"_"+i, 2, 2);
-            texture.setFilteringType(GTextureFilteringType.NEAREST);
+            var texture:GTexture = GTextureManager.createRenderTexture("g2d_pp_"+g2d_id+"_"+i, 2, 2);
+            texture.filteringType = GTextureFilteringType.NEAREST;
             texture.pivotX = -texture.width/2;
             texture.pivotY = -texture.height/2;
             g2d_passTextures[i] = texture;

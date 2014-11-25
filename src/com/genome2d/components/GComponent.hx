@@ -59,7 +59,7 @@ class GComponent implements IGPrototypable
 		
 		var propertiesXml:Xml = Xml.createElement("properties");
 
-        var properties:Array<String> = Reflect.field(Type.getClass(this), "PROTOTYPE_PROPERTIES");
+        var properties:Array<String> = PROTOTYPE_PROPERTIES;
 
         if (properties != null) {
             for (i in 0...properties.length) {
