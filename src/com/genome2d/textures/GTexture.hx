@@ -20,6 +20,8 @@ class GTexture extends GContextTexture
 	
 	public var g2d_subId:String = "";
 
+    private var g2d_parentAtlas:GContextTexture;
+
     public function getRegion():GRectangle {
         return g2d_region;
     }
