@@ -8,7 +8,7 @@
  */
 package com.genome2d.particles;
 
-import com.genome2d.components.renderables.particles.GParticleSystem;
+import com.genome2d.components.renderable.particles.GParticleSystem;
 
 /**
     Interface providing method for `GParticleSystem` particles update

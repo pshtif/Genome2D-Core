@@ -1,4 +1,5 @@
 package com.genome2d.components.renderable;
+
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.signals.GMouseSignal;
 import com.genome2d.geom.GRectangle;
@@ -6,6 +7,7 @@ import com.genome2d.geom.GMatrix;
 import com.genome2d.context.GCamera;
 import com.genome2d.context.filters.GFilter;
 import com.genome2d.textures.GTexture;
+
 class GTiledSprite extends GComponent implements IRenderable {
     /**
         Blend mode used for rendering
@@ -66,8 +68,8 @@ class GTiledSprite extends GComponent implements IRenderable {
         var ix:Int = Math.ceil(g2d_width/texture.width);
         var iy:Int = Math.ceil(g2d_height/texture.height);
 
-        var w:Float = texture.uvScaleX*texture.gpuWidth;
-        var h:Float = texture.uvScaleY*texture.gpuHeight;
+        var w:Float = texture.region.width;
+        var h:Float = texture.region.height;
         var cw:Float = w;
         var ch:Float = h;
         var cx:Float = 0;
@@ -79,7 +81,7 @@ class GTiledSprite extends GComponent implements IRenderable {
                 ch = (j==iy-1 && g2d_height%texture.height!=0) ? h*(g2d_height%texture.height)/texture.height : h;
 
                 node.core.getContext().drawSource(texture,
-                                                  texture.uvX*texture.gpuWidth, texture.uvY*texture.gpuHeight, cw, ch, -cw*.5, -ch*.5,
+                                                  texture.region.x, texture.region.y, cw, ch, -cw*.5, -ch*.5,
                                                   node.transform.g2d_worldX+cx*cos-cy*sin, node.transform.g2d_worldY+cy*cos+cx*sin, node.transform.g2d_worldScaleX, node.transform.g2d_worldScaleY, node.transform.g2d_worldRotation,
                                                   node.transform.g2d_worldRed, node.transform.g2d_worldGreen, node.transform.g2d_worldBlue, node.transform.g2d_worldAlpha,
                                                   blendMode, filter);

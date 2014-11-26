@@ -6,8 +6,9 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderables.particles;
+package com.genome2d.components.renderable.particles;
 
+import com.genome2d.textures.GTextureManager;
 import com.genome2d.particles.GParticlePool;
 import com.genome2d.particles.IGInitializer;
 import com.genome2d.particles.IGAffector;
@@ -17,12 +18,12 @@ import com.genome2d.geom.GCurve;
 import com.genome2d.components.GComponent;
 import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
-import com.genome2d.components.renderables.IRenderable;
 import com.genome2d.context.GCamera;
 
 /**
     Component handling advanced particles systems with unlimited extendibility using custom particles instances and user defined affectors and initializers
  **/
+@:access(com.genome2d.particles.GParticle)
 class GParticleSystem extends GComponent implements IRenderable
 {
     public var blendMode:Int = 1;
@@ -70,11 +71,11 @@ class GParticleSystem extends GComponent implements IRenderable
     public var textureId(get, set):String;
     #if swc @:getter(textureId) #end
     inline private function get_textureId():String {
-        return (texture != null) ? texture.getId() : "";
+        return (texture != null) ? texture.id : "";
     }
     #if swc @:setter(textureId) #end
     inline private function set_textureId(p_value:String):String {
-        texture = GTexture.getTextureById(p_value);
+        texture = GTextureManager.getTextureById(p_value);
         return p_value;
     }
 
@@ -145,19 +146,21 @@ class GParticleSystem extends GComponent implements IRenderable
                 var ty:Float = node.transform.g2d_worldY + (particle.y-node.transform.g2d_worldY)*1;//node.transform.g2d_worldScaleY;
 
                 if (particle.overrideUvs) {
-                    var zuvX:Float = particle.texture.uvX;
-                    particle.texture.uvX = particle.uvX;
-                    var zuvY:Float = particle.texture.uvY;
-                    particle.texture.uvY = particle.uvY;
-                    var zuvScaleX:Float = particle.texture.uvScaleX;
-                    particle.texture.uvScaleX = particle.uvScaleX;
-                    var zuvScaleY:Float = particle.texture.uvScaleY;
-                    particle.texture.uvScaleY = particle.uvScaleY;
+                /*
+                    var zu:Float = particle.texture.g2d_u;
+                    particle.texture.uvX = particle.u;
+                    var zv:Float = particle.texture.g2d_v;
+                    particle.texture.uvY = particle.v;
+                    var zuScale:Float = particle.texture.g2d_uScale;
+                    particle.texture.uvScaleX = particle.uScale;
+                    var zvScale:Float = particle.texture.g2d_vScale;
+                    particle.texture.uvScaleY = particle.vScale;
                     node.core.getContext().draw(particle.texture, tx, ty, particle.scaleX*node.transform.g2d_worldScaleX, particle.scaleY*node.transform.g2d_worldScaleY, particle.rotation, particle.red*node.transform.g2d_worldRed, particle.green*node.transform.g2d_worldGreen, particle.blue*node.transform.g2d_worldBlue, particle.alpha*node.transform.g2d_worldAlpha, blendMode);
-                    particle.texture.uvX = zuvX;
-                    particle.texture.uvY = zuvY;
-                    particle.texture.uvScaleX = zuvScaleX;
-                    particle.texture.uvScaleY = zuvScaleY;
+                    particle.texture.g2d_u = zu;
+                    particle.texture.g2d_v = zv;
+                    particle.texture.g2d_uScale = zuScale;
+                    particle.texture.g2d_vScale = zvScale;
+                /**/
                 } else {
                     node.core.getContext().draw(particle.texture, tx, ty, particle.scaleX*node.transform.g2d_worldScaleX, particle.scaleY*node.transform.g2d_worldScaleY, particle.rotation, particle.red*node.transform.g2d_worldRed, particle.green*node.transform.g2d_worldGreen, particle.blue*node.transform.g2d_worldBlue, particle.alpha*node.transform.g2d_worldAlpha, blendMode);
                 }

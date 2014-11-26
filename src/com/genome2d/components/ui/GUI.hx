@@ -5,7 +5,7 @@ import com.genome2d.ui.GUIControl;
 import com.genome2d.ui.GUIContainer;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GCamera;
-import com.genome2d.components.IRenderable;
+import com.genome2d.components.renderable.IRenderable;
 class GUI extends GComponent implements IRenderable {
     public var root:GUIContainer;
 

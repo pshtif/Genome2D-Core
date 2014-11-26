@@ -26,18 +26,18 @@ class GTexturedQuad extends GComponent implements IRenderable
     /**
         Blend mode used for rendering
     **/
-    @prototype public var blendMode:Int = 1;
+    @prototype public var blendMode:Int;
 
     /**
         Enable/disable pixel perfect mouse detection, not supported by all contexts.
         Default false
     **/
-    public var mousePixelEnabled:Bool = false;
+    public var mousePixelEnabled:Bool;
 
     /**
         Specify alpha treshold for pixel perfect mouse detection, works with mousePixelEnabled true
     **/
-    public var mousePixelTreshold:Int = 0;
+    public var mousePixelTreshold:Int;
 
     /**
         Texture used for rendering
@@ -49,7 +49,14 @@ class GTexturedQuad extends GComponent implements IRenderable
     **/
     public var filter:GFilter;
 
-    public var ignoreMatrix:Bool = true;
+    public var ignoreMatrix:Bool;
+
+    override private function initDefault():Void {
+        ignoreMatrix = false;
+        mousePixelTreshold = 0;
+        mousePixelEnabled = false;
+        blendMode = 1;
+    }
 
     @:dox(hide)
 	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {

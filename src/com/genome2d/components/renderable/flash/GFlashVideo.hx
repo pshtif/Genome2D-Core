@@ -1,5 +1,5 @@
 #if flash
-package com.genome2d.componentrenderables.flash;
+package com.genome2d.components.renderable.flash;
 
 import flash.events.NetStatusEvent;
 import flash.events.IOErrorEvent;

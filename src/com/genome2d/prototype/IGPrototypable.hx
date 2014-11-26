@@ -15,7 +15,8 @@ import com.genome2d.prototype.MGPrototypeProcessor;
 **/
 @:autoBuild(com.genome2d.prototype.MGPrototypeProcessor.build())
 interface IGPrototypable {
+    private function initDefault():Void;
     private function init():Void;
-    function getPrototype():Xml;
-    function initPrototype(p_xml:Xml):Void;
+    public function getPrototype():Xml;
+    public function initPrototype(p_xml:Xml):Void;
 }

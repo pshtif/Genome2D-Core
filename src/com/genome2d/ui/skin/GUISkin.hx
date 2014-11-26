@@ -9,7 +9,7 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.error.GError;
 
 class GUISkin implements IGPrototypable {
-    public var type:Float = 0;
+    public var type:Float;
 
     #if swc @:extern #end
     @prototype public var id(default, null):String;
@@ -24,6 +24,10 @@ class GUISkin implements IGPrototypable {
     public function new(p_id:String) {
         id = p_id;
         init();
+    }
+
+    private function initDefault():Void {
+        type = 0;
     }
 
     @:access(com.genome2d.ui.GUISkinManager)

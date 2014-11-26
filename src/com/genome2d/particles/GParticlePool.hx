@@ -12,7 +12,7 @@ package com.genome2d.particles;
     Particle pool management class, used for pooling `GParticle` instances for `GParticleSystem` components instances
 **/
 import com.genome2d.particles.GParticle;
-@:allow(com.genome2d.components.renderables.particles.GParticleSystem)
+@:allow(com.genome2d.components.renderable.particles.GParticleSystem)
 class GParticlePool
 {
     static public var g2d_defaultPool:GParticlePool = new GParticlePool();

@@ -1,5 +1,6 @@
-package com.genome2d.components.renderables.tilemap;
+package com.genome2d.tilemap;
 
+import com.genome2d.textures.GTextureManager;
 import com.genome2d.context.IContext;
 import com.genome2d.textures.GTexture;
 import com.genome2d.error.GError;
@@ -11,11 +12,11 @@ class GTile
     @prototype public var textureId(get, set):String;
     #if swc @:getter(textureId) #end
     inline private function get_textureId():String {
-        return (texture != null) ? texture.getId() : "";
+        return (texture != null) ? texture.id : "";
     }
     #if swc @:setter(textureId) #end
     inline private function set_textureId(p_value:String):String {
-        texture = GTexture.getTextureById(p_value);
+        texture = GTextureManager.getTextureById(p_value);
         if (texture == null) new GError("Invalid textures with id "+p_value);
         return p_value;
     }
@@ -45,6 +46,13 @@ class GTile
     public var sizeY:Int = 1;
 
     private var g2d_lastFrameRendered:Int = 0;
+    #if swc @:extern #end
+    public var lastFrameRendered(get, never):Int;
+    #if swc @:getter(lastFrameRendered) #end
+    inline private function get_lastFrameRendered():Int {
+        return g2d_lastFrameRendered;
+    }
+
     private var g2d_lastTimeRendered:Float = 0;
     private var g2d_playing:Bool = false;
     private var g2d_speed:Float = 1000/5;
@@ -91,7 +99,7 @@ class GTile
         g2d_frameTextures = new Array<GTexture>();
         g2d_frameTexturesCount = p_value.length;
         for (i in 0...g2d_frameTexturesCount) {
-            var frameTexture:GTexture = GTexture.getTextureById(p_value[i]);
+            var frameTexture:GTexture = GTextureManager.getTextureById(p_value[i]);
             if (frameTexture == null) new GError("Invalid textures id "+p_value[i]);
             g2d_frameTextures.push(frameTexture);
         }

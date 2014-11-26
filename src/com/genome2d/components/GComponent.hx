@@ -19,7 +19,7 @@ import com.genome2d.signals.GMouseSignal;
 @:allow(com.genome2d.node.GNode)
 class GComponent implements IGPrototypable
 {
-	private var g2d_active:Bool = true;
+	private var g2d_active:Bool = false;
     private var g2d_lookupClass:Class<GComponent>;
     private var g2d_previous:GComponent;
     private var g2d_next:GComponent;
@@ -30,8 +30,6 @@ class GComponent implements IGPrototypable
 	public function setActive(p_value:Bool):Void {
 		g2d_active = p_value;
 	}
-
-	//public var id:String = "";
 
 	private var g2d_node:GNode;
     /**
@@ -45,7 +43,12 @@ class GComponent implements IGPrototypable
 	}
 
 	public function new() {
+        initDefault();
 	}
+
+    private function initDefault():Void {
+        g2d_active = true;
+    }
 	
 	/****************************************************************************************************
 	 * 	PROTOTYPE CODE

@@ -14,7 +14,7 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.node.GNode;
 import com.genome2d.context.filters.GBlurPassFilter;
-import com.genome2d.postprocesses.GPostProcess;
+import com.genome2d.postprocess.GPostProcess;
 class GBlurPP extends GPostProcess
 {
     private var g2d_invalidate:Bool = false;

@@ -6,7 +6,7 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderables;
+package com.genome2d.components.renderable;
 
 import com.genome2d.error.GError;
 import com.genome2d.geom.GRectangle;

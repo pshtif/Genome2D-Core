@@ -1,4 +1,5 @@
 package com.genome2d.text;
+import com.genome2d.textures.GTextureManager;
 import com.genome2d.utils.GHAlignType;
 import com.genome2d.utils.GVAlignType;
 import com.genome2d.context.IContext;
@@ -15,12 +16,12 @@ class GTextureTextRenderer extends GTextRenderer {
     @prototype public var textureAtlasId(get, set):String;
     #if swc @:getter(textureAtlasId) #end
     inline private function get_textureAtlasId():String {
-        if (g2d_textureAtlas != null) return g2d_textureAtlas.getId();
+        if (g2d_textureAtlas != null) return g2d_textureAtlas.id;
         return "";
     }
     #if swc @:setter(textureAtlasId) #end
     inline private function set_textureAtlasId(p_value:String):String {
-        setTextureAtlas(GTextureFontAtlas.getTextureFontAtlasById(p_value));
+        setTextureAtlas(GTextureManager.getTextureFontAtlasById(p_value));
         return p_value;
     }
 
@@ -95,7 +96,7 @@ class GTextureTextRenderer extends GTextRenderer {
                 offsetY += g2d_textureAtlas.lineHeight + g2d_lineSpace;
             } else {
                 currentCharCode = g2d_text.charCodeAt(i);
-                texture = g2d_textureAtlas.getSubTexture(Std.string(currentCharCode));
+                texture = g2d_textureAtlas.getSubTextureById(Std.string(currentCharCode));
                 if (texture == null) {
                     //++i;
                     continue;// throw new GError("Texture for character "+g2d_text.charAt(i)+" with code "+g2d_text.charCodeAt(i)+" not found!");

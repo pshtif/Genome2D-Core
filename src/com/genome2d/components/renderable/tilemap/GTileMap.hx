@@ -1,5 +1,6 @@
-package com.genome2d.components.renderables.tilemap;
+package com.genome2d.components.renderable.tilemap;
 
+import com.genome2d.tilemap.GTile;
 import com.genome2d.signals.GMouseSignal;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.context.GBlendMode;
@@ -122,7 +123,7 @@ class GTileMap extends GComponent implements IRenderable
                 var frameId:Int = node.core.getCurrentFrameId();
                 var time:Float = node.core.getRunTime();
                 if (tile.sizeX != 1 || tile.sizeY != 1) {
-                    if (tile.g2d_lastFrameRendered != frameId) {
+                    if (tile.lastFrameRendered != frameId) {
                         x -= (indexX +  i % indexWidth - tile.mapX) * g2d_tileWidth;
                         y -= (indexY+row-tile.mapY) * g2d_tileHeight;
                         tile.render(node.core.getContext(), x, y, frameId, time, blendMode);

@@ -14,17 +14,16 @@ class GTextureFontAtlas extends GTextureAtlas
     public var lineHeight:Int = 0;
     public var g2d_kerning:Map<Int,Map<Int,Int>>;
 
-    override public function getSubTexture(p_subId:String):GCharTexture {
-        return cast g2d_textures.get(p_subId);
+    override public function getSubTextureById(p_subId:String):GCharTexture {
+        return cast g2d_subTextures.get(p_subId);
     }
 
     override public function addSubTexture(p_subId:String, p_region:GRectangle, p_frame:GRectangle):GCharTexture {
-        var texture:GCharTexture = new GCharTexture(g2d_id+"_"+p_subId, g2d_nativeSourceType, g2d_nativeSource, p_region, g2d_format, false, 0, 0, g2d_scaleFactor, this);
+        var texture:GCharTexture = new GCharTexture(g2d_id+"_"+p_subId, this);
         texture.g2d_subId = p_subId;
         texture.g2d_filteringType = g2d_filteringType;
-        texture.g2d_nativeTexture = nativeTexture;
 
-        g2d_textures.set(p_subId, texture);
+        g2d_subTextures.set(p_subId, texture);
 
         return texture;
     }

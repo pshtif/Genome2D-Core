@@ -1,17 +1,17 @@
 #if flash
-package com.genome2d.componentrenderables.flash;
+package com.genome2d.components.renderable.flash;
 
-import com.genome2d.utilGVAlignType;
 import com.genome2d.geom.GRectangle;
-import com.genome2d.utilGHAlignType;
-import com.genome2d.utilGVAlignType;
+import com.genome2d.utils.GHAlignType;
+import com.genome2d.utils.GVAlignType;
 import flash.display.DisplayObject;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.node.GNode;
-import com.genome2d.texturefactories.GTextureFactory;
-import com.genome2d.textureGTextureUtils;
+import com.genome2d.textures.GTextureUtils;
 import flash.display.BitmapData;
 import com.genome2d.geom.GMatrix;
+import com.genome2d.components.renderable.GTexturedQuad;
+import com.genome2d.textures.GTextureManager;
 
 class GFlashObject extends GTexturedQuad {
     static public var defaultUpdateFrameRate:Int = 20;
@@ -107,12 +107,12 @@ class GFlashObject extends GTexturedQuad {
             g2d_accumulatedTime += p_deltaTime;
             var updateTime:Float = 1000/updateFrameRate;
             if (g2d_invalidate || g2d_accumulatedTime > updateTime) {
-                textures.g2d_bitmapData.fillRect(textures.g2d_bitmapData.rect, 0x0);
+                //texture.g2d_bitmapData.fillRect(texture.g2d_bitmapData.rect, 0x0);
                 var bounds:GRectangle = nativeObject.getBounds(nativeObject);
                 g2d_nativeMatrix.tx = -bounds.x;
                 g2d_nativeMatrix.ty = -bounds.y;
-                textures.g2d_bitmapData.draw(nativeObject, g2d_nativeMatrix);
-                textures.invalidateNativeTexture(false);
+                //texture.g2d_bitmapData.draw(nativeObject, g2d_nativeMatrix);
+                texture.invalidateNativeTexture(false);
 
                 g2d_accumulatedTime %= updateTime;
             }
@@ -135,12 +135,12 @@ class GFlashObject extends GTexturedQuad {
             bitmapData = new BitmapData(g2d_lastNativeWidth, g2d_lastNativeHeight, g2d_transparent, 0x0);
         }
 
-        if (textures == null || textures.gpuWidth != GTextureUtils.getNextValidTextureSize(g2d_lastNativeWidth) || textures.gpuHeight != GTextureUtils.getNearestValidTextureSize(g2d_lastNativeHeight)) {
-            if(textures != null) textures.dispose();
-            textures = GTextureFactory.createFromBitmapData(g2d_textureId, bitmapData);
+        if (texture == null || texture.gpuWidth != GTextureUtils.getNextValidTextureSize(g2d_lastNativeWidth) || texture.gpuHeight != GTextureUtils.getNearestValidTextureSize(g2d_lastNativeHeight)) {
+            if(texture != null) texture.dispose();
+            texture = GTextureManager.createFromBitmapData(g2d_textureId, bitmapData);
         } else {
-            textures.g2d_bitmapData = bitmapData;
-            textures.setRegion(bitmapData.rect);
+            //texture.g2d_bitmapData = bitmapData;
+            //texture.setRegion(bitmapData.rect);
         }
 
         g2d_invalidateAlign();
@@ -151,25 +151,25 @@ class GFlashObject extends GTexturedQuad {
     private function g2d_invalidateAlign():Void {
         switch (vAlign) {
             case GVAlignType.TOP:
-                textures.pivotY = -textures.height*.5;
+                texture.pivotY = -texture.height*.5;
             case GVAlignType.MIDDLE:
-                textures.pivotY = 0;
+                texture.pivotY = 0;
             case GVAlignType.BOTTOM:
-                textures.pivotY = textures.height*.5;
+                texture.pivotY = texture.height*.5;
         }
         switch (hAlign) {
             case GHAlignType.LEFT:
-                textures.pivotX = -textures.width*.5;
+                texture.pivotX = -texture.width*.5;
             case GHAlignType.CENTER:
-                textures.pivotX = 0;
+                texture.pivotX = 0;
             case GHAlignType.RIGHT:
-                textures.pivotX = textures.width*.5;
+                texture.pivotX = texture.width*.5;
         }
     }
 
     override public function dispose():Void {
         node.core.onUpdate.remove(g2d_updateHandler);
-        textures.dispose();
+        texture.dispose();
 
         super.dispose();
     }

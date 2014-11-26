@@ -17,6 +17,12 @@ class GUI1SliceSkin extends GUISkin {
     #if swc @:setter(textureId) #end
     inline private function set_textureId(p_value:String):String {
         texture = GTextureManager.getTextureById(p_value);
+
+        if (texture != null) {
+            texture.pivotX = -texture.width/2;
+            texture.pivotY = -texture.height/2;
+        }
+
         return p_value;
     }
 
@@ -31,11 +37,7 @@ class GUI1SliceSkin extends GUISkin {
     public function new(p_id:String, p_textureId:String) {
         super(p_id);
         type = GUISkinType.SLICE1;
-        texture = GTextureManager.getTextureById(p_textureId);
-        if (texture != null) {
-            texture.pivotX = -texture.width/2;
-            texture.pivotY = -texture.height/2;
-        }
+        textureId = p_textureId;
     }
 
     override public function render(p_x:Float, p_y:Float, p_width:Float, p_height:Float):Void {

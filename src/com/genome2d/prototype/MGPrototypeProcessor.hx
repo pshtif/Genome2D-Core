@@ -91,24 +91,29 @@ class MGPrototypeProcessor {
                     isPrototype = true;
                 }
             }
-            if (!isPrototype) continue;
 
             prototypeNames.push(i.name);
             prototypeTypes.push("NA");
             switch (i.kind) {
                 case FVar(t,e):
-                    switch (t) {
-                        case TPath(p):
-                            var typeName = extractType(p);
-                            prototypeTypes[prototypeTypes.length-1] = typeName;
-                        case _:
+                    if (e!=null) throw "Prototypables can't use default values in Class: "+localClass.name + " Property: " + i.name;
+                    if (isPrototype) {
+                        switch (t) {
+                            case TPath(p):
+                                var typeName = extractType(p);
+                                prototypeTypes[prototypeTypes.length-1] = typeName;
+                            case _:
+                        }
                     }
                 case FProp(get,set,t,e):
-                    switch (t) {
-                        case TPath(p):
-                            var typeName = extractType(p);
-                            prototypeTypes[prototypeTypes.length-1] = typeName;
-                        case _:
+                    if (e!=null) throw "Prototypables can't use default values";
+                    if (isPrototype) {
+                        switch (t) {
+                            case TPath(p):
+                                var typeName = extractType(p);
+                                prototypeTypes[prototypeTypes.length-1] = typeName;
+                            case _:
+                        }
                     }
                 case _:
             }
@@ -197,6 +202,8 @@ class MGPrototypeProcessor {
     static private function generateInitPrototype() {
         return macro : {
             public function initPrototype(p_prototypeXml:Xml):Void {
+                initDefault();
+
                 var properties:Array<String> = Reflect.field(Type.getClass(this), "PROTOTYPE_PROPERTIES");
                 var types:Array<String> = Reflect.field(Type.getClass(this), "PROTOTYPE_TYPES");
                 var attributes:Iterator<String> = p_prototypeXml.attributes();

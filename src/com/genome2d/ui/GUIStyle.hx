@@ -17,7 +17,7 @@ class GUIStyle implements IGPrototypable {
     #if swc @:extern #end
     @prototype public var id(default, null):String;
 
-    public var g2d_autoMargin:Bool = false;
+    public var g2d_autoMargin:Bool;
     #if swc @:extern #end
     @prototype public var autoMargin(get, set):Bool;
     #if swc @:getter(autoMargin) #end
@@ -31,7 +31,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_autoMargin;
     }
 
-    public var g2d_marginLeft:Float = 0;
+    public var g2d_marginLeft:Float;
     #if swc @:extern #end
     @prototype public var marginLeft(get, set):Float;
     #if swc @:getter(marginLeft) #end
@@ -45,7 +45,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_marginLeft;
     }
 
-    public var g2d_marginRight:Float = 0;
+    public var g2d_marginRight:Float;
     #if swc @:extern #end
     public var marginRight(get, set):Float;
     #if swc @:getter(marginRight) #end
@@ -59,7 +59,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_marginRight;
     }
 
-    public var g2d_marginTop:Float = 0;
+    public var g2d_marginTop:Float;
     #if swc @:extern #end
     public var marginTop(get, set):Float;
     #if swc @:getter(marginTop) #end
@@ -73,7 +73,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_marginTop;
     }
 
-    public var g2d_marginBottom:Float = 0;
+    public var g2d_marginBottom:Float;
     #if swc @:extern #end
     public var marginBottom(get, set):Float;
     #if swc @:getter(marginBottom) #end
@@ -87,7 +87,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_marginBottom;
     }
 
-    public var g2d_autoSize:Bool = false;
+    public var g2d_autoSize:Bool;
     #if swc @:extern #end
     public var autoSize(get, set):Bool;
     #if swc @:getter(autoSize) #end
@@ -101,7 +101,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_autoSize;
     }
 
-    private var g2d_textVAlign:Int = GVAlignType.TOP;
+    private var g2d_textVAlign:Int;
     #if swc @:extern #end
     public var textVAlign(get, set):Int;
     #if swc @:getter(textVAlign) #end
@@ -115,7 +115,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_textVAlign;
     }
 
-    private var g2d_textHAlign:Int = GHAlignType.LEFT;
+    private var g2d_textHAlign:Int;
     #if swc @:extern #end
     public var textHAlign(get, set):Int;
     #if swc @:getter(textHAlign) #end
@@ -129,7 +129,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_textHAlign;
     }
 
-    private var g2d_fontAtlasId:String = "uiFont";
+    private var g2d_fontAtlasId:String;
     #if swc @:extern #end
     public var fontAtlasId(get, set):String;
     #if swc @:getter(fontAtlasId) #end
@@ -143,7 +143,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_fontAtlasId;
     }
 
-    public var fontScale:Float = 1;
+    public var fontScale:Float;
 
     private var g2d_onChange:Signal0;
     #if swc @:extern #end
@@ -154,7 +154,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_onChange;
     }
 
-    private var g2d_layout:Int = GUILayoutType.HORIZONTAL;
+    private var g2d_layout:Int;
     #if swc @:extern #end
     public var layout(get, set):Int;
     #if swc @:getter(layout) #end
@@ -168,8 +168,8 @@ class GUIStyle implements IGPrototypable {
         return g2d_layout;
     }
 
-    private var g2d_usePercentageWidth:Bool = false;
-    private var g2d_minWidth:Float = 0;
+    private var g2d_usePercentageWidth:Bool;
+    private var g2d_minWidth:Float;
     #if swc @:extern #end
     @prototype public var minWidth(get, set):Float;
     #if swc @:getter(minWidth) #end
@@ -185,8 +185,8 @@ class GUIStyle implements IGPrototypable {
         return g2d_minWidth;
     }
 
-    private var g2d_usePercentageHeight:Bool = false;
-    private var g2d_minHeight:Float = 0;
+    private var g2d_usePercentageHeight:Bool;
+    private var g2d_minHeight:Float;
     #if swc @:extern #end
     @prototype public var minHeight(get, set):Float;
     #if swc @:getter(minHeight) #end
@@ -202,7 +202,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_minHeight;
     }
 
-    private var g2d_maxWidth:Float = 0;
+    private var g2d_maxWidth:Float;
     #if swc @:extern #end
     public var maxWidth(get, set):Float;
     #if swc @:getter(maxWidth) #end
@@ -218,7 +218,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_maxWidth;
     }
 
-    private var g2d_maxHeight:Float = 0;
+    private var g2d_maxHeight:Float;
     #if swc @:extern #end
     public var maxHeight(get, set):Float;
     #if swc @:getter(maxHeight) #end
@@ -234,8 +234,8 @@ class GUIStyle implements IGPrototypable {
         return g2d_maxHeight;
     }
 
-    public var g2d_usePercentageVertical:Bool = false;
-    public var g2d_useLeft:Bool = true;
+    public var g2d_usePercentageVertical:Bool;
+    public var g2d_useLeft:Bool;
     private var g2d_left:Float = 0;
     #if swc @:extern #end
     public var left(get, set):Float;
@@ -251,7 +251,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_left;
     }
 
-    private var g2d_right:Float = 0;
+    private var g2d_right:Float;
     #if swc @:extern #end
     public var right(get, set):Float;
     #if swc @:getter(right) #end
@@ -266,9 +266,9 @@ class GUIStyle implements IGPrototypable {
         return g2d_right;
     }
 
-    public var g2d_usePercentageHorizontal:Bool = false;
-    public var g2d_useTop:Bool = true;
-    private var g2d_top:Float = 0;
+    public var g2d_usePercentageHorizontal:Bool;
+    public var g2d_useTop:Bool;
+    private var g2d_top:Float;
     #if swc @:extern #end
     public var top(get, set):Float;
     #if swc @:getter(top) #end
@@ -283,7 +283,7 @@ class GUIStyle implements IGPrototypable {
         return g2d_top;
     }
 
-    private var g2d_bottom:Float = 0;
+    private var g2d_bottom:Float;
     #if swc @:extern #end
     public var bottom(get, set):Float;
     #if swc @:getter(bottom) #end
@@ -325,8 +325,21 @@ class GUIStyle implements IGPrototypable {
     }
 
     public function new(p_id:String) {
+        initDefault();
         id = p_id;
         init();
+    }
+
+    private function initDefault():Void {
+        g2d_left = g2d_right = g2d_top = g2d_bottom = 0;
+        g2d_marginLeft = g2d_marginRight = g2d_marginTop = g2d_marginBottom = 0;
+        g2d_maxWidth = g2d_maxHeight = g2d_minWidth = g2d_minHeight = 0;
+        g2d_textHAlign = GHAlignType.LEFT;
+        g2d_textVAlign = GVAlignType.TOP;
+        fontScale = 1;
+        g2d_usePercentageVertical = g2d_usePercentageHorizontal = g2d_usePercentageWidth = g2d_usePercentageHeight = false;
+        g2d_autoMargin = g2d_autoSize = false;
+        g2d_useTop = g2d_useLeft = true;
     }
 
     @:access(com.genome2d.ui.GUIStyleManager)
@@ -359,26 +372,4 @@ class GUIStyle implements IGPrototypable {
 
         return style;
     }
-/*
-    public function getPrototype():Xml {
-        var prototypeXml:Xml = Xml.createElement("style");
-        prototypeXml.set("id", g2d_id);
-        prototypeXml.set("class", Type.getClassName(Type.getClass(this)));
-
-        var properties:Array<String> = Reflect.field(Type.getClass(this), "PROTOTYPE_PROPERTIES");
-
-        if (properties != null) {
-            for (i in 0...properties.length) {
-                var property:Array<String> = properties[i].split("|");
-                prototypeXml.set(property[0],Std.string(Reflect.getProperty(this, property[0])));
-            }
-        }
-
-        return prototypeXml;
-    }
-
-    public function initPrototype(p_xml:Xml):Void {
-
-    }
-    /**/
 }

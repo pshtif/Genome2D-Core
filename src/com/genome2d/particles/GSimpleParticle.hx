@@ -12,8 +12,8 @@ package com.genome2d.particles;
     Simple particles element used by `GSimpleParticleSystem`
 **/
 import com.genome2d.textures.GTexture;
-import com.genome2d.components.renderables.particles.GSimpleParticleSystem;
-@:allow(com.genome2d.components.renderables.particles.GSimpleParticleSystem)
+import com.genome2d.components.renderable.particles.GSimpleParticleSystem;
+@:allow(com.genome2d.components.renderable.particles.GSimpleParticleSystem)
 class GSimpleParticle
 {
 	private var g2d_next:GSimpleParticle;

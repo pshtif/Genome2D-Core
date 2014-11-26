@@ -6,8 +6,9 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderables;
+package com.genome2d.components.renderable;
 
+import com.genome2d.textures.GTextureManager;
 import msignal.Signal.Signal1;
 import com.genome2d.error.GError;
 import com.genome2d.textures.GTexture;
@@ -68,7 +69,7 @@ class GMovieClip extends GTexturedQuad
         g2d_frameTextures = new Array<GTexture>();
 	    g2d_frameTexturesCount = p_value.length;
         for (i in 0...g2d_frameTexturesCount) {
-            var frameTexture:GTexture = GTexture.getTextureById(p_value[i]);
+            var frameTexture:GTexture = GTextureManager.getTextureById(p_value[i]);
             if (frameTexture == null) new GError("Invalid textures id "+p_value[i]);
             g2d_frameTextures.push(frameTexture);
         }

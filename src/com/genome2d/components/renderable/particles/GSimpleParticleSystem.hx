@@ -6,15 +6,16 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderables.particles;
+package com.genome2d.components.renderable.particles;
 
+import com.genome2d.textures.GTextureManager;
 import com.genome2d.particles.GSimpleParticle;
 import com.genome2d.error.GError;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.components.GComponent;
 import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
-import com.genome2d.components.renderables.IRenderable;
+import com.genome2d.components.renderable.IRenderable;
 import com.genome2d.context.GCamera;
 
 /**
@@ -192,11 +193,11 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 	public var textureId(get, set):String;
 	#if swc @:getter(textureId) #end
 	inline private function get_textureId():String {
-		return (texture != null) ? texture.getId() : "";
+		return (texture != null) ? texture.id : "";
 	}
 	#if swc @:setter(textureId) #end
 	inline private function set_textureId(p_value:String):String {
-		texture = GTexture.getTextureById(p_value);
+		texture = GTextureManager.getTextureById(p_value);
         if (texture == null) new GError("Invalid textures with id "+p_value);
 		return p_value;
 	}

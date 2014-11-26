@@ -121,7 +121,7 @@ class GPostProcess {
             var i:Int = g2d_passTextures.length-1;
             while (i>=0) {
                 var texture:GTexture = g2d_passTextures[i];
-                texture.setRegion(new GRectangle(0, 0, w, h));
+                texture.region = new GRectangle(0, 0, w, h);
                 texture.pivotX = -texture.width/2;
                 texture.pivotY = -texture.height/2;
                 texture.invalidateNativeTexture(true);
