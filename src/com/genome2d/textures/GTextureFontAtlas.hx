@@ -22,6 +22,10 @@ class GTextureFontAtlas extends GTextureAtlas
         var texture:GCharTexture = new GCharTexture(g2d_id+"_"+p_subId, this);
         texture.g2d_subId = p_subId;
         texture.g2d_filteringType = g2d_filteringType;
+        texture.g2d_nativeTexture = nativeTexture;
+        texture.g2d_scaleFactor = scaleFactor;
+
+        texture.region = p_region;
 
         g2d_subTextures.set(p_subId, texture);
 

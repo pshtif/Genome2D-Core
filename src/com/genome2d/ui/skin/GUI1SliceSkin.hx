@@ -36,6 +36,7 @@ class GUI1SliceSkin extends GUISkin {
 
     public function new(p_id:String, p_textureId:String) {
         super(p_id);
+
         type = GUISkinType.SLICE1;
         textureId = p_textureId;
     }

@@ -9,6 +9,19 @@ import com.genome2d.textures.GTextureFontAtlas;
 class GTextureTextRenderer extends GTextRenderer {
 
     private var g2d_textureAtlas:GTextureFontAtlas;
+    #if swc @:extern #end
+    public var textureAtlas(get, set):GTextureFontAtlas;
+    #if swc @:getter(textureAtlas) #end
+    public function get_textureAtlas():GTextureFontAtlas{
+        return g2d_textureAtlas;
+    }
+    #if swc @:setter(textureAtlas) #end
+    public function set_textureAtlas(p_textureAtlas:GTextureFontAtlas):GTextureFontAtlas {
+        g2d_textureAtlas = p_textureAtlas;
+        g2d_dirty = true;
+        return g2d_textureAtlas;
+    }
+
     /*
      *  Texture atlas id used for character textures lookup
      */
@@ -21,21 +34,14 @@ class GTextureTextRenderer extends GTextRenderer {
     }
     #if swc @:setter(textureAtlasId) #end
     inline private function set_textureAtlasId(p_value:String):String {
-        setTextureAtlas(GTextureManager.getTextureFontAtlasById(p_value));
+        textureAtlas = GTextureManager.getFontAtlasById(p_value);
         return p_value;
-    }
-
-    /*
-     *  Set textures atlas that will be used for character textures lookup
-     */
-    public function setTextureAtlas(p_textureAtlas:GTextureFontAtlas):Void {
-        g2d_textureAtlas = p_textureAtlas;
-        g2d_dirty = true;
     }
 
     private var g2d_chars:Array<GTextureChar>;
 
     override public function render(p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_rotation:Float):Void {
+        if (g2d_textureAtlas == null) return;
         if (g2d_dirty) invalidate();
 
         var charCount:Int = g2d_chars.length;
@@ -62,8 +68,8 @@ class GTextureTextRenderer extends GTextRenderer {
     }
 
     override public function invalidate():Void {
-        if (g2d_textureAtlas == null) return;
         if (g2d_chars == null) g2d_chars = new Array<GTextureChar>();
+        if (g2d_textureAtlas == null) return;
 
         if (g2d_autoSize) {
             g2d_width = 0;
@@ -97,8 +103,9 @@ class GTextureTextRenderer extends GTextRenderer {
             } else {
                 currentCharCode = g2d_text.charCodeAt(i);
                 texture = g2d_textureAtlas.getSubTextureById(Std.string(currentCharCode));
+
                 if (texture == null) {
-                    //++i;
+                    ++i;
                     continue;// throw new GError("Texture for character "+g2d_text.charAt(i)+" with code "+g2d_text.charCodeAt(i)+" not found!");
                 }
 
@@ -116,6 +123,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
                     char.g2d_code = currentCharCode;
                     char.g2d_texture = texture;
+
                     if (!g2d_autoSize && offsetX + texture.width>g2d_width) {
                         lines.push(currentLine);
                         var backtrack:Int = i-whiteSpaceIndex-1;

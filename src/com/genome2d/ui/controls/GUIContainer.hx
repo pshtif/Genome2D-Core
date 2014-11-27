@@ -1,4 +1,6 @@
-package com.genome2d.ui;
+package com.genome2d.ui.controls;
+import com.genome2d.ui.utils.GUIPositionType;
+import com.genome2d.ui.utils.GUILayoutType;
 import com.genome2d.textures.GContextTexture;
 import com.genome2d.signals.GMouseSignal;
 import com.genome2d.signals.GMouseSignalType;
@@ -8,13 +10,15 @@ import com.genome2d.context.IContext;
 import com.genome2d.ui.skin.GUISkin;
 import com.genome2d.geom.GPoint;
 import flash.Vector;
+
+@prototypeName("container")
 class GUIContainer extends GUIControl {
     private var g2d_children:Array<GUIControl>;
     private var g2d_childCount:Int = 0;
 
     public var useMasking:Bool = false;
 
-    public function new(p_style:GUIStyle) {
+    public function new(p_style:GUIStyle = null) {
         super(p_style);
         g2d_children = new Array<GUIControl>();
         g2d_afterPositions = new Array<GUIControl>();
@@ -24,6 +28,7 @@ class GUIContainer extends GUIControl {
     @:access(com.genome2d.ui.GUIStyle)
     override public function invalidate():Void {
         if (g2d_dirty || g2d_style.g2d_usePercentageHeight || g2d_style.g2d_usePercentageWidth) {
+            trace(name, "invalidate");
             var contentFlowX:Float = 0;
             var contentFlowY:Float = 0;
             var maxSize:Float = 0;
@@ -40,6 +45,7 @@ class GUIContainer extends GUIControl {
             for (i in 0...childCount) {
                 var child:GUIControl = g2d_children[i];
                 child.invalidate();
+
                 if (child.position == GUIPositionType.RELATIVE) {
                     if (g2d_style.g2d_layout == GUILayoutType.HORIZONTAL) {
                         if (g2d_width != 0 && (
@@ -60,10 +66,12 @@ class GUIContainer extends GUIControl {
                             maxSize = 0;
                         }
                     }
+
                     child.g2d_flowX = (child.g2d_style.g2d_useLeft) ? contentFlowX + child.g2d_style.left : contentFlowX - child.g2d_style.right;
                     child.g2d_flowY = (child.g2d_style.g2d_useTop) ? contentFlowY + child.g2d_style.top : contentFlowY - child.g2d_style.bottom;
                     if (g2d_style.g2d_layout == GUILayoutType.HORIZONTAL) {
                         contentFlowX += child.flowWidth;
+                        trace(child.name,child.g2d_width);
                         if (maxSize < child.flowHeight) maxSize = child.flowHeight;
                     } else {
                         contentFlowY += child.flowHeight;
@@ -84,7 +92,16 @@ class GUIContainer extends GUIControl {
             } else {
                 g2d_width = g2d_style.g2d_minWidth;
             }
-            if (g2d_height == 0) height = (g2d_style.g2d_layout == GUILayoutType.HORIZONTAL) ? contentFlowY+maxSize : contentFlowY;
+            if (g2d_style.g2d_minHeight == 0) {
+                if (g2d_height == 0) height = (g2d_style.g2d_layout == GUILayoutType.HORIZONTAL) ? contentFlowY+maxSize : contentFlowY;
+            } else {
+                g2d_height = g2d_style.g2d_minHeight;
+            }
+
+            if (g2d_activeSkin != null) {
+                g2d_width = (g2d_width<g2d_activeSkin.getMinWidth()) ? g2d_activeSkin.getMinWidth() : g2d_width;
+                g2d_height = (g2d_height<g2d_activeSkin.getMinHeight()) ? g2d_activeSkin.getMinHeight() : g2d_height;
+            }
 
             var child:GUIControl = null;
             while (g2d_afterPositions.length>0) {
@@ -109,7 +126,9 @@ class GUIContainer extends GUIControl {
                 }
             }
 
-            super.invalidate();
+            g2d_dirty = false;
+
+            trace(name, "invalidateEnd", g2d_width);
         }
     }
 

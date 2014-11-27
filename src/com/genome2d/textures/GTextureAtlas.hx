@@ -42,6 +42,8 @@ class GTextureAtlas extends GContextTexture {
         super(p_id, p_source);
 
         g2d_subTextures = new Map<String,GTexture>();
+
+        g2d_init();
     }
 
     override public function invalidateNativeTexture(p_reinitialize:Bool):Void {
@@ -57,12 +59,12 @@ class GTextureAtlas extends GContextTexture {
         texture.g2d_subId = p_subId;
         texture.g2d_filteringType = g2d_filteringType;
         texture.g2d_nativeTexture = nativeTexture;
-        texture.scaleFactor = scaleFactor;
+        texture.g2d_scaleFactor = scaleFactor;
 
         if (p_frame != null) {
             texture.g2d_frame = p_frame;
-            texture.pivotX = (p_frame.width-p_region.width)*.5 + p_frame.x;
-            texture.pivotY = (p_frame.height-p_region.height)*.5 + p_frame.y;
+            texture.g2d_pivotX = (p_frame.width-p_region.width)*.5 + p_frame.x;
+            texture.g2d_pivotY = (p_frame.height-p_region.height)*.5 + p_frame.y;
         }
 
         texture.region = p_region;

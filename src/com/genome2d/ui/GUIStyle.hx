@@ -47,7 +47,7 @@ class GUIStyle implements IGPrototypable {
 
     public var g2d_marginRight:Float;
     #if swc @:extern #end
-    public var marginRight(get, set):Float;
+    @prototype public var marginRight(get, set):Float;
     #if swc @:getter(marginRight) #end
     inline private function get_marginRight():Float {
         return g2d_marginRight;
@@ -61,7 +61,7 @@ class GUIStyle implements IGPrototypable {
 
     public var g2d_marginTop:Float;
     #if swc @:extern #end
-    public var marginTop(get, set):Float;
+    @prototype public var marginTop(get, set):Float;
     #if swc @:getter(marginTop) #end
     inline private function get_marginTop():Float {
         return g2d_marginTop;
@@ -75,7 +75,7 @@ class GUIStyle implements IGPrototypable {
 
     public var g2d_marginBottom:Float;
     #if swc @:extern #end
-    public var marginBottom(get, set):Float;
+    @prototype public var marginBottom(get, set):Float;
     #if swc @:getter(marginBottom) #end
     inline private function get_marginBottom():Float {
         return g2d_marginBottom;
@@ -89,7 +89,7 @@ class GUIStyle implements IGPrototypable {
 
     public var g2d_autoSize:Bool;
     #if swc @:extern #end
-    public var autoSize(get, set):Bool;
+    @prototype public var autoSize(get, set):Bool;
     #if swc @:getter(autoSize) #end
     inline private function get_autoSize():Bool {
         return g2d_autoSize;
@@ -103,7 +103,7 @@ class GUIStyle implements IGPrototypable {
 
     private var g2d_textVAlign:Int;
     #if swc @:extern #end
-    public var textVAlign(get, set):Int;
+    @prototype public var textVAlign(get, set):Int;
     #if swc @:getter(textVAlign) #end
     inline private function get_textVAlign():Int {
         return g2d_textVAlign;
@@ -117,7 +117,7 @@ class GUIStyle implements IGPrototypable {
 
     private var g2d_textHAlign:Int;
     #if swc @:extern #end
-    public var textHAlign(get, set):Int;
+    @prototype public var textHAlign(get, set):Int;
     #if swc @:getter(textHAlign) #end
     inline private function get_textHAlign():Int {
         return g2d_textHAlign;
@@ -128,22 +128,6 @@ class GUIStyle implements IGPrototypable {
         onChange.dispatch();
         return g2d_textHAlign;
     }
-
-    private var g2d_fontAtlasId:String;
-    #if swc @:extern #end
-    public var fontAtlasId(get, set):String;
-    #if swc @:getter(fontAtlasId) #end
-    inline private function get_fontAtlasId():String {
-        return g2d_fontAtlasId;
-    }
-    #if swc @:setter(fontAtlasId) #end
-    inline private function set_fontAtlasId(p_value:String):String {
-        g2d_fontAtlasId = p_value;
-        onChange.dispatch();
-        return g2d_fontAtlasId;
-    }
-
-    public var fontScale:Float;
 
     private var g2d_onChange:Signal0;
     #if swc @:extern #end
@@ -156,7 +140,7 @@ class GUIStyle implements IGPrototypable {
 
     private var g2d_layout:Int;
     #if swc @:extern #end
-    public var layout(get, set):Int;
+    @prototype public var layout(get, set):Int;
     #if swc @:getter(layout) #end
     inline private function get_layout():Int {
         return g2d_layout;
@@ -204,7 +188,7 @@ class GUIStyle implements IGPrototypable {
 
     private var g2d_maxWidth:Float;
     #if swc @:extern #end
-    public var maxWidth(get, set):Float;
+    @prototype public var maxWidth(get, set):Float;
     #if swc @:getter(maxWidth) #end
     inline private function get_maxWidth():Float {
         return g2d_maxWidth;
@@ -220,7 +204,7 @@ class GUIStyle implements IGPrototypable {
 
     private var g2d_maxHeight:Float;
     #if swc @:extern #end
-    public var maxHeight(get, set):Float;
+    @prototype public var maxHeight(get, set):Float;
     #if swc @:getter(maxHeight) #end
     inline private function get_maxHeight():Float {
         return g2d_maxHeight;
@@ -238,7 +222,7 @@ class GUIStyle implements IGPrototypable {
     public var g2d_useLeft:Bool;
     private var g2d_left:Float = 0;
     #if swc @:extern #end
-    public var left(get, set):Float;
+    @prototype public var left(get, set):Float;
     #if swc @:getter(left) #end
     inline private function get_left():Float {
         return g2d_left;
@@ -253,7 +237,7 @@ class GUIStyle implements IGPrototypable {
 
     private var g2d_right:Float;
     #if swc @:extern #end
-    public var right(get, set):Float;
+    @prototype public var right(get, set):Float;
     #if swc @:getter(right) #end
     inline private function get_right():Float {
         return g2d_right;
@@ -270,7 +254,7 @@ class GUIStyle implements IGPrototypable {
     public var g2d_useTop:Bool;
     private var g2d_top:Float;
     #if swc @:extern #end
-    public var top(get, set):Float;
+    @prototype public var top(get, set):Float;
     #if swc @:getter(top) #end
     inline private function get_top():Float {
         return g2d_top;
@@ -285,7 +269,7 @@ class GUIStyle implements IGPrototypable {
 
     private var g2d_bottom:Float;
     #if swc @:extern #end
-    public var bottom(get, set):Float;
+    @prototype public var bottom(get, set):Float;
     #if swc @:getter(bottom) #end
     inline private function get_bottom():Float {
         return g2d_bottom;
@@ -313,7 +297,7 @@ class GUIStyle implements IGPrototypable {
 
     public var overSkin:GUISkin;
     #if swc @:extern #end
-    public var overSkinId(get, set):String;
+    @prototype public var overSkinId(get, set):String;
     #if swc @:getter(overSkinId) #end
     inline private function get_overSkinId():String {
         return (overSkin!=null) ? overSkin.id : "";
@@ -336,9 +320,9 @@ class GUIStyle implements IGPrototypable {
         g2d_maxWidth = g2d_maxHeight = g2d_minWidth = g2d_minHeight = 0;
         g2d_textHAlign = GHAlignType.LEFT;
         g2d_textVAlign = GVAlignType.TOP;
-        fontScale = 1;
         g2d_usePercentageVertical = g2d_usePercentageHorizontal = g2d_usePercentageWidth = g2d_usePercentageHeight = false;
-        g2d_autoMargin = g2d_autoSize = false;
+        g2d_autoMargin = false;
+        g2d_autoSize = true;
         g2d_useTop = g2d_useLeft = true;
     }
 
@@ -354,7 +338,6 @@ class GUIStyle implements IGPrototypable {
     }
 
     public function clone():GUIStyle {
-        trace(marginTop, id);
         var style:GUIStyle = new GUIStyle("");
         style.marginLeft = marginLeft;
         style.marginRight = marginRight;
@@ -364,8 +347,6 @@ class GUIStyle implements IGPrototypable {
         style.autoSize = autoSize;
         style.textHAlign = textHAlign;
         style.textVAlign = textVAlign;
-        style.fontAtlasId = fontAtlasId;
-        style.fontScale = fontScale;
 
         style.normalSkinId = normalSkinId;
         style.overSkinId = overSkinId;

@@ -21,11 +21,11 @@ class GTexture extends GContextTexture
     public var pivotX(get, set):Float;
     #if swc @:getter(pivotX) #end
     inline private function get_pivotX():Float {
-        return g2d_pivotX/scaleFactor;
+        return g2d_pivotX*scaleFactor;
     }
     #if swc @:setter(pivotX) #end
     inline private function set_pivotX(p_value:Float):Float {
-        return g2d_pivotX = p_value*scaleFactor;
+        return g2d_pivotX = p_value/scaleFactor;
     }
 
     private var g2d_pivotY:Float;
@@ -33,11 +33,11 @@ class GTexture extends GContextTexture
     public var pivotY(get, set):Float;
     #if swc @:getter(pivotY) #end
     inline private function get_pivotY():Float {
-        return g2d_pivotY/scaleFactor;
+        return g2d_pivotY*scaleFactor;
     }
     #if swc @:setter(pivotY) #end
     inline private function set_pivotY(p_value:Float):Float {
-        return g2d_pivotY = p_value*scaleFactor;
+        return g2d_pivotY = p_value/scaleFactor;
     }
 
     private var g2d_frame:GRectangle;
@@ -82,7 +82,7 @@ class GTexture extends GContextTexture
 
 	//public function new(p_id:String, p_source:Dynamic, p_region:GRectangle, p_format:String, p_repeatable:Bool, p_pivotX:Float, p_pivotY:Float, p_scaleFactor:Float, p_parentAtlas:GTextureAtlas) {
     public function new(p_id:String, p_source:Dynamic) {
-		super(p_id, p_source);
+        super(p_id, p_source);
 
         g2d_pivotX = g2d_pivotY = 0;
 

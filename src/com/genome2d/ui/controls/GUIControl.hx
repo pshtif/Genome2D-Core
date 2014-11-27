@@ -1,11 +1,15 @@
-package com.genome2d.ui;
+package com.genome2d.ui.controls;
+import com.genome2d.ui.utils.GUIPositionType;
+import com.genome2d.prototype.IGPrototypable;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.context.IContext;
 import com.genome2d.ui.skin.GUISkin;
 import com.genome2d.signals.GMouseSignal;
 import msignal.Signal.Signal2;
 import com.genome2d.textures.GContextTexture;
-class GUIControl {
+
+@prototypeName("control")
+class GUIControl implements IGPrototypable {
     static public var smartBatching:Bool = false;
     static private var postponedRender:Array<GUIControl> = new Array<GUIControl>();
     static private var g2d_batchTexture:GContextTexture;
@@ -32,18 +36,18 @@ class GUIControl {
         if (postponedRender.length>0) flushBatch();
     }
 
-    public var forceBreakBatch:Bool = false;
+    public var forceBreakBatch:Bool;
 
-    public var position:Int = GUIPositionType.RELATIVE;
+    public var position:Int;
 
     public var name:String;
-    public var enabled:Bool = true;
-    public var mouseEnabled:Bool = true;
-    public var visible:Bool = true;
+    public var enabled:Bool;
+    public var mouseEnabled:Bool;
+    public var visible:Bool;
 
     private var g2d_activeSkin:GUISkin;
 
-    private var g2d_dirty:Bool = true;
+    private var g2d_dirty:Bool;
     inline public function isDirty():Bool {
         return g2d_dirty;
     }
@@ -52,13 +56,13 @@ class GUIControl {
         if (g2d_parent != null) g2d_parent.setDirty();
     }
 
-    public var useSkinSize:Bool = false;
+    public var useSkinSize:Bool;
 
-    public var g2d_worldX:Float = 0;
-    public var g2d_worldY:Float = 0;
+    public var g2d_worldX:Float;
+    public var g2d_worldY:Float;
 
-    public var g2d_flowX:Float = 0;
-    public var g2d_flowY:Float = 0;
+    public var g2d_flowX:Float;
+    public var g2d_flowY:Float;
 
     #if swc @:extern #end
     public var x(get, never):Float;
@@ -74,7 +78,7 @@ class GUIControl {
         return g2d_worldY + g2d_flowY + style.marginTop;
     }
 
-    private var g2d_width:Float = 0;
+    private var g2d_width:Float;
     #if swc @:extern #end
     public var width(get, set):Float;
     #if swc @:getter(width) #end
@@ -88,7 +92,7 @@ class GUIControl {
         return g2d_width;
     }
 
-    private var g2d_height:Float = 0;
+    private var g2d_height:Float;
     #if swc @:extern #end
     public var height(get, set):Float;
     #if swc @:getter(height) #end
@@ -103,7 +107,7 @@ class GUIControl {
     }
 
     public var g2d_parent:GUIContainer;
-    public var g2d_mouseOver:Bool = false;
+    public var g2d_mouseOver:Bool;
 
     private var g2d_style:GUIStyle;
     #if swc @:extern #end
@@ -113,10 +117,29 @@ class GUIControl {
         return g2d_style;
     }
     #if swc @:setter(style) #end
-    inline private function set_style(p_style:GUIStyle):GUIStyle {
-        g2d_style = p_style;
-        g2d_style.onChange.add(setDirty);
+    inline private function set_style(p_value:GUIStyle):GUIStyle {
+        if (g2d_style != null) g2d_style.onChange.remove(setDirty);
+        g2d_style = p_value;
+        if (g2d_style != null) {
+            g2d_style.onChange.add(setDirty);
+            g2d_activeSkin = style.normalSkin;
+        } else {
+            g2d_style = GUIStyleManager.getDefaultStyle().clone();
+        }
+        setDirty();
         return g2d_style;
+    }
+
+    #if swc @:extern #end
+    public var styleId(get, set):String;
+    #if swc @:getter(styleId) #end
+    inline private function get_styleId():String {
+        return (g2d_style != null) ? g2d_style.id : "";
+    }
+    #if swc @:setter(styleId) #end
+    inline private function set_styleId(p_value:String):String {
+        style = GUIStyleManager.getStyleById(p_value);
+        return (g2d_style != null) ? g2d_style.id : "";
     }
 
     #if swc @:extern #end
@@ -133,9 +156,30 @@ class GUIControl {
         return style.marginTop+g2d_height+style.marginBottom;
     }
 
-    public function new(p_style:GUIStyle) {
-        style = (p_style == null) ? GUIStyleManager.getDefaultStyle().clone() : p_style.clone();
-        g2d_activeSkin = style.normalSkin;
+    public function new(p_style:GUIStyle = null) {
+        initDefault();
+
+        style = p_style;
+    }
+
+    private function initDefault():Void {
+        position = GUIPositionType.RELATIVE;
+
+        forceBreakBatch = false;
+        enabled = true;
+        mouseEnabled = true;
+        visible = true;
+        g2d_dirty = true;
+
+        useSkinSize = false;
+        g2d_worldX = g2d_worldY = 0;
+        g2d_flowX = g2d_flowY = 0;
+        g2d_width = g2d_height = 100;
+        g2d_mouseOver = false;
+    }
+
+    private function init():Void {
+
     }
 
     public function invalidate():Void {
@@ -203,16 +247,5 @@ class GUIControl {
             }
             return false;
         }
-    }
-
-    public function getPrototype():Xml {
-        var source:String = "<control name="+name+">";
-
-        source+="</control>";
-        return Xml.parse(source);
-    }
-
-    public function initPrototype(p_xml:Xml):Void {
-
     }
 }
