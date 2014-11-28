@@ -41,9 +41,14 @@ class GUI1SliceSkin extends GUISkin {
         textureId = p_textureId;
     }
 
-    override public function render(p_x:Float, p_y:Float, p_width:Float, p_height:Float):Void {
+    override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Void {
         var context:IContext = Genome2D.getInstance().getContext();
-        context.draw(texture, p_x, p_y, p_width/texture.width, p_height/texture.height, 0, 1, 1, 1, 1, 1, null);
+        var width:Float = p_right - p_left;
+        var height:Float = p_bottom - p_top;
+        var x:Float = p_left + .5*texture.width + texture.pivotX;
+        var y:Float = p_top + .5*texture.height + texture.pivotY;
+        trace(p_left, p_top, p_right, p_bottom);
+        context.draw(texture, x, y, width/texture.width, height/texture.height, 0, 1, 1, 1, 1, 1, null);
     }
 
     override public function getTexture():GContextTexture {
