@@ -47,7 +47,7 @@ class GUI1SliceSkin extends GUISkin {
         var height:Float = p_bottom - p_top;
         var x:Float = p_left + .5*texture.width + texture.pivotX;
         var y:Float = p_top + .5*texture.height + texture.pivotY;
-        trace(p_left, p_top, p_right, p_bottom);
+        //trace(p_left, p_top, p_right, p_bottom);
         context.draw(texture, x, y, width/texture.width, height/texture.height, 0, 1, 1, 1, 1, 1, null);
     }
 

@@ -23,6 +23,8 @@ class GUI extends GComponent implements IRenderable {
     }
 
     public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
+        root.invalidate();
+
         GUIControl.clearBatchState();
         root.render();
         GUIControl.flushBatch();

@@ -3,6 +3,7 @@ package com.genome2d.ui.idea;
 import com.genome2d.ui.utils.GUILayoutType;
 import com.genome2d.ui.skin.GUISkin;
 
+@:access(com.genome2d.ui.idea.GUILayout)
 class GUIElement {
     public var name:String;
     public var mouseEnabled:Bool;
@@ -39,11 +40,11 @@ class GUIElement {
     public var g2d_worldBottom:Float;
 
     private var g2d_minWidth:Float;
-    private var g2d_width:Float;
+    private var g2d_prefferedWidth:Float;
     private var g2d_variableWidth:Float;
 
     private var g2d_minHeight:Float;
-    private var g2d_height:Float;
+    private var g2d_prefferedHeight:Float;
     private var g2d_variableHeight:Float;
 
     private var g2d_parent:GUIElement;
@@ -55,8 +56,8 @@ class GUIElement {
         initDefault();
         g2d_activeSkin = p_skin;
         if (g2d_activeSkin != null) {
-            g2d_width = g2d_minWidth = p_skin.getMinWidth();
-            g2d_height = g2d_minHeight = p_skin.getMinHeight();
+            g2d_prefferedWidth = g2d_minWidth = p_skin.getMinWidth();
+            g2d_prefferedHeight = g2d_minHeight = p_skin.getMinHeight();
         }
     }
 
@@ -78,6 +79,9 @@ class GUIElement {
 
         g2d_pivotX = .5;
         g2d_pivotY = .5;
+
+        g2d_minWidth = g2d_prefferedWidth = 0;
+        g2d_minHeight = g2d_prefferedHeight = 0;
     }
 
     public function addChild(p_child:GUIElement):Void {
@@ -88,10 +92,9 @@ class GUIElement {
         p_child.g2d_parent = this;
     }
 
-    private function invalidate():void {
+    public function invalidate():Void {
         calculateWidth();
         invalidateWidth();
-
         calculateHeight();
         invalidateHeight();
     }
@@ -99,23 +102,39 @@ class GUIElement {
     private function calculateWidth():Void {
         if (g2d_layout != null) {
             g2d_layout.calculateWidth(this);
+        } else {
+            g2d_prefferedWidth = g2d_minWidth = g2d_activeSkin != null ? g2d_activeSkin.getMinWidth() : 0;
+
+            for (i in 0...g2d_numChildren) {
+                g2d_children[i].calculateWidth();
+            }
         }
     }
 
     private function invalidateWidth():Void {
-        if (g2d_parent.layout != null) {
-            g2d_parent.layout.invalidateWidth(this);
-        } else {
-            var worldAnchorLeft:Float = g2d_parent.g2d_worldLeft + (g2d_parent.g2d_worldRight - g2d_parent.g2d_worldLeft) * g2d_anchorLeft;
-            var worldAnchorRight:Float = g2d_parent.g2d_worldLeft + (g2d_parent.g2d_worldRight - g2d_parent.g2d_worldLeft) * g2d_anchorRight;
-            if (g2d_anchorLeft != g2d_anchorRight) {
-                g2d_worldLeft = worldAnchorLeft + g2d_left;
-                g2d_worldRight = worldAnchorRight - g2d_right;
-            } else {
-                g2d_worldLeft = worldAnchorLeft + g2d_anchorX - g2d_width * g2d_pivotX;
-                g2d_worldRight = worldAnchorLeft + g2d_anchorX + g2d_width * (1 - g2d_pivotX);
+        if (g2d_parent != null) {
+            if (g2d_parent.g2d_layout == null) {
+                var worldAnchorLeft:Float = g2d_parent.g2d_worldLeft + (g2d_parent.g2d_worldRight - g2d_parent.g2d_worldLeft) * g2d_anchorLeft;
+                var worldAnchorRight:Float = g2d_parent.g2d_worldLeft + (g2d_parent.g2d_worldRight - g2d_parent.g2d_worldLeft) * g2d_anchorRight;
+
+                if (g2d_anchorLeft != g2d_anchorRight) {
+                    g2d_worldLeft = worldAnchorLeft + g2d_left;
+                    g2d_worldRight = worldAnchorRight - g2d_right;
+                } else {
+                    g2d_worldLeft = worldAnchorLeft + g2d_anchorX - g2d_prefferedWidth * g2d_pivotX;
+                    g2d_worldRight = worldAnchorLeft + g2d_anchorX + g2d_prefferedWidth * (1 - g2d_pivotX);
+                }
+                trace(name, g2d_worldLeft,worldAnchorLeft, g2d_anchorX, g2d_prefferedWidth, g2d_pivotX);
             }
 
+            if (g2d_layout != null) {
+                g2d_layout.invalidateWidth(this);
+            } else {
+                for (i in 0...g2d_numChildren) {
+                    g2d_children[i].invalidateWidth();
+                }
+            }
+        } else {
             for (i in 0...g2d_numChildren) {
                 g2d_children[i].invalidateWidth();
             }
@@ -124,23 +143,9 @@ class GUIElement {
 
     private function calculateHeight():Void {
         if (false) {
-            g2d_parent.layout.calculateHeight(this);
-        }
-    }
-
-    private function invalidateHeight():Void {
-        if (false) {
-            g2d_parent.layout.invalidateHeight(this);
+            g2d_parent.g2d_layout.calculateHeight(this);
         } else {
-            var worldAnchorTop:Float = g2d_parent.g2d_worldTop + (g2d_parent.g2d_worldBottom - g2d_parent.g2d_worldTop) * g2d_anchorTop;
-            var worldAnchorBottom:Float = g2d_parent.g2d_worldTop + (g2d_parent.g2d_worldBottom - g2d_parent.g2d_worldTop) * g2d_anchorBottom;
-            if (g2d_anchorTop != g2d_anchorBottom) {
-                g2d_worldTop = worldAnchorTop + g2d_top;
-                g2d_worldBottom = worldAnchorBottom - g2d_bottom;
-            } else {
-                g2d_worldTop = worldAnchorTop + g2d_anchorY - g2d_height * g2d_pivotY;
-                g2d_worldBottom = worldAnchorTop + g2d_anchorY + g2d_height * (1 - g2d_pivotY);
-            }
+            g2d_prefferedHeight = g2d_minHeight = g2d_activeSkin != null ? g2d_activeSkin.getMinHeight() : 0;
 
             for (i in 0...g2d_numChildren) {
                 g2d_children[i].calculateHeight();
@@ -148,8 +153,30 @@ class GUIElement {
         }
     }
 
+    private function invalidateHeight():Void {
+        if (g2d_parent != null) {
+            var worldAnchorTop:Float = g2d_parent.g2d_worldTop + (g2d_parent.g2d_worldBottom - g2d_parent.g2d_worldTop) * g2d_anchorTop;
+            var worldAnchorBottom:Float = g2d_parent.g2d_worldTop + (g2d_parent.g2d_worldBottom - g2d_parent.g2d_worldTop) * g2d_anchorBottom;
+            if (g2d_anchorTop != g2d_anchorBottom) {
+                g2d_worldTop = worldAnchorTop + g2d_top;
+                g2d_worldBottom = worldAnchorBottom - g2d_bottom;
+            } else {
+                g2d_worldTop = worldAnchorTop + g2d_anchorY - g2d_prefferedHeight * g2d_pivotY;
+                g2d_worldBottom = worldAnchorTop + g2d_anchorY + g2d_prefferedHeight * (1 - g2d_pivotY);
+            }
+
+            for (i in 0...g2d_numChildren) {
+                g2d_children[i].invalidateHeight();
+            }
+        } else {
+            for (i in 0...g2d_numChildren) {
+                g2d_children[i].invalidateHeight();
+            }
+        }
+    }
+
     public function render():Void {
-        if (g2d_dirty) invalidate();
+        trace(name, g2d_activeSkin,g2d_worldLeft, g2d_worldRight, g2d_worldTop, g2d_worldBottom);
         if (g2d_activeSkin != null) g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom);
 
         for (i in 0...g2d_numChildren) {
