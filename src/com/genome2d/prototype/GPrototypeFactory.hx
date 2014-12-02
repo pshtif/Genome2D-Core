@@ -27,7 +27,7 @@ class GPrototypeFactory {
         var prototype:IGPrototypable = Type.createEmptyInstance(prototypeClass);
         if (prototype == null) new GError("Invalid prototype.");
 
-        prototype.initPrototype(p_prototypeXml);
+        prototype.initPrototype(p_prototypeXml,true);
 
         return prototype;
         /**/

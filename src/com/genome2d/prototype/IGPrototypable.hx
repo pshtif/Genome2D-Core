@@ -18,5 +18,5 @@ interface IGPrototypable {
     private function initDefault():Void;
     private function init():Void;
     public function getPrototype():Xml;
-    public function initPrototype(p_xml:Xml):Void;
+    public function initPrototype(p_xml:Xml,p_initDefault:Bool=false):Void;
 }

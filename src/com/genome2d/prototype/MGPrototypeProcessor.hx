@@ -41,7 +41,8 @@ class MGPrototypeProcessor {
         }
 
         var superClass = localClass.superClass;
-        var superPrototypeMethods = false;
+        var superPrototypeGet = false;
+        var superPrototypeInit = false;
         while (superClass != null) {
             var c = superClass.t.get();
 
@@ -51,7 +52,8 @@ class MGPrototypeProcessor {
 
             if (c.fields.get().length == 0) Context.getType(c.name);
             for (field in c.fields.get()) {
-                if (field.name == "getPrototype") superPrototypeMethods = true;
+                if (field.name == "getPrototype") superPrototypeGet = true;
+                if (field.name == "initPrototype") superPrototypeInit = true;
                 for (meta in field.meta.get()) if (meta.name == 'prototype' && meta.params != null) {
                     switch (field.type) {
                         case TInst(type, params):
@@ -79,10 +81,12 @@ class MGPrototypeProcessor {
             superClass = c.superClass;
         }
 
-        var hasPrototypeMethods = false;
+        var hasPrototypeGet = false;
+        var hasPrototypeInit = false;
         for (i in fields) {
             // Check if we need prototype method
-            if (i.name == "getPrototype") hasPrototypeMethods = true;
+            if (i.name == "getPrototype") hasPrototypeGet = true;
+            if (i.name == "initPrototype") hasPrototypeInit = true;
 
             if (i.meta.length==0 || i.access.indexOf(APublic) == -1) continue;
             var isPrototype:Bool = false;
@@ -119,22 +123,28 @@ class MGPrototypeProcessor {
             }
         }
 
-        if (!hasPrototypeMethods && (!superPrototypeMethods || prototypeOverride)) {
+        //if (!hasPrototypeMethods && (!superPrototypeMethods || prototypeOverride)) {
+        if (!superPrototypeGet || prototypeOverride) {
             var getPrototype = generateGetPrototype();
             switch (getPrototype) {
                 case TAnonymous(f):
-                    if (prototypeOverride && superPrototypeMethods) f[0].access.push(AOverride);
+                    if (prototypeOverride && superPrototypeGet) f[0].access.push(AOverride);
+                    if (hasPrototypeGet) f[0].name = "getPrototypeDefault";
                     fields = fields.concat(f);
                 default:
                     throw "Prototype error!";
             }
+        }
+
+        if (!superPrototypeInit || prototypeOverride) {
             var initPrototype = generateInitPrototype();
-                switch (initPrototype) {
-                    case TAnonymous(f):
-                        if (prototypeOverride && superPrototypeMethods) f[0].access.push(AOverride);
-                        fields = fields.concat(f);
-                    default:
-                        throw "Prototype error!";
+            switch (initPrototype) {
+                case TAnonymous(f):
+                    if (prototypeOverride && superPrototypeInit) f[0].access.push(AOverride);
+                    if (hasPrototypeInit) f[0].name = "initPrototypeDefault";
+                    fields = fields.concat(f);
+                default:
+                    throw "Prototype error!";
             }
         }
 
@@ -201,8 +211,8 @@ class MGPrototypeProcessor {
 
     static private function generateInitPrototype() {
         return macro : {
-            public function initPrototype(p_prototypeXml:Xml):Void {
-                initDefault();
+            public function initPrototype(p_prototypeXml:Xml, p_initDefault:Bool = false):Void {
+                if (p_initDefault) initDefault();
 
                 var properties:Array<String> = Reflect.field(Type.getClass(this), "PROTOTYPE_PROPERTIES");
                 var types:Array<String> = Reflect.field(Type.getClass(this), "PROTOTYPE_TYPES");

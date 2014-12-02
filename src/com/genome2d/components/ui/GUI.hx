@@ -7,6 +7,8 @@ import com.genome2d.ui.controls.GUIContainer;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GCamera;
 import com.genome2d.components.renderable.IRenderable;
+
+@:access(com.genome2d.ui.idea.GUIElement)
 class GUI extends GComponent implements IRenderable {
     //public var root:GUIContainer;
     public var root:GUIElement;
@@ -18,6 +20,8 @@ class GUI extends GComponent implements IRenderable {
         root.g2d_worldRight = 1024;
         root.g2d_worldTop = 0;
         root.g2d_worldBottom = 768;
+        root.g2d_finalWidth = 1024;
+        root.g2d_finalHeight = 768;
         root.name = "root";
         root.mouseEnabled = false;
     }

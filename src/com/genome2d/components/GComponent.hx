@@ -113,7 +113,7 @@ class GComponent implements IGPrototypable
     /**
 
     **/
-	public function initPrototype(p_prototypeXml:Xml):Void {
+	public function initPrototype(p_prototypeXml:Xml, p_initDefault:Bool = false):Void {
 		//id = p_prototypeXml.get("id");
 
 		var propertiesXml:Xml = p_prototypeXml.firstElement();
