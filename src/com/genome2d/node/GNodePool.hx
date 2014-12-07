@@ -11,7 +11,7 @@ package com.genome2d.node;
 import com.genome2d.node.factory.GNodeFactory;
 
 /**
-    Node pool based on prototype
+    Node pool based on proto
 **/
 @:allow(com.genome2d.node.GNode)
 @:access(com.genome2d.node.GNode)

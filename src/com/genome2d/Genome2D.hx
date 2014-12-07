@@ -8,6 +8,7 @@
  */
 package com.genome2d;
 
+import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.signals.GKeyboardSignal;
 import com.genome2d.components.GTransform;
@@ -205,6 +206,8 @@ class Genome2D
         @param p_config `GContextConfig` instance configuring Genome2D context
     **/
 	public function init(p_config:GContextConfig):Void {
+        GPrototypeFactory.initializePrototypes();
+
         // Initialize root
         if (g2d_root != null) g2d_root.dispose();
         g2d_root = new GNode("root");

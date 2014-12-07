@@ -8,9 +8,8 @@
  */
 package com.genome2d.components;
 
-import com.genome2d.prototype.IGPrototypable;
+import com.genome2d.proto.IGPrototypable;
 import com.genome2d.node.GNode;
-import Type.ValueType;
 import com.genome2d.signals.GMouseSignal;
 
 /**
@@ -19,7 +18,7 @@ import com.genome2d.signals.GMouseSignal;
 @:allow(com.genome2d.node.GNode)
 class GComponent implements IGPrototypable
 {
-	private var g2d_active:Bool = false;
+	private var g2d_active:Bool = true;
     private var g2d_lookupClass:Class<GComponent>;
     private var g2d_previous:GComponent;
     private var g2d_next:GComponent;
@@ -43,17 +42,12 @@ class GComponent implements IGPrototypable
 	}
 
 	public function new() {
-        initDefault();
 	}
-
-    private function initDefault():Void {
-        g2d_active = true;
-    }
 	
 	/****************************************************************************************************
 	 * 	PROTOTYPE CODE
 	 ****************************************************************************************************/
-	public function getPrototype():Xml {
+	public function getPrototype(p_xml:Xml = null):Xml {
 		var prototypeXml:Xml = Xml.createElement("components");
 
 		//prototypeXml.set("id", id);
@@ -62,7 +56,7 @@ class GComponent implements IGPrototypable
 		
 		var propertiesXml:Xml = Xml.createElement("properties");
 
-        var properties:Array<String> = PROTOTYPE_PROPERTIES;
+        var properties:Array<String> = PROTOTYPE_PROPERTY_NAMES;
 
         if (properties != null) {
             for (i in 0...properties.length) {
@@ -113,7 +107,7 @@ class GComponent implements IGPrototypable
     /**
 
     **/
-	public function initPrototype(p_prototypeXml:Xml, p_initDefault:Bool = false):Void {
+	public function initPrototype(p_prototypeXml:Xml):Void {
 		//id = p_prototypeXml.get("id");
 
 		var propertiesXml:Xml = p_prototypeXml.firstElement();

@@ -1,12 +1,13 @@
 package com.genome2d.ui.idea;
 
+import com.genome2d.proto.IGPrototypable;
 @:access(com.genome2d.ui.idea.GUIElement)
-class GUILayout {
-    public var g2d_element:GUIElement;
+class GUILayout implements IGPrototypable {
 
-    public var gap:Float = 10;
+    @prototype public var gap:Float = 10;
 
-    public function new() {
+    private function init():Void {
+
     }
 
     private function calculateWidth(p_element:GUIElement):Void {

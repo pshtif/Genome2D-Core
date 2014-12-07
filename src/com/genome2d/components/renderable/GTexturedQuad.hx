@@ -51,7 +51,7 @@ class GTexturedQuad extends GComponent implements IRenderable
 
     public var ignoreMatrix:Bool;
 
-    override private function initDefault():Void {
+    private function initDefault2():Void {
         ignoreMatrix = false;
         mousePixelTreshold = 0;
         mousePixelEnabled = false;
