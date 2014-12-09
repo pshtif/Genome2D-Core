@@ -46,11 +46,11 @@ class GTexture extends GContextTexture
     #if swc @:extern #end
     public var region(get,set):GRectangle;
     #if swc @:getter(nativeSource) #end
-    public function get_region():GRectangle {
+    inline private function get_region():GRectangle {
         return g2d_region;
     }
     #if swc @:setter(region) #end
-    public function set_region(p_value:GRectangle):GRectangle {
+    inline private function set_region(p_value:GRectangle):GRectangle {
         g2d_region = p_value;
 
         g2d_width = Std.int(g2d_region.width);

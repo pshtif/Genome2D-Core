@@ -1,21 +1,22 @@
 package com.genome2d.ui.idea;
 
+import com.genome2d.proto.IGPrototypable;
 @:access(com.genome2d.ui.idea.GUIElement)
-class GUILayout {
-    public var g2d_element:GUIElement;
+class GUILayout implements IGPrototypable {
 
-    public var gap:Float = 10;
+    @prototype public var gap:Float = 10;
 
-    public function new() {
+    private function init():Void {
+
     }
 
     private function calculateWidth(p_element:GUIElement):Void {
-        p_element.g2d_prefferedWidth = p_element.g2d_minWidth = 0;
+        p_element.g2d_preferredWidth = p_element.g2d_minWidth = 0;
         for (i in 0...p_element.g2d_numChildren) {
             var child:GUIElement = p_element.g2d_children[i];
             child.calculateWidth();
             p_element.g2d_minWidth += child.g2d_minWidth+gap;
-            p_element.g2d_prefferedWidth += child.g2d_prefferedWidth+gap;
+            p_element.g2d_preferredWidth += child.g2d_preferredWidth+gap;
         }
     }
 
@@ -35,13 +36,13 @@ class GUILayout {
     }
 
     private function calculateHeight(p_element:GUIElement):Void {
-        p_element.g2d_prefferedHeight = p_element.g2d_minHeight = 0;
+        p_element.g2d_preferredHeight = p_element.g2d_minHeight = 0;
 
         for (i in 0...p_element.g2d_numChildren) {
             var child:GUIElement = p_element.g2d_children[i];
             child.calculateHeight();
             p_element.g2d_minHeight = p_element.g2d_minHeight < child.g2d_minHeight ? child.g2d_minHeight : p_element.g2d_minHeight;
-            p_element.g2d_prefferedHeight = p_element.g2d_prefferedHeight < child.g2d_prefferedHeight ? child.g2d_prefferedHeight : p_element.g2d_prefferedHeight;
+            p_element.g2d_preferredHeight = p_element.g2d_preferredHeight < child.g2d_preferredHeight ? child.g2d_preferredHeight : p_element.g2d_preferredHeight;
         }
     }
 
@@ -52,7 +53,7 @@ class GUILayout {
             var child:GUIElement = p_element.g2d_children[i];
             child.g2d_worldTop = p_element.g2d_worldTop;
             child.g2d_worldBottom = child.g2d_worldTop + p_element.g2d_finalHeight;
-            child.g2d_finalWidth = p_element.g2d_finalHeight;
+            child.g2d_finalHeight = p_element.g2d_finalHeight;
 
             child.invalidateHeight();
         }

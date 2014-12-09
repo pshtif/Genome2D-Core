@@ -19,36 +19,18 @@ class GTransform extends GComponent
 {
     static private var g2d_cachedMatrix:GMatrix;
 
-    override private function initDefault():Void {
-        g2d_matrixDirty = true;
-        g2d_transformDirty = false;
-        g2d_colorDirty = false;
+    private var g2d_matrixDirty:Bool = true;
+	private var g2d_transformDirty:Bool = false;
+	private var g2d_colorDirty:Bool = false;
 
-        useWorldSpace = false;
-        useWorldColor = false;
-
-        visible = true;
-
-        g2d_worldRotation = g2d_localRotation = 0;
-        g2d_localUseMatrix = 0;
-        g2d_worldX = g2d_localX = g2d_worldY = g2d_localY = 0;
-        g2d_worldScaleX = g2d_localScaleX = g2d_worldScaleY = g2d_localScaleY = 1;
-        g2d_worldAlpha = g2d_localAlpha = g2d_worldRed = g2d_localRed = g2d_worldGreen = g2d_localGreen = g2d_worldBlue = g2d_localBlue = 1;
-
-    }
-
-    private var g2d_matrixDirty:Bool;
-	private var g2d_transformDirty:Bool;
-	private var g2d_colorDirty:Bool;
-
-    @prototype public var useWorldSpace:Bool;
-    @prototype public var useWorldColor:Bool;
+    @prototype public var useWorldSpace:Bool = false;
+    @prototype public var useWorldColor:Bool = false;
 	
-	public var visible:Bool;
+	public var visible:Bool = true;
 
     @:dox(hide)
-	public var g2d_worldX:Float;
-	private var g2d_localX:Float;
+	public var g2d_worldX:Float = 0;
+	private var g2d_localX:Float = 0;
 	#if swc @:extern #end
 	@prototype public var x(get, set):Float;
 	#if swc @:getter(x) #end
@@ -62,8 +44,8 @@ class GTransform extends GComponent
 	}
 
     @:dox(hide)
-	public var g2d_worldY:Float;
-	private var g2d_localY:Float;
+	public var g2d_worldY:Float = 0;
+	private var g2d_localY:Float = 0;
 	#if swc @:extern #end
 	@prototype public var y(get, set):Float;
 	#if swc @:getter(y) #end
@@ -79,7 +61,7 @@ class GTransform extends GComponent
     inline public function hasUniformRotation():Bool {
         return (g2d_localScaleX != g2d_localScaleY && g2d_localRotation != 0);
     }
-    private var g2d_localUseMatrix:Int;
+    private var g2d_localUseMatrix:Int = 0;
 
     private var g2d_useMatrix(get, set):Int;
     inline private function get_g2d_useMatrix():Int {
@@ -92,8 +74,8 @@ class GTransform extends GComponent
     }
 
     @:dox(hide)
-	public var g2d_worldScaleX:Float;
-	private var g2d_localScaleX:Float;
+	public var g2d_worldScaleX:Float = 1;
+	private var g2d_localScaleX:Float = 1;
 	#if swc @:extern #end
 	@prototype public var scaleX(get, set):Float;
 	#if swc @:getter(scaleX) #end
@@ -110,8 +92,8 @@ class GTransform extends GComponent
 	}
 
     @:dox(hide)
-	public var g2d_worldScaleY:Float;
-	private var g2d_localScaleY:Float;
+	public var g2d_worldScaleY:Float = 1;
+	private var g2d_localScaleY:Float = 1;
 	#if swc @:extern #end
 	@prototype public var scaleY(get, set):Float;
 	#if swc @:getter(scaleY) #end
@@ -128,8 +110,8 @@ class GTransform extends GComponent
 	}
 
     @:dox(hide)
-	public var g2d_worldRotation:Float;
-	private var g2d_localRotation:Float;
+	public var g2d_worldRotation:Float = 0;
+	private var g2d_localRotation:Float = 0;
 	#if swc @:extern #end
 	@prototype public var rotation(get, set):Float;
 	#if swc @:getter(rotation) #end
@@ -146,8 +128,8 @@ class GTransform extends GComponent
 	}
 
     @:dox(hide)
-	public var g2d_worldRed:Float;
-	private var g2d_localRed:Float;
+	public var g2d_worldRed:Float = 1;
+	private var g2d_localRed:Float = 1;
 	#if swc @:extern #end
 	public var red(get, set):Float;
 	#if swc @:getter(red) #end
@@ -161,8 +143,8 @@ class GTransform extends GComponent
 	}
 
     @:dox(hide)
-	public var g2d_worldGreen:Float;
-	private var g2d_localGreen:Float;
+	public var g2d_worldGreen:Float = 1;
+	private var g2d_localGreen:Float = 1;
 	#if swc @:extern #end
 	public var green(get, set):Float;
 	#if swc @:getter(green) #end
@@ -176,8 +158,8 @@ class GTransform extends GComponent
 	}
 
     @:dox(hide)
-	public var g2d_worldBlue:Float;
-	private var g2d_localBlue:Float;
+	public var g2d_worldBlue:Float = 1;
+	private var g2d_localBlue:Float = 1;
 	#if swc @:extern #end
 	public var blue(get, set):Float;
 	#if swc @:getter(blue) #end
@@ -191,8 +173,8 @@ class GTransform extends GComponent
 	}
 
     @:dox(hide)
-	public var g2d_worldAlpha:Float;
-	private var g2d_localAlpha:Float;
+	public var g2d_worldAlpha:Float = 1;
+	private var g2d_localAlpha:Float = 1;
 	#if swc @:extern #end
 	@prototype public var alpha(get, set):Float;
 	#if swc @:getter(alpha) #end

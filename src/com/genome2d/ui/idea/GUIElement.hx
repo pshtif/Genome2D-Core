@@ -1,21 +1,19 @@
 package com.genome2d.ui.idea;
 
 import com.genome2d.ui.idea.GUIElement;
-import com.genome2d.prototype.GPrototypeFactory;
-import com.genome2d.prototype.IGPrototypable;
-import com.genome2d.ui.controls.GUILabel;
-import com.genome2d.ui.utils.GUILayoutType;
+import com.genome2d.proto.GPrototypeFactory;
+import com.genome2d.proto.IGPrototypable;
 import com.genome2d.ui.skin.GUISkin;
 
 @:access(com.genome2d.ui.idea.GUILayout)
 @prototypeName("element")
 class GUIElement implements IGPrototypable {
-    public var name:String;
+    public var name:String = "UIElement";
     public var mouseEnabled:Bool;
 
     private var g2d_layout:GUILayout;
     #if swc @:extern #end
-    public var layout(get, set):GUILayout;
+    @prototype public var layout(get, set):GUILayout;
     #if swc @:getter(layout) #end
     inline private function get_layout():GUILayout {
         return g2d_layout;
@@ -27,29 +25,42 @@ class GUIElement implements IGPrototypable {
         return g2d_layout;
     }
 
-
     private var g2d_activeSkin:GUISkin;
+
     #if swc @:extern #end
-    public var skin(get, set):GUISkin;
-    #if swc @:getter(skin) #end
-    inline private function get_skin():GUISkin {
-        return g2d_skin;
+    @prototype public var normalSkinId(get, set):String;
+    #if swc @:getter(normalSkinId) #end
+    inline private function get_normalSkinId():String {
+        return (g2d_normalSkin != null) ? g2d_normalSkin.id : "";
     }
-    #if swc @:setter(skin) #end
-    inline private function set_skin(p_value:GUISkin):GUISkin {
-        g2d_skin = p_value;
+    #if swc @:setter(normalSkinId) #end
+    inline private function set_normalSkinId(p_value:String):String {
+        normalSkin = GUISkinManager.getSkinById(p_value);
+        return normalSkinId;
+    }
+
+    private var g2d_normalSkin:GUISkin;
+    #if swc @:extern #end
+    public var normalSkin(get, set):GUISkin;
+    #if swc @:getter(normalSkin) #end
+    inline private function get_normalSkin():GUISkin {
+        return g2d_normalSkin;
+    }
+    #if swc @:setter(normalSkin) #end
+    inline private function set_normalSkin(p_value:GUISkin):GUISkin {
+        g2d_normalSkin = p_value;
+        g2d_activeSkin = g2d_normalSkin;
         setDirty();
-        return g2d_skin;
+        return g2d_normalSkin;
     }
 
-
-    private var g2d_dirty:Bool;
+    private var g2d_dirty:Bool = true;
     private function setDirty():Void {
         g2d_dirty = true;
         if (g2d_parent != null) g2d_parent.setDirty();
     }
 
-    private var g2d_anchorX:Float;
+    private var g2d_anchorX:Float = 0;
     #if swc @:extern #end
     @prototype public var anchorX(get, set):Float;
     #if swc @:getter(anchorX) #end
@@ -63,7 +74,7 @@ class GUIElement implements IGPrototypable {
         return g2d_anchorX;
     }
 
-    private var g2d_anchorY:Float;
+    private var g2d_anchorY:Float = 0;
     #if swc @:extern #end
     @prototype public var anchorY(get, set):Float;
     #if swc @:getter(anchorY) #end
@@ -77,7 +88,7 @@ class GUIElement implements IGPrototypable {
         return g2d_anchorY;
     }
 
-    private var g2d_anchorLeft:Float;
+    private var g2d_anchorLeft:Float = .5;
     #if swc @:extern #end
     @prototype public var anchorLeft(get, set):Float;
     #if swc @:getter(anchorLeft) #end
@@ -91,7 +102,7 @@ class GUIElement implements IGPrototypable {
         return g2d_anchorLeft;
     }
 
-    private var g2d_anchorTop:Float;
+    private var g2d_anchorTop:Float = .5;
     #if swc @:extern #end
     @prototype public var anchorTop(get, set):Float;
     #if swc @:getter(anchorTop) #end
@@ -105,7 +116,7 @@ class GUIElement implements IGPrototypable {
         return g2d_anchorTop;
     }
 
-    private var g2d_anchorRight:Float;
+    private var g2d_anchorRight:Float = .5;
     #if swc @:extern #end
     @prototype public var anchorRight(get, set):Float;
     #if swc @:getter(anchorRight) #end
@@ -119,7 +130,7 @@ class GUIElement implements IGPrototypable {
         return g2d_anchorRight;
     }
 
-    private var g2d_anchorBottom:Float;
+    private var g2d_anchorBottom:Float = .5;
     #if swc @:extern #end
     @prototype public var anchorBottom(get, set):Float;
     #if swc @:getter(anchorBottom) #end
@@ -133,7 +144,7 @@ class GUIElement implements IGPrototypable {
         return g2d_anchorBottom;
     }
 
-    private var g2d_left:Float;
+    private var g2d_left:Float = 0;
     #if swc @:extern #end
     @prototype public var left(get, set):Float;
     #if swc @:getter(left) #end
@@ -147,7 +158,7 @@ class GUIElement implements IGPrototypable {
         return g2d_left;
     }
 
-    private var g2d_top:Float;
+    private var g2d_top:Float = 0;
     #if swc @:extern #end
     @prototype public var top(get, set):Float;
     #if swc @:getter(top) #end
@@ -161,7 +172,7 @@ class GUIElement implements IGPrototypable {
         return g2d_top;
     }
 
-    private var g2d_right:Float;
+    private var g2d_right:Float = 0;
     #if swc @:extern #end
     @prototype public var right(get, set):Float;
     #if swc @:getter(right) #end
@@ -175,7 +186,7 @@ class GUIElement implements IGPrototypable {
         return g2d_right;
     }
 
-    public var g2d_bottom:Float;
+    public var g2d_bottom:Float = 0;
     #if swc @:extern #end
     @prototype public var bottom(get, set):Float;
     #if swc @:getter(bottom) #end
@@ -189,7 +200,7 @@ class GUIElement implements IGPrototypable {
         return g2d_bottom;
     }
 
-    public var g2d_pivotX:Float;
+    public var g2d_pivotX:Float = .5;
     #if swc @:extern #end
     @prototype public var pivotX(get, set):Float;
     #if swc @:getter(pivotX) #end
@@ -203,7 +214,7 @@ class GUIElement implements IGPrototypable {
         return g2d_pivotX;
     }
 
-    public var g2d_pivotY:Float;
+    public var g2d_pivotY:Float = .5;
     #if swc @:extern #end
     @prototype public var pivotY(get, set):Float;
     #if swc @:getter(pivotY) #end
@@ -222,147 +233,218 @@ class GUIElement implements IGPrototypable {
     public var g2d_worldRight:Float;
     public var g2d_worldBottom:Float;
 
-    private var g2d_minWidth:Float;
-    private var g2d_prefferedWidth:Float;
-    private var g2d_variableWidth:Float;
-    private var g2d_finalWidth:Float;
+    private var g2d_minWidth:Float = 0;
+    private var g2d_variableWidth:Float = 0;
+    public var g2d_finalWidth:Float = 0;
 
-    private var g2d_minHeight:Float;
-    private var g2d_prefferedHeight:Float;
-    private var g2d_variableHeight:Float;
-    private var g2d_finalHeight:Float;
+    private var g2d_preferredWidth:Float = 0;
+    #if swc @:extern #end
+    @prototype public var preferredWidth(get, set):Float;
+    #if swc @:getter(preferredWidth) #end
+    inline private function get_preferredWidth():Float {
+        return g2d_preferredWidth;
+    }
+    #if swc @:setter(preferredWidth) #end
+    inline private function set_preferredWidth(p_value:Float):Float {
+        g2d_preferredWidth = p_value;
+        setDirty();
+        return g2d_preferredWidth;
+    }
+
+    private var g2d_minHeight:Float = 0;
+    private var g2d_variableHeight:Float = 0;
+    public var g2d_finalHeight:Float = 0;
+
+    private var g2d_preferredHeight:Float = 0;
+    #if swc @:extern #end
+    @prototype public var preferredHeight(get, set):Float;
+    #if swc @:getter(preferredHeight) #end
+    inline private function get_preferredHeight():Float {
+        return g2d_preferredHeight;
+    }
+    #if swc @:setter(preferredHeight) #end
+    inline private function set_preferredHeight(p_value:Float):Float {
+        g2d_preferredHeight = p_value;
+        setDirty();
+        return g2d_preferredHeight;
+    }
 
     private var g2d_parent:GUIElement;
+    #if swc @:extern #end
+    public var parent(get, never):GUIElement;
+    #if swc @:getter(parent) #end
+    inline private function get_parent():GUIElement {
+        return g2d_parent;
+    }
 
-    private var g2d_numChildren:Int;
+    private var g2d_numChildren:Int = 0;
     private var g2d_children:Array<GUIElement>;
+    #if swc @:extern #end
+    public var children(get, never):Array<GUIElement>;
+    #if swc @:getter(children) #end
+    inline private function get_children():Array<GUIElement> {
+        return g2d_children;
+    }
+
 
     public function new(p_skin:GUISkin = null) {
-        initDefault();
-        g2d_activeSkin = p_skin;
-        init();
+        normalSkin = p_skin;
     }
 
-    private function initDefault():Void {
-        g2d_numChildren = 0;
-        g2d_dirty = true;
-        g2d_anchorX = 0;
-        g2d_anchorY = 0;
-
-        g2d_anchorLeft = .5;
-        g2d_anchorTop = .5;
-        g2d_anchorRight = .5;
-        g2d_anchorBottom = .5;
-
-        g2d_left = 0;
-        g2d_top = 0;
-        g2d_right = 0;
-        g2d_bottom = 0;
-
-        g2d_pivotX = .5;
-        g2d_pivotY = .5;
-
-        g2d_minWidth = g2d_prefferedWidth = g2d_variableWidth = g2d_finalWidth = 0;
-        g2d_minHeight = g2d_prefferedHeight = g2d_variableHeight = g2d_finalHeight = 0;
+    public function isParent(p_element:GUIElement):Bool {
+        if (p_element == g2d_parent) return true;
+        if (g2d_parent == null) return false;
+        return g2d_parent.isParent(p_element);
     }
 
-    private function init():Void {
+    public function setRect(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Void {
+        var w:Float = p_right-p_left;
+        var h:Float = p_bottom-p_top;
+
+        var worldAnchorLeft:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorLeft;
+        var worldAnchorRight:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorRight;
+        var worldAnchorTop:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorTop;
+        var worldAnchorBottom:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorBottom;
+
+        if (g2d_anchorLeft != g2d_anchorRight) {
+        } else {
+            g2d_anchorX = p_left - worldAnchorLeft + w*g2d_pivotX;
+        }
+
+        if (g2d_anchorTop != g2d_anchorBottom) {
+        } else {
+            g2d_anchorY = p_top - worldAnchorTop + h*g2d_pivotY;
+        }
+
+        g2d_preferredWidth = w;
+        g2d_preferredHeight = h;
+
+        setDirty();
     }
 
     public function addChild(p_child:GUIElement):Void {
         if (p_child.g2d_parent == this) return;
         if (g2d_children == null) g2d_children = new Array<GUIElement>();
+        if (p_child.g2d_parent != null) p_child.g2d_parent.removeChild(p_child);
         g2d_children.push(p_child);
         g2d_numChildren++;
-        setDirty();
         p_child.g2d_parent = this;
+        setDirty();
     }
 
-    public function invalidate():Void {
-        calculateWidth();
-        invalidateWidth();
-        calculateHeight();
-        invalidateHeight();
+    public function addChildAt(p_child:GUIElement, p_index:Int):Void {
+        if (g2d_children == null) g2d_children = new Array<GUIElement>();
+        if (p_child.g2d_parent != null) p_child.g2d_parent.removeChild(p_child);
+        g2d_children.insert(p_index,p_child);
+        g2d_numChildren++;
+        p_child.g2d_parent = this;
+        setDirty();
+    }
+
+    public function removeChild(p_child:GUIElement):Void {
+        if (p_child.g2d_parent != this) return;
+        g2d_children.remove(p_child);
+        g2d_numChildren--;
+        p_child.g2d_parent = null;
+        setDirty();
+    }
+
+    public function getChildAt(p_index:Int):GUIElement {
+        return (p_index>=0 && p_index<g2d_numChildren) ? g2d_children[p_index] : null;
+    }
+
+    public function getChildIndex(p_child:GUIElement):Int {
+        return g2d_children.indexOf(p_child);
     }
 
     private function calculateWidth():Void {
-        if (g2d_layout != null) {
-            g2d_layout.calculateWidth(this);
-        } else {
-            g2d_prefferedWidth = g2d_minWidth = g2d_activeSkin != null ? g2d_activeSkin.getMinWidth() : 0;
+        if (g2d_dirty) {
+            if (g2d_layout != null) {
+                g2d_layout.calculateWidth(this);
+            } else {
+                g2d_minWidth = g2d_activeSkin != null ? g2d_activeSkin.getMinWidth() : 0;
 
-            for (i in 0...g2d_numChildren) {
-                g2d_children[i].calculateWidth();
+                for (i in 0...g2d_numChildren) {
+                    g2d_children[i].calculateWidth();
+                }
             }
         }
     }
 
     private function calculateHeight():Void {
-        if (g2d_layout != null) {
-            g2d_layout.calculateHeight(this);
-        } else {
-            g2d_prefferedHeight = g2d_minHeight = g2d_activeSkin != null ? g2d_activeSkin.getMinHeight() : 0;
+        if (g2d_dirty) {
+            if (g2d_layout != null) {
+                g2d_layout.calculateHeight(this);
+            } else {
+                g2d_minHeight = g2d_activeSkin != null ? g2d_activeSkin.getMinHeight() : 0;
 
-            for (i in 0...g2d_numChildren) {
-                g2d_children[i].calculateHeight();
+                for (i in 0...g2d_numChildren) {
+                    g2d_children[i].calculateHeight();
+                }
             }
         }
     }
 
     private function invalidateWidth():Void {
-        if (g2d_parent != null) {
-            if (g2d_parent.g2d_layout == null) {
-                var worldAnchorLeft:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorLeft;
-                var worldAnchorRight:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorRight;
-                if (g2d_anchorLeft != g2d_anchorRight) {
-                    g2d_worldLeft = worldAnchorLeft + g2d_left;
-                    g2d_worldRight = worldAnchorRight - g2d_right;
-                } else {
-                    g2d_worldLeft = worldAnchorLeft + g2d_anchorX - g2d_prefferedWidth * g2d_pivotX;
-                    g2d_worldRight = worldAnchorLeft + g2d_anchorX + g2d_prefferedWidth * (1 - g2d_pivotX);
+        if (g2d_dirty) {
+            if (g2d_parent != null) {
+                if (g2d_parent.g2d_layout == null) {
+                    var worldAnchorLeft:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorLeft;
+                    var worldAnchorRight:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorRight;
+                    var w:Float = (g2d_preferredWidth != 0) ? g2d_preferredWidth : g2d_minWidth;
+                    if (g2d_anchorLeft != g2d_anchorRight) {
+                        g2d_worldLeft = worldAnchorLeft + g2d_left;
+                        g2d_worldRight = worldAnchorRight - g2d_right;
+                    } else {
+                        g2d_worldLeft = worldAnchorLeft + g2d_anchorX - w * g2d_pivotX;
+                        g2d_worldRight = worldAnchorLeft + g2d_anchorX + w * (1 - g2d_pivotX);
+                    }
+                    g2d_finalWidth = g2d_worldRight - g2d_worldLeft;
                 }
-                g2d_finalWidth = g2d_worldRight - g2d_worldLeft;
-            }
 
-            if (g2d_layout != null) {
-                g2d_layout.invalidateWidth(this);
+                if (g2d_layout != null) {
+                    g2d_layout.invalidateWidth(this);
+                } else {
+                    for (i in 0...g2d_numChildren) {
+                        g2d_children[i].invalidateWidth();
+                    }
+                }
             } else {
                 for (i in 0...g2d_numChildren) {
                     g2d_children[i].invalidateWidth();
                 }
             }
-        } else {
-            for (i in 0...g2d_numChildren) {
-                g2d_children[i].invalidateWidth();
-            }
         }
     }
 
     private function invalidateHeight():Void {
-        if (g2d_parent != null) {
-            if (g2d_parent.g2d_layout == null) {
-                var worldAnchorTop:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorTop;
-                var worldAnchorBottom:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorBottom;
-                if (g2d_anchorTop != g2d_anchorBottom) {
-                    g2d_worldTop = worldAnchorTop + g2d_top;
-                    g2d_worldBottom = worldAnchorBottom - g2d_bottom;
-                } else {
-                    g2d_worldTop = worldAnchorTop + g2d_anchorY - g2d_prefferedHeight * g2d_pivotY;
-                    g2d_worldBottom = worldAnchorTop + g2d_anchorY + g2d_prefferedHeight * (1 - g2d_pivotY);
+        if (g2d_dirty) {
+            if (g2d_parent != null) {
+                if (g2d_parent.g2d_layout == null) {
+                    var worldAnchorTop:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorTop;
+                    var worldAnchorBottom:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorBottom;
+                    var h:Float = (g2d_preferredHeight != 0) ? g2d_preferredHeight : g2d_minHeight;
+                    if (g2d_anchorTop != g2d_anchorBottom) {
+                        g2d_worldTop = worldAnchorTop + g2d_top;
+                        g2d_worldBottom = worldAnchorBottom - g2d_bottom;
+                    } else {
+                        g2d_worldTop = worldAnchorTop + g2d_anchorY - h * g2d_pivotY;
+                        g2d_worldBottom = worldAnchorTop + g2d_anchorY + h * (1 - g2d_pivotY);
+                    }
+                    g2d_finalHeight = g2d_worldBottom - g2d_worldTop;
                 }
-                g2d_finalHeight = g2d_worldBottom - g2d_worldTop;
-            }
 
-            if (g2d_layout != null) {
-                g2d_layout.invalidateHeight(this);
+                if (g2d_layout != null) {
+                    g2d_layout.invalidateHeight(this);
+                } else {
+                    for (i in 0...g2d_numChildren) {
+                        g2d_children[i].invalidateHeight();
+                    }
+                }
             } else {
                 for (i in 0...g2d_numChildren) {
                     g2d_children[i].invalidateHeight();
                 }
-            }
-        } else {
-            for (i in 0...g2d_numChildren) {
-                g2d_children[i].invalidateHeight();
             }
         }
     }
@@ -375,7 +457,7 @@ class GUIElement implements IGPrototypable {
         }
     }
 
-    public function getPrototype():Xml {
+    public function getPrototype(p_xml:Xml = null):Xml {
         var xml:Xml = getPrototypeDefault();
         for (i in 0...g2d_numChildren) {
             xml.addChild(g2d_children[i].getPrototype());
@@ -383,8 +465,8 @@ class GUIElement implements IGPrototypable {
         return xml;
     }
 
-    public function initPrototype(p_prototypeXml:Xml, p_initDefault:Bool = false):Void {
-        if (p_initDefault) initDefault();
+    public function initPrototype(p_prototypeXml:Xml):Void {
+        initPrototypeDefault(p_prototypeXml);
 
         var it:Iterator<Xml> = p_prototypeXml.elementsNamed("element");
         while (it.hasNext()) {
@@ -392,7 +474,5 @@ class GUIElement implements IGPrototypable {
             var element:GUIElement = cast GPrototypeFactory.createPrototype(xml);
             addChild(element);
         }
-
-        initPrototypeDefault(p_prototypeXml);
     }
 }
