@@ -14,114 +14,101 @@ import msignal.Signal.Signal1;
 class GAssetManager {
     static public var PATH_REGEX:EReg = ~/([^\?\/\\]+?)(?:\.([\w\-]+))?(?:\?.*)?$/;
 
-    public var ignoreFailed:Bool = false;
+    static public var ignoreFailed:Bool = false;
 
-    private var g2d_assetsQueue:Array<GAsset>;
-    private var g2d_loading:Bool;
-    private var g2d_assets:Array<GAsset>;
+    static private var g2d_references:Map<String,GAsset>;
+    static private var g2d_assetsQueue:Array<GAsset>;
+    static private var g2d_loading:Bool;
 
-    private var g2d_onFailed:Signal1<GAsset>;
+    static private var g2d_onFailed:Signal1<GAsset>;
     #if swc @:extern #end
-    public var onFailed(get,never):Signal1<GAsset>;
+    static public var onFailed(get,never):Signal1<GAsset>;
     #if swc @:getter(onFailed) #end
-    inline private function get_onFailed():Signal1<GAsset> {
+    inline static private function get_onFailed():Signal1<GAsset> {
         return g2d_onFailed;
     }
 
-    private var g2d_onAllLoaded:Signal0;
+    static private var g2d_onLoaded:Signal0;
     #if swc @:extern #end
-    public var onAllLoaded(get,never):Signal0;
-    #if swc @:getter(onAllLoaded) #end
-    inline private function get_onAllLoaded():Signal0 {
-        return g2d_onAllLoaded;
+    static public var onLoaded(get,never):Signal0;
+    #if swc @:getter(onLoaded) #end
+    inline static private function get_onLoaded():Signal0 {
+        return g2d_onLoaded;
     }
 
-    public function new() {
+    static public function init() {
         g2d_assetsQueue = new Array<GAsset>();
-        g2d_assets = new Array<GAsset>();
+        g2d_references = new Map<String,GAsset>();
 
-        g2d_onAllLoaded = new Signal0();
+        g2d_onLoaded = new Signal0();
         g2d_onFailed = new Signal1(GAsset);
     }
 
-    public function getAssetById(p_id:String):GAsset {
-        for (i in 0...g2d_assets.length) {
-            var asset:GAsset = g2d_assets[i];
-            if (asset.id == p_id) return asset;
-        }
-        return null;
+    static public function getAssets():Map<String,GAsset> {
+        return g2d_references;
     }
 
-    public function getXmlAssetById(p_id:String):GXmlAsset {
-        var asset:GAsset = getAssetById(p_id);
-        if (Std.is(asset, GXmlAsset)) return cast asset;
-        return null;
+    static public function getAssetById(p_id:String):GAsset {
+        return g2d_references.get(p_id);
     }
 
-    public function getImageAssetById(p_id:String):GImageAsset {
-        var asset:GAsset = getAssetById(p_id);
-        if (Std.is(asset, GImageAsset)) return cast asset;
-        return null;
+    static public function getXmlAssetById(p_id:String):GXmlAsset {
+        return cast g2d_references.get(p_id);
     }
 
-    public function add(p_asset:GAsset):Void {
-        if (p_asset.isLoaded()) {
-            g2d_assets.push(p_asset);
-        } else {
-            g2d_assetsQueue.push(p_asset);
-        }
+    static public function getImageAssetById(p_id:String):GImageAsset {
+        return cast g2d_references.get(p_id);
     }
 
-    public function addUrl(p_id:String, p_url:String):Void {
-        var asset:GAsset = null;
-
+    static public function createAssetFromUrl(p_url:String, p_id:String = ""):GAsset {
         switch (getExtension(p_url)) {
             case "jpg" | "jpeg" | "png":
-                asset = new GImageAsset();
+                return new GImageAsset(p_url, p_id);
             case "atf":
-                asset = new GImageAsset();
+                return new GImageAsset(p_url, p_id);
             case "xml" | "fnt":
-                asset = new GXmlAsset();
+                return new GXmlAsset(p_url, p_id);
         }
 
-        if (asset != null) asset.initUrl(p_id, p_url);
-        add(asset);
+        return null;
     }
 
-    public function load():Void {
+    static public function load():Void {
         if (g2d_loading) return;
+        for (asset in g2d_references) {
+            if (!asset.isLoaded()) g2d_assetsQueue.push(asset);
+        }
         g2d_loadNext();
     }
 
-    private function g2d_loadNext():Void {
+    static private function g2d_loadNext():Void {
         if (g2d_assetsQueue.length==0) {
             g2d_loading = false;
-            g2d_onAllLoaded.dispatch();
+            g2d_onLoaded.dispatch();
         } else {
             g2d_loading = true;
             var asset:GAsset = g2d_assetsQueue.shift();
-            asset.onLoaded.addOnce(g2d_hasAssetLoaded);
-            asset.onFailed.addOnce(g2d_hasAssetFailed);
+            asset.onLoaded.addOnce(g2d_assetLoadedHandler);
+            asset.onFailed.addOnce(g2d_assetFailedHandler);
             asset.load();
         }
     }
 
-    inline private function getName(p_path:String):String {
+    inline static private function getName(p_path:String):String {
         PATH_REGEX.match(p_path);
         return PATH_REGEX.matched(1);
     }
 
-    inline private function getExtension(p_path:String):String {
+    inline static private function getExtension(p_path:String):String {
         PATH_REGEX.match(p_path);
         return PATH_REGEX.matched(2);
     }
 
-    private function g2d_hasAssetLoaded(p_asset:GAsset):Void {
-        g2d_assets.push(p_asset);
+    private static function g2d_assetLoadedHandler(p_asset:GAsset):Void {
         g2d_loadNext();
     }
 
-    private function g2d_hasAssetFailed(p_asset:GAsset):Void {
+    private static function g2d_assetFailedHandler(p_asset:GAsset):Void {
         g2d_onFailed.dispatch(p_asset);
         if (ignoreFailed) g2d_loadNext();
     }
