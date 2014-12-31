@@ -12,11 +12,11 @@ class GTextureTextRenderer extends GTextRenderer {
     #if swc @:extern #end
     public var textureAtlas(get, set):GTextureFontAtlas;
     #if swc @:getter(textureAtlas) #end
-    public function get_textureAtlas():GTextureFontAtlas{
+    inline private function get_textureAtlas():GTextureFontAtlas{
         return g2d_textureAtlas;
     }
     #if swc @:setter(textureAtlas) #end
-    public function set_textureAtlas(p_textureAtlas:GTextureFontAtlas):GTextureFontAtlas {
+    inline private function set_textureAtlas(p_textureAtlas:GTextureFontAtlas):GTextureFontAtlas {
         g2d_textureAtlas = p_textureAtlas;
         g2d_dirty = true;
         return g2d_textureAtlas;
@@ -29,8 +29,7 @@ class GTextureTextRenderer extends GTextRenderer {
     @prototype public var textureAtlasId(get, set):String;
     #if swc @:getter(textureAtlasId) #end
     inline private function get_textureAtlasId():String {
-        if (g2d_textureAtlas != null) return g2d_textureAtlas.id;
-        return "";
+        return (g2d_textureAtlas != null) ? g2d_textureAtlas.id : "";
     }
     #if swc @:setter(textureAtlasId) #end
     inline private function set_textureAtlasId(p_value:String):String {
@@ -53,6 +52,7 @@ class GTextureTextRenderer extends GTextRenderer {
         }
 
         for (i in 0...charCount) {
+
             var char:GTextureChar = g2d_chars[i];
             if (!char.g2d_visible) break;
 

@@ -32,14 +32,14 @@ class GTextureFontAtlas extends GTextureAtlas
         return texture;
     }
 
-    public function getKerning(p_first:Int, p_second:Int):Int {
+    public function getKerning(p_first:Int, p_second:Int):Float {
         if (g2d_kerning != null) {
             var map:Map<Int,Int> = g2d_kerning.get(p_first);
             if (map != null) {
                 if (!map.exists(p_second)) {
                     return 0;
                 } else {
-                    return map.get(p_second);
+                    return map.get(p_second)*scaleFactor;
                 }
             }
         }

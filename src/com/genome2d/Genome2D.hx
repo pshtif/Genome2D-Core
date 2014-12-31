@@ -30,7 +30,7 @@ class Genome2D
     /**
         Genome2D Version
     **/
-	inline static public var VERSION:String = "1.0.279";
+	inline static public var VERSION:String = "1.1.293";
 
 	static private var g2d_instance:Genome2D;
 	static private var g2d_instantiable:Bool = false;
@@ -271,7 +271,7 @@ class Genome2D
             }
 
             if (onPostRender.numListeners>0) {
-                g2d_context.setCamera(g2d_context.getDefaultCamera());
+                g2d_context.setActiveCamera(g2d_context.getDefaultCamera());
                 g2d_context.setRenderTarget(null);
                 onPostRender.dispatch();
             }

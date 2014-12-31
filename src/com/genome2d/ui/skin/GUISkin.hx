@@ -10,9 +10,9 @@ import com.genome2d.error.GError;
 
 @:access(com.genome2d.ui.GUISkinManager)
 class GUISkin implements IGPrototypable {
-    public var type:Float;
-
     @prototype public var scale:Float = 1.0;
+
+    private var g2d_type:Int;
 
     private var g2d_id:String;
     #if swc @:extern #end

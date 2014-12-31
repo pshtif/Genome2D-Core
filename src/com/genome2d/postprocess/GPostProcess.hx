@@ -97,7 +97,7 @@ class GPostProcess {
 
         if (p_target == null) {
             GRenderTargetStack.popRenderTarget(context);
-            if (context.getRenderTarget()==null) context.setCamera(p_camera);
+            if (context.getRenderTarget()==null) context.setActiveCamera(p_camera);
             context.draw(g2d_passTextures[g2d_passes-1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
         } else {
             context.setRenderTarget(p_target);

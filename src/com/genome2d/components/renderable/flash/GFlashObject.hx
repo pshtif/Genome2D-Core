@@ -137,7 +137,7 @@ class GFlashObject extends GTexturedQuad {
 
         if (texture == null || texture.gpuWidth != GTextureUtils.getNextValidTextureSize(g2d_lastNativeWidth) || texture.gpuHeight != GTextureUtils.getNearestValidTextureSize(g2d_lastNativeHeight)) {
             if(texture != null) texture.dispose();
-            texture = GTextureManager.createFromBitmapData(g2d_textureId, bitmapData);
+            texture = GTextureManager.createTextureFromBitmapData(g2d_textureId, bitmapData);
         } else {
             //texture.g2d_bitmapData = bitmapData;
             //texture.setRegion(bitmapData.rect);
