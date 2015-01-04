@@ -8,6 +8,7 @@
  */
 package com.genome2d;
 
+import com.genome2d.assets.GAssetManager;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.signals.GKeyboardSignal;
@@ -207,6 +208,7 @@ class Genome2D
     **/
 	public function init(p_config:GContextConfig):Void {
         GPrototypeFactory.initializePrototypes();
+        GAssetManager.init();
 
         // Initialize root
         if (g2d_root != null) g2d_root.dispose();
