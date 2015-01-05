@@ -92,7 +92,7 @@ class GHDRPP extends GPostProcess
         var context:IContext = Genome2D.getInstance().getContext();
 
         context.setRenderTarget(null);
-        context.setCamera(p_camera);
+        context.setActiveCamera(p_camera);
         context.draw(g2d_passTextures[1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_HDRPassFilter);
     }
 

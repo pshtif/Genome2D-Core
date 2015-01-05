@@ -1,5 +1,6 @@
 package com.genome2d.ui.idea;
 
+import com.genome2d.ui.skin.GUISkinType;
 import com.genome2d.ui.idea.GUIElement;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
@@ -301,19 +302,28 @@ class GUIElement implements IGPrototypable {
         var w:Float = p_right-p_left;
         var h:Float = p_bottom-p_top;
 
-        var worldAnchorLeft:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorLeft;
-        var worldAnchorRight:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorRight;
-        var worldAnchorTop:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorTop;
-        var worldAnchorBottom:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorBottom;
+        if (g2d_parent != null) {
+            var worldAnchorLeft:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorLeft;
+            var worldAnchorRight:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorRight;
+            var worldAnchorTop:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorTop;
+            var worldAnchorBottom:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorBottom;
 
-        if (g2d_anchorLeft != g2d_anchorRight) {
-        } else {
-            g2d_anchorX = p_left - worldAnchorLeft + w*g2d_pivotX;
-        }
+            if (g2d_anchorLeft != g2d_anchorRight) {
+            } else {
+                g2d_anchorX = p_left - worldAnchorLeft + w*g2d_pivotX;
+            }
 
-        if (g2d_anchorTop != g2d_anchorBottom) {
+            if (g2d_anchorTop != g2d_anchorBottom) {
+            } else {
+                g2d_anchorY = p_top - worldAnchorTop + h*g2d_pivotY;
+            }
         } else {
-            g2d_anchorY = p_top - worldAnchorTop + h*g2d_pivotY;
+            g2d_worldLeft = p_left;
+            g2d_worldTop = p_top;
+            g2d_worldRight = p_right;
+            g2d_worldBottom = p_bottom;
+            g2d_finalWidth = w;
+            g2d_finalHeight = h;
         }
 
         g2d_preferredWidth = w;
@@ -474,5 +484,16 @@ class GUIElement implements IGPrototypable {
             var element:GUIElement = cast GPrototypeFactory.createPrototype(xml);
             addChild(element);
         }
+    }
+
+    public function disposeChildren():Void {
+        for (i in 0...g2d_numChildren) {
+            g2d_children[i].dispose();
+        }
+    }
+
+    public function dispose():Void {
+        setDirty();
+        if (g2d_parent != null) g2d_parent.removeChild(this);
     }
 }

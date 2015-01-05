@@ -4,8 +4,8 @@ import com.genome2d.textures.GContextTexture;
 import com.genome2d.context.IContext;
 import com.genome2d.textures.GTexture;
 
-@prototypeName("skin1")
-class GUI1SliceSkin extends GUISkin {
+@prototypeName("textureSkin")
+class GUITextureSkin extends GUISkin {
     public var texture:GTexture;
 
     #if swc @:extern #end
@@ -18,26 +18,20 @@ class GUI1SliceSkin extends GUISkin {
     inline private function set_textureId(p_value:String):String {
         texture = GTextureManager.getTextureById(p_value);
 
-        if (texture != null) {
-            texture.pivotX = -texture.width/2;
-            texture.pivotY = -texture.height/2;
-        }
-
         return p_value;
     }
 
     override public function getMinWidth():Float {
-        return texture.width;
+        return (texture != null) ? texture.width : 0;
     }
 
     override public function getMinHeight():Float {
-        return texture.height;
+        return (texture != null) ? texture.height : 0;
     }
 
     public function new(p_id:String = "", p_textureId:String = "") {
         super(p_id);
 
-        type = GUISkinType.SLICE1;
         textureId = p_textureId;
     }
 
@@ -45,10 +39,12 @@ class GUI1SliceSkin extends GUISkin {
         var context:IContext = Genome2D.getInstance().getContext();
         var width:Float = p_right - p_left;
         var height:Float = p_bottom - p_top;
-        var x:Float = p_left + .5*texture.width + texture.pivotX;
-        var y:Float = p_top + .5*texture.height + texture.pivotY;
+        var scaleX:Float = width/texture.width;
+        var scaleY:Float = height/texture.height;
+        var x:Float = p_left + (.5*texture.width + texture.pivotX)*scaleX;
+        var y:Float = p_top + (.5*texture.height + texture.pivotY)*scaleY;
 
-        context.draw(texture, x, y, width/texture.width, height/texture.height, 0, 1, 1, 1, 1, 1, null);
+        context.draw(texture, x, y, scaleX, scaleY, 0, 1, 1, 1, 1, 1, null);
     }
 
     override public function getTexture():GContextTexture {

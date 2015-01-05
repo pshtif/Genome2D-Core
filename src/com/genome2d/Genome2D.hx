@@ -8,6 +8,7 @@
  */
 package com.genome2d;
 
+import com.genome2d.assets.GAssetManager;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.signals.GKeyboardSignal;
@@ -30,7 +31,7 @@ class Genome2D
     /**
         Genome2D Version
     **/
-	inline static public var VERSION:String = "1.0.279";
+	inline static public var VERSION:String = "1.1.293";
 
 	static private var g2d_instance:Genome2D;
 	static private var g2d_instantiable:Bool = false;
@@ -207,6 +208,7 @@ class Genome2D
     **/
 	public function init(p_config:GContextConfig):Void {
         GPrototypeFactory.initializePrototypes();
+        GAssetManager.init();
 
         // Initialize root
         if (g2d_root != null) g2d_root.dispose();
@@ -271,7 +273,7 @@ class Genome2D
             }
 
             if (onPostRender.numListeners>0) {
-                g2d_context.setCamera(g2d_context.getDefaultCamera());
+                g2d_context.setActiveCamera(g2d_context.getDefaultCamera());
                 g2d_context.setRenderTarget(null);
                 onPostRender.dispatch();
             }

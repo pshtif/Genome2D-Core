@@ -8,6 +8,8 @@
  */
 package com.genome2d.textures;
 
+import com.genome2d.assets.GAssetManager;
+import com.genome2d.assets.GImageAsset;
 import com.genome2d.context.GContextFeature;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
@@ -69,8 +71,8 @@ class GTexture extends GContextTexture
             g2d_uScale = g2d_region.width / g2d_sourceAtlas.gpuWidth;
             g2d_vScale = g2d_region.height / g2d_sourceAtlas.gpuHeight;
         } else {
-            g2d_uScale = g2d_region.width / g2d_gpuWidth;
-            g2d_vScale = g2d_region.height / g2d_gpuHeight;
+            g2d_uScale = g2d_width / g2d_gpuWidth;
+            g2d_vScale = g2d_height / g2d_gpuHeight;
         }
     }
 

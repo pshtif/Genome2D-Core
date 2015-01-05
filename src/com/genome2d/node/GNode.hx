@@ -1053,6 +1053,89 @@ class GNode
         }
     }
 
+    public function sortChildrenOnY(p_ascending:Bool = true):Void {
+        if (g2d_firstChild == null) return;
+
+        var insize:Int = 1;
+        var psize:Int;
+        var qsize:Int;
+        var nmerges:Int;
+        var p:GNode;
+        var q:GNode;
+        var e:GNode;
+
+        while (true) {
+            p = g2d_firstChild;
+            g2d_firstChild = null;
+            g2d_lastChild = null;
+
+            nmerges = 0;
+
+            while (p != null) {
+                nmerges++;
+                q = p;
+                psize = 0;
+                for (i in 0...insize) {
+                    psize++;
+                    q = q.g2d_nextNode;
+                    if (q == null) break;
+                }
+
+                qsize = insize;
+
+                while (psize > 0 || (qsize > 0 && q != null)) {
+                    if (psize == 0) {
+                        e = q;
+                        q = q.g2d_nextNode;
+                        qsize--;
+                    } else if (qsize == 0 || q == null) {
+                        e = p;
+                        p = p.g2d_nextNode;
+                        psize--;
+                    } else if (p_ascending) {
+                        if (p.transform.y >= q.transform.y) {
+                            e = p;
+                            p = p.g2d_nextNode;
+                            psize--;
+                        } else {
+                            e = q;
+                            q = q.g2d_nextNode;
+                            qsize--;
+                        }
+                    } else {
+                        if (p.transform.y <= q.transform.y) {
+                            e = p;
+                            p = p.g2d_nextNode;
+                            psize--;
+                        } else {
+                            e = q;
+                            q = q.g2d_nextNode;
+                            qsize--;
+                        }
+                    }
+
+                    if (g2d_lastChild != null) {
+                        g2d_lastChild.g2d_nextNode = e;
+                    } else {
+                        g2d_firstChild = e;
+                    }
+
+                    e.g2d_previousNode = g2d_lastChild;
+
+                    g2d_lastChild = e;
+                }
+
+                p = q;
+            }
+
+            g2d_lastChild.g2d_nextNode = null;
+
+            if (nmerges <= 1) return;
+
+            insize *= 2;
+        }
+    }
+
     public function toString():String {
         return "[GNode "+name+"]";
     }

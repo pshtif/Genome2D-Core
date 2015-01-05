@@ -1,10 +1,15 @@
 Genome2D Changelog
 ===================
 
-WIP
+FIXES within 1.1 alpha phase
+--------------------------
+1.1.294
+- FIXED GStats now working
+- FIXED default variables within framework now initialized correctly, for example renderables blendmode now default NORMAL instead of NONE as expection
+
+version 1.1.293 - 2014-1-1
 --------------------------
 - CHECK hierarchical AABB masking for nonconsecutively masked hierarchy
-
 - CHANGED GTileMap setTiles p_tiles argument is now optional and it will generate null map for you
 - CHANGED GTileMap setTile will now set multi tile size tiles to all their indices automatically
 - CHANGED IContext begin call now returns boolean which indicates that context was able to start rendering (no context loss)
