@@ -6,6 +6,7 @@ FIXES within 1.1 alpha phase
 1.1.294
 - FIXED GStats now working
 - FIXED default variables within framework now initialized correctly, for example renderables blendmode now default NORMAL instead of NONE as expection
+- FIXED fast memory enabled
 
 version 1.1.293 - 2014-1-1
 --------------------------

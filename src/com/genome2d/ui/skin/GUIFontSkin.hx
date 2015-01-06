@@ -46,6 +46,14 @@ class GUIFontSkin extends GUISkin {
         return g2d_textRenderer.textureAtlas;
     }
 
+    override public function getMinWidth():Float {
+        return g2d_textRenderer.width;
+    }
+
+    override public function getMinHeight():Float {
+        return g2d_textRenderer.height;
+    }
+
     public function new(p_id:String = "") {
         super(p_id);
 

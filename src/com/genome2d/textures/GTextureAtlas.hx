@@ -60,6 +60,8 @@ class GTextureAtlas extends GContextTexture {
         texture.g2d_filteringType = g2d_filteringType;
         texture.g2d_nativeTexture = nativeTexture;
         texture.g2d_scaleFactor = scaleFactor;
+        texture.g2d_atfType = g2d_atfType;
+        texture.premultiplied = premultiplied;
 
         if (p_frame != null) {
             texture.g2d_frame = p_frame;
