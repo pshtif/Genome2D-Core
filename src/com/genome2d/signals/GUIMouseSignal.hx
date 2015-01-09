@@ -8,7 +8,7 @@
  */
 package com.genome2d.signals;
 
-import com.genome2d.ui.idea.GUIElement;
+import com.genome2d.ui.GUIElement;
 
 /**
 

@@ -1,4 +1,4 @@
-package com.genome2d.ui.idea;
+package com.genome2d.ui;
 
 import com.genome2d.signals.GUIMouseSignal;
 import com.genome2d.signals.GMouseSignalType;
@@ -6,12 +6,11 @@ import com.genome2d.textures.GTextureSourceType;
 import com.genome2d.signals.GMouseSignal;
 import msignal.Signal.Signal1;
 import com.genome2d.ui.skin.GUISkinType;
-import com.genome2d.ui.idea.GUIElement;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.ui.skin.GUISkin;
 
-@:access(com.genome2d.ui.idea.GUILayout)
+@:access(GUILayout)
 @prototypeName("element")
 class GUIElement implements IGPrototypable {
     public var name:String = "UIElement";

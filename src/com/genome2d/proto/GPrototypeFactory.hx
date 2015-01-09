@@ -1,6 +1,6 @@
 package com.genome2d.proto;
 import com.genome2d.ui.skin.GUISkin;
-import com.genome2d.ui.idea.GUIElement;
+import com.genome2d.ui.GUIElement;
 import Reflect;
 import com.genome2d.error.GError;
 import haxe.rtti.Meta;
