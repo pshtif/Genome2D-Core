@@ -46,7 +46,7 @@ class GUI extends GComponent implements IRenderable {
     override public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
         if (p_captured && p_contextSignal.type == GMouseSignalType.MOUSE_UP) node.g2d_mouseDownNode = null;
 
-        var capture:Bool = true;// = root.processMouseSignal(p_captured, p_cameraX, p_cameraY, p_contextSignal);
+        var capture:Bool = root.processMouseSignal(p_captured, p_cameraX, p_cameraY, p_contextSignal);
 
         if (!p_captured && capture) {
             var tx:Float = p_cameraX - node.transform.g2d_worldX;

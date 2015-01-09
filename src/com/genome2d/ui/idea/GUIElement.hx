@@ -1,5 +1,10 @@
 package com.genome2d.ui.idea;
 
+import com.genome2d.signals.GUIMouseSignal;
+import com.genome2d.signals.GMouseSignalType;
+import com.genome2d.textures.GTextureSourceType;
+import com.genome2d.signals.GMouseSignal;
+import msignal.Signal.Signal1;
 import com.genome2d.ui.skin.GUISkinType;
 import com.genome2d.ui.idea.GUIElement;
 import com.genome2d.proto.GPrototypeFactory;
@@ -10,7 +15,20 @@ import com.genome2d.ui.skin.GUISkin;
 @prototypeName("element")
 class GUIElement implements IGPrototypable {
     public var name:String = "UIElement";
-    public var mouseEnabled:Bool;
+    public var mouseEnabled:Bool = false;
+
+    private var g2d_id:String;
+    #if swc @:extern #end
+    @prototype public var id(get, set):String;
+    #if swc @:getter(id) #end
+    inline private function get_id():String {
+        return g2d_id;
+    }
+    #if swc @:setter(id) #end
+    inline private function set_id(p_value:String):String {
+        g2d_id = p_value;
+        return g2d_id;
+    }
 
     private var g2d_layout:GUILayout;
     #if swc @:extern #end
@@ -279,6 +297,13 @@ class GUIElement implements IGPrototypable {
     }
 
     private var g2d_numChildren:Int = 0;
+    #if swc @:extern #end
+    public var numChildren(get, never):Int;
+    #if swc @:getter(numChildren) #end
+    inline private function get_numChildren():Int {
+        return g2d_numChildren;
+    }
+
     private var g2d_children:Array<GUIElement>;
     #if swc @:extern #end
     public var children(get, never):Array<GUIElement>;
@@ -401,7 +426,8 @@ class GUIElement implements IGPrototypable {
                 if (g2d_parent.g2d_layout == null) {
                     var worldAnchorLeft:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorLeft;
                     var worldAnchorRight:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorRight;
-                    var w:Float = (g2d_preferredWidth != 0) ? g2d_preferredWidth : g2d_minWidth;
+                    var w:Float = (g2d_preferredWidth > g2d_minWidth) ? g2d_preferredWidth : g2d_minWidth;
+
                     if (g2d_anchorLeft != g2d_anchorRight) {
                         g2d_worldLeft = worldAnchorLeft + g2d_left;
                         g2d_worldRight = worldAnchorRight - g2d_right;
@@ -433,7 +459,7 @@ class GUIElement implements IGPrototypable {
                 if (g2d_parent.g2d_layout == null) {
                     var worldAnchorTop:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorTop;
                     var worldAnchorBottom:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorBottom;
-                    var h:Float = (g2d_preferredHeight != 0) ? g2d_preferredHeight : g2d_minHeight;
+                    var h:Float = (g2d_preferredHeight > g2d_minHeight) ? g2d_preferredHeight : g2d_minHeight;
                     if (g2d_anchorTop != g2d_anchorBottom) {
                         g2d_worldTop = worldAnchorTop + g2d_top;
                         g2d_worldBottom = worldAnchorBottom - g2d_bottom;
@@ -495,5 +521,113 @@ class GUIElement implements IGPrototypable {
     public function dispose():Void {
         setDirty();
         if (g2d_parent != null) g2d_parent.removeChild(this);
+    }
+
+    /*******************************************************************************************************************
+    *   MOUSE CODE
+    *******************************************************************************************************************/
+    private var g2d_onMouseDown:Signal1<GUIMouseSignal>;
+    #if swc @:extern #end
+    public var onMouseDown(get, never):Signal1<GUIMouseSignal>;
+    #if swc @:getter(onMouseDown) #end
+    private function get_onMouseDown():Signal1<GUIMouseSignal> {
+        if (g2d_onMouseDown == null) g2d_onMouseDown = new Signal1(GUIMouseSignal);
+        return g2d_onMouseDown;
+    }
+
+    private var g2d_onMouseUp:Signal1<GUIMouseSignal>;
+    #if swc @:extern #end
+    public var onMouseUp(get, never):Signal1<GUIMouseSignal>;
+    #if swc @:getter(onMouseUp) #end
+    private function get_onMouseUp():Signal1<GUIMouseSignal> {
+        if (g2d_onMouseUp == null) g2d_onMouseUp = new Signal1(GUIMouseSignal);
+        return g2d_onMouseUp;
+    }
+
+    private var g2d_onMouseMove:Signal1<GUIMouseSignal>;
+    #if swc @:extern #end
+    public var onMouseMove(get, never):Signal1<GUIMouseSignal>;
+    #if swc @:getter(onMouseMove) #end
+    private function get_onMouseMove():Signal1<GUIMouseSignal> {
+        if (g2d_onMouseMove == null) g2d_onMouseMove = new Signal1(GUIMouseSignal);
+        return g2d_onMouseMove;
+    }
+
+    private var g2d_onMouseOver:Signal1<GUIMouseSignal>;
+    #if swc @:extern #end
+    public var onMouseOver(get, never):Signal1<GUIMouseSignal>;
+    #if swc @:getter(onMouseOver) #end
+    private function get_onMouseOver():Signal1<GUIMouseSignal> {
+        if (g2d_onMouseOver == null) g2d_onMouseOver = new Signal1(GUIMouseSignal);
+        return g2d_onMouseOver;
+    }
+
+    private var g2d_onMouseOut:Signal1<GUIMouseSignal>;
+    #if swc @:extern #end
+    public var onMouseOut(get, never):Signal1<GUIMouseSignal>;
+    #if swc @:getter(onMouseOut) #end
+    private function get_onMouseOut():Signal1<GUIMouseSignal> {
+        if (g2d_onMouseOut == null) g2d_onMouseOut = new Signal1(GUIMouseSignal);
+        return g2d_onMouseOut;
+    }
+
+    private var g2d_onMouseClick:Signal1<GUIMouseSignal>;
+    #if swc @:extern #end
+    public var onMouseClick(get, never):Signal1<GUIMouseSignal>;
+    #if swc @:getter(onMouseClick) #end
+    private function get_onMouseClick():Signal1<GUIMouseSignal> {
+        if (g2d_onMouseClick == null) g2d_onMouseMove = new Signal1(GUIMouseSignal);
+        return g2d_onMouseClick;
+    }
+
+    private var g2d_mouseDownElement:GUIElement;
+    private var g2d_mouseOverElement:GUIElement;
+
+    public function processMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
+        for (i in 0...g2d_numChildren) {
+            p_captured = g2d_children[i].processMouseSignal(p_captured,p_cameraX,p_cameraY,p_contextSignal);
+        }
+        if (mouseEnabled) {
+            if (!p_captured && p_cameraX>g2d_worldLeft && p_cameraX<g2d_worldRight && p_cameraY>g2d_worldTop && p_cameraY<g2d_worldBottom) {
+                p_captured = true;
+                g2d_dispatchMouseSignal(p_contextSignal.type, this, p_cameraX-g2d_worldLeft, p_cameraY-g2d_worldTop, p_contextSignal);
+                if (g2d_mouseOverElement != this) {
+                    g2d_dispatchMouseSignal(GMouseSignalType.MOUSE_OVER, this, p_cameraX-g2d_worldLeft, p_cameraY-g2d_worldTop, p_contextSignal);
+                }
+            } else {
+                if (g2d_mouseOverElement == this) g2d_dispatchMouseSignal(GMouseSignalType.MOUSE_OUT, this, 0, 0, p_contextSignal);
+            }
+        }
+
+        return p_captured;
+    }
+
+    private function g2d_dispatchMouseSignal(p_type:String, p_element:GUIElement, p_localX:Float, p_localY:Float, p_contextSignal:GMouseSignal):Void {
+        if (mouseEnabled) {
+            var mouseSignal:GUIMouseSignal = new GUIMouseSignal(p_type, this, p_element, p_localX, p_localY, p_contextSignal);
+
+            switch (p_type) {
+                case GMouseSignalType.MOUSE_DOWN:
+                    g2d_mouseDownElement = p_element;
+                    if (g2d_onMouseDown != null) g2d_onMouseDown.dispatch(mouseSignal);
+                case GMouseSignalType.MOUSE_MOVE:
+                    if (g2d_onMouseMove != null) g2d_onMouseMove.dispatch(mouseSignal);
+                case GMouseSignalType.MOUSE_UP:
+                    if (g2d_mouseDownElement == p_element && g2d_onMouseClick != null) {
+                        var mouseClickSignal:GUIMouseSignal = new GUIMouseSignal(GMouseSignalType.MOUSE_UP, this, p_element, p_localX, p_localY, p_contextSignal);
+                        g2d_onMouseClick.dispatch(mouseClickSignal);
+                    }
+                    g2d_mouseDownElement = null;
+                    if (g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseSignal);
+                case GMouseSignalType.MOUSE_OVER:
+                    g2d_mouseOverElement = p_element;
+                    if (g2d_onMouseOver != null) g2d_onMouseOver.dispatch(mouseSignal);
+                case GMouseSignalType.MOUSE_OUT:
+                    g2d_mouseOverElement = null;
+                    if (g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseSignal);
+            }
+        }
+
+        if (parent != null) parent.g2d_dispatchMouseSignal(p_type, p_element, p_localX, p_localY, p_contextSignal);
     }
 }

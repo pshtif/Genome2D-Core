@@ -35,12 +35,11 @@ class GUITextureSkin extends GUISkin {
     public function new(p_id:String = "", p_textureId:String = "") {
         super(p_id);
 
-        g2d_sliceRect = new GRectangle(30,30,545-60,122-60);
-        //g2d_sliceRect = new GRectangle(0,0,0,0);
         textureId = p_textureId;
     }
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Void {
+        if (texture == null) return;
         var context:IContext = Genome2D.getInstance().getContext();
 
         var width:Float = p_right - p_left;
@@ -50,7 +49,7 @@ class GUITextureSkin extends GUISkin {
         var x:Float = p_left + (.5*texture.width + texture.pivotX)*scaleX;
         var y:Float = p_top + (.5*texture.height + texture.pivotY)*scaleY;
 
-        if (g2d_sliceRect.width == 0 || g2d_sliceRect.height == 0) {
+        if (g2d_sliceRect == null || g2d_sliceRect.width == 0 || g2d_sliceRect.height == 0) {
             context.draw(texture, x, y, scaleX, scaleY, 0, 1, 1, 1, 1, 1, null);
         } else {
             var scaleX:Float = (width-texture.width)/(g2d_sliceRect.width*texture.scaleFactor) + 1;

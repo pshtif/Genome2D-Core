@@ -12,6 +12,7 @@ class GUILayout implements IGPrototypable {
 
     private function calculateWidth(p_element:GUIElement):Void {
         p_element.g2d_preferredWidth = p_element.g2d_minWidth = 0;
+
         for (i in 0...p_element.g2d_numChildren) {
             var child:GUIElement = p_element.g2d_children[i];
             child.calculateWidth();
