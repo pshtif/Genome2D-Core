@@ -8,7 +8,7 @@
  */
 package com.genome2d.components;
 
-import com.genome2d.context.GViewPort;
+import com.genome2d.context.GViewport;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
@@ -49,7 +49,7 @@ class GCameraController extends GComponent
 	**/
     public var renderTarget:GTexture = null;
 
-    public var viewport:GViewPort;
+    public var viewport:GViewport;
 	
 	/**
 	    Get a viewport color
@@ -158,6 +158,6 @@ class GCameraController extends GComponent
 	}
 
     public function setViewport(p_width:Int, p_height:Int, p_resize:Bool = true):Void {
-        viewport = new GViewPort(this, p_width, p_height, p_resize);
+        viewport = new GViewport(this, p_width, p_height, p_resize);
     }
 }

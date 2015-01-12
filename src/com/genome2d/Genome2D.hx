@@ -212,7 +212,7 @@ class Genome2D
 
         // Initialize root
         if (g2d_root != null) g2d_root.dispose();
-        g2d_root = new GNode("root");
+        g2d_root = GNode.create("root");
 
         // Initialize camera controller array
         g2d_cameras = new Array<GCameraController>();

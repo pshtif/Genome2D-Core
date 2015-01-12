@@ -8,8 +8,6 @@
  */
 package com.genome2d.node;
 
-import com.genome2d.node.factory.GNodeFactory;
-
 /**
     Node pool based on proto
 **/
@@ -80,7 +78,7 @@ class GNodePool
 		var node:GNode = null;
 		if (g2d_maxCount == 0 || g2d_cachedCount < g2d_maxCount) {
 			g2d_cachedCount++;
-			node = GNodeFactory.createFromPrototype(g2d_prototype);
+			node = GNode.createFromPrototype(g2d_prototype);
 			if (p_precache) node.setActive(false);
 			node.g2d_pool = this;
 			

@@ -7,6 +7,9 @@ import com.genome2d.textures.GTextureFontAtlas;
 
 @prototypeName("fontSkin")
 class GUIFontSkin extends GUISkin {
+    override private function setValue(p_value:String):Void {
+        text = p_value;
+    }
 
     #if swc @:extern #end
     @prototype public var text(get, set):String;
@@ -46,11 +49,11 @@ class GUIFontSkin extends GUISkin {
     }
 
     override public function getMinWidth():Float {
-        return g2d_textRenderer.width;
+        return g2d_textRenderer.width*scale;
     }
 
     override public function getMinHeight():Float {
-        return g2d_textRenderer.height;
+        return g2d_textRenderer.height*scale;
     }
 
     public function new(p_id:String = "") {
@@ -65,6 +68,6 @@ class GUIFontSkin extends GUISkin {
 
         g2d_textRenderer.width = p_right - p_left;
         g2d_textRenderer.height = p_bottom - p_top;
-        g2d_textRenderer.render(p_left,p_top,1,1,0);
+        g2d_textRenderer.render(p_left,p_top,scale,scale,0);
     }
 }

@@ -1,7 +1,7 @@
 package com.genome2d.ui;
 
 import com.genome2d.proto.IGPrototypable;
-@:access(GUIElement)
+@:access(com.genome2d.ui.GUIElement)
 class GUILayout implements IGPrototypable {
 
     @prototype public var gap:Float = 10;

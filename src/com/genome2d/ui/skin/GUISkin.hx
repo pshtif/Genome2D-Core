@@ -14,6 +14,8 @@ class GUISkin implements IGPrototypable {
 
     private var g2d_type:Int;
 
+    private function setValue(p_value:String):Void {}
+
     private var g2d_id:String;
     #if swc @:extern #end
     @prototype public var id(get, set):String;

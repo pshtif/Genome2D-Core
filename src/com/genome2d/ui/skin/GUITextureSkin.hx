@@ -11,6 +11,10 @@ class GUITextureSkin extends GUISkin {
 
     private var g2d_sliceRect:GRectangle;
 
+    override private function setValue(p_value:String):Void {
+        textureId = p_value;
+    }
+
     #if swc @:extern #end
     @prototype public var textureId(get, set):String;
     #if swc @:getter(textureId) #end

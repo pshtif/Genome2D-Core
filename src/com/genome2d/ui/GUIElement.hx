@@ -2,19 +2,20 @@ package com.genome2d.ui;
 
 import com.genome2d.signals.GUIMouseSignal;
 import com.genome2d.signals.GMouseSignalType;
-import com.genome2d.textures.GTextureSourceType;
 import com.genome2d.signals.GMouseSignal;
 import msignal.Signal.Signal1;
-import com.genome2d.ui.skin.GUISkinType;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.ui.skin.GUISkin;
 
-@:access(GUILayout)
+@:access(com.genome2d.ui.GUILayout)
+@:access(com.genome2d.ui.skin.GUISkin)
 @prototypeName("element")
 class GUIElement implements IGPrototypable {
     public var name:String = "UIElement";
     public var mouseEnabled:Bool = false;
+
+    public var visible:Bool = true;
 
     private var g2d_id:String;
     #if swc @:extern #end
@@ -27,6 +28,27 @@ class GUIElement implements IGPrototypable {
     inline private function set_id(p_value:String):String {
         g2d_id = p_value;
         return g2d_id;
+    }
+
+    private var g2d_value:Dynamic;
+    #if swc @:extern #end
+    @prototype public var value(get, set):Dynamic;
+    #if swc @:getter(value) #end
+    inline private function get_value():Dynamic {
+        return g2d_value;
+    }
+    #if swc @:setter(value) #end
+    inline private function set_value(p_value:Dynamic):Dynamic {
+        g2d_value = p_value;
+        if (g2d_activeSkin != null) {
+            if (Std.is(g2d_value,String)) {
+                g2d_activeSkin.setValue(g2d_value);
+            } else {
+                g2d_activeSkin.setValue(g2d_value.value);
+            }
+        }
+        setDirty();
+        return g2d_value;
     }
 
     private var g2d_layout:GUILayout;
@@ -68,6 +90,13 @@ class GUIElement implements IGPrototypable {
     inline private function set_normalSkin(p_value:GUISkin):GUISkin {
         g2d_normalSkin = p_value;
         g2d_activeSkin = g2d_normalSkin;
+        if (g2d_value != null) {
+            if (Std.is(g2d_value,String)) {
+                g2d_activeSkin.setValue(g2d_value);
+            } else {
+                g2d_activeSkin.setValue(g2d_value.value);
+            }
+        }
         setDirty();
         return g2d_normalSkin;
     }
@@ -387,6 +416,11 @@ class GUIElement implements IGPrototypable {
         return (p_index>=0 && p_index<g2d_numChildren) ? g2d_children[p_index] : null;
     }
 
+    public function getChildById(p_id:String):GUIElement {
+        for (i in 0...g2d_numChildren) if (g2d_children[i].id == p_id) return g2d_children[i];
+        return null;
+    }
+
     public function getChildIndex(p_child:GUIElement):Int {
         return g2d_children.indexOf(p_child);
     }
@@ -485,10 +519,12 @@ class GUIElement implements IGPrototypable {
     }
 
     public function render():Void {
-        if (g2d_activeSkin != null) g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom);
+        if (visible) {
+            if (g2d_activeSkin != null) g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom);
 
-        for (i in 0...g2d_numChildren) {
-            g2d_children[i].render();
+            for (i in 0...g2d_numChildren) {
+                g2d_children[i].render();
+            }
         }
     }
 
@@ -583,9 +619,12 @@ class GUIElement implements IGPrototypable {
     private var g2d_mouseOverElement:GUIElement;
 
     public function processMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
-        for (i in 0...g2d_numChildren) {
+        var i:Int = g2d_numChildren;
+        while (i>0) {
+            i--;
             p_captured = g2d_children[i].processMouseSignal(p_captured,p_cameraX,p_cameraY,p_contextSignal);
         }
+
         if (mouseEnabled) {
             if (!p_captured && p_cameraX>g2d_worldLeft && p_cameraX<g2d_worldRight && p_cameraY>g2d_worldTop && p_cameraY<g2d_worldBottom) {
                 p_captured = true;
