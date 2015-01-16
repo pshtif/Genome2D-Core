@@ -26,13 +26,13 @@ class GUISkin implements IGPrototypable {
     #if swc @:setter(id) #end
     inline private function set_id(p_value:String):String {
         if (p_value != g2d_id && p_value.length>0) {
-            if (GUISkinManager.g2d_references == null) GUISkinManager.g2d_references = new Map<String, GUISkin>();
-            if (GUISkinManager.g2d_references.get(p_value) != null) new GError("Duplicate style id: "+p_value);
+            if (GUISkinManager.getSkinById(p_value) != null) new GError("Duplicate style id: "+p_value);
             GUISkinManager.g2d_references.set(p_value,this);
 
-            if (GUISkinManager.g2d_references.get(g2d_id) != null) GUISkinManager.g2d_references.remove(g2d_id);
+            if (GUISkinManager.getSkinById(g2d_id) != null) GUISkinManager.g2d_references.remove(g2d_id);
             g2d_id = p_value;
         }
+
         return g2d_id;
     }
 
@@ -43,8 +43,10 @@ class GUISkin implements IGPrototypable {
         return 0;
     }
 
+    static private var g2d_instanceCount:Int = 0;
     public function new(p_id:String = "") {
-        id = p_id;
+        g2d_instanceCount++;
+        id = (p_id != "") ? p_id : "GUISkin"+g2d_instanceCount;
     }
 
     public function render(p_x:Float, p_y:Float, p_width:Float, p_height:Float):Void {

@@ -742,7 +742,7 @@ class GNode
             after = after.g2d_nextNode;
             i++;
         }
-        return addChild(p_child, (after == null) ? null : after.g2d_nextNode);
+        return addChild(p_child, (after == null) ? null : after);
     }
 	
 	public function getChildAt(p_index:Int):GNode {

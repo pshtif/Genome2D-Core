@@ -65,7 +65,6 @@ class GUIFontSkin extends GUISkin {
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Void {
         var context:IContext = Genome2D.getInstance().getContext();
-
         g2d_textRenderer.width = p_right - p_left;
         g2d_textRenderer.height = p_bottom - p_top;
         g2d_textRenderer.render(p_left,p_top,scale,scale,0);

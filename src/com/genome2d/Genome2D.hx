@@ -8,6 +8,7 @@
  */
 package com.genome2d;
 
+import com.genome2d.ui.GUISkinManager;
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.textures.GTextureManager;
@@ -302,6 +303,7 @@ class Genome2D
 
     private function g2d_contextInitializedHandler():Void {
         GTextureManager.init();
+        GUISkinManager.init();
 
         g2d_context.onFrame.add(g2d_frameHandler);
         g2d_context.onMouseSignal.add(g2d_contextMouseSignalHandler);

@@ -362,11 +362,15 @@ class GUIElement implements IGPrototypable {
             var worldAnchorBottom:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorBottom;
 
             if (g2d_anchorLeft != g2d_anchorRight) {
+                g2d_left = p_left - worldAnchorLeft;
+                g2d_right = worldAnchorRight - p_right;
             } else {
                 g2d_anchorX = p_left - worldAnchorLeft + w*g2d_pivotX;
             }
 
             if (g2d_anchorTop != g2d_anchorBottom) {
+                g2d_top = p_top - worldAnchorTop;
+                g2d_bottom = worldAnchorBottom - p_bottom;
             } else {
                 g2d_anchorY = p_top - worldAnchorTop + h*g2d_pivotY;
             }

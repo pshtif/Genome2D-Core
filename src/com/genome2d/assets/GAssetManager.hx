@@ -57,7 +57,7 @@ class GAssetManager {
         return cast g2d_references.get(p_id);
     }
 
-    static public function addAssetFromUrl(p_url:String, p_id:String = ""):GAsset {
+    static public function addFromUrl(p_url:String, p_id:String = ""):GAsset {
         switch (getFileExtension(p_url)) {
             case "jpg" | "jpeg" | "png" | "atf":
                 return new GImageAsset(p_url, p_id);
