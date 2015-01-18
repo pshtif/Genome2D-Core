@@ -1,0 +1,53 @@
+package com.genome2d.utils;
+
+import com.genome2d.geom.GPoint;
+class GPathFinder {
+    private var g2d_gridWidth:Int;
+    private var g2d_gridHeight:Int;
+    private var g2d_grid:Array<Int>;
+
+    public function new(p_width:Int, p_height:Int) {
+        g2d_gridWidth = p_width;
+        g2d_gridHeight = p_height;
+        g2d_grid = new Array<Int>(g2d_gridWidth*g2d_gridHeight);
+    }
+
+    private function makePath(endNode:GPoint):Array<GPoint>
+    {
+        var path:Array = [];
+        while (grid[endNode.x][endNode.y] != endNode)
+        {
+            path.push(endNode);
+            endNode = grid[endNode.x][endNode.y];
+        }
+        path.push(endNode);
+        path.reverse();
+        return path;
+    }
+
+    public function pathTo(p_sx:Int, p_sy:Int):Array<Int> {
+        var open:Array<GPoint> = [new GPoint(p_sx, p_sy)];
+        grid[p_sx+p_sy*g2d_gridWidth] = open[0];
+
+        while (open.length > 0) {
+            var current:GPoint = open[0];
+            open.splice(0, 1);
+
+            if (check(current.x, current.y)) {
+                return makePath(current);
+            }
+
+
+            var neighbor:GPoint = new GPoint(current.x-1, current.y);
+            if (neighbor.x >= 0 && grid[neighbor.x+neighbor.y*g2d_gridWidth] != null) {
+                grid[neighbor.x+neighbor.y*g2d_gridWidth] = current;
+
+                //if (check(neighbor.x, neighbor.y)) return makePath(neighbor);
+                if (canEnter(neighbor.x, neighbor.y)) {
+                    open.push(neighbor);
+                }
+            }
+        }
+        return [];
+    }
+}
