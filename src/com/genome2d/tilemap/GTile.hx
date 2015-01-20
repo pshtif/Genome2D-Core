@@ -3,7 +3,7 @@ package com.genome2d.tilemap;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.context.IContext;
 import com.genome2d.textures.GTexture;
-import com.genome2d.error.GError;
+import com.genome2d.debug.GDebug;
 
 @:allow(com.genome2d.components.renderables.tilemap.GTileMap)
 class GTile
@@ -17,7 +17,7 @@ class GTile
     #if swc @:setter(textureId) #end
     inline private function set_textureId(p_value:String):String {
         texture = GTextureManager.getTextureById(p_value);
-        if (texture == null) new GError("Invalid textures with id "+p_value);
+        if (texture == null) GDebug.error("Invalid textures with id "+p_value);
         return p_value;
     }
 

@@ -7,7 +7,7 @@ import com.genome2d.context.GBlendMode;
 import com.genome2d.textures.GTexture;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GCamera;
-import com.genome2d.error.GError;
+import com.genome2d.debug.GDebug;
 import com.genome2d.node.GNode;
 
 class GTileMap extends GComponent implements IRenderable
@@ -31,7 +31,7 @@ class GTileMap extends GComponent implements IRenderable
     public var verticalMargin:Float = 0;
 
     public function setTiles(p_mapWidth:Int, p_mapHeight:Int, p_tileWidth:Int, p_tileHeight:Int, p_tiles:Array<GTile> = null,  p_iso:Bool = false):Void {
-        if (p_tiles != null && p_mapWidth*p_mapHeight != p_tiles.length) new GError("Incorrect number of tiles provided for that map size.");
+        if (p_tiles != null && p_mapWidth*p_mapHeight != p_tiles.length) GDebug.error("Incorrect number of tiles provided for that map size.");
 
         g2d_width = p_mapWidth;
         g2d_height = p_mapHeight;
@@ -47,8 +47,8 @@ class GTileMap extends GComponent implements IRenderable
     }
 
     public function setTile(p_tileIndex:Int, p_tile:GTile):Void {
-        if (p_tileIndex<0 || p_tileIndex>= g2d_tiles.length) new GError("Tile index out of bounds.");
-        if (p_tile != null && (p_tile.mapX!=-1 || p_tile.mapY!=-1) && (p_tile.mapX+p_tile.mapY*g2d_width != p_tileIndex)) new GError("Tile map position doesn't match its index.");
+        if (p_tileIndex<0 || p_tileIndex>= g2d_tiles.length) GDebug.error("Tile index out of bounds.");
+        if (p_tile != null && (p_tile.mapX!=-1 || p_tile.mapY!=-1) && (p_tile.mapX+p_tile.mapY*g2d_width != p_tileIndex)) GDebug.error("Tile map position doesn't match its index.");
 
         if (p_tile != null) {
             for (i in 0...p_tile.sizeX) {
@@ -63,7 +63,7 @@ class GTileMap extends GComponent implements IRenderable
     }
 
     public function removeTile(p_tileIndex:Int):Void {
-        if (p_tileIndex<0 || p_tileIndex>= g2d_tiles.length) new GError("Tile index out of bounds.");
+        if (p_tileIndex<0 || p_tileIndex>= g2d_tiles.length) GDebug.error("Tile index out of bounds.");
         var tile:GTile = g2d_tiles[p_tileIndex];
         if (tile != null) {
             if (tile.mapX != -1 && tile.mapY != -1) {

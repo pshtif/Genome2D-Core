@@ -9,7 +9,7 @@
 package com.genome2d.components.renderable;
 
 import com.genome2d.textures.GTextureManager;
-import com.genome2d.error.GError;
+import com.genome2d.debug.GDebug;
 import com.genome2d.textures.GTexture;
 
 /**
@@ -32,8 +32,8 @@ class GSprite extends GTexturedQuad
             texture = null;
         } else {
             texture = GTextureManager.getTextureById(p_value);
-            if (texture == null) new GError("Invalid texture with id "+p_value);
+            if (texture == null) GDebug.warning("Invalid texture with id "+p_value);
         }
-        return p_value;
+        return (texture == null) ? "" : p_value;
     }
 }

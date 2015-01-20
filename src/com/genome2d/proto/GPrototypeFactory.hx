@@ -2,7 +2,7 @@ package com.genome2d.proto;
 import com.genome2d.ui.skin.GUISkin;
 import com.genome2d.ui.GUIElement;
 import Reflect;
-import com.genome2d.error.GError;
+import com.genome2d.debug.GDebug;
 import haxe.rtti.Meta;
 
 //@:access(com.genome2d.protorototypable)
@@ -31,11 +31,11 @@ class GPrototypeFactory {
         var prototypeName:String = p_prototypeXml.nodeName;
         var prototypeClass:Class<IGPrototypable> = g2d_lookups[prototypeName];
         if (prototypeClass == null) {
-            new GError("Non existing proto class "+prototypeName);
+            GDebug.error("Non existing prototype class "+prototypeName);
         }
 
         var proto:IGPrototypable = Type.createInstance(prototypeClass,[]);
-        if (proto == null) new GError("Invalid proto.");
+        if (proto == null) GDebug.error("Invalid prototype class "+prototypeName);
 
         proto.initPrototype(p_prototypeXml);
 
@@ -45,11 +45,11 @@ class GPrototypeFactory {
     static public function createEmptyPrototype(p_prototypeName:String):IGPrototypable {
         var prototypeClass:Class<IGPrototypable> = g2d_lookups[p_prototypeName];
         if (prototypeClass == null) {
-            new GError("Non existing proto class "+p_prototypeName);
+            GDebug.error("Non existing prototype class "+p_prototypeName);
         }
 
         var proto:IGPrototypable = Type.createInstance(prototypeClass,[]);
-        if (proto == null) new GError("Invalid proto.");
+        if (proto == null) GDebug.error("Invalid prototype class "+p_prototypeName);
 
         return proto;
     }

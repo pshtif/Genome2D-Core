@@ -26,7 +26,7 @@ import com.genome2d.signals.GNodeMouseSignal;
 import msignal.Signal;
 import com.genome2d.components.GComponent;
 import com.genome2d.components.GTransform;
-import com.genome2d.error.GError;
+import com.genome2d.debug.GDebug;
 import com.genome2d.signals.GMouseSignal;
 
 /**
@@ -53,13 +53,13 @@ class GNode
     }
 
     static public function createFromPrototype(p_prototypeXml:Xml):GNode {
-        if (p_prototypeXml == null) new GError("Null proto");
+        if (p_prototypeXml == null) GDebug.error("Null proto");
 
         if (p_prototypeXml.nodeType == Xml.Document) {
             p_prototypeXml = p_prototypeXml.firstChild();
         }
 
-        if (p_prototypeXml.nodeName != "node") new GError("Incorrect GNode proto XML");
+        if (p_prototypeXml.nodeName != "node") GDebug.error("Incorrect GNode proto XML");
 
         var node:GNode = new GNode();
         node.mouseEnabled = (p_prototypeXml.get("mouseEnabled") == "true") ? true : false;
@@ -125,7 +125,7 @@ class GNode
     }
     #if swc @:setter(mask) #end
     inline private function set_mask(p_value:GNode):GNode {
-        if (!core.getContext().hasFeature(GContextFeature.STENCIL_MASKING)) new GError("Stencil masking feature not supported.");
+        if (!core.getContext().hasFeature(GContextFeature.STENCIL_MASKING)) GDebug.error("Stencil masking feature not supported.");
         if (g2d_mask != null) g2d_mask.g2d_usedAsMask--;
         g2d_mask = p_value;
         g2d_mask.g2d_usedAsMask++;
@@ -152,7 +152,7 @@ class GNode
 
 	public function setActive(p_value:Bool):Void {
 		if (p_value != g2d_active) {
-			if (g2d_disposed) new GError("Node already disposed.");
+			if (g2d_disposed) GDebug.error("Node already disposed.");
 			
 			g2d_active = p_value;
 			g2d_transform.setActive(g2d_active);
@@ -391,7 +391,7 @@ class GNode
 	 ****************************************************************************************************/
 	
 	public function getPrototype():Xml {
-		if (g2d_disposed) new GError("Node already disposed.");
+		if (g2d_disposed) GDebug.error("Node already disposed.");
 
 		var prototypeXml:Xml = Xml.createElement("node");
 		prototypeXml.set("name", name);
@@ -556,7 +556,7 @@ class GNode
 	 */
 	public function getComponent(p_componentLookupClass:Class<GComponent>):GComponent {
         // TODO use Lambda
-		if (g2d_disposed) new GError("Node already disposed.");
+		if (g2d_disposed) GDebug.error("Node already disposed.");
         for (i in 0...g2d_numComponents) {
             var component:GComponent = g2d_components[i];
             if (component.g2d_lookupClass == p_componentLookupClass) return component;
@@ -572,7 +572,7 @@ class GNode
      *  Has components
      **/
 	public function hasComponent(p_componentLookupClass:Class<GComponent>):Bool {
-		if (g2d_disposed) new GError("Node already disposed.");
+		if (g2d_disposed) GDebug.error("Node already disposed.");
         return getComponent(p_componentLookupClass) != null;
 	}
 	
@@ -582,13 +582,13 @@ class GNode
 	 *	@param p_componentClass Component type that should be instanced and attached to this node
 	 */
 	public function addComponent(p_componentClass:Class<GComponent>, p_componentLookupClass:Class<GComponent> = null):GComponent {
-		if (g2d_disposed) new GError("Node already disposed.");
+		if (g2d_disposed) GDebug.error("Node already disposed.");
 		if (p_componentLookupClass == null) p_componentLookupClass = p_componentClass;
         var lookup:GComponent = getComponent(p_componentLookupClass);
 		if (lookup != null) return lookup;
 
         var component:GComponent = Type.createInstance(p_componentClass,[]);
-        if (component == null) new GError("Invalid components.");
+        if (component == null) GDebug.error("Invalid components.");
         component.g2d_node = this;
         component.g2d_lookupClass = p_componentLookupClass;
 
@@ -607,15 +607,15 @@ class GNode
 	}
 
     public function addComponentPrototype(p_prototype:Xml):GComponent {
-        if (g2d_disposed) new GError("Node already disposed.");
+        if (g2d_disposed) GDebug.error("Node already disposed.");
 
         var componentClass:Class<GComponent> = cast Type.resolveClass(p_prototype.get("class"));
         if (componentClass == null) {
-            new GError("Non existing componentClass "+p_prototype.get("class"));
+            GDebug.error("Non existing componentClass "+p_prototype.get("class"));
         }
         var componentLookupClass:Class<GComponent> = cast Type.resolveClass(p_prototype.get("lookupClass"));
         if (componentLookupClass == null) {
-            new GError("Non existing componentLookupClass "+p_prototype.get("lookupClass"));
+            GDebug.error("Non existing componentLookupClass "+p_prototype.get("lookupClass"));
         }
         var component:GComponent = addComponent(componentClass, componentLookupClass);
 
@@ -631,7 +631,7 @@ class GNode
 	 * 	@param p_componentClass Component type that should be removed
 	 */
 	public function removeComponent(p_componentLookupClass:Class<GComponent>):Void {
-		if (g2d_disposed) new GError("Node already disposed.");
+		if (g2d_disposed) GDebug.error("Node already disposed.");
 		var component:GComponent = getComponent(p_componentLookupClass);
 
 		if (component == null || component == transform) return;
@@ -700,8 +700,8 @@ class GNode
 	 * 	@param p_child node that should be added
 	 */
 	public function addChild(p_child:GNode, p_before:GNode = null):GNode {
-		if (g2d_disposed) new GError("Node already disposed.");
-		if (p_child == this) new GError("Can't add child to itself.");
+		if (g2d_disposed) GDebug.error("Node already disposed.");
+		if (p_child == this) GDebug.error("Can't add child to itself.");
 		if (p_child.parent != null) p_child.parent.removeChild(p_child);
 		p_child.g2d_parent = this;
         if (g2d_firstChild == null) {
@@ -732,8 +732,8 @@ class GNode
 	}
 
     public function addChildAt(p_child:GNode, p_index:Int):GNode {
-        if (g2d_disposed) new GError("Node already disposed.");
-        if (p_child == this) new GError("Can't add child to itself.");
+        if (g2d_disposed) GDebug.error("Node already disposed.");
+        if (p_child == this) GDebug.error("Can't add child to itself.");
         if (p_child.parent != null) p_child.parent.removeChild(p_child);
 
         var i:Int = 0;
@@ -746,7 +746,7 @@ class GNode
     }
 	
 	public function getChildAt(p_index:Int):GNode {
-        if (p_index>=g2d_numChildren) new GError("Index out of bounds.");
+        if (p_index>=g2d_numChildren) GDebug.error("Index out of bounds.");
         var child:GNode = g2d_firstChild;
         for (i in 0...p_index) {
             child = child.g2d_nextNode;
@@ -765,8 +765,8 @@ class GNode
     }
 
     public function setChildIndex(p_child:GNode, p_index:Int):Void {
-        if (p_child.parent != this) new GError("Not a child of this node.");
-        if (p_index>=g2d_numChildren) new GError("Index out of bounds.");
+        if (p_child.parent != this) GDebug.error("Not a child of this node.");
+        if (p_index>=g2d_numChildren) GDebug.error("Index out of bounds.");
 
         var index:Int = 0;
         var child:GNode = g2d_firstChild;
@@ -871,7 +871,7 @@ class GNode
 	 * 	@param p_child node that should be removed
 	 */
 	public function removeChild(p_child:GNode):GNode {
-		if (g2d_disposed) new GError("Node already disposed.");
+		if (g2d_disposed) GDebug.error("Node already disposed.");
 		if (p_child.parent != this) return null;
 
 		if (p_child.g2d_previousNode != null) {
@@ -895,7 +895,7 @@ class GNode
 	}
 
 	public function removeChildAt(p_index:Int):GNode {
-        if (p_index>=g2d_numChildren) new GError("Index out of bounds.");
+        if (p_index>=g2d_numChildren) GDebug.error("Index out of bounds.");
         var index:Int = 0;
         var child:GNode = g2d_firstChild;
 		while (child != null && index<p_index) {

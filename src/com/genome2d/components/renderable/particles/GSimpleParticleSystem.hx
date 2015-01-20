@@ -10,7 +10,7 @@ package com.genome2d.components.renderable.particles;
 
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.particles.GSimpleParticle;
-import com.genome2d.error.GError;
+import com.genome2d.debug.GDebug;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.components.GComponent;
 import com.genome2d.node.GNode;
@@ -198,8 +198,8 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 	#if swc @:setter(textureId) #end
 	inline private function set_textureId(p_value:String):String {
 		texture = GTextureManager.getTextureById(p_value);
-        if (texture == null) new GError("Invalid textures with id "+p_value);
-		return p_value;
+        if (texture == null) GDebug.warning("Invalid textures with id "+p_value);
+		return (texture == null) ? "" : p_value;
 	}
 
 	private function setInitialParticlePosition(p_particle:GSimpleParticle):Void {

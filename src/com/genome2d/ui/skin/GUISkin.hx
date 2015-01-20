@@ -6,7 +6,7 @@ import com.genome2d.ui.GUISkinManager;
 import com.genome2d.ui.GUISkinManager;
 import com.genome2d.ui.GUISkinManager;
 import com.genome2d.textures.GTexture;
-import com.genome2d.error.GError;
+import com.genome2d.debug.GDebug;
 
 @:access(com.genome2d.ui.GUISkinManager)
 class GUISkin implements IGPrototypable {
@@ -26,7 +26,7 @@ class GUISkin implements IGPrototypable {
     #if swc @:setter(id) #end
     inline private function set_id(p_value:String):String {
         if (p_value != g2d_id && p_value.length>0) {
-            if (GUISkinManager.getSkinById(p_value) != null) new GError("Duplicate style id: "+p_value);
+            if (GUISkinManager.getSkinById(p_value) != null) GDebug.error("Duplicate style id: "+p_value);
             GUISkinManager.g2d_references.set(p_value,this);
 
             if (GUISkinManager.getSkinById(g2d_id) != null) GUISkinManager.g2d_references.remove(g2d_id);

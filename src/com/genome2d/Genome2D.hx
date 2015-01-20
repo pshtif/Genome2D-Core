@@ -8,6 +8,7 @@
  */
 package com.genome2d;
 
+import com.genome2d.debug.GDebug;
 import com.genome2d.ui.GUISkinManager;
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.proto.GPrototypeFactory;
@@ -19,7 +20,6 @@ import com.genome2d.geom.GMatrix;
 import com.genome2d.components.GCameraController;
 import com.genome2d.node.GNode;
 import com.genome2d.signals.GMouseSignal;
-import com.genome2d.error.GError;
 import msignal.Signal;
 
 import com.genome2d.context.GContextConfig;
@@ -190,7 +190,7 @@ class Genome2D
     **/
     @:dox(hide)
 	private function new() {
-		if (!g2d_instantiable) new GError("Can't instantiate singleton directly");
+		if (!g2d_instantiable) GDebug.critical("Can't instantiate singleton directly");
 		g2d_instance = this;
 
         g2d_onInitialized = new Signal0();

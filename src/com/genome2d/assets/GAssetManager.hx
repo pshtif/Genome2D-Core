@@ -23,11 +23,18 @@ class GAssetManager {
     }
 
     static private var g2d_loadQueue:Array<GAsset>;
-    static private var g2d_loadQueueFinished:Void->Void;
 
     static private var g2d_loading:Bool;
     static public function isLoading():Bool {
         return g2d_loading;
+    }
+
+    static private var g2d_onQueueLoaded:Signal0;
+    #if swc @:extern #end
+    static public var onQueueLoaded(get,never):Signal0;
+    #if swc @:getter(onQueueLoaded) #end
+    inline static private function get_onQueueLoaded():Signal0 {
+        return g2d_onQueueLoaded;
     }
 
     static private var g2d_onQueueFailed:Signal1<GAsset>;
@@ -68,22 +75,21 @@ class GAssetManager {
         return null;
     }
 
-    static public function loadQueue(p_callback:Void->Void):Void {
-        if (g2d_loading) return;
-        g2d_loadQueueFinished = p_callback;
+    static public function loadQueue():Void {
         for (asset in g2d_references) {
             if (!asset.isLoaded()) g2d_loadQueue.push(asset);
         }
-        g2d_loadQueueNext();
+        if (!g2d_loading) g2d_loadQueueNext();
     }
 
     static private function g2d_loadQueueNext():Void {
         if (g2d_loadQueue.length==0) {
             g2d_loading = false;
-            if (g2d_loadQueueFinished != null) g2d_loadQueueFinished();
+            g2d_onQueueLoaded.dispatch();
         } else {
             g2d_loading = true;
             var asset:GAsset = g2d_loadQueue.shift();
+
             asset.onLoaded.addOnce(g2d_assetLoadedHandler);
             asset.onFailed.addOnce(g2d_assetFailedHandler);
             asset.load();
@@ -111,15 +117,16 @@ class GAssetManager {
 
     static public function generateTextures(p_scaleFactor:Float = 1):Void {
         for (asset in g2d_references) {
-            if (!Std.is(asset,GImageAsset)) continue;
-                var idPart:String = asset.id.substring(0,asset.id.length-3);
-                if (GAssetManager.getXmlAssetById(idPart+"xml") != null) {
-                    GTextureManager.createAtlasFromAssets(asset.id, cast asset, GAssetManager.getXmlAssetById(idPart+"xml"), p_scaleFactor);
-                } else if (GAssetManager.getXmlAssetById(idPart+"fnt") != null) {
-                    GTextureManager.createFontAtlasFromAssets(asset.id, cast asset, GAssetManager.getXmlAssetById(idPart+"fnt"), p_scaleFactor);
-                } else {
-                    GTextureManager.createTextureFromAsset(asset.id, cast asset, p_scaleFactor);
-                }
+            if (!Std.is(asset,GImageAsset) || !asset.isLoaded()) continue;
+            if (GTextureManager.getContextTextureById(asset.id) != null) continue;
+            var idPart:String = asset.id.substring(0,asset.id.length-3);
+            if (GAssetManager.getXmlAssetById(idPart+"xml") != null) {
+                GTextureManager.createAtlasFromAssets(asset.id, cast asset, GAssetManager.getXmlAssetById(idPart+"xml"), p_scaleFactor);
+            } else if (GAssetManager.getXmlAssetById(idPart+"fnt") != null) {
+                GTextureManager.createFontAtlasFromAssets(asset.id, cast asset, GAssetManager.getXmlAssetById(idPart+"fnt"), p_scaleFactor);
+            } else {
+                GTextureManager.createTextureFromAsset(asset.id, cast asset, p_scaleFactor);
+            }
         }
     }
 }

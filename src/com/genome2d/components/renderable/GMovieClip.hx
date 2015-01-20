@@ -10,7 +10,7 @@ package com.genome2d.components.renderable;
 
 import com.genome2d.textures.GTextureManager;
 import msignal.Signal.Signal1;
-import com.genome2d.error.GError;
+import com.genome2d.debug.GDebug;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.GCamera;
 import com.genome2d.node.GNode;
@@ -70,7 +70,7 @@ class GMovieClip extends GTexturedQuad
 	    g2d_frameTexturesCount = p_value.length;
         for (i in 0...g2d_frameTexturesCount) {
             var frameTexture:GTexture = GTextureManager.getTextureById(p_value[i]);
-            if (frameTexture == null) new GError("Invalid textures id "+p_value[i]);
+            if (frameTexture == null) GDebug.warning("Invalid textures id "+p_value[i]);
             g2d_frameTextures.push(frameTexture);
         }
 		g2d_currentFrame = 0;
