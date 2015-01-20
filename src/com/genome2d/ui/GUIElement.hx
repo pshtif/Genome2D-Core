@@ -40,14 +40,6 @@ class GUIElement implements IGPrototypable {
     #if swc @:setter(value) #end
     inline private function set_value(p_value:Dynamic):Dynamic {
         g2d_value = p_value;
-        if (g2d_activeSkin != null) {
-            if (Std.is(g2d_value,String)) {
-                g2d_activeSkin.setValue(g2d_value);
-            } else {
-                g2d_activeSkin.setValue(g2d_value.value);
-            }
-        }
-        setDirty();
         return g2d_value;
     }
 
