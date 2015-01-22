@@ -49,6 +49,7 @@ class GAssetManager {
         g2d_loadQueue = new Array<GAsset>();
         g2d_references = new Map<String,GAsset>();
 
+        g2d_onQueueLoaded = new Signal0();
         g2d_onQueueFailed = new Signal1(GAsset);
     }
 

@@ -8,6 +8,9 @@
  */
 package com.genome2d.node;
 
+import com.genome2d.textures.GTextureManager;
+import com.genome2d.textures.GTexture;
+import com.genome2d.context.stage3d.GStage3DContext;
 import com.genome2d.node.GNode;
 import com.genome2d.components.GComponent;
 import com.genome2d.context.GContextFeature;
@@ -230,11 +233,17 @@ class GNode
         g2d_transform = cast addComponent(GTransform);
 	}
 
+    static public var context:GStage3DContext;
+    static public var texture:GTexture;
+
+    private var g2d_useMatrix:Bool;
+
 	/**
 	 * 	@private
 	 */
-	public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_renderAsMask:Bool, p_useMatrix:Bool):Void {
+	inline public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_renderAsMask:Bool, p_useMatrix:Bool):Void {
 		if (g2d_active) {
+            /**/
             var previousMaskRect:GRectangle = null;
             var hasMask:Bool = false;
             if (maskRect != null && maskRect != parent.maskRect) {
@@ -254,57 +263,64 @@ class GNode
             if (invalidateTransform || invalidateColor) {
                 transform.invalidate(p_parentTransformUpdate, p_parentColorUpdate);
             }
-
-            if (!g2d_active || !transform.visible || ((cameraGroup&p_camera.mask) == 0 && cameraGroup != 0) || (g2d_usedAsMask>0 && !p_renderAsMask)) return;
-
-            if (!p_renderAsMask && mask != null) {
-                core.getContext().renderToStencil(g2d_activeMasks.length);
-                mask.render(true, false, p_camera, true, false);
-                g2d_activeMasks.push(mask);
-                core.getContext().renderToColor(g2d_activeMasks.length);
-            }
             /**/
-            // Use matrix
-            var useMatrix:Bool = p_useMatrix || transform.g2d_useMatrix > 0;
-
-            if (useMatrix) {
-                if (core.g2d_renderMatrixArray.length<=core.g2d_renderMatrixIndex) core.g2d_renderMatrixArray[core.g2d_renderMatrixIndex] = new GMatrix();
-                core.g2d_renderMatrixArray[core.g2d_renderMatrixIndex].copyFrom(core.g2d_renderMatrix);
-                GMatrixUtils.prependMatrix(core.g2d_renderMatrix, transform.matrix);
-                core.g2d_renderMatrixIndex++;
-            }
-            /**/
-            if (g2d_renderable != null) {
-                g2d_renderable.render(p_camera, useMatrix);
-            }
-
-            var child:GNode = g2d_firstChild;
-            while (child != null) {
-                var next:GNode = child.g2d_nextNode;
-                if (child.postProcess != null) {
-                    child.postProcess.render(invalidateTransform, invalidateColor, p_camera, child);
-                } else {
-                    child.render(invalidateTransform, invalidateColor, p_camera, p_renderAsMask, useMatrix);
+            //if (!g2d_active || !transform.visible || ((cameraGroup&p_camera.mask) == 0 && cameraGroup != 0) || (g2d_usedAsMask>0 && !p_renderAsMask)) return;
+            if (g2d_active && transform.visible && ((cameraGroup&p_camera.mask) != 0 || cameraGroup == 0) && (g2d_usedAsMask==0 || p_renderAsMask)) {
+                /**/
+                if (!p_renderAsMask && mask != null) {
+                    core.getContext().renderToStencil(g2d_activeMasks.length);
+                    mask.render(true, false, p_camera, true, false);
+                    g2d_activeMasks.push(mask);
+                    core.getContext().renderToColor(g2d_activeMasks.length);
                 }
-                child = next;
-            }
 
-            if (hasMask) {
-                core.getContext().setMaskRect(previousMaskRect);
-            }
+                // Use matrix
+                var useMatrix:Bool = p_useMatrix || g2d_transform.g2d_useMatrix > 0;
 
-            if (!p_renderAsMask && mask != null) {
-                g2d_activeMasks.pop();
-                if (g2d_activeMasks.length==0) core.getContext().clearStencil();
-                core.getContext().renderToColor(g2d_activeMasks.length);
-            }
+                if (useMatrix) {
+                    if (core.g2d_renderMatrixArray.length<=core.g2d_renderMatrixIndex) core.g2d_renderMatrixArray[core.g2d_renderMatrixIndex] = new GMatrix();
+                    core.g2d_renderMatrixArray[core.g2d_renderMatrixIndex].copyFrom(core.g2d_renderMatrix);
+                    GMatrixUtils.prependMatrix(core.g2d_renderMatrix, transform.matrix);
+                    core.g2d_renderMatrixIndex++;
+                }
+                /**/
 
-            // Use matrix
-            if (useMatrix) {
-                core.g2d_renderMatrixIndex--;
-                core.g2d_renderMatrix.copyFrom(core.g2d_renderMatrixArray[core.g2d_renderMatrixIndex]);
+
+                if (g2d_renderable != null) {
+                    //g2d_renderable.render(p_camera, useMatrix);
+                    //g2d_renderable.render(p_camera, false);
+                    context.draw(texture, g2d_transform.x, transform.y);
+                }
+
+                var child:GNode = g2d_firstChild;
+                /**/
+                while (child != null) {
+                    var next:GNode = child.g2d_nextNode;
+                    if (child.postProcess != null) {
+                        child.postProcess.render(invalidateTransform, invalidateColor, p_camera, child);
+                    } else {
+                        child.render(invalidateTransform, invalidateColor, p_camera, p_renderAsMask, useMatrix);
+                    }
+                    /**/
+                    child = next;
+                }
+                /**/
+                if (hasMask) {
+                    core.getContext().setMaskRect(previousMaskRect);
+                }
+                /**/
+                if (!p_renderAsMask && mask != null) {
+                    g2d_activeMasks.pop();
+                    if (g2d_activeMasks.length==0) core.getContext().clearStencil();
+                    core.getContext().renderToColor(g2d_activeMasks.length);
+                }
+                /* Use matrix */
+                if (useMatrix) {
+                    core.g2d_renderMatrixIndex--;
+                    core.g2d_renderMatrix.copyFrom(core.g2d_renderMatrixArray[core.g2d_renderMatrixIndex]);
+                }
+                /**/
             }
-            /**/
         }
 	}
 	
