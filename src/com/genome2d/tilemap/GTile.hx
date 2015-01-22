@@ -100,7 +100,7 @@ class GTile
         g2d_frameTexturesCount = p_value.length;
         for (i in 0...g2d_frameTexturesCount) {
             var frameTexture:GTexture = GTextureManager.getTextureById(p_value[i]);
-            if (frameTexture == null) new GError("Invalid textures id "+p_value[i]);
+            if (frameTexture == null) GDebug.error("Invalid texture id "+p_value[i]);
             g2d_frameTextures.push(frameTexture);
         }
         g2d_currentFrame = 0;
@@ -126,7 +126,7 @@ class GTile
     }
 
     public function new(p_sizeX:Int = 1, p_sizeY:Int = 1, p_mapX:Int = -1, p_mapY:Int = -1) {
-        if ((p_sizeX != 1 || p_sizeY != 1) && (p_mapX == -1 || p_mapY == -1)) new GError("Invalid tile definition.");
+        if ((p_sizeX != 1 || p_sizeY != 1) && (p_mapX == -1 || p_mapY == -1)) GDebug.error("Invalid tile definition.");
 
         sizeX = p_sizeX;
         sizeY = p_sizeY;
