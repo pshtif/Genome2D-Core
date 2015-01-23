@@ -287,9 +287,8 @@ class GNode
 
 
                 if (g2d_renderable != null) {
-                    //g2d_renderable.render(p_camera, useMatrix);
-                    //g2d_renderable.render(p_camera, false);
-                    context.draw(texture, g2d_transform.x, transform.y);
+                    g2d_renderable.render(p_camera, useMatrix);
+                    //context.draw(texture, g2d_transform.x, transform.y);
                 }
 
                 var child:GNode = g2d_firstChild;

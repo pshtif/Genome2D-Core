@@ -190,7 +190,7 @@ class Genome2D
     **/
     @:dox(hide)
 	private function new() {
-		if (!g2d_instantiable) GDebug.critical("Can't instantiate singleton directly");
+		if (!g2d_instantiable) GDebug.error("Can't instantiate singleton directly");
 		g2d_instance = this;
 
         g2d_onInitialized = new Signal0();
@@ -208,6 +208,7 @@ class Genome2D
         @param p_config `GContextConfig` instance configuring Genome2D context
     **/
 	public function init(p_config:GContextConfig):Void {
+        GDebug.init();
         GPrototypeFactory.initializePrototypes();
         GAssetManager.init();
 
