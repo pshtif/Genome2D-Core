@@ -146,11 +146,11 @@ class GText extends GComponent implements IRenderable
 	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
 		if (renderer.isDirty()) renderer.invalidate();
 
-        if (renderer != null) renderer.render(node.transform.g2d_worldX, node.transform.g2d_worldY, node.transform.g2d_worldScaleX, node.transform.g2d_worldScaleY, node.transform.g2d_worldRotation);
+        if (renderer != null) renderer.render(node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation);
 	}
 	
 	@:dox(hide)
-    override public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
+    public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
 		if (renderer == null || renderer.width == 0 || renderer.height == 0) return false;
 
 		if (p_captured) {
@@ -159,20 +159,20 @@ class GText extends GComponent implements IRenderable
 		}
 
         // Invert translations
-        var tx:Float = p_cameraX - node.transform.g2d_worldX;
-        var ty:Float = p_cameraY - node.transform.g2d_worldY;
+        var tx:Float = p_cameraX - node.g2d_worldX;
+        var ty:Float = p_cameraY - node.g2d_worldY;
 
-        if (node.transform.g2d_worldRotation != 0) {
-            var cos:Float = Math.cos(-node.transform.g2d_worldRotation);
-            var sin:Float = Math.sin(-node.transform.g2d_worldRotation);
+        if (node.g2d_worldRotation != 0) {
+            var cos:Float = Math.cos(-node.g2d_worldRotation);
+            var sin:Float = Math.sin(-node.g2d_worldRotation);
 
             var ox:Float = tx;
             tx = (tx*cos - ty*sin);
             ty = (ty*cos + ox*sin);
         }
 
-        tx /= node.transform.g2d_worldScaleX*renderer.width;
-        ty /= node.transform.g2d_worldScaleY*renderer.height;
+        tx /= node.g2d_worldScaleX*renderer.width;
+        ty /= node.g2d_worldScaleY*renderer.height;
 
         var tw:Float = 0;
         var th:Float = 0;

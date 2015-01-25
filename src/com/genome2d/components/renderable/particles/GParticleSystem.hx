@@ -8,6 +8,7 @@
  */
 package com.genome2d.components.renderable.particles;
 
+import com.genome2d.signals.GMouseSignal;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.particles.GParticlePool;
 import com.genome2d.particles.IGInitializer;
@@ -142,8 +143,8 @@ class GParticleSystem extends GComponent implements IRenderable
             if (particle.overrideRender) {
                 particle.render(p_camera, this);
             } else {
-                var tx:Float = node.transform.g2d_worldX + (particle.x-node.transform.g2d_worldX)*1;//node.transform.g2d_worldScaleX;
-                var ty:Float = node.transform.g2d_worldY + (particle.y-node.transform.g2d_worldY)*1;//node.transform.g2d_worldScaleY;
+                var tx:Float = node.g2d_worldX + (particle.x-node.g2d_worldX)*1;//node.g2d_worldScaleX;
+                var ty:Float = node.g2d_worldY + (particle.y-node.g2d_worldY)*1;//node.g2d_worldScaleY;
 
                 if (particle.overrideUvs) {
                 /*
@@ -155,14 +156,14 @@ class GParticleSystem extends GComponent implements IRenderable
                     particle.texture.uvScaleX = particle.uScale;
                     var zvScale:Float = particle.texture.g2d_vScale;
                     particle.texture.uvScaleY = particle.vScale;
-                    node.core.getContext().draw(particle.texture, tx, ty, particle.scaleX*node.transform.g2d_worldScaleX, particle.scaleY*node.transform.g2d_worldScaleY, particle.rotation, particle.red*node.transform.g2d_worldRed, particle.green*node.transform.g2d_worldGreen, particle.blue*node.transform.g2d_worldBlue, particle.alpha*node.transform.g2d_worldAlpha, blendMode);
+                    node.core.getContext().draw(particle.texture, tx, ty, particle.scaleX*node.g2d_worldScaleX, particle.scaleY*node.g2d_worldScaleY, particle.rotation, particle.red*node.g2d_worldRed, particle.green*node.g2d_worldGreen, particle.blue*node.g2d_worldBlue, particle.alpha*node.g2d_worldAlpha, blendMode);
                     particle.texture.g2d_u = zu;
                     particle.texture.g2d_v = zv;
                     particle.texture.g2d_uScale = zuScale;
                     particle.texture.g2d_vScale = zvScale;
                 /**/
                 } else {
-                    node.core.getContext().draw(particle.texture, tx, ty, particle.scaleX*node.transform.g2d_worldScaleX, particle.scaleY*node.transform.g2d_worldScaleY, particle.rotation, particle.red*node.transform.g2d_worldRed, particle.green*node.transform.g2d_worldGreen, particle.blue*node.transform.g2d_worldBlue, particle.alpha*node.transform.g2d_worldAlpha, blendMode);
+                    node.core.getContext().draw(particle.texture, tx, ty, particle.scaleX*node.g2d_worldScaleX, particle.scaleY*node.g2d_worldScaleY, particle.rotation, particle.red*node.g2d_worldRed, particle.green*node.g2d_worldGreen, particle.blue*node.g2d_worldBlue, particle.alpha*node.g2d_worldAlpha, blendMode);
                 }
             }
 
@@ -203,5 +204,9 @@ class GParticleSystem extends GComponent implements IRenderable
         node.core.onUpdate.remove(update);
 
         super.dispose();
+    }
+
+    public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
+        return false;
     }
 }

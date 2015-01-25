@@ -56,9 +56,9 @@ class GTexturedQuad extends GComponent implements IRenderable
 		if (texture != null) {
             if (p_useMatrix && !ignoreMatrix) {
                 var matrix:GMatrix = node.core.g2d_renderMatrix;
-                node.core.getContext().drawMatrix(texture, matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty, node.transform.g2d_worldRed, node.transform.g2d_worldGreen, node.transform.g2d_worldBlue, node.transform.g2d_worldAlpha, blendMode, filter);
+                node.core.getContext().drawMatrix(texture, matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, blendMode, filter);
             } else {
-                node.core.getContext().draw(texture, node.transform.g2d_worldX, node.transform.g2d_worldY, node.transform.g2d_worldScaleX, node.transform.g2d_worldScaleY, node.transform.g2d_worldRotation, node.transform.g2d_worldRed, node.transform.g2d_worldGreen, node.transform.g2d_worldBlue, node.transform.g2d_worldAlpha, blendMode, filter);
+                node.core.getContext().draw(texture, node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, blendMode, filter);
             }
 		}
 	}
@@ -67,23 +67,23 @@ class GTexturedQuad extends GComponent implements IRenderable
         Check if a point is inside this quad
     **/
     public function hitTestPoint(p_x:Float, p_y:Float, p_pixelEnabled:Bool = false, p_w:Float = 0, p_h:Float = 0):Bool {
-        var tx:Float = p_x - node.transform.g2d_worldX;
-        var ty:Float = p_y - node.transform.g2d_worldY;
+        var tx:Float = p_x - node.g2d_worldX;
+        var ty:Float = p_y - node.g2d_worldY;
 
-        if (node.transform.g2d_worldRotation != 0) {
-            var cos:Float = Math.cos(-node.transform.g2d_worldRotation);
-            var sin:Float = Math.sin(-node.transform.g2d_worldRotation);
+        if (node.g2d_worldRotation != 0) {
+            var cos:Float = Math.cos(-node.g2d_worldRotation);
+            var sin:Float = Math.sin(-node.g2d_worldRotation);
 
             var ox:Float = tx;
             tx = (tx*cos - ty*sin);
             ty = (ty*cos + ox*sin);
         }
 
-        tx /= node.transform.g2d_worldScaleX*texture.width;
-        ty /= node.transform.g2d_worldScaleY*texture.height;
+        tx /= node.g2d_worldScaleX*texture.width;
+        ty /= node.g2d_worldScaleY*texture.height;
 
-        if (p_w != 0) p_w /= node.transform.g2d_worldScaleX*texture.width;
-        if (p_h != 0) p_h /= node.transform.g2d_worldScaleY*texture.height;
+        if (p_w != 0) p_w /= node.g2d_worldScaleX*texture.width;
+        if (p_h != 0) p_h /= node.g2d_worldScaleY*texture.height;
 
         tx += .5;
         ty += .5;
@@ -99,29 +99,29 @@ class GTexturedQuad extends GComponent implements IRenderable
     }
 
     @:dox(hide)
-	override public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
+	public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
 		if (p_captured && p_contextSignal.type == GMouseSignalType.MOUSE_UP) node.g2d_mouseDownNode = null;
 
-		if (p_captured || texture == null || texture.width == 0 || texture.height == 0 || node.transform.g2d_worldScaleX == 0 || node.transform.g2d_worldScaleY == 0) {
+		if (p_captured || texture == null || texture.width == 0 || texture.height == 0 || node.g2d_worldScaleX == 0 || node.g2d_worldScaleY == 0) {
 			if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, 0, 0, p_contextSignal);
 			return false;
 		}
 
         // Invert translations
-        var tx:Float = p_cameraX - node.transform.g2d_worldX;
-        var ty:Float = p_cameraY - node.transform.g2d_worldY;
+        var tx:Float = p_cameraX - node.g2d_worldX;
+        var ty:Float = p_cameraY - node.g2d_worldY;
 
-        if (node.transform.g2d_worldRotation != 0) {
-            var cos:Float = Math.cos(-node.transform.g2d_worldRotation);
-            var sin:Float = Math.sin(-node.transform.g2d_worldRotation);
+        if (node.g2d_worldRotation != 0) {
+            var cos:Float = Math.cos(-node.g2d_worldRotation);
+            var sin:Float = Math.sin(-node.g2d_worldRotation);
 
             var ox:Float = tx;
             tx = (tx*cos - ty*sin);
             ty = (ty*cos + ox*sin);
         }
 
-        tx /= node.transform.g2d_worldScaleX*texture.width;
-        ty /= node.transform.g2d_worldScaleY*texture.height;
+        tx /= node.g2d_worldScaleX*texture.width;
+        ty /= node.g2d_worldScaleY*texture.height;
 
         tx += .5;
         ty += .5;

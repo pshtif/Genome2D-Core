@@ -93,13 +93,6 @@ class GComponent implements IGPrototypable
     public function init():Void {
     }
 
-    /**
-	    Abstract method that should be overriden and implemented if you are creating your own components, its called each time a node that uses this components is processing mouse events
-	**/
-    public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
-        return false;
-    }
-
     public function dispose():Void {
 
     }

@@ -8,6 +8,7 @@
  */
 package com.genome2d.components.renderable;
 
+import com.genome2d.signals.GMouseSignal;
 import com.genome2d.debug.GDebug;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GBlendMode;
@@ -30,9 +31,8 @@ class GShape extends GComponent implements IRenderable
 
     public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         if (texture == null || g2d_vertices == null || g2d_uvs == null) return;
-        var transform:GTransform = node.transform;
         if (g2d_shapeRenderer == null) {
-            node.core.getContext().drawPoly(texture, g2d_vertices, g2d_uvs, transform.g2d_worldX, transform.g2d_worldY, transform.g2d_worldScaleX, transform.g2d_worldScaleY, transform.g2d_worldRotation, transform.g2d_worldRed, transform.g2d_worldGreen, transform.g2d_worldBlue, transform.g2d_worldAlpha, blendMode);
+            node.core.getContext().drawPoly(texture, g2d_vertices, g2d_uvs, node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, blendMode);
         } else {
             node.core.getContext().bindRenderer(g2d_shapeRenderer);
             g2d_shapeRenderer.draw(texture);
@@ -53,5 +53,9 @@ class GShape extends GComponent implements IRenderable
 
     public function getBounds(p_target:GRectangle = null):GRectangle {
         return null;
+    }
+
+    public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
+        return false;
     }
 }

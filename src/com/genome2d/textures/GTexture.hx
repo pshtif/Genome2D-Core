@@ -8,6 +8,7 @@
  */
 package com.genome2d.textures;
 
+import com.genome2d.debug.GDebug;
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.assets.GImageAsset;
 import com.genome2d.context.GContextFeature;
@@ -53,6 +54,8 @@ class GTexture extends GContextTexture
     }
     #if swc @:setter(region) #end
     inline private function set_region(p_value:GRectangle):GRectangle {
+        if (g2d_sourceAtlas == null) GDebug.error("Cant set error on standalone texture.");
+
         g2d_region = p_value;
 
         g2d_width = Std.int(g2d_region.width);
@@ -82,7 +85,6 @@ class GTexture extends GContextTexture
         g2d_invalidateUV();
     }
 
-	//public function new(p_id:String, p_source:Dynamic, p_region:GRectangle, p_format:String, p_repeatable:Bool, p_pivotX:Float, p_pivotY:Float, p_scaleFactor:Float, p_parentAtlas:GTextureAtlas) {
     public function new(p_id:String, p_source:Dynamic) {
         super(p_id, p_source);
 

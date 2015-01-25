@@ -67,8 +67,8 @@ class GParticle
     @:dox(hide)
     public function init(p_particleSystem:GParticleSystem):Void {
         texture = p_particleSystem.texture;
-        x = p_particleSystem.node.transform.g2d_worldX;
-        y = p_particleSystem.node.transform.g2d_worldY;
+        x = p_particleSystem.node.g2d_worldX;
+        y = p_particleSystem.node.g2d_worldY;
         scaleX = scaleY = 1;
         rotation = 0;
         velocityX = 0;

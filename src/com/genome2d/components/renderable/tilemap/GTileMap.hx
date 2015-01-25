@@ -88,8 +88,8 @@ class GTileMap extends GComponent implements IRenderable
         var viewRect:GRectangle = node.core.getContext().getStageViewRect();
         var cameraWidth:Float = viewRect.width*p_camera.normalizedViewWidth / p_camera.scaleX;
         var cameraHeight:Float = viewRect.height*p_camera.normalizedViewHeight / p_camera.scaleY;
-        var startX:Float =	p_camera.x - g2d_node.transform.g2d_worldX - cameraWidth *.5 - horizontalMargin;
-        var startY:Float = p_camera.y - g2d_node.transform.g2d_worldY - cameraHeight *.5 - verticalMargin;
+        var startX:Float =	p_camera.x - g2d_node.g2d_worldX - cameraWidth *.5 - horizontalMargin;
+        var startY:Float = p_camera.y - g2d_node.g2d_worldY - cameraHeight *.5 - verticalMargin;
         // Position of top left tile from map center
         var firstX:Float = -mapHalfWidth + (g2d_iso ? g2d_tileWidth/2 : 0);
         var firstY:Float = -mapHalfHeight + (g2d_iso ? g2d_tileHeight/2 : 0);
@@ -101,8 +101,8 @@ class GTileMap extends GComponent implements IRenderable
         if (indexY<0) indexY = 0;
 
         // Position of bottom right tile from map center
-        var endX:Float = p_camera.x - g2d_node.transform.g2d_worldX + cameraWidth * .5 - (g2d_iso ? g2d_tileWidth/2 : g2d_tileWidth) + horizontalMargin;
-        var endY:Float = p_camera.y - g2d_node.transform.g2d_worldY + cameraHeight * .5 - (g2d_iso ? 0 : g2d_tileHeight) + verticalMargin;
+        var endX:Float = p_camera.x - g2d_node.g2d_worldX + cameraWidth * .5 - (g2d_iso ? g2d_tileWidth/2 : g2d_tileWidth) + horizontalMargin;
+        var endY:Float = p_camera.y - g2d_node.g2d_worldY + cameraHeight * .5 - (g2d_iso ? 0 : g2d_tileHeight) + verticalMargin;
 
         var indexWidth:Int = Std.int((endX - firstX) / g2d_tileWidth - indexX+2);
         if (indexWidth>g2d_width-indexX) indexWidth = g2d_width - indexX;
@@ -113,8 +113,8 @@ class GTileMap extends GComponent implements IRenderable
         var tileCount:Int = indexWidth*indexHeight;
         for (i in 0...tileCount) {
             var row:Int = Std.int(i / indexWidth);
-            var x:Float = g2d_node.transform.g2d_worldX + (indexX + (i % indexWidth)) * g2d_tileWidth - mapHalfWidth + (g2d_iso && (indexY+row)%2 == 1 ? g2d_tileWidth : g2d_tileWidth/2);
-            var y:Float = g2d_node.transform.g2d_worldY + (indexY + row) * (g2d_iso ? g2d_tileHeight/2 : g2d_tileHeight) - mapHalfHeight + g2d_tileHeight/2;
+            var x:Float = g2d_node.g2d_worldX + (indexX + (i % indexWidth)) * g2d_tileWidth - mapHalfWidth + (g2d_iso && (indexY+row)%2 == 1 ? g2d_tileWidth : g2d_tileWidth/2);
+            var y:Float = g2d_node.g2d_worldY + (indexY + row) * (g2d_iso ? g2d_tileHeight/2 : g2d_tileHeight) - mapHalfHeight + g2d_tileHeight/2;
 
             var index:Int = indexY * g2d_width + indexX + Std.int(i / indexWidth) * g2d_width + i % indexWidth;
             var tile:GTile = g2d_tiles[index];
@@ -152,8 +152,8 @@ class GTileMap extends GComponent implements IRenderable
         var firstX:Float = -mapHalfWidth + (g2d_iso ? (g2d_tileWidth * p_camera.scaleX) / 2 : 0);
         var firstY:Float = -mapHalfHeight + (g2d_iso ? (g2d_tileHeight * p_camera.scaleY) / 2 : 0);
 
-        var tx:Float = p_camera.x - g2d_node.transform.g2d_worldX + p_x;
-        var ty:Float = p_camera.y - g2d_node.transform.g2d_worldY + p_y;
+        var tx:Float = p_camera.x - g2d_node.g2d_worldX + p_x;
+        var ty:Float = p_camera.y - g2d_node.g2d_worldY + p_y;
 
         var indexX:Int = Math.floor((tx - firstX) / (g2d_tileWidth * p_camera.scaleX));
         var indexY:Int = Math.floor((ty - firstY) / (g2d_tileHeight * p_camera.scaleY));
@@ -162,29 +162,29 @@ class GTileMap extends GComponent implements IRenderable
         return g2d_tiles[indexY*g2d_width+indexX];
     }
 
-    override public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
+    public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
         if (p_captured && p_contextSignal.type == GMouseSignalType.MOUSE_UP) node.g2d_mouseDownNode = null;
 
-        if (p_captured || node.transform.g2d_worldScaleX == 0 || node.transform.g2d_worldScaleY == 0) {
+        if (p_captured || node.g2d_worldScaleX == 0 || node.g2d_worldScaleY == 0) {
             if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, 0, 0, p_contextSignal);
             return false;
         }
 
         // Invert translations
-        var tx:Float = p_cameraX - node.transform.g2d_worldX;
-        var ty:Float = p_cameraY - node.transform.g2d_worldY;
+        var tx:Float = p_cameraX - node.g2d_worldX;
+        var ty:Float = p_cameraY - node.g2d_worldY;
 
-        if (node.transform.g2d_worldRotation != 0) {
-            var cos:Float = Math.cos(-node.transform.g2d_worldRotation);
-            var sin:Float = Math.sin(-node.transform.g2d_worldRotation);
+        if (node.g2d_worldRotation != 0) {
+            var cos:Float = Math.cos(-node.g2d_worldRotation);
+            var sin:Float = Math.sin(-node.g2d_worldRotation);
 
             var ox:Float = tx;
             tx = (tx*cos - ty*sin);
             ty = (ty*cos + ox*sin);
         }
 
-        tx /= node.transform.g2d_worldScaleX*g2d_width*g2d_tileWidth;
-        ty /= node.transform.g2d_worldScaleY*g2d_height*g2d_tileHeight;
+        tx /= node.g2d_worldScaleX*g2d_width*g2d_tileWidth;
+        ty /= node.g2d_worldScaleY*g2d_height*g2d_tileHeight;
         tx += .5;
         ty += .5;
 

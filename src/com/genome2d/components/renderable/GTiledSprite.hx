@@ -60,9 +60,9 @@ class GTiledSprite extends GComponent implements IRenderable {
         // Check rotations
         var sin:Float = 0;
         var cos:Float = 1;
-        if (node.transform.g2d_worldRotation != 0) {
-            sin = Math.sin(node.transform.g2d_worldRotation);
-            cos = Math.cos(node.transform.g2d_worldRotation);
+        if (node.g2d_worldRotation != 0) {
+            sin = Math.sin(node.g2d_worldRotation);
+            cos = Math.cos(node.g2d_worldRotation);
         }
 
         var ix:Int = Math.ceil(g2d_width/texture.width);
@@ -82,40 +82,40 @@ class GTiledSprite extends GComponent implements IRenderable {
 
                 node.core.getContext().drawSource(texture,
                                                   texture.region.x, texture.region.y, cw, ch, -cw*.5, -ch*.5,
-                                                  node.transform.g2d_worldX+cx*cos-cy*sin, node.transform.g2d_worldY+cy*cos+cx*sin, node.transform.g2d_worldScaleX, node.transform.g2d_worldScaleY, node.transform.g2d_worldRotation,
-                                                  node.transform.g2d_worldRed, node.transform.g2d_worldGreen, node.transform.g2d_worldBlue, node.transform.g2d_worldAlpha,
+                                                  node.g2d_worldX+cx*cos-cy*sin, node.g2d_worldY+cy*cos+cx*sin, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation,
+                                                  node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha,
                                                   blendMode, filter);
-                cx += cw*node.transform.g2d_worldScaleX;
+                cx += cw*node.g2d_worldScaleX;
             }
             cx = 0;
-            cy += ch*node.transform.g2d_worldScaleY;
+            cy += ch*node.g2d_worldScaleY;
         }
     }
 
     @:dox(hide)
-    override public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
+    public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
         if (p_captured && p_contextSignal.type == GMouseSignalType.MOUSE_UP) node.g2d_mouseDownNode = null;
 
-        if (p_captured || texture == null || g2d_width == 0 || g2d_height == 0 || node.transform.g2d_worldScaleX == 0 || node.transform.g2d_worldScaleY == 0) {
+        if (p_captured || texture == null || g2d_width == 0 || g2d_height == 0 || node.g2d_worldScaleX == 0 || node.g2d_worldScaleY == 0) {
             if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, 0, 0, p_contextSignal);
             return false;
         }
 
         // Invert translations
-        var tx:Float = p_cameraX - node.transform.g2d_worldX;
-        var ty:Float = p_cameraY - node.transform.g2d_worldY;
+        var tx:Float = p_cameraX - node.g2d_worldX;
+        var ty:Float = p_cameraY - node.g2d_worldY;
 
-        if (node.transform.g2d_worldRotation != 0) {
-            var cos:Float = Math.cos(-node.transform.g2d_worldRotation);
-            var sin:Float = Math.sin(-node.transform.g2d_worldRotation);
+        if (node.g2d_worldRotation != 0) {
+            var cos:Float = Math.cos(-node.g2d_worldRotation);
+            var sin:Float = Math.sin(-node.g2d_worldRotation);
 
             var ox:Float = tx;
             tx = (tx*cos - ty*sin);
             ty = (ty*cos + ox*sin);
         }
 
-        tx /= node.transform.g2d_worldScaleX*g2d_width;
-        ty /= node.transform.g2d_worldScaleY*g2d_height;
+        tx /= node.g2d_worldScaleX*g2d_width;
+        ty /= node.g2d_worldScaleY*g2d_height;
 
         if (tx >= 0 && tx <= 1 && ty >= 0 && ty <= 1) {
             node.dispatchNodeMouseSignal(p_contextSignal.type, node, tx*g2d_width, ty*g2d_height, p_contextSignal);

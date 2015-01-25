@@ -8,6 +8,7 @@
  */
 package com.genome2d.components.renderable.particles;
 
+import com.genome2d.signals.GMouseSignal;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.particles.GSimpleParticle;
 import com.genome2d.debug.GDebug;
@@ -203,9 +204,9 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
 	}
 
 	private function setInitialParticlePosition(p_particle:GSimpleParticle):Void {
-        p_particle.g2d_x = (useWorldSpace) ? node.transform.g2d_worldX : 0;
+        p_particle.g2d_x = (useWorldSpace) ? node.g2d_worldX : 0;
         if (dispersionXVariance>0) p_particle.g2d_x += dispersionXVariance*Math.random() - dispersionXVariance*.5;
-        p_particle.g2d_y = (useWorldSpace) ? node.transform.g2d_worldY : 0;
+        p_particle.g2d_y = (useWorldSpace) ? node.g2d_worldY : 0;
         if (dispersionYVariance>0) p_particle.g2d_y += dispersionYVariance*Math.random() - dispersionYVariance*.5;
         p_particle.g2d_rotation = initialAngle;
         if (initialAngleVariance>0) p_particle.g2d_rotation += initialAngleVariance*Math.random();
@@ -296,11 +297,11 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
                 tx = particle.g2d_x;
                 ty = particle.g2d_y;
             } else {
-                tx = node.transform.g2d_worldX + particle.g2d_x;
-                ty = node.transform.g2d_worldY + particle.g2d_y;
+                tx = node.g2d_worldX + particle.g2d_x;
+                ty = node.g2d_worldY + particle.g2d_y;
             }
 		
-			node.core.getContext().draw(particle.g2d_texture, tx, ty, particle.g2d_scaleX*node.transform.g2d_worldScaleX, particle.g2d_scaleY*node.transform.g2d_worldScaleY, particle.g2d_rotation, particle.g2d_red, particle.g2d_green, particle.g2d_blue, particle.g2d_alpha, blendMode);
+			node.core.getContext().draw(particle.g2d_texture, tx, ty, particle.g2d_scaleX*node.g2d_worldScaleX, particle.g2d_scaleY*node.g2d_worldScaleY, particle.g2d_rotation, particle.g2d_red, particle.g2d_green, particle.g2d_blue, particle.g2d_alpha, blendMode);
 
 			particle = next;
 		}
@@ -333,5 +334,9 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
     public function getBounds(p_target:GRectangle = null):GRectangle {
         // TODO
         return null;
+    }
+
+    public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
+        return false;
     }
 }

@@ -137,7 +137,7 @@ class GSimpleParticle
 		var aX:Float = particleAccelerationX = a;
 		var aY:Float = particleAccelerationY = 0;
 		
-		var rot:Float = p_emitter.node.transform.g2d_worldRotation;
+		var rot:Float = p_emitter.node.g2d_worldRotation;
 		if (rot!=0) {
 			var sin:Float = Math.sin(rot);
 			var cos:Float = Math.cos(rot);

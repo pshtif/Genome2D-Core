@@ -104,9 +104,9 @@ class GCameraController extends GComponent
 		if (!node.isActive()) return;
 		g2d_renderedNodesCount = 0;
 
-		g2d_contextCamera.x = node.transform.g2d_worldX;
-        g2d_contextCamera.y = node.transform.g2d_worldY;
-        g2d_contextCamera.rotation = node.transform.g2d_worldRotation;
+		g2d_contextCamera.x = node.g2d_worldX;
+        g2d_contextCamera.y = node.g2d_worldY;
+        g2d_contextCamera.rotation = node.g2d_worldRotation;
 
 		node.core.getContext().setActiveCamera(g2d_contextCamera);
         node.core.getContext().setRenderTarget(renderTarget);
@@ -128,8 +128,8 @@ class GCameraController extends GComponent
 	    var tx:Float = p_signal.x - g2d_viewRectangle.x - g2d_viewRectangle.width/2;
         var ty:Float = p_signal.y - g2d_viewRectangle.y - g2d_viewRectangle.height/2;
 
-		var cos:Float = Math.cos(-node.transform.g2d_worldRotation);
-		var sin:Float = Math.sin(-node.transform.g2d_worldRotation);
+		var cos:Float = Math.cos(-node.g2d_worldRotation);
+		var sin:Float = Math.sin(-node.g2d_worldRotation);
 		
 		var rx:Float = (tx*cos - ty*sin);
 		var ry:Float = (ty*cos + tx*sin);
@@ -137,7 +137,7 @@ class GCameraController extends GComponent
 		rx /= zoom;
 		ry /= zoom;
 
-		return node.core.root.processContextMouseSignal(p_captured, rx+node.transform.g2d_worldX, ry+node.transform.g2d_worldY, p_signal, g2d_contextCamera);
+		return node.core.root.processContextMouseSignal(p_captured, rx+node.g2d_worldX, ry+node.g2d_worldY, p_signal, g2d_contextCamera);
 	}
 
 	override public function dispose():Void {

@@ -82,13 +82,7 @@ class GUIElement implements IGPrototypable {
     inline private function set_normalSkin(p_value:GUISkin):GUISkin {
         g2d_normalSkin = p_value;
         g2d_activeSkin = g2d_normalSkin;
-        if (g2d_value != null) {
-            if (Std.is(g2d_value,String)) {
-                g2d_activeSkin.setValue(g2d_value);
-            } else {
-                g2d_activeSkin.setValue(g2d_value.value);
-            }
-        }
+
         setDirty();
         return g2d_normalSkin;
     }

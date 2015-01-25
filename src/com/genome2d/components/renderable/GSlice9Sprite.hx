@@ -23,9 +23,9 @@ class GSlice9Sprite extends GTiledSprite {
         // Calculate rotation
         var sin:Float = 0;
         var cos:Float = 1;
-        if (node.transform.g2d_worldRotation != 0) {
-            sin = Math.sin(node.transform.g2d_worldRotation);
-            cos = Math.cos(node.transform.g2d_worldRotation);
+        if (node.g2d_worldRotation != 0) {
+            sin = Math.sin(node.g2d_worldRotation);
+            cos = Math.cos(node.g2d_worldRotation);
         }
 
         var ix:Int = Math.ceil(g2d_width/texture1.width);
@@ -51,13 +51,13 @@ class GSlice9Sprite extends GTiledSprite {
                 node.core.getContext().drawSource(texture,
                                                   texture.region.x, texture.region.y, cw, ch, -cw*.5, -ch*.5,
                                                   //texture.uvX*texture.gpuWidth, texture.uvY*texture.gpuHeight, cw, ch, -cw*.5, -ch*.5,
-                                                  node.transform.g2d_worldX+cx*cos-cy*sin, node.transform.g2d_worldY+cy*cos+cx*sin, node.transform.g2d_worldScaleX, node.transform.g2d_worldScaleY, node.transform.g2d_worldRotation,
-                                                  node.transform.g2d_worldRed, node.transform.g2d_worldGreen, node.transform.g2d_worldBlue, node.transform.g2d_worldAlpha,
+                                                  node.g2d_worldX+cx*cos-cy*sin, node.g2d_worldY+cy*cos+cx*sin, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation,
+                                                  node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha,
                                                   blendMode, filter);
-                cx += cw*node.transform.g2d_worldScaleX;
+                cx += cw*node.g2d_worldScaleX;
             }
             cx = 0;
-            cy += ch*node.transform.g2d_worldScaleY;
+            cy += ch*node.g2d_worldScaleY;
         }
     }
 }

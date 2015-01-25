@@ -14,7 +14,6 @@ import com.genome2d.assets.GAssetManager;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.signals.GKeyboardSignal;
-import com.genome2d.components.GTransform;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.components.GCameraController;
@@ -255,7 +254,7 @@ class Genome2D
             onPreRender.dispatch();
 
             // Check if there is matrix usage in the pipeline
-            if (root.transform.g2d_useMatrix > 0) {
+            if (root.g2d_useMatrix > 0) {
                 g2d_renderMatrix.identity();
                 g2d_renderMatrixArray = [];
             }

@@ -8,6 +8,9 @@
  */
 package com.genome2d.node;
 
+import com.genome2d.geom.GPoint;
+import com.genome2d.context.filters.GFilter;
+import com.genome2d.context.GBlendMode;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.stage3d.GStage3DContext;
@@ -21,21 +24,18 @@ import com.genome2d.postprocess.GPostProcess;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.geom.GMatrixUtils;
 import com.genome2d.geom.GMatrix;
-import com.genome2d.components.GTransform;
 import com.genome2d.components.renderable.IRenderable;
 import com.genome2d.context.GCamera;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.signals.GNodeMouseSignal;
 import msignal.Signal;
 import com.genome2d.components.GComponent;
-import com.genome2d.components.GTransform;
 import com.genome2d.debug.GDebug;
 import com.genome2d.signals.GMouseSignal;
 
 /**
     Node class
 **/
-@:access(com.genome2d.components.GTransform)
 @:access(com.genome2d.Genome2D)
 class GNode
 {
@@ -158,7 +158,6 @@ class GNode
 			if (g2d_disposed) GDebug.error("Node already disposed.");
 			
 			g2d_active = p_value;
-			g2d_transform.setActive(g2d_active);
 			
 			if (g2d_pool != null) {
 				if (p_value) {
@@ -195,14 +194,6 @@ class GNode
 	**/
 	public var name:String;
 
-	private var g2d_transform:GTransform;
-	#if swc @:extern #end
-	public var transform(get, never):GTransform;
-	#if swc @:getter(transform) #end
-	inline private function get_transform():GTransform {
-		return g2d_transform;
-	}
-
     public var postProcess:GPostProcess;
 
 	private var g2d_parent:GNode;
@@ -227,99 +218,8 @@ class GNode
         // Create cached instances
         if (g2d_cachedMatrix == null)  {
             g2d_cachedMatrix = new GMatrix();
+            g2d_cachedTransformMatrix = new GMatrix();
             g2d_activeMasks = new Array<GNode>();
-        }
-
-        g2d_transform = cast addComponent(GTransform);
-	}
-
-    static public var context:GStage3DContext;
-    static public var texture:GTexture;
-
-    private var g2d_useMatrix:Bool;
-
-	/**
-	 * 	@private
-	 */
-	inline public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_renderAsMask:Bool, p_useMatrix:Bool):Void {
-		if (g2d_active) {
-            /**/
-            var previousMaskRect:GRectangle = null;
-            var hasMask:Bool = false;
-            if (maskRect != null && maskRect != parent.maskRect) {
-                hasMask = true;
-                previousMaskRect = (core.getContext().getMaskRect() == null) ? null : core.getContext().getMaskRect().clone();
-                if (parent.maskRect!=null) {
-                    var intersection:GRectangle = parent.maskRect.intersection(maskRect);
-                    core.getContext().setMaskRect(intersection);
-                } else {
-                    core.getContext().setMaskRect(maskRect);
-                }
-            }
-            /**/
-            var invalidateTransform:Bool = p_parentTransformUpdate || transform.g2d_transformDirty;
-            var invalidateColor:Bool = p_parentColorUpdate || transform.g2d_colorDirty;
-
-            if (invalidateTransform || invalidateColor) {
-                transform.invalidate(p_parentTransformUpdate, p_parentColorUpdate);
-            }
-            /**/
-            //if (!g2d_active || !transform.visible || ((cameraGroup&p_camera.mask) == 0 && cameraGroup != 0) || (g2d_usedAsMask>0 && !p_renderAsMask)) return;
-            if (g2d_active && transform.visible && ((cameraGroup&p_camera.mask) != 0 || cameraGroup == 0) && (g2d_usedAsMask==0 || p_renderAsMask)) {
-                /**/
-                if (!p_renderAsMask && mask != null) {
-                    core.getContext().renderToStencil(g2d_activeMasks.length);
-                    mask.render(true, false, p_camera, true, false);
-                    g2d_activeMasks.push(mask);
-                    core.getContext().renderToColor(g2d_activeMasks.length);
-                }
-
-                // Use matrix
-                var useMatrix:Bool = p_useMatrix || g2d_transform.g2d_useMatrix > 0;
-
-                if (useMatrix) {
-                    if (core.g2d_renderMatrixArray.length<=core.g2d_renderMatrixIndex) core.g2d_renderMatrixArray[core.g2d_renderMatrixIndex] = new GMatrix();
-                    core.g2d_renderMatrixArray[core.g2d_renderMatrixIndex].copyFrom(core.g2d_renderMatrix);
-                    GMatrixUtils.prependMatrix(core.g2d_renderMatrix, transform.matrix);
-                    core.g2d_renderMatrixIndex++;
-                }
-                /**/
-
-
-                if (g2d_renderable != null) {
-                    g2d_renderable.render(p_camera, useMatrix);
-                    //context.draw(texture, g2d_transform.x, transform.y);
-                }
-
-                var child:GNode = g2d_firstChild;
-                /**/
-                while (child != null) {
-                    var next:GNode = child.g2d_nextNode;
-                    if (child.postProcess != null) {
-                        child.postProcess.render(invalidateTransform, invalidateColor, p_camera, child);
-                    } else {
-                        child.render(invalidateTransform, invalidateColor, p_camera, p_renderAsMask, useMatrix);
-                    }
-                    /**/
-                    child = next;
-                }
-                /**/
-                if (hasMask) {
-                    core.getContext().setMaskRect(previousMaskRect);
-                }
-                /**/
-                if (!p_renderAsMask && mask != null) {
-                    g2d_activeMasks.pop();
-                    if (g2d_activeMasks.length==0) core.getContext().clearStencil();
-                    core.getContext().renderToColor(g2d_activeMasks.length);
-                }
-                /* Use matrix */
-                if (useMatrix) {
-                    core.g2d_renderMatrixIndex--;
-                    core.g2d_renderMatrix.copyFrom(core.g2d_renderMatrixArray[core.g2d_renderMatrixIndex]);
-                }
-                /**/
-            }
         }
 	}
 	
@@ -335,7 +235,6 @@ class GNode
             g2d_components.pop().g2d_dispose();
             g2d_numComponents--;
         }
-		g2d_transform = null;
         g2d_renderable = null;
 		
 		if (parent != null) {
@@ -439,6 +338,10 @@ class GNode
 	 ****************************************************************************************************/
 	public var mouseChildren:Bool = true;
 	public var mouseEnabled:Bool = false;
+
+    public var mousePixelEnabled:Bool = false;
+    public var mousePixelTreshold:Int = 0;
+    public var filter:GFilter;
 	
 	// Mouse signals
 	private var g2d_onMouseDown:Signal1<GNodeMouseSignal>;
@@ -505,21 +408,40 @@ class GNode
      *  Process context mouse signals
      **/
 	public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_signal:GMouseSignal, p_camera:GCamera):Bool {
-		if (!isActive() || !transform.visible || (p_camera != null && (cameraGroup&p_camera.mask) == 0 && cameraGroup != 0)) return false;
+		if (!isActive() || !visible || (p_camera != null && (cameraGroup&p_camera.mask) == 0 && cameraGroup != 0)) return false;
 
 		if (mouseChildren) {
             var child:GNode = g2d_lastChild;
             while (child != null) {
                 var previous:GNode = child.g2d_previousNode;
-				p_captured = child.processContextMouseSignal(p_captured, p_cameraX, p_cameraY, p_signal, p_camera) || p_captured;
+				p_captured = p_captured || child.processContextMouseSignal(p_captured, p_cameraX, p_cameraY, p_signal, p_camera);
                 child = previous;
 			}
 		}
 		
 		if (mouseEnabled) {
-            for (i in 0...g2d_numComponents) {
-				p_captured = g2d_components[i].processContextMouseSignal(p_captured, p_cameraX, p_cameraY, p_signal) || p_captured;
-			}
+            // Check if there is texture
+            if (texture != null) {
+                // If there was a MOUSE UP signal and we didn't capture it reset the mouse down node
+                if (p_captured && p_signal.type == GMouseSignalType.MOUSE_UP) g2d_mouseDownNode = null;
+                if (p_captured || texture == null || texture.width == 0 || texture.height == 0 || g2d_worldScaleX == 0 || g2d_worldScaleY == 0) {
+                    if (g2d_mouseOverNode == this) dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, this, 0, 0, p_signal);
+                } else  {
+                    var hit:Bool = hitTestPoint(p_cameraX, p_cameraY, mousePixelEnabled, false);
+                    if (hit) {
+                        dispatchNodeMouseSignal(p_signal.type, this, 0, 0, p_signal);
+                        if (g2d_mouseOverNode != this) {
+                            dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OVER, this, 0, 0, p_signal);
+                        }
+                        p_captured = true;
+                    } else if (g2d_mouseOverNode == this) {
+                        dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, this, 0, 0, p_signal);
+                    }
+                }
+            // Check renderable component
+            } else if (g2d_renderable != null) {
+                p_captured = p_captured || g2d_renderable.processContextMouseSignal(p_captured, p_cameraX, p_cameraY, p_signal);
+            }
 		}
 		
 		return p_captured;
@@ -649,7 +571,7 @@ class GNode
 		if (g2d_disposed) GDebug.error("Node already disposed.");
 		var component:GComponent = getComponent(p_componentLookupClass);
 
-		if (component == null || component == transform) return;
+		if (component == null) return;
 
         g2d_components.remove(component);
         g2d_numComponents--;
@@ -740,7 +662,7 @@ class GNode
         }
 
 		g2d_numChildren++;
-        if (g2d_numChildren == 1 && transform.hasUniformRotation()) transform.g2d_useMatrix++;
+        if (g2d_numChildren == 1 && hasUniformRotation()) g2d_useMatrix++;
 		
 		if (isOnStage()) p_child.g2d_addedToStage();
         return p_child;
@@ -903,7 +825,7 @@ class GNode
         p_child.g2d_nextNode = p_child.g2d_previousNode = p_child.g2d_parent = null;
 		
 		g2d_numChildren--;
-        if (g2d_numChildren == 0 && transform.hasUniformRotation()) transform.g2d_useMatrix--;
+        if (g2d_numChildren == 0 && hasUniformRotation()) g2d_useMatrix--;
 
 		if (isOnStage()) p_child.g2d_removedFromStage();
         return p_child;
@@ -978,26 +900,29 @@ class GNode
         var maxY:Float = -10000000;
         var aabb:GRectangle = new GRectangle(0,0,0,0);
 
-        if (g2d_renderable != null) {
+        if (texture != null) {
+            aabb.setTo(-texture.width*.5-texture.pivotX, -texture.height*.5-texture.pivotY, texture.width, texture.height);
+        } else if (g2d_renderable != null) {
             g2d_renderable.getBounds(aabb);
-            if (aabb.width != 0 && aabb.height != 0) {
-                var m:GMatrix = transform.getTransformationMatrix(p_targetSpace, g2d_cachedMatrix);
+        }
 
-                var tx1:Float = g2d_cachedMatrix.a * aabb.x + g2d_cachedMatrix.c * aabb.y + g2d_cachedMatrix.tx;
-                var ty1:Float = g2d_cachedMatrix.d * aabb.y + g2d_cachedMatrix.b * aabb.x + g2d_cachedMatrix.ty;
-                var tx2:Float = g2d_cachedMatrix.a * aabb.x + g2d_cachedMatrix.c * aabb.bottom + g2d_cachedMatrix.tx;
-                var ty2:Float = g2d_cachedMatrix.d * aabb.bottom + g2d_cachedMatrix.b * aabb.x + g2d_cachedMatrix.ty;
-                var tx3:Float = g2d_cachedMatrix.a * aabb.right + g2d_cachedMatrix.c * aabb.y + g2d_cachedMatrix.tx;
-                var ty3:Float = g2d_cachedMatrix.d * aabb.y + g2d_cachedMatrix.b * aabb.right + g2d_cachedMatrix.ty;
-                var tx4:Float = g2d_cachedMatrix.a * aabb.right + g2d_cachedMatrix.c * aabb.bottom + g2d_cachedMatrix.tx;
-                var ty4:Float = g2d_cachedMatrix.d * aabb.bottom + g2d_cachedMatrix.b * aabb.right + g2d_cachedMatrix.ty;
-                if (minX > tx1) minX = tx1; if (minX > tx2) minX = tx2; if (minX > tx3) minX = tx3; if (minX > tx4) minX = tx4;
-                if (minY > ty1) minY = ty1; if (minY > ty2) minY = ty2; if (minY > ty3) minY = ty3; if (minY > ty4) minY = ty4;
-                if (maxX < tx1) maxX = tx1; if (maxX < tx2) maxX = tx2; if (maxX < tx3) maxX = tx3; if (maxX < tx4) maxX = tx4;
-                if (maxY < ty1) maxY = ty1; if (maxY < ty2) maxY = ty2; if (maxY < ty3) maxY = ty3; if (maxY < ty4) maxY = ty4;
+        if (aabb.width != 0 && aabb.height != 0) {
+            var m:GMatrix = getTransformationMatrix(p_targetSpace, g2d_cachedMatrix);
 
-                found = true;
-            }
+            var tx1:Float = g2d_cachedMatrix.a * aabb.x + g2d_cachedMatrix.c * aabb.y + g2d_cachedMatrix.tx;
+            var ty1:Float = g2d_cachedMatrix.d * aabb.y + g2d_cachedMatrix.b * aabb.x + g2d_cachedMatrix.ty;
+            var tx2:Float = g2d_cachedMatrix.a * aabb.x + g2d_cachedMatrix.c * aabb.bottom + g2d_cachedMatrix.tx;
+            var ty2:Float = g2d_cachedMatrix.d * aabb.bottom + g2d_cachedMatrix.b * aabb.x + g2d_cachedMatrix.ty;
+            var tx3:Float = g2d_cachedMatrix.a * aabb.right + g2d_cachedMatrix.c * aabb.y + g2d_cachedMatrix.tx;
+            var ty3:Float = g2d_cachedMatrix.d * aabb.y + g2d_cachedMatrix.b * aabb.right + g2d_cachedMatrix.ty;
+            var tx4:Float = g2d_cachedMatrix.a * aabb.right + g2d_cachedMatrix.c * aabb.bottom + g2d_cachedMatrix.tx;
+            var ty4:Float = g2d_cachedMatrix.d * aabb.bottom + g2d_cachedMatrix.b * aabb.right + g2d_cachedMatrix.ty;
+            if (minX > tx1) minX = tx1; if (minX > tx2) minX = tx2; if (minX > tx3) minX = tx3; if (minX > tx4) minX = tx4;
+            if (minY > ty1) minY = ty1; if (minY > ty2) minY = ty2; if (minY > ty3) minY = ty3; if (minY > ty4) minY = ty4;
+            if (maxX < tx1) maxX = tx1; if (maxX < tx2) maxX = tx2; if (maxX < tx3) maxX = tx3; if (maxX < tx4) maxX = tx4;
+            if (maxY < ty1) maxY = ty1; if (maxY < ty2) maxY = ty2; if (maxY < ty3) maxY = ty3; if (maxY < ty4) maxY = ty4;
+
+            found = true;
         }
 
         var child:GNode = g2d_firstChild;
@@ -1164,7 +1089,7 @@ class GNode
                         p = p.g2d_nextNode;
                         psize--;
                     } else if (p_ascending) {
-                        if (p.transform.y >= q.transform.y) {
+                        if (p.y >= q.y) {
                             e = p;
                             p = p.g2d_nextNode;
                             psize--;
@@ -1174,7 +1099,7 @@ class GNode
                             qsize--;
                         }
                     } else {
-                        if (p.transform.y <= q.transform.y) {
+                        if (p.y <= q.y) {
                             e = p;
                             p = p.g2d_nextNode;
                             psize--;
@@ -1209,5 +1134,460 @@ class GNode
 
     public function toString():String {
         return "[GNode "+name+"]";
+    }
+
+    /****************************************************************************************************
+	 * 	TRANSFORM
+	 ****************************************************************************************************/
+
+    static private var g2d_cachedTransformMatrix:GMatrix;
+
+    private var g2d_matrixDirty:Bool = true;
+    private var g2d_transformDirty:Bool = false;
+    private var g2d_colorDirty:Bool = false;
+
+    @prototype public var useWorldSpace:Bool = false;
+    @prototype public var useWorldColor:Bool = false;
+
+    public var visible:Bool = true;
+
+    @:dox(hide)
+    public var g2d_worldX:Float = 0;
+    private var g2d_localX:Float = 0;
+    #if swc @:extern #end
+    @prototype public var x(get, set):Float;
+    #if swc @:getter(x) #end
+    inline private function get_x():Float {
+        return g2d_localX;
+    }
+    #if swc @:setter(x) #end
+    inline private function set_x(p_value:Float):Float {
+        g2d_transformDirty = g2d_matrixDirty = true;
+        return g2d_localX = g2d_worldX = p_value;
+    }
+
+    @:dox(hide)
+    public var g2d_worldY:Float = 0;
+    private var g2d_localY:Float = 0;
+    #if swc @:extern #end
+    @prototype public var y(get, set):Float;
+    #if swc @:getter(y) #end
+    inline private function get_y():Float {
+        return g2d_localY;
+    }
+    #if swc @:setter(y) #end
+    inline private function set_y(p_value:Float):Float {
+        g2d_transformDirty = g2d_matrixDirty = true;
+        return g2d_localY = g2d_worldY = p_value;
+    }
+
+    inline public function hasUniformRotation():Bool {
+        return (g2d_localScaleX != g2d_localScaleY && g2d_localRotation != 0);
+    }
+    private var g2d_localUseMatrix:Int = 0;
+
+    public var g2d_useMatrix(get, set):Int;
+    inline private function get_g2d_useMatrix():Int {
+        return g2d_localUseMatrix;
+    }
+    inline private function set_g2d_useMatrix(p_value:Int):Int {
+        if (g2d_parent != null) g2d_parent.g2d_useMatrix += p_value-g2d_useMatrix;
+        g2d_localUseMatrix = p_value;
+        return g2d_useMatrix;
+    }
+
+    @:dox(hide)
+    public var g2d_worldScaleX:Float = 1;
+    private var g2d_localScaleX:Float = 1;
+    #if swc @:extern #end
+    @prototype public var scaleX(get, set):Float;
+    #if swc @:getter(scaleX) #end
+    inline private function get_scaleX():Float {
+        return g2d_localScaleX;
+    }
+    #if swc @:setter(scaleX) #end
+    inline private function set_scaleX(p_value:Float):Float {
+        if (g2d_localScaleX == g2d_localScaleY && p_value != g2d_localScaleY && g2d_localRotation != 0 && g2d_numChildren>0) g2d_useMatrix++;
+        if (g2d_localScaleX == g2d_localScaleY && p_value == g2d_localScaleY && g2d_localRotation != 0 && g2d_numChildren>0) g2d_useMatrix--;
+
+        g2d_transformDirty = g2d_matrixDirty = true;
+        return g2d_localScaleX = g2d_worldScaleX = p_value;
+    }
+
+    @:dox(hide)
+    public var g2d_worldScaleY:Float = 1;
+    private var g2d_localScaleY:Float = 1;
+    #if swc @:extern #end
+    @prototype public var scaleY(get, set):Float;
+    #if swc @:getter(scaleY) #end
+    inline private function get_scaleY():Float {
+        return g2d_localScaleY;
+    }
+    #if swc @:setter(scaleY) #end
+    inline private function set_scaleY(p_value:Float):Float {
+        if (g2d_localScaleX == g2d_localScaleY && p_value != g2d_localScaleX && g2d_localRotation != 0 && g2d_numChildren>0) g2d_useMatrix++;
+        if (g2d_localScaleX == g2d_localScaleY && p_value == g2d_localScaleX && g2d_localRotation != 0 && g2d_numChildren>0) g2d_useMatrix--;
+
+        g2d_transformDirty = g2d_matrixDirty = true;
+        return g2d_localScaleY = g2d_worldScaleY = p_value;
+    }
+
+    @:dox(hide)
+    public var g2d_worldRotation:Float = 0;
+    private var g2d_localRotation:Float = 0;
+    #if swc @:extern #end
+    @prototype public var rotation(get, set):Float;
+    #if swc @:getter(rotation) #end
+    inline private function get_rotation():Float {
+        return g2d_localRotation;
+    }
+    #if swc @:setter(rotation) #end
+    inline private function set_rotation(p_value:Float):Float {
+        if (g2d_localRotation == 0 && p_value != 0 && g2d_localScaleX != g2d_localScaleY && g2d_numChildren>0) g2d_useMatrix++;
+        if (g2d_localRotation != 0 && p_value == 0 && g2d_localScaleX != g2d_localScaleY && g2d_numChildren>0) g2d_useMatrix--;
+
+        g2d_transformDirty = g2d_matrixDirty = true;
+        return g2d_localRotation = g2d_worldRotation = p_value;
+    }
+
+    @:dox(hide)
+    public var g2d_worldRed:Float = 1;
+    private var g2d_localRed:Float = 1;
+    #if swc @:extern #end
+    public var red(get, set):Float;
+    #if swc @:getter(red) #end
+    inline private function get_red():Float {
+        return g2d_localRed;
+    }
+    #if swc @:setter(red) #end
+    inline private function set_red(p_value:Float):Float {
+        g2d_colorDirty = true;
+        return g2d_localRed = g2d_worldRed = p_value;
+    }
+
+    @:dox(hide)
+    public var g2d_worldGreen:Float = 1;
+    private var g2d_localGreen:Float = 1;
+    #if swc @:extern #end
+    public var green(get, set):Float;
+    #if swc @:getter(green) #end
+    inline private function get_green():Float {
+        return g2d_localGreen;
+    }
+    #if swc @:setter(green) #end
+    inline private function set_green(p_value:Float):Float {
+        g2d_colorDirty = true;
+        return g2d_localGreen = g2d_worldGreen = p_value;
+    }
+
+    @:dox(hide)
+    public var g2d_worldBlue:Float = 1;
+    private var g2d_localBlue:Float = 1;
+    #if swc @:extern #end
+    public var blue(get, set):Float;
+    #if swc @:getter(blue) #end
+    inline private function get_blue():Float {
+        return g2d_localBlue;
+    }
+    #if swc @:setter(blue) #end
+    inline private function set_blue(p_value:Float):Float {
+        g2d_colorDirty = true;
+        return g2d_localBlue = g2d_worldBlue = p_value;
+    }
+
+    @:dox(hide)
+    public var g2d_worldAlpha:Float = 1;
+    private var g2d_localAlpha:Float = 1;
+    #if swc @:extern #end
+    @prototype public var alpha(get, set):Float;
+    #if swc @:getter(alpha) #end
+    inline private function get_alpha():Float {
+        return g2d_localAlpha;
+    }
+    #if swc @:setter(alpha) #end
+    inline private function set_alpha(p_value:Float):Float {
+        g2d_colorDirty = true;
+        return g2d_localAlpha = g2d_worldAlpha = p_value;
+    }
+
+    #if swc @:extern #end
+    public var color(never, set):Int;
+    #if swc @:setter(color) #end
+    inline private function set_color(p_value:Int):Int {
+        red = (p_value >> 16 & 0xFF) / 0xFF;
+        green = (p_value >> 8 & 0xFF) / 0xFF;
+        blue = (p_value & 0xFF) / 0xFF;
+        return p_value;
+    }
+
+    private var g2d_matrix:GMatrix;
+    #if swc @:extern #end
+    public var matrix(get, never):GMatrix;
+    #if swc @:getter(matrix) #end
+    inline private function get_matrix():GMatrix {
+        if (g2d_matrixDirty) {
+            if (g2d_matrix == null) g2d_matrix = new GMatrix();
+            if (g2d_localRotation == 0.0) {
+                g2d_matrix.setTo(g2d_localScaleX, 0.0, 0.0, g2d_localScaleY, g2d_localX, g2d_localY);
+            } else {
+                var cos:Float = Math.cos(g2d_localRotation);
+                var sin:Float = Math.sin(g2d_localRotation);
+                var a:Float = g2d_localScaleX * cos;
+                var b:Float = g2d_localScaleX * sin;
+                var c:Float = g2d_localScaleY * -sin;
+                var d:Float = g2d_localScaleY * cos;
+                var tx:Float = g2d_localX;
+                var ty:Float = g2d_localY;
+
+                g2d_matrix.setTo(a, b, c, d, tx, ty);
+            }
+
+            g2d_matrixDirty = false;
+        }
+
+        return g2d_matrix;
+    }
+
+    public function getTransformationMatrix(p_targetSpace:GNode, p_resultMatrix:GMatrix = null):GMatrix {
+        if (p_resultMatrix == null) {
+            p_resultMatrix = new GMatrix();
+        } else {
+            p_resultMatrix.identity();
+        }
+
+        if (p_targetSpace == g2d_parent) {
+            p_resultMatrix.copyFrom(matrix);
+        } else if (p_targetSpace != this) {
+            var common:GNode = getCommonParent(p_targetSpace);
+            if (common != null) {
+                var current:GNode = this;
+                while (common != current) {
+                    p_resultMatrix.concat(current.matrix);
+                    current = current.parent;
+                }
+                // If its not in parent hierarchy we need to continue down the target
+                if (common != p_targetSpace) {
+                    g2d_cachedTransformMatrix.identity();
+                    while (p_targetSpace != common) {
+                        g2d_cachedTransformMatrix.concat(p_targetSpace.matrix);
+                        p_targetSpace = p_targetSpace.parent;
+                    }
+                    g2d_cachedTransformMatrix.invert();
+                    p_resultMatrix.concat(g2d_cachedTransformMatrix);
+                }
+            }
+        }
+
+        return p_resultMatrix;
+    }
+
+    public function localToGlobal(p_local:GPoint, p_result:GPoint = null):GPoint {
+        getTransformationMatrix(g2d_core.g2d_root, g2d_cachedTransformMatrix);
+        if (p_result == null) p_result = new GPoint();
+        p_result.x = g2d_cachedTransformMatrix.a * p_local.x + g2d_cachedTransformMatrix.c * p_local.y + g2d_cachedTransformMatrix.tx;
+        p_result.y = g2d_cachedTransformMatrix.d * p_local.y + g2d_cachedTransformMatrix.b * p_local.x + g2d_cachedTransformMatrix.ty;
+        return p_result;
+    }
+
+    public function globalToLocal(p_global:GPoint, p_result:GPoint = null):GPoint {
+        getTransformationMatrix(g2d_core.g2d_root, g2d_cachedTransformMatrix);
+        g2d_cachedTransformMatrix.invert();
+        if (p_result == null) p_result = new GPoint();
+        p_result.x = g2d_cachedTransformMatrix.a * p_global.x + g2d_cachedTransformMatrix.c * p_global.y + g2d_cachedTransformMatrix.tx;
+        p_result.y = g2d_cachedTransformMatrix.d * p_global.y + g2d_cachedTransformMatrix.b * p_global.x + g2d_cachedTransformMatrix.ty;
+        return p_result;
+    }
+
+    public function setPosition(p_x:Float, p_y:Float):Void {
+        g2d_transformDirty = g2d_matrixDirty = true;
+        g2d_localX = g2d_worldX = p_x;
+        g2d_localY = g2d_worldY = p_y;
+    }
+
+    public function setScale(p_scaleX:Float, p_scaleY:Float):Void {
+        g2d_transformDirty = g2d_matrixDirty = true;
+        g2d_localScaleX = g2d_worldScaleX = p_scaleX;
+        g2d_localScaleY = g2d_worldScaleY = p_scaleY;
+    }
+
+    inline private function invalidate(p_invalidateParentTransform:Bool, p_invalidateParentColor:Bool):Void {
+        if (p_invalidateParentTransform && !useWorldSpace) {
+            if (g2d_parent.g2d_worldRotation != 0) {
+                var cos:Float = Math.cos(g2d_parent.g2d_worldRotation);
+                var sin:Float = Math.sin(g2d_parent.g2d_worldRotation);
+
+                g2d_worldX = (x * cos - y * sin) * g2d_parent.g2d_worldScaleX + g2d_parent.g2d_worldX;
+                g2d_worldY = (y * cos + x * sin) * g2d_parent.g2d_worldScaleY + g2d_parent.g2d_worldY;
+            } else {
+                g2d_worldX = g2d_localX * g2d_parent.g2d_worldScaleX + g2d_parent.g2d_worldX;
+                g2d_worldY = g2d_localY * g2d_parent.g2d_worldScaleY + g2d_parent.g2d_worldY;
+            }
+
+            g2d_worldScaleX = g2d_localScaleX * g2d_parent.g2d_worldScaleX;
+            g2d_worldScaleY = g2d_localScaleY * g2d_parent.g2d_worldScaleY;
+            g2d_worldRotation = g2d_localRotation + g2d_parent.g2d_worldRotation;
+
+            g2d_transformDirty = false;
+        }
+
+        if (p_invalidateParentColor && !useWorldColor) {
+            g2d_worldRed = g2d_localRed * g2d_parent.g2d_worldRed;
+            g2d_worldGreen = g2d_localGreen * g2d_parent.g2d_worldGreen;
+            g2d_worldBlue = g2d_localBlue * g2d_parent.g2d_worldBlue;
+            g2d_worldAlpha = g2d_localAlpha * g2d_parent.g2d_worldAlpha;
+
+            g2d_colorDirty = false;
+        }
+    }
+
+    /****************************************************************************************************
+	 * 	RENDER
+	 ****************************************************************************************************/
+
+    public var texture:GTexture;
+
+    /**
+        Texture id used by this sprite
+    **/
+    #if swc @:extern #end
+    @prototype public var textureId(get, set):String;
+    #if swc @:getter(textureId) #end
+    inline private function get_textureId():String {
+        return (texture != null) ? texture.id : "";
+    }
+    #if swc @:setter(textureId) #end
+    inline private function set_textureId(p_value:String):String {
+        if (p_value == "") {
+            texture = null;
+        } else {
+            texture = GTextureManager.getTextureById(p_value);
+            if (texture == null) GDebug.warning("Invalid texture with id "+p_value);
+        }
+        return (texture == null) ? "" : p_value;
+    }
+
+    public var ignoreMatrix:Bool = false;
+
+    @prototype public var blendMode:Int = GBlendMode.NORMAL;
+
+    /**
+	 *
+	 */
+    public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_renderAsMask:Bool, p_useMatrix:Bool):Void {
+        if (g2d_active) {
+            /*  Masking  */
+            var previousMaskRect:GRectangle = null;
+            var hasMask:Bool = false;
+            if (maskRect != null && maskRect != parent.maskRect) {
+                hasMask = true;
+                previousMaskRect = (core.getContext().getMaskRect() == null) ? null : core.getContext().getMaskRect().clone();
+                if (parent.maskRect!=null) {
+                    var intersection:GRectangle = parent.maskRect.intersection(maskRect);
+                    core.getContext().setMaskRect(intersection);
+                } else {
+                    core.getContext().setMaskRect(maskRect);
+                }
+            }
+            /*  Transform invalidation  */
+            var invalidateTransform:Bool = p_parentTransformUpdate || g2d_transformDirty;
+            var invalidateColor:Bool = p_parentColorUpdate || g2d_colorDirty;
+
+            if (invalidateTransform || invalidateColor) {
+                invalidate(p_parentTransformUpdate, p_parentColorUpdate);
+            }
+
+            if (g2d_active && visible && ((cameraGroup&p_camera.mask) != 0 || cameraGroup == 0) && (g2d_usedAsMask==0 || p_renderAsMask)) {
+                /*  Masking  */
+                if (!p_renderAsMask && mask != null) {
+                    core.getContext().renderToStencil(g2d_activeMasks.length);
+                    mask.render(true, false, p_camera, true, false);
+                    g2d_activeMasks.push(mask);
+                    core.getContext().renderToColor(g2d_activeMasks.length);
+                }
+
+                /*  Matrix  */
+                var useMatrix:Bool = p_useMatrix || g2d_useMatrix > 0;
+
+                if (useMatrix) {
+                    if (core.g2d_renderMatrixArray.length<=core.g2d_renderMatrixIndex) core.g2d_renderMatrixArray[core.g2d_renderMatrixIndex] = new GMatrix();
+                    core.g2d_renderMatrixArray[core.g2d_renderMatrixIndex].copyFrom(core.g2d_renderMatrix);
+                    GMatrixUtils.prependMatrix(core.g2d_renderMatrix, matrix);
+                    core.g2d_renderMatrixIndex++;
+                }
+
+                if (texture != null) {
+                    if (p_useMatrix && !ignoreMatrix) {
+                        var matrix:GMatrix = core.g2d_renderMatrix;
+                        g2d_core.getContext().drawMatrix(texture, matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty, g2d_worldRed, g2d_worldGreen, g2d_worldBlue, g2d_worldAlpha, blendMode, filter);
+                    } else {
+                        g2d_core.getContext().draw(texture, g2d_worldX, g2d_worldY, g2d_worldScaleX, g2d_worldScaleY, g2d_worldRotation, g2d_worldRed, g2d_worldGreen, g2d_worldBlue, g2d_worldAlpha, blendMode, filter);
+                    }
+                } else if (g2d_renderable != null) {
+                    g2d_renderable.render(p_camera, useMatrix);
+                }
+
+                /*  Render children  */
+                var child:GNode = g2d_firstChild;
+                while (child != null) {
+                    var next:GNode = child.g2d_nextNode;
+                    if (child.postProcess != null) {
+                        child.postProcess.render(invalidateTransform, invalidateColor, p_camera, child);
+                    } else {
+                        child.render(invalidateTransform, invalidateColor, p_camera, p_renderAsMask, useMatrix);
+                    }
+                    child = next;
+                }
+
+                /*  Masking   */
+                if (hasMask) {
+                    core.getContext().setMaskRect(previousMaskRect);
+                }
+
+                if (!p_renderAsMask && mask != null) {
+                    g2d_activeMasks.pop();
+                    if (g2d_activeMasks.length==0) core.getContext().clearStencil();
+                    core.getContext().renderToColor(g2d_activeMasks.length);
+                }
+
+                /*  Use matrix  */
+                if (useMatrix) {
+                    core.g2d_renderMatrixIndex--;
+                    core.g2d_renderMatrix.copyFrom(core.g2d_renderMatrixArray[core.g2d_renderMatrixIndex]);
+                }
+            }
+        }
+    }
+
+
+    /**
+     *   Check if a point is inside this node
+     */
+    inline public function hitTestPoint(p_x:Float, p_y:Float, p_pixelEnabled:Bool = false, p_includeChildren:Bool = true):Bool {
+        var tx:Float = p_x - g2d_worldX;
+        var ty:Float = p_y - g2d_worldY;
+
+        if (g2d_worldRotation != 0) {
+            var cos:Float = Math.cos( - g2d_worldRotation);
+            var sin:Float = Math.sin( - g2d_worldRotation);
+
+            var ox:Float = tx;
+            tx = (tx * cos - ty * sin);
+            ty = (ty * cos + ox * sin);
+        }
+
+        tx /= g2d_worldScaleX * texture.width;
+        ty /= g2d_worldScaleY * texture.height;
+
+        tx += .5;
+        ty += .5;
+
+        if (tx >= -texture.pivotX / texture.width && tx <= 1 - texture.pivotX / texture.width && ty >= -texture.pivotY / texture.height && ty <= 1 - texture.pivotY / texture.height) {
+            if (p_pixelEnabled && texture.getAlphaAtUV(tx+texture.pivotX/texture.width, ty+texture.pivotY/texture.height) <= mousePixelTreshold) {
+                return false;
+            }
+            return true;
+        }
+
+        return false;
     }
 }
