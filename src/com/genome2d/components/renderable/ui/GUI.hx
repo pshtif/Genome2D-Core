@@ -1,4 +1,4 @@
-package com.genome2d.components.ui;
+package com.genome2d.components.renderable.ui;
 import com.genome2d.ui.GUIElement;
 import com.genome2d.signals.GMouseSignal;
 import com.genome2d.signals.GMouseSignalType;

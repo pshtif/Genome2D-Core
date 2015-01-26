@@ -56,11 +56,15 @@ class GUIFontSkin extends GUISkin {
         return g2d_textRenderer.height*scale;
     }
 
-    public function new(p_id:String = "") {
+    public function new(p_id:String = "", p_fontAtlasId:String = "", p_text:String = "", p_scale:Float = 1) {
         super(p_id);
 
         g2d_textRenderer = new GTextureTextRenderer();
         g2d_textRenderer.autoSize = true;
+
+        if (p_fontAtlasId != "") fontAtlasId = p_fontAtlasId;
+        text = p_text;
+        scale = p_scale;
     }
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Void {

@@ -12,23 +12,11 @@ import com.genome2d.ui.skin.GUISkin;
 @:access(com.genome2d.ui.skin.GUISkin)
 @prototypeName("element")
 class GUIElement implements IGPrototypable {
-    public var name:String = "UIElement";
-    public var mouseEnabled:Bool = false;
+    @prototype public var mouseEnabled:Bool = true;
 
     public var visible:Bool = true;
 
-    private var g2d_id:String;
-    #if swc @:extern #end
-    @prototype public var id(get, set):String;
-    #if swc @:getter(id) #end
-    inline private function get_id():String {
-        return g2d_id;
-    }
-    #if swc @:setter(id) #end
-    inline private function set_id(p_value:String):String {
-        g2d_id = p_value;
-        return g2d_id;
-    }
+    @prototype public var name:String = "GUIElement";
 
     private var g2d_value:Dynamic;
     #if swc @:extern #end
@@ -406,8 +394,8 @@ class GUIElement implements IGPrototypable {
         return (p_index>=0 && p_index<g2d_numChildren) ? g2d_children[p_index] : null;
     }
 
-    public function getChildById(p_id:String):GUIElement {
-        for (i in 0...g2d_numChildren) if (g2d_children[i].id == p_id) return g2d_children[i];
+    public function getChildByName(p_name:String):GUIElement {
+        for (i in 0...g2d_numChildren) if (g2d_children[i].name == p_name) return g2d_children[i];
         return null;
     }
 
