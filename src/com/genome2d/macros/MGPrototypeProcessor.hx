@@ -178,7 +178,7 @@ class MGPrototypeProcessor {
             default:
         }
 
-        var helperName = "G"+Math.floor(1000000*Math.random());
+        var helperName = "G"+Math.floor(10000000*Math.random());
 		var helperClass = {
 			pack:[], name: helperName, pos: pos,
 			meta: [ { name:":native", params:[macro "com.genome2d.proto.GPrototypeHelper"], pos:pos }, { name:":keep", params:[], pos:pos } ],

@@ -1,6 +1,6 @@
 package com.genome2d.proto;
 import com.genome2d.ui.skin.GUISkin;
-import com.genome2d.ui.GUIElement;
+import com.genome2d.ui.element.GUIElement;
 import Reflect;
 import com.genome2d.debug.GDebug;
 import haxe.rtti.Meta;
@@ -86,7 +86,7 @@ class GPrototypeFactory {
                 var value:String = p_prototypeXml.get(name);
                 switch (type) {
                     case "Bool":
-                        realValue = (value != "false");
+                        realValue = (value != "false" && value != "0");
                     case "Int":
                         realValue = Std.parseInt(value);
                     case "Float":

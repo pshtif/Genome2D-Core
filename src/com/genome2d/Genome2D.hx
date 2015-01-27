@@ -9,7 +9,7 @@
 package com.genome2d;
 
 import com.genome2d.debug.GDebug;
-import com.genome2d.ui.GUISkinManager;
+import com.genome2d.ui.skin.GUISkinManager;
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.textures.GTextureManager;

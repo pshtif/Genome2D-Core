@@ -1,4 +1,6 @@
 package com.genome2d.ui.skin;
+import com.genome2d.ui.element.GUIElement;
+import com.genome2d.ui.skin.GUIFontSkin;
 import com.genome2d.context.IContext;
 import com.genome2d.text.GTextureTextRenderer;
 import com.genome2d.textures.GContextTexture;
@@ -7,9 +9,6 @@ import com.genome2d.textures.GTextureFontAtlas;
 
 @prototypeName("fontSkin")
 class GUIFontSkin extends GUISkin {
-    override private function setValue(p_value:String):Void {
-        text = p_value;
-    }
 
     #if swc @:extern #end
     @prototype public var text(get, set):String;
@@ -44,33 +43,42 @@ class GUIFontSkin extends GUISkin {
         return p_value;
     }
 
+    @prototype public var fontScale:Float = 1;
+
     override public function getTexture():GContextTexture {
         return g2d_textRenderer.textureAtlas;
     }
 
     override public function getMinWidth():Float {
-        return g2d_textRenderer.width*scale;
+        return g2d_textRenderer.width*fontScale;
     }
 
     override public function getMinHeight():Float {
-        return g2d_textRenderer.height*scale;
+        return g2d_textRenderer.height*fontScale;
     }
 
-    public function new(p_id:String = "", p_fontAtlasId:String = "", p_text:String = "", p_scale:Float = 1) {
+    public function new(p_id:String = "", p_fontAtlasId:String = "", p_fontScale:Float = 1) {
         super(p_id);
 
         g2d_textRenderer = new GTextureTextRenderer();
         g2d_textRenderer.autoSize = true;
 
         if (p_fontAtlasId != "") fontAtlasId = p_fontAtlasId;
-        text = p_text;
-        scale = p_scale;
+        fontScale = p_fontScale;
     }
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Void {
-        var context:IContext = Genome2D.getInstance().getContext();
         g2d_textRenderer.width = p_right - p_left;
         g2d_textRenderer.height = p_bottom - p_top;
-        g2d_textRenderer.render(p_left,p_top,scale,scale,0);
+        g2d_textRenderer.render(p_left, p_top, fontScale, fontScale, 0);
+    }
+
+    override private function elementValueChangedHandler(p_element:GUIElement):Void {
+        text = p_element.value;
+    }
+
+    override public function clone():GUISkin {
+        var clone:GUIFontSkin = new GUIFontSkin("", fontAtlasId, fontScale);
+        return clone;
     }
 }

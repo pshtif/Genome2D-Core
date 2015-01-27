@@ -1,5 +1,8 @@
-package com.genome2d.ui;
+package com.genome2d.ui.element;
 
+import com.genome2d.ui.skin.GUISkinManager;
+import com.genome2d.ui.layout.GUILayout;
+import Xml.XmlType;
 import com.genome2d.signals.GUIMouseSignal;
 import com.genome2d.signals.GMouseSignalType;
 import com.genome2d.signals.GMouseSignal;
@@ -8,7 +11,7 @@ import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.ui.skin.GUISkin;
 
-@:access(com.genome2d.ui.GUILayout)
+@:access(com.genome2d.ui.layout.GUILayout)
 @:access(com.genome2d.ui.skin.GUISkin)
 @prototypeName("element")
 class GUIElement implements IGPrototypable {
@@ -18,17 +21,26 @@ class GUIElement implements IGPrototypable {
 
     @prototype public var name:String = "GUIElement";
 
-    private var g2d_value:Dynamic;
+    private var g2d_value:String = "";
     #if swc @:extern #end
-    @prototype public var value(get, set):Dynamic;
+    @prototype public var value(get, set):String;
     #if swc @:getter(value) #end
-    inline private function get_value():Dynamic {
+    inline private function get_value():String {
         return g2d_value;
     }
     #if swc @:setter(value) #end
-    inline private function set_value(p_value:Dynamic):Dynamic {
+    inline private function set_value(p_value:String):String {
         g2d_value = p_value;
+        onValueChanged.dispatch(this);
         return g2d_value;
+    }
+
+    private var g2d_onValueChanged:Signal1<GUIElement>;
+    #if swc @:extern #end
+    public var onValueChanged(get, never):Signal1<GUIElement>;
+    #if swc @:getter(onValueChanged) #end
+    inline private function get_onValueChanged():Signal1<GUIElement> {
+        return g2d_onValueChanged;
     }
 
     private var g2d_layout:GUILayout;
@@ -54,8 +66,11 @@ class GUIElement implements IGPrototypable {
         return (g2d_normalSkin != null) ? g2d_normalSkin.id : "";
     }
     #if swc @:setter(normalSkinId) #end
-    inline private function set_normalSkinId(p_value:String):String {
-        normalSkin = GUISkinManager.getSkinById(p_value);
+    inline
+    private function set_normalSkinId(p_value:String):String {
+        if (normalSkin != null) normalSkin.remove(this);
+        var skin:GUISkin = GUISkinManager.getSkinById(p_value);
+        normalSkin = (skin != null) ? skin.attach(this) : null;
         return normalSkinId;
     }
 
@@ -316,6 +331,8 @@ class GUIElement implements IGPrototypable {
 
 
     public function new(p_skin:GUISkin = null) {
+        g2d_onValueChanged = new Signal1<GUIElement>();
+
         normalSkin = p_skin;
     }
 
@@ -506,22 +523,66 @@ class GUIElement implements IGPrototypable {
         }
     }
 
-    public function getPrototype(p_xml:Xml = null):Xml {
-        var xml:Xml = getPrototypeDefault();
+    public function getPrototype(p_prototypeXml:Xml = null):Xml {
+        if (p_prototypeXml == null) p_prototypeXml = Xml.createElement("element");
+
+        p_prototypeXml.set("anchorX", Std.string(anchorX));
+        p_prototypeXml.set("anchorY", Std.string(anchorY));
+        p_prototypeXml.set("anchorLeft", Std.string(anchorLeft));
+        p_prototypeXml.set("anchorRight", Std.string(anchorRight));
+        p_prototypeXml.set("anchorTop", Std.string(anchorTop));
+        p_prototypeXml.set("anchorBottom", Std.string(anchorBottom));
+        p_prototypeXml.set("pivotX", Std.string(pivotX));
+        p_prototypeXml.set("pivotY", Std.string(pivotY));
+        p_prototypeXml.set("left", Std.string(left));
+        p_prototypeXml.set("right", Std.string(right));
+        p_prototypeXml.set("top", Std.string(top));
+        p_prototypeXml.set("bottom", Std.string(bottom));
+        p_prototypeXml.set("preferredWidth", Std.string(preferredWidth));
+        p_prototypeXml.set("preferredHeight", Std.string(preferredHeight));
+        p_prototypeXml.set("name", name);
+        p_prototypeXml.set("normalSkinId", normalSkinId);
+        p_prototypeXml.set("mouseEnabled", Std.string(mouseEnabled));
+
+        if (layout != null) p_prototypeXml.addChild(layout.getPrototype());
         for (i in 0...g2d_numChildren) {
-            xml.addChild(g2d_children[i].getPrototype());
+            p_prototypeXml.addChild(g2d_children[i].getPrototype());
         }
-        return xml;
+        return p_prototypeXml;
     }
 
     public function initPrototype(p_prototypeXml:Xml):Void {
-        initPrototypeDefault(p_prototypeXml);
+        if (p_prototypeXml.exists("anchorX")) anchorX = Std.parseFloat(p_prototypeXml.get("anchorX"));
+        if (p_prototypeXml.exists("anchorY")) anchorY = Std.parseFloat(p_prototypeXml.get("anchorY"));
+        if (p_prototypeXml.exists("anchorLeft")) anchorLeft = Std.parseFloat(p_prototypeXml.get("anchorLeft"));
+        if (p_prototypeXml.exists("anchorRight")) anchorRight = Std.parseFloat(p_prototypeXml.get("anchorRight"));
+        if (p_prototypeXml.exists("anchorTop")) anchorTop = Std.parseFloat(p_prototypeXml.get("anchorTop"));
+        if (p_prototypeXml.exists("anchorBottom")) anchorBottom = Std.parseFloat(p_prototypeXml.get("anchorBottom"));
+        if (p_prototypeXml.exists("pivotX")) pivotX = Std.parseFloat(p_prototypeXml.get("pivotX"));
+        if (p_prototypeXml.exists("pivotY")) pivotY = Std.parseFloat(p_prototypeXml.get("pivotY"));
+        if (p_prototypeXml.exists("left")) left = Std.parseFloat(p_prototypeXml.get("left"));
+        if (p_prototypeXml.exists("right")) right = Std.parseFloat(p_prototypeXml.get("right"));
+        if (p_prototypeXml.exists("top")) top = Std.parseFloat(p_prototypeXml.get("top"));
+        if (p_prototypeXml.exists("bottom")) bottom = Std.parseFloat(p_prototypeXml.get("bottom"));
+        if (p_prototypeXml.exists("preferredWidth")) preferredWidth = Std.parseFloat(p_prototypeXml.get("preferredWidth"));
+        if (p_prototypeXml.exists("preferredHeight")) preferredHeight = Std.parseFloat(p_prototypeXml.get("preferredHeight"));
+        if (p_prototypeXml.exists("name")) name = p_prototypeXml.get("name");
+        if (p_prototypeXml.exists("normalSkinId")) normalSkinId = p_prototypeXml.get("normalSkinId");
+        if (p_prototypeXml.exists("mouseEnabled")) mouseEnabled = (p_prototypeXml.get("mouseEnabled") != "false" && p_prototypeXml.get("mouseEnabled") != "0");
 
-        var it:Iterator<Xml> = p_prototypeXml.elementsNamed("element");
+        var it:Iterator<Xml> = p_prototypeXml.iterator();
         while (it.hasNext()) {
             var xml:Xml = it.next();
-            var element:GUIElement = cast GPrototypeFactory.createPrototype(xml);
-            addChild(element);
+            if (xml.nodeType == Xml.PCData) {
+                value = xml.nodeValue;
+            } else if (xml.nodeType == Xml.Element) {
+                var prototype:IGPrototypable = GPrototypeFactory.createPrototype(xml);
+                if (Std.is(prototype, GUIElement)) {
+                    addChild(cast prototype);
+                } else if (Std.is(prototype, GUILayout)) {
+                    layout = cast prototype;
+                }
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-package com.genome2d.ui;
+package com.genome2d.ui.skin;
 import com.genome2d.ui.skin.GUISkin;
 class GUISkinManager {
     static public function init():Void {

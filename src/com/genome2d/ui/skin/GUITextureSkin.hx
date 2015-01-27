@@ -14,10 +14,6 @@ class GUITextureSkin extends GUISkin {
     @prototype public var sliceRight:Int = 0;
     @prototype public var sliceBottom:Int = 0;
 
-    override private function setValue(p_value:String):Void {
-        textureId = p_value;
-    }
-
     #if swc @:extern #end
     @prototype public var textureId(get, set):String;
     #if swc @:getter(textureId) #end
@@ -171,5 +167,10 @@ class GUITextureSkin extends GUISkin {
 
     override public function getTexture():GContextTexture {
         return texture;
+    }
+
+    override public function clone():GUISkin {
+        var clone:GUITextureSkin = new GUITextureSkin("", textureId);
+        return clone;
     }
 }

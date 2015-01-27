@@ -1,21 +1,12 @@
 package com.genome2d.ui.skin;
+import com.genome2d.ui.element.GUIElement;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.textures.GContextTexture;
-import com.genome2d.ui.GUISkinManager;
-import com.genome2d.ui.GUISkinManager;
-import com.genome2d.ui.GUISkinManager;
-import com.genome2d.ui.GUISkinManager;
 import com.genome2d.textures.GTexture;
 import com.genome2d.debug.GDebug;
 
-@:access(com.genome2d.ui.GUISkinManager)
+@:access(com.genome2d.ui.skin.GUISkinManager)
 class GUISkin implements IGPrototypable {
-    @prototype public var scale:Float = 1.0;
-
-    private var g2d_type:Int;
-
-    private function setValue(p_value:String):Void {}
-
     private var g2d_id:String;
     #if swc @:extern #end
     @prototype public var id(get, set):String;
@@ -36,6 +27,10 @@ class GUISkin implements IGPrototypable {
         return g2d_id;
     }
 
+    private var g2d_clones:Array<GUISkin>;
+    private var g2d_origin:GUISkin;
+    private var g2d_element:GUIElement;
+
     public function getMinWidth():Float {
         return 0;
     }
@@ -47,6 +42,7 @@ class GUISkin implements IGPrototypable {
     public function new(p_id:String = "") {
         g2d_instanceCount++;
         id = (p_id != "") ? p_id : "GUISkin"+g2d_instanceCount;
+        g2d_clones = new Array<GUISkin>();
     }
 
     public function render(p_x:Float, p_y:Float, p_width:Float, p_height:Float):Void {
@@ -54,5 +50,34 @@ class GUISkin implements IGPrototypable {
 
     public function getTexture():GContextTexture {
         return null;
+    }
+
+    private function attach(p_element:GUIElement):GUISkin {
+        var clone:GUISkin = clone();
+        clone.g2d_origin = (g2d_origin == null) ? this : g2d_origin;
+        clone.g2d_origin.g2d_clones.push(clone);
+        clone.g2d_element = p_element;
+        clone.elementValueChangedHandler(p_element);
+        p_element.onValueChanged.add(clone.elementValueChangedHandler);
+        return clone;
+    }
+
+    private function remove(p_element:GUIElement):Void {
+        dispose();
+    }
+
+    private function elementValueChangedHandler(p_element:GUIElement):Void {
+    }
+
+    private function clone():GUISkin {
+        return null;
+    }
+
+    private function dispose():Void {
+        if (g2d_origin != null) {
+            g2d_origin.g2d_clones.remove(this);
+            g2d_element.onValueChanged.remove(elementValueChangedHandler);
+            g2d_element = null;
+        }
     }
 }
