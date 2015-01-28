@@ -53,11 +53,12 @@ class GUISkin implements IGPrototypable {
     }
 
     private function attach(p_element:GUIElement):GUISkin {
-        var clone:GUISkin = clone();
-        clone.g2d_origin = (g2d_origin == null) ? this : g2d_origin;
-        clone.g2d_origin.g2d_clones.push(clone);
+        var origin:GUISkin = (g2d_origin == null) ? this : g2d_origin;
+        var clone:GUISkin = origin.clone();
+        clone.g2d_origin = origin;
         clone.g2d_element = p_element;
         clone.elementValueChangedHandler(p_element);
+        origin.g2d_clones.push(clone);
         p_element.onValueChanged.add(clone.elementValueChangedHandler);
         return clone;
     }

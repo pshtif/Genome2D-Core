@@ -1,5 +1,7 @@
 package com.genome2d.ui.element;
 
+import com.genome2d.signals.GUIMouseSignal;
+import flash.utils.Object;
 import com.genome2d.ui.skin.GUISkinManager;
 import com.genome2d.ui.layout.GUILayout;
 import Xml.XmlType;
@@ -21,16 +23,96 @@ class GUIElement implements IGPrototypable {
 
     @prototype public var name:String = "GUIElement";
 
-    private var g2d_value:String = "";
+    private var g2d_currentClient:Dynamic;
+    private var g2d_client:Dynamic;
+    public function getClient():Dynamic {
+        return (g2d_client != null) ? g2d_client : (parent != null) ? parent.getClient() : null;
+    }
+    public function setClient(p_value:Dynamic):Void {
+        g2d_client = p_value;
+
+        invalidateClient();
+    }
+
+    private function invalidateClient():Void {
+        var newClient:Dynamic = getClient();
+        if (newClient != g2d_currentClient) {
+            if (g2d_mouseDown != "" && g2d_currentClient != null) {
+                var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient, g2d_mouseDown);
+                if (mdf != null) onMouseDown.remove(mdf);
+            }
+            g2d_currentClient = newClient;
+            if (g2d_mouseDown != "" && g2d_currentClient != null) {
+                var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient, g2d_mouseDown);
+                if (mdf != null) onMouseDown.add(mdf);
+            }
+
+            for (i in 0...g2d_numChildren) {
+                g2d_children[i].invalidateClient();
+            }
+        }
+    }
+
+    private var g2d_mouseDown:String;
     #if swc @:extern #end
-    @prototype public var value(get, set):String;
+    public var mouseDown(get,set):String;
+    #if swc @:getter(mouseDown) #end
+    inline private function get_mouseDown():String {
+        return g2d_mouseDown;
+    }
+    #if swc @:setter(mouseDown) #end
+    inline private function set_mouseDown(p_value:String):String {
+        if (g2d_mouseDown != "" && g2d_currentClient != null) {
+            var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient,g2d_mouseDown);
+            if (mdf != null) onMouseDown.remove(mdf);
+        }
+        g2d_mouseDown = p_value;
+        if (g2d_mouseDown != "" && g2d_currentClient != null) {
+            var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient,g2d_mouseDown);
+            if (mdf != null) onMouseDown.add(mdf);
+        }
+        return g2d_mouseDown;
+    }
+
+
+    private var g2d_value:Dynamic;
+    #if swc @:extern #end
+    public var value(get, set):Dynamic;
     #if swc @:getter(value) #end
     inline private function get_value():String {
         return g2d_value;
     }
     #if swc @:setter(value) #end
-    inline private function set_value(p_value:String):String {
+    inline private function set_value(p_value:Dynamic):Dynamic {
         g2d_value = p_value;
+        if (Std.is(g2d_value,Xml)) {
+            var xml:Xml = cast (g2d_value,Xml);
+            var it:Iterator<Xml> = xml.elements();
+            if (!it.hasNext()) {
+                if (xml.firstChild() != null && xml.firstChild().nodeType == Xml.PCData) {
+                    g2d_value = xml.firstChild().nodeValue;
+                } else {
+                    g2d_value = "";
+                }
+            } else {
+                while (it.hasNext()) {
+                    var childXml:Xml = it.next();
+                    var child:GUIElement = getChildByName(childXml.nodeName);
+                    if (child != null) {
+                        if (childXml.firstChild() != null && childXml.firstChild().nodeType == Xml.PCData) {
+                            child.value = childXml.firstChild().nodeValue;
+                        } else {
+                            child.value = childXml;
+                        }
+                    }
+                }
+            }
+        } else {
+            for (it in Reflect.fields(g2d_value)) {
+                var child:GUIElement = getChildByName(it);
+                if (child != null) child.value = Reflect.field(g2d_value, it);
+            }
+        }
         onValueChanged.dispatch(this);
         return g2d_value;
     }
@@ -60,34 +142,34 @@ class GUIElement implements IGPrototypable {
     private var g2d_activeSkin:GUISkin;
 
     #if swc @:extern #end
-    @prototype public var normalSkinId(get, set):String;
-    #if swc @:getter(normalSkinId) #end
-    inline private function get_normalSkinId():String {
-        return (g2d_normalSkin != null) ? g2d_normalSkin.id : "";
+    @prototype public var skinId(get, set):String;
+    #if swc @:getter(skinId) #end
+    inline private function get_skinId():String {
+        return (g2d_skin != null) ? g2d_skin.id : "";
     }
-    #if swc @:setter(normalSkinId) #end
+    #if swc @:setter(skinId) #end
     inline
-    private function set_normalSkinId(p_value:String):String {
-        if (normalSkin != null) normalSkin.remove(this);
-        var skin:GUISkin = GUISkinManager.getSkinById(p_value);
-        normalSkin = (skin != null) ? skin.attach(this) : null;
-        return normalSkinId;
+    private function set_skinId(p_value:String):String {
+        if (skin != null) skin.remove(this);
+        var s:GUISkin = GUISkinManager.getSkinById(p_value);
+        skin = (s != null) ? s : null;
+        return skinId;
     }
 
-    private var g2d_normalSkin:GUISkin;
+    private var g2d_skin:GUISkin;
     #if swc @:extern #end
-    public var normalSkin(get, set):GUISkin;
-    #if swc @:getter(normalSkin) #end
-    inline private function get_normalSkin():GUISkin {
-        return g2d_normalSkin;
+    public var skin(get, set):GUISkin;
+    #if swc @:getter(skin) #end
+    inline private function get_skin():GUISkin {
+        return g2d_skin;
     }
-    #if swc @:setter(normalSkin) #end
-    inline private function set_normalSkin(p_value:GUISkin):GUISkin {
-        g2d_normalSkin = p_value;
-        g2d_activeSkin = g2d_normalSkin;
+    #if swc @:setter(skin) #end
+    inline private function set_skin(p_value:GUISkin):GUISkin {
+        g2d_skin = (p_value != null) ? p_value.attach(this) : p_value;
+        g2d_activeSkin = g2d_skin;
 
         setDirty();
-        return g2d_normalSkin;
+        return g2d_skin;
     }
 
     private var g2d_dirty:Bool = true;
@@ -124,7 +206,7 @@ class GUIElement implements IGPrototypable {
         return g2d_anchorY;
     }
 
-    private var g2d_anchorLeft:Float = .5;
+    private var g2d_anchorLeft:Float = 0;
     #if swc @:extern #end
     @prototype public var anchorLeft(get, set):Float;
     #if swc @:getter(anchorLeft) #end
@@ -138,7 +220,7 @@ class GUIElement implements IGPrototypable {
         return g2d_anchorLeft;
     }
 
-    private var g2d_anchorTop:Float = .5;
+    private var g2d_anchorTop:Float = 0;
     #if swc @:extern #end
     @prototype public var anchorTop(get, set):Float;
     #if swc @:getter(anchorTop) #end
@@ -152,7 +234,7 @@ class GUIElement implements IGPrototypable {
         return g2d_anchorTop;
     }
 
-    private var g2d_anchorRight:Float = .5;
+    private var g2d_anchorRight:Float = 0;
     #if swc @:extern #end
     @prototype public var anchorRight(get, set):Float;
     #if swc @:getter(anchorRight) #end
@@ -166,7 +248,7 @@ class GUIElement implements IGPrototypable {
         return g2d_anchorRight;
     }
 
-    private var g2d_anchorBottom:Float = .5;
+    private var g2d_anchorBottom:Float = 0;
     #if swc @:extern #end
     @prototype public var anchorBottom(get, set):Float;
     #if swc @:getter(anchorBottom) #end
@@ -236,7 +318,7 @@ class GUIElement implements IGPrototypable {
         return g2d_bottom;
     }
 
-    public var g2d_pivotX:Float = .5;
+    public var g2d_pivotX:Float = 0;
     #if swc @:extern #end
     @prototype public var pivotX(get, set):Float;
     #if swc @:getter(pivotX) #end
@@ -250,7 +332,7 @@ class GUIElement implements IGPrototypable {
         return g2d_pivotX;
     }
 
-    public var g2d_pivotY:Float = .5;
+    public var g2d_pivotY:Float = 0;
     #if swc @:extern #end
     @prototype public var pivotY(get, set):Float;
     #if swc @:getter(pivotY) #end
@@ -333,7 +415,7 @@ class GUIElement implements IGPrototypable {
     public function new(p_skin:GUISkin = null) {
         g2d_onValueChanged = new Signal1<GUIElement>();
 
-        normalSkin = p_skin;
+        if (p_skin != null) skin = p_skin;
     }
 
     public function isParent(p_element:GUIElement):Bool {
@@ -387,6 +469,7 @@ class GUIElement implements IGPrototypable {
         g2d_children.push(p_child);
         g2d_numChildren++;
         p_child.g2d_parent = this;
+        p_child.invalidateClient();
         setDirty();
     }
 
@@ -396,6 +479,7 @@ class GUIElement implements IGPrototypable {
         g2d_children.insert(p_index,p_child);
         g2d_numChildren++;
         p_child.g2d_parent = this;
+        p_child.invalidateClient();
         setDirty();
     }
 
@@ -404,6 +488,7 @@ class GUIElement implements IGPrototypable {
         g2d_children.remove(p_child);
         g2d_numChildren--;
         p_child.g2d_parent = null;
+        p_child.invalidateClient();
         setDirty();
     }
 
@@ -463,6 +548,7 @@ class GUIElement implements IGPrototypable {
                         g2d_worldLeft = worldAnchorLeft + g2d_anchorX - w * g2d_pivotX;
                         g2d_worldRight = worldAnchorLeft + g2d_anchorX + w * (1 - g2d_pivotX);
                     }
+
                     g2d_finalWidth = g2d_worldRight - g2d_worldLeft;
                 }
 
@@ -541,8 +627,11 @@ class GUIElement implements IGPrototypable {
         p_prototypeXml.set("preferredWidth", Std.string(preferredWidth));
         p_prototypeXml.set("preferredHeight", Std.string(preferredHeight));
         p_prototypeXml.set("name", name);
-        p_prototypeXml.set("normalSkinId", normalSkinId);
+        p_prototypeXml.set("skinId", skinId);
         p_prototypeXml.set("mouseEnabled", Std.string(mouseEnabled));
+        p_prototypeXml.set("visible", Std.string(visible));
+
+        p_prototypeXml.set("mouseDown", mouseDown);
 
         if (layout != null) p_prototypeXml.addChild(layout.getPrototype());
         for (i in 0...g2d_numChildren) {
@@ -567,8 +656,11 @@ class GUIElement implements IGPrototypable {
         if (p_prototypeXml.exists("preferredWidth")) preferredWidth = Std.parseFloat(p_prototypeXml.get("preferredWidth"));
         if (p_prototypeXml.exists("preferredHeight")) preferredHeight = Std.parseFloat(p_prototypeXml.get("preferredHeight"));
         if (p_prototypeXml.exists("name")) name = p_prototypeXml.get("name");
-        if (p_prototypeXml.exists("normalSkinId")) normalSkinId = p_prototypeXml.get("normalSkinId");
+        if (p_prototypeXml.exists("skinId")) skinId = p_prototypeXml.get("skinId");
         if (p_prototypeXml.exists("mouseEnabled")) mouseEnabled = (p_prototypeXml.get("mouseEnabled") != "false" && p_prototypeXml.get("mouseEnabled") != "0");
+        if (p_prototypeXml.exists("visible")) visible = (p_prototypeXml.get("visible") != "false" && p_prototypeXml.get("visible") != "0");
+
+        if (p_prototypeXml.exists("mouseDown")) mouseDown = p_prototypeXml.get("mouseDown");
 
         var it:Iterator<Xml> = p_prototypeXml.iterator();
         while (it.hasNext()) {
@@ -587,8 +679,8 @@ class GUIElement implements IGPrototypable {
     }
 
     public function disposeChildren():Void {
-        for (i in 0...g2d_numChildren) {
-            g2d_children[i].dispose();
+        while (g2d_numChildren>0) {
+            g2d_children[g2d_numChildren-1].dispose();
         }
     }
 
@@ -604,7 +696,7 @@ class GUIElement implements IGPrototypable {
     #if swc @:extern #end
     public var onMouseDown(get, never):Signal1<GUIMouseSignal>;
     #if swc @:getter(onMouseDown) #end
-    private function get_onMouseDown():Signal1<GUIMouseSignal> {
+    inline private function get_onMouseDown():Signal1<GUIMouseSignal> {
         if (g2d_onMouseDown == null) g2d_onMouseDown = new Signal1(GUIMouseSignal);
         return g2d_onMouseDown;
     }
@@ -613,7 +705,7 @@ class GUIElement implements IGPrototypable {
     #if swc @:extern #end
     public var onMouseUp(get, never):Signal1<GUIMouseSignal>;
     #if swc @:getter(onMouseUp) #end
-    private function get_onMouseUp():Signal1<GUIMouseSignal> {
+    inline private function get_onMouseUp():Signal1<GUIMouseSignal> {
         if (g2d_onMouseUp == null) g2d_onMouseUp = new Signal1(GUIMouseSignal);
         return g2d_onMouseUp;
     }
@@ -622,7 +714,7 @@ class GUIElement implements IGPrototypable {
     #if swc @:extern #end
     public var onMouseMove(get, never):Signal1<GUIMouseSignal>;
     #if swc @:getter(onMouseMove) #end
-    private function get_onMouseMove():Signal1<GUIMouseSignal> {
+    inline private function get_onMouseMove():Signal1<GUIMouseSignal> {
         if (g2d_onMouseMove == null) g2d_onMouseMove = new Signal1(GUIMouseSignal);
         return g2d_onMouseMove;
     }
@@ -631,7 +723,7 @@ class GUIElement implements IGPrototypable {
     #if swc @:extern #end
     public var onMouseOver(get, never):Signal1<GUIMouseSignal>;
     #if swc @:getter(onMouseOver) #end
-    private function get_onMouseOver():Signal1<GUIMouseSignal> {
+    inline private function get_onMouseOver():Signal1<GUIMouseSignal> {
         if (g2d_onMouseOver == null) g2d_onMouseOver = new Signal1(GUIMouseSignal);
         return g2d_onMouseOver;
     }
@@ -640,7 +732,7 @@ class GUIElement implements IGPrototypable {
     #if swc @:extern #end
     public var onMouseOut(get, never):Signal1<GUIMouseSignal>;
     #if swc @:getter(onMouseOut) #end
-    private function get_onMouseOut():Signal1<GUIMouseSignal> {
+    inline private function get_onMouseOut():Signal1<GUIMouseSignal> {
         if (g2d_onMouseOut == null) g2d_onMouseOut = new Signal1(GUIMouseSignal);
         return g2d_onMouseOut;
     }
@@ -649,7 +741,7 @@ class GUIElement implements IGPrototypable {
     #if swc @:extern #end
     public var onMouseClick(get, never):Signal1<GUIMouseSignal>;
     #if swc @:getter(onMouseClick) #end
-    private function get_onMouseClick():Signal1<GUIMouseSignal> {
+    inline private function get_onMouseClick():Signal1<GUIMouseSignal> {
         if (g2d_onMouseClick == null) g2d_onMouseMove = new Signal1(GUIMouseSignal);
         return g2d_onMouseClick;
     }

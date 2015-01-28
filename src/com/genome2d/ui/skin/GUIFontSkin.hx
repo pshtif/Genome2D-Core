@@ -23,6 +23,19 @@ class GUIFontSkin extends GUISkin {
         return p_value;
     }
 
+    #if swc @:extern #end
+    @prototype public var autoSize(get, set):Bool;
+    #if swc @:getter(autoSize) #end
+    inline private function get_autoSize():Bool {
+        return g2d_textRenderer.autoSize;
+    }
+    #if swc @:setter(autoSize) #end
+    inline private function set_autoSize(p_value:Bool):Bool {
+        g2d_textRenderer.autoSize = p_value;
+
+        return p_value;
+    }
+
     private var g2d_textRenderer:GTextureTextRenderer;
     #if swc @:extern #end
     public var textRenderer(get, never):GTextureTextRenderer;
@@ -43,42 +56,53 @@ class GUIFontSkin extends GUISkin {
         return p_value;
     }
 
-    @prototype public var fontScale:Float = 1;
+    #if swc @:extern #end
+    @prototype public var fontScale(get, set):Float;
+    #if swc @:getter(fontScale) #end
+    inline private function get_fontScale():Float {
+        return g2d_textRenderer.fontScale;
+    }
+    #if swc @:setter(fontScale) #end
+    inline private function set_fontScale(p_value:Float):Float {
+        g2d_textRenderer.fontScale = p_value;
+        return p_value;
+    }
 
     override public function getTexture():GContextTexture {
         return g2d_textRenderer.textureAtlas;
     }
 
     override public function getMinWidth():Float {
-        return g2d_textRenderer.width*fontScale;
+        return autoSize ? g2d_textRenderer.width*fontScale : 0;
     }
 
     override public function getMinHeight():Float {
-        return g2d_textRenderer.height*fontScale;
+        return autoSize ? g2d_textRenderer.height*fontScale : 0;
     }
 
-    public function new(p_id:String = "", p_fontAtlasId:String = "", p_fontScale:Float = 1) {
+    public function new(p_id:String = "", p_fontAtlasId:String = "", p_fontScale:Float = 1, p_autoSize:Bool = true) {
         super(p_id);
 
         g2d_textRenderer = new GTextureTextRenderer();
-        g2d_textRenderer.autoSize = true;
+        g2d_textRenderer.autoSize = p_autoSize;
 
         if (p_fontAtlasId != "") fontAtlasId = p_fontAtlasId;
         fontScale = p_fontScale;
+        autoSize = p_autoSize;
     }
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Void {
         g2d_textRenderer.width = p_right - p_left;
         g2d_textRenderer.height = p_bottom - p_top;
-        g2d_textRenderer.render(p_left, p_top, fontScale, fontScale, 0);
+        g2d_textRenderer.render(p_left, p_top, 1, 1, 0);
     }
 
     override private function elementValueChangedHandler(p_element:GUIElement):Void {
-        text = p_element.value;
+        text =  (p_element.value != null) ? p_element.value.toString() : "";
     }
 
     override public function clone():GUISkin {
-        var clone:GUIFontSkin = new GUIFontSkin("", fontAtlasId, fontScale);
+        var clone:GUIFontSkin = new GUIFontSkin("", fontAtlasId, fontScale, autoSize);
         return clone;
     }
 }
