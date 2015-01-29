@@ -91,10 +91,15 @@ class GUIFontSkin extends GUISkin {
         autoSize = p_autoSize;
     }
 
-    override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Void {
-        g2d_textRenderer.width = p_right - p_left;
-        g2d_textRenderer.height = p_bottom - p_top;
-        g2d_textRenderer.render(p_left, p_top, 1, 1, 0);
+    override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Bool {
+        var rendered:Bool = false;
+        if (super.render(p_left, p_top, p_right, p_bottom)) {
+            g2d_textRenderer.width = p_right - p_left;
+            g2d_textRenderer.height = p_bottom - p_top;
+            g2d_textRenderer.render(p_left, p_top, 1, 1, 0);
+            rendered = true;
+        }
+        return rendered;
     }
 
     override private function elementValueChangedHandler(p_element:GUIElement):Void {

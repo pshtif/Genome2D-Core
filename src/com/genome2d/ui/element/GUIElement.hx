@@ -21,6 +21,8 @@ class GUIElement implements IGPrototypable {
 
     public var visible:Bool = true;
 
+    @prototype public var flushBatch:Bool = true;
+
     @prototype public var name:String = "GUIElement";
 
     private var g2d_currentClient:Dynamic;
@@ -55,7 +57,7 @@ class GUIElement implements IGPrototypable {
 
     private var g2d_mouseDown:String;
     #if swc @:extern #end
-    public var mouseDown(get,set):String;
+    @prototype public var mouseDown(get,set):String;
     #if swc @:getter(mouseDown) #end
     inline private function get_mouseDown():String {
         return g2d_mouseDown;
@@ -72,6 +74,111 @@ class GUIElement implements IGPrototypable {
             if (mdf != null) onMouseDown.add(mdf);
         }
         return g2d_mouseDown;
+    }
+
+    private var g2d_mouseUp:String;
+    #if swc @:extern #end
+    @prototype public var mouseUp(get,set):String;
+    #if swc @:getter(mouseUp) #end
+    inline private function get_mouseUp():String {
+        return g2d_mouseUp;
+    }
+    #if swc @:setter(mouseUp) #end
+    inline private function set_mouseUp(p_value:String):String {
+        if (g2d_mouseUp != "" && g2d_currentClient != null) {
+            var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient, g2d_mouseUp);
+            if (mdf != null) onMouseUp.remove(mdf);
+        }
+        g2d_mouseUp = p_value;
+        if (g2d_mouseUp != "" && g2d_currentClient != null) {
+            var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient, g2d_mouseUp);
+            if (mdf != null) onMouseUp.add(mdf);
+        }
+        return g2d_mouseUp;
+    }
+
+    private var g2d_mouseClick:String;
+    #if swc @:extern #end
+    @prototype public var mouseClick(get,set):String;
+    #if swc @:getter(mouseClick) #end
+    inline private function get_mouseClick():String {
+        return g2d_mouseClick;
+    }
+    #if swc @:setter(mouseClick) #end
+    inline private function set_mouseClick(p_value:String):String {
+        if (g2d_mouseClick != "" && g2d_currentClient != null) {
+            var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient, g2d_mouseClick);
+            if (mdf != null) onMouseClick.remove(mdf);
+        }
+        g2d_mouseClick = p_value;
+        if (g2d_mouseClick != "" && g2d_currentClient != null) {
+            var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient, g2d_mouseClick);
+            if (mdf != null) onMouseClick.add(mdf);
+        }
+        return g2d_mouseClick;
+    }
+
+    private var g2d_mouseOver:String;
+    #if swc @:extern #end
+    @prototype public var mouseOver(get,set):String;
+    #if swc @:getter(mouseOver) #end
+    inline private function get_mouseOver():String {
+        return g2d_mouseOver;
+    }
+    #if swc @:setter(mouseOver) #end
+    inline private function set_mouseOver(p_value:String):String {
+        if (g2d_mouseOver != "" && g2d_currentClient != null) {
+            var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient, g2d_mouseOver);
+            if (mdf != null) onMouseOver.remove(mdf);
+        }
+        g2d_mouseOver = p_value;
+        if (g2d_mouseOver != "" && g2d_currentClient != null) {
+            var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient, g2d_mouseOver);
+            if (mdf != null) onMouseOver.add(mdf);
+        }
+        return g2d_mouseOver;
+    }
+
+    private var g2d_mouseOut:String;
+    #if swc @:extern #end
+    @prototype public var mouseOut(get,set):String;
+    #if swc @:getter(mouseOut) #end
+    inline private function get_mouseOut():String {
+        return g2d_mouseOut;
+    }
+    #if swc @:setter(mouseOut) #end
+    inline private function set_mouseOut(p_value:String):String {
+        if (g2d_mouseOut != "" && g2d_currentClient != null) {
+            var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient, g2d_mouseOut);
+            if (mdf != null) onMouseOut.remove(mdf);
+        }
+        g2d_mouseOut = p_value;
+        if (g2d_mouseOut != "" && g2d_currentClient != null) {
+            var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient, g2d_mouseOut);
+            if (mdf != null) onMouseOut.add(mdf);
+        }
+        return g2d_mouseOut;
+    }
+
+    private var g2d_mouseMove:String;
+    #if swc @:extern #end
+    @prototype public var mouseMove(get,set):String;
+    #if swc @:getter(mouseMove) #end
+    inline private function get_mouseMove():String {
+        return g2d_mouseMove;
+    }
+    #if swc @:setter(mouseMove) #end
+    inline private function set_mouseMove(p_value:String):String {
+        if (g2d_mouseMove != "" && g2d_currentClient != null) {
+            var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient, g2d_mouseMove);
+            if (mdf != null) onMouseMove.remove(mdf);
+        }
+        g2d_mouseMove = p_value;
+        if (g2d_mouseMove != "" && g2d_currentClient != null) {
+            var mdf:GUIMouseSignal->Void = Reflect.field(g2d_currentClient, g2d_mouseMove);
+            if (mdf != null) onMouseMove.add(mdf);
+        }
+        return g2d_mouseMove;
     }
 
 
@@ -601,6 +708,7 @@ class GUIElement implements IGPrototypable {
 
     public function render():Void {
         if (visible) {
+            if (flushBatch) GUISkin.flushBatch();
             if (g2d_activeSkin != null) g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom);
 
             for (i in 0...g2d_numChildren) {
@@ -630,8 +738,14 @@ class GUIElement implements IGPrototypable {
         p_prototypeXml.set("skinId", skinId);
         p_prototypeXml.set("mouseEnabled", Std.string(mouseEnabled));
         p_prototypeXml.set("visible", Std.string(visible));
+        p_prototypeXml.set("flushBatch", Std.string(flushBatch));
 
         p_prototypeXml.set("mouseDown", mouseDown);
+        p_prototypeXml.set("mouseUp", mouseUp);
+        p_prototypeXml.set("mouseClick", mouseClick);
+        p_prototypeXml.set("mouseOver", mouseOver);
+        p_prototypeXml.set("mouseOut", mouseOut);
+        p_prototypeXml.set("mouseMove", mouseMove);
 
         if (layout != null) p_prototypeXml.addChild(layout.getPrototype());
         for (i in 0...g2d_numChildren) {
@@ -659,8 +773,14 @@ class GUIElement implements IGPrototypable {
         if (p_prototypeXml.exists("skinId")) skinId = p_prototypeXml.get("skinId");
         if (p_prototypeXml.exists("mouseEnabled")) mouseEnabled = (p_prototypeXml.get("mouseEnabled") != "false" && p_prototypeXml.get("mouseEnabled") != "0");
         if (p_prototypeXml.exists("visible")) visible = (p_prototypeXml.get("visible") != "false" && p_prototypeXml.get("visible") != "0");
+        if (p_prototypeXml.exists("flushBatch")) flushBatch = (p_prototypeXml.get("flushBatch") != "false" && p_prototypeXml.get("flushBatch") != "0");
 
         if (p_prototypeXml.exists("mouseDown")) mouseDown = p_prototypeXml.get("mouseDown");
+        if (p_prototypeXml.exists("mouseUp")) mouseDown = p_prototypeXml.get("mouseUp");
+        if (p_prototypeXml.exists("mouseClick")) mouseDown = p_prototypeXml.get("mouseClick");
+        if (p_prototypeXml.exists("mouseOver")) mouseDown = p_prototypeXml.get("mouseOver");
+        if (p_prototypeXml.exists("mouseOut")) mouseDown = p_prototypeXml.get("mouseOut");
+        if (p_prototypeXml.exists("mouseMove")) mouseDown = p_prototypeXml.get("mouseMove");
 
         var it:Iterator<Xml> = p_prototypeXml.iterator();
         while (it.hasNext()) {

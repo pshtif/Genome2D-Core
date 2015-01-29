@@ -6,7 +6,32 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.debug.GDebug;
 
 @:access(com.genome2d.ui.skin.GUISkinManager)
+@:allow(com.genome2d.ui.skin.GUISkinManager)
 class GUISkin implements IGPrototypable {
+    static private var g2d_batchQueue:Array<GUISkin>;
+    static private var g2d_currentBatchTexture:GContextTexture;
+
+    static private function batchRender(p_skin:GUISkin):Bool {
+        var batched:Bool = false;
+        if (g2d_currentBatchTexture != null && p_skin.getTexture() != g2d_currentBatchTexture) {
+            g2d_batchQueue.push(p_skin);
+            batched = true;
+        } else if (g2d_currentBatchTexture == null) {
+            g2d_currentBatchTexture = p_skin.getTexture();
+        }
+        return batched;
+    }
+
+    static private function flushBatch():Void {
+        g2d_currentBatchTexture = null;
+        var queueLength:Int = g2d_batchQueue.length;
+        for (i in 0...queueLength) {
+            g2d_batchQueue.shift().flushRender();
+        }
+        if (g2d_batchQueue.length>0) flushBatch();
+        g2d_currentBatchTexture = null;
+    }
+
     private var g2d_id:String;
     #if swc @:extern #end
     @prototype public var id(get, set):String;
@@ -45,7 +70,21 @@ class GUISkin implements IGPrototypable {
         g2d_clones = new Array<GUISkin>();
     }
 
-    public function render(p_x:Float, p_y:Float, p_width:Float, p_height:Float):Void {
+    private var g2d_renderLeft:Float;
+    private var g2d_renderTop:Float;
+    private var g2d_renderRight:Float;
+    private var g2d_renderBottom:Float;
+    public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Bool {
+        g2d_renderLeft = p_left;
+        g2d_renderTop = p_top;
+        g2d_renderRight = p_right;
+        g2d_renderBottom = p_bottom;
+
+        return !batchRender(this);
+    }
+
+    inline private function flushRender():Void {
+        render(g2d_renderLeft, g2d_renderTop, g2d_renderRight, g2d_renderBottom);
     }
 
     public function getTexture():GContextTexture {
@@ -80,5 +119,7 @@ class GUISkin implements IGPrototypable {
             g2d_element.onValueChanged.remove(elementValueChangedHandler);
             g2d_element = null;
         }
+
+        if (GUISkinManager.getSkinById(g2d_id) != null) GUISkinManager.g2d_references.remove(g2d_id);
     }
 }

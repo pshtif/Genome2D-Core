@@ -1,4 +1,5 @@
 package com.genome2d.components.renderable.ui;
+import com.genome2d.ui.skin.GUISkin;
 import com.genome2d.ui.element.GUIElement;
 import com.genome2d.signals.GMouseSignal;
 import com.genome2d.signals.GMouseSignalType;
@@ -7,12 +8,12 @@ import com.genome2d.context.GCamera;
 import com.genome2d.components.renderable.IRenderable;
 
 @:access(com.genome2d.ui.element.GUIElement)
+@:access(com.genome2d.ui.skin.GUISkin)
 class GUI extends GComponent implements IRenderable {
-    //public var root:GUIContainer;
+
     public var root:GUIElement;
 
     override public function init():Void {
-        //root = new GUIContainer(null);
         root = new GUIElement();
         root.g2d_worldLeft = 0;
         root.g2d_worldRight = 1024;
@@ -34,9 +35,8 @@ class GUI extends GComponent implements IRenderable {
     public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         invalidate();
 
-        //GUIControl.clearBatchState();
         root.render();
-        //GUIControl.flushBatch();
+        GUISkin.flushBatch();
     }
 
     public function getBounds(p_target:GRectangle = null):GRectangle {
