@@ -21,7 +21,7 @@ class GUIElement implements IGPrototypable {
 
     public var visible:Bool = true;
 
-    @prototype public var flushBatch:Bool = true;
+    @prototype public var flushBatch:Bool = false;
 
     @prototype public var name:String = "GUIElement";
 

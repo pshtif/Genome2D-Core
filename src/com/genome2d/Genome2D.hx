@@ -249,7 +249,6 @@ class Genome2D
     **/
     @:access(com.genome2d.components.GTransform)
 	public function render(p_camera:GCameraController = null):Void {
-        var cameraCount:Int = g2d_cameras.length;
 		if (g2d_context.begin()) {
             onPreRender.dispatch();
 
@@ -262,6 +261,7 @@ class Genome2D
             if (p_camera != null) {
                 p_camera.render();
             } else {
+                var cameraCount:Int = g2d_cameras.length;
                 // If there is no camera render the root node directly
                 if (cameraCount==0) {
                     root.render(false, false, g2d_context.getDefaultCamera(), false, false);

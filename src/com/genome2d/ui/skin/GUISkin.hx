@@ -13,7 +13,7 @@ class GUISkin implements IGPrototypable {
 
     static private function batchRender(p_skin:GUISkin):Bool {
         var batched:Bool = false;
-        if (g2d_currentBatchTexture != null && p_skin.getTexture() != g2d_currentBatchTexture) {
+        if (g2d_currentBatchTexture != null && !p_skin.getTexture().hasSameGPUTexture(g2d_currentBatchTexture)) {
             g2d_batchQueue.push(p_skin);
             batched = true;
         } else if (g2d_currentBatchTexture == null) {
