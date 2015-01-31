@@ -27,8 +27,14 @@ class GPrototypeFactory {
         return g2d_lookups[p_prototypeName];
     }
 
-    static public function createPrototype(p_prototypeXml:Xml):IGPrototypable {
-        var prototypeName:String = p_prototypeXml.nodeName;
+    static public function createPrototype(p_prototype:Dynamic):IGPrototypable {
+        var prototypeXml:Xml;
+        if (Std.is(p_prototype,Xml)) {
+            prototypeXml = p_prototype;
+        } else {
+            prototypeXml = Xml.parse(p_prototype).firstElement();
+        }
+        var prototypeName:String = prototypeXml.nodeName;
         var prototypeClass:Class<IGPrototypable> = g2d_lookups[prototypeName];
         if (prototypeClass == null) {
             GDebug.error("Non existing prototype class "+prototypeName);
@@ -37,7 +43,7 @@ class GPrototypeFactory {
         var proto:IGPrototypable = Type.createInstance(prototypeClass,[]);
         if (proto == null) GDebug.error("Invalid prototype class "+prototypeName);
 
-        proto.initPrototype(p_prototypeXml);
+        proto.initPrototype(prototypeXml);
 
         return proto;
     }

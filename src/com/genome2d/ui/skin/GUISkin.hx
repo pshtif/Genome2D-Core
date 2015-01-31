@@ -37,7 +37,7 @@ class GUISkin implements IGPrototypable {
     @prototype public var id(get, set):String;
     #if swc @:getter(id) #end
     inline private function get_id():String {
-        return g2d_id;
+        return (g2d_origin == null) ? g2d_id : g2d_origin.g2d_id;
     }
     #if swc @:setter(id) #end
     inline private function set_id(p_value:String):String {

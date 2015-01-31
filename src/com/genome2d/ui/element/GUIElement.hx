@@ -181,25 +181,21 @@ class GUIElement implements IGPrototypable {
         return g2d_mouseMove;
     }
 
+    public var listItemPrototype:Xml;
 
-    private var g2d_value:Dynamic;
-    #if swc @:extern #end
-    public var value(get, set):Dynamic;
-    #if swc @:getter(value) #end
-    inline private function get_value():String {
+    private var g2d_value:String = "";
+    public function getValue():String {
         return g2d_value;
     }
-    #if swc @:setter(value) #end
-    inline private function set_value(p_value:Dynamic):Dynamic {
-        g2d_value = p_value;
-        if (Std.is(g2d_value,Xml)) {
-            var xml:Xml = cast (g2d_value,Xml);
+    public function setValue(p_value:Dynamic):Void {
+        if (Std.is(p_value,Xml)) {
+            var xml:Xml = cast (p_value,Xml);
             var it:Iterator<Xml> = xml.elements();
             if (!it.hasNext()) {
                 if (xml.firstChild() != null && xml.firstChild().nodeType == Xml.PCData) {
-                    g2d_value = xml.firstChild().nodeValue;
+                    p_value = xml.firstChild().nodeValue;
                 } else {
-                    g2d_value = "";
+                    p_value = "";
                 }
             } else {
                 while (it.hasNext()) {
@@ -207,21 +203,30 @@ class GUIElement implements IGPrototypable {
                     var child:GUIElement = getChildByName(childXml.nodeName);
                     if (child != null) {
                         if (childXml.firstChild() != null && childXml.firstChild().nodeType == Xml.PCData) {
-                            child.value = childXml.firstChild().nodeValue;
+                            child.setValue(childXml.firstChild().nodeValue);
                         } else {
-                            child.value = childXml;
+                            child.setValue(childXml);
                         }
                     }
                 }
             }
+        } else if (Std.is(p_value,Array) && listItemPrototype != null) {
+            disposeChildren();
+            var it:Iterator<Dynamic> = cast (p_value,Array<Dynamic>).iterator();
+            while (it.hasNext()) {
+                var child:GUIElement = cast GPrototypeFactory.createPrototype(listItemPrototype);
+                child.setValue(it.next());
+                addChild(child);
+            }
+        } else if (Std.is(p_value,String)) {
+            g2d_value = p_value;
         } else {
-            for (it in Reflect.fields(g2d_value)) {
+            for (it in Reflect.fields(p_value)) {
                 var child:GUIElement = getChildByName(it);
-                if (child != null) child.value = Reflect.field(g2d_value, it);
+                if (child != null) child.setValue(Reflect.field(p_value, it));
             }
         }
         onValueChanged.dispatch(this);
-        return g2d_value;
     }
 
     private var g2d_onValueChanged:Signal1<GUIElement>;
@@ -747,6 +752,11 @@ class GUIElement implements IGPrototypable {
         p_prototypeXml.set("mouseOut", mouseOut);
         p_prototypeXml.set("mouseMove", mouseMove);
 
+        if (g2d_value != "") {
+            var valueXml:Xml = Xml.createPCData(g2d_value);
+            p_prototypeXml.addChild(valueXml);
+        }
+
         if (layout != null) p_prototypeXml.addChild(layout.getPrototype());
         for (i in 0...g2d_numChildren) {
             p_prototypeXml.addChild(g2d_children[i].getPrototype());
@@ -786,7 +796,7 @@ class GUIElement implements IGPrototypable {
         while (it.hasNext()) {
             var xml:Xml = it.next();
             if (xml.nodeType == Xml.PCData) {
-                value = xml.nodeValue;
+                setValue(xml.nodeValue);
             } else if (xml.nodeType == Xml.Element) {
                 var prototype:IGPrototypable = GPrototypeFactory.createPrototype(xml);
                 if (Std.is(prototype, GUIElement)) {
