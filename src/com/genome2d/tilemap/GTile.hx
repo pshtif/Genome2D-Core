@@ -11,7 +11,7 @@ class GTile
     public var texture:GTexture;#if swc @:extern #end
     @prototype public var textureId(get, set):String;
     #if swc @:getter(textureId) #end
-    inline private function get_textureId():String {
+    private function get_textureId():String {
         return (texture != null) ? texture.id : "";
     }
     #if swc @:setter(textureId) #end
@@ -27,6 +27,10 @@ class GTile
     public var visible:Bool = true;
     public var repeatable:Bool = true;
     public var reversed:Bool = false;
+
+    public var red:Float = 1;
+    public var green:Float = 1;
+    public var blue:Float = 1;
 
     /**
 	    Abstract reference to user defined data, if you want keep some custom data binded to GTile instance use it.
@@ -175,7 +179,7 @@ class GTile
                 }
                 g2d_accumulatedTime %= g2d_speed;
             }
-            p_context.draw(texture, p_x, p_y, 1, 1, rotation, 1, 1, 1, alpha, p_blendMode);
+            p_context.draw(texture, p_x, p_y, 1, 1, rotation, red, green, blue, alpha, p_blendMode);
             g2d_lastTimeRendered = p_time;
             g2d_lastFrameRendered = p_frameId;
         }

@@ -18,6 +18,7 @@ import com.genome2d.ui.skin.GUISkin;
 @prototypeName("element")
 class GUIElement implements IGPrototypable {
     @prototype public var mouseEnabled:Bool = true;
+    @prototype public var mouseChildren:Bool = true;
 
     public var visible:Bool = true;
 
@@ -54,6 +55,58 @@ class GUIElement implements IGPrototypable {
             }
         }
     }
+
+    public function setAlign(p_align:Int):Void {
+        switch (p_align) {
+            case 1:
+                g2d_anchorTop = g2d_anchorBottom = 0;
+                g2d_anchorLeft = g2d_anchorRight = 0;
+                g2d_pivotX = 0;
+                g2d_pivotY = 0;
+            case 2:
+                g2d_anchorTop = g2d_anchorBottom = 0;
+                g2d_anchorLeft = g2d_anchorRight = 0.5;
+                g2d_pivotX = .5;
+                g2d_pivotY = 0;
+            case 3:
+                g2d_anchorTop = g2d_anchorBottom = 0;
+                g2d_anchorLeft = g2d_anchorRight = 1;
+                g2d_pivotX = 1;
+                g2d_pivotY = 0;
+            case 4:
+                g2d_anchorTop = g2d_anchorBottom = 0.5;
+                g2d_anchorLeft = g2d_anchorRight = 0;
+                g2d_pivotX = 0;
+                g2d_pivotY = 0.5;
+            case 5:
+                g2d_anchorTop = g2d_anchorBottom = 0.5;
+                g2d_anchorLeft = g2d_anchorRight = 0.5;
+                g2d_pivotX = 0.5;
+                g2d_pivotY = 0.5;
+            case 6:
+                g2d_anchorTop = g2d_anchorBottom = 0.5;
+                g2d_anchorLeft = g2d_anchorRight = 1;
+                g2d_pivotX = 1;
+                g2d_pivotY = 0.5;
+            case 7:
+                g2d_anchorTop = g2d_anchorBottom = 1;
+                g2d_anchorLeft = g2d_anchorRight = 0;
+                g2d_pivotX = 0;
+                g2d_pivotY = 1;
+            case 8:
+                g2d_anchorTop = g2d_anchorBottom = 1;
+                g2d_anchorLeft = g2d_anchorRight = 0.5;
+                g2d_pivotX = .5;
+                g2d_pivotY = 1;
+            case 9:
+                g2d_anchorTop = g2d_anchorBottom = 1;
+                g2d_anchorLeft = g2d_anchorRight = 1;
+                g2d_pivotX = 1;
+                g2d_pivotY = 1;
+        }
+        setDirty();
+    }
+
 
     private var g2d_mouseDown:String;
     #if swc @:extern #end
@@ -725,32 +778,33 @@ class GUIElement implements IGPrototypable {
     public function getPrototype(p_prototypeXml:Xml = null):Xml {
         if (p_prototypeXml == null) p_prototypeXml = Xml.createElement("element");
 
-        p_prototypeXml.set("anchorX", Std.string(anchorX));
-        p_prototypeXml.set("anchorY", Std.string(anchorY));
-        p_prototypeXml.set("anchorLeft", Std.string(anchorLeft));
-        p_prototypeXml.set("anchorRight", Std.string(anchorRight));
-        p_prototypeXml.set("anchorTop", Std.string(anchorTop));
-        p_prototypeXml.set("anchorBottom", Std.string(anchorBottom));
-        p_prototypeXml.set("pivotX", Std.string(pivotX));
-        p_prototypeXml.set("pivotY", Std.string(pivotY));
-        p_prototypeXml.set("left", Std.string(left));
-        p_prototypeXml.set("right", Std.string(right));
-        p_prototypeXml.set("top", Std.string(top));
-        p_prototypeXml.set("bottom", Std.string(bottom));
-        p_prototypeXml.set("preferredWidth", Std.string(preferredWidth));
-        p_prototypeXml.set("preferredHeight", Std.string(preferredHeight));
-        p_prototypeXml.set("name", name);
-        p_prototypeXml.set("skinId", skinId);
-        p_prototypeXml.set("mouseEnabled", Std.string(mouseEnabled));
-        p_prototypeXml.set("visible", Std.string(visible));
-        p_prototypeXml.set("flushBatch", Std.string(flushBatch));
+        if (anchorX != 0) p_prototypeXml.set("anchorX", Std.string(anchorX));
+        if (anchorY != 0) p_prototypeXml.set("anchorY", Std.string(anchorY));
+        if (anchorLeft != 0) p_prototypeXml.set("anchorLeft", Std.string(anchorLeft));
+        if (anchorRight != 0) p_prototypeXml.set("anchorRight", Std.string(anchorRight));
+        if (anchorTop != 0) p_prototypeXml.set("anchorTop", Std.string(anchorTop));
+        if (anchorBottom != 0) p_prototypeXml.set("anchorBottom", Std.string(anchorBottom));
+        if (pivotX != 0) p_prototypeXml.set("pivotX", Std.string(pivotX));
+        if (pivotY != 0) p_prototypeXml.set("pivotY", Std.string(pivotY));
+        if (left != 0) p_prototypeXml.set("left", Std.string(left));
+        if (right != 0) p_prototypeXml.set("right", Std.string(right));
+        if (top != 0) p_prototypeXml.set("top", Std.string(top));
+        if (bottom != 0) p_prototypeXml.set("bottom", Std.string(bottom));
+        if (preferredWidth != 0) p_prototypeXml.set("preferredWidth", Std.string(preferredWidth));
+        if (preferredHeight != 0) p_prototypeXml.set("preferredHeight", Std.string(preferredHeight));
+        if (name != "") p_prototypeXml.set("name", name);
+        if (skinId != "") p_prototypeXml.set("skinId", skinId);
+        if (mouseEnabled != true) p_prototypeXml.set("mouseEnabled", Std.string(mouseEnabled));
+        if (mouseChildren != true) p_prototypeXml.set("mouseChildren", Std.string(mouseChildren));
+        if (visible != true) p_prototypeXml.set("visible", Std.string(visible));
+        if (flushBatch != false) p_prototypeXml.set("flushBatch", Std.string(flushBatch));
 
-        p_prototypeXml.set("mouseDown", mouseDown);
-        p_prototypeXml.set("mouseUp", mouseUp);
-        p_prototypeXml.set("mouseClick", mouseClick);
-        p_prototypeXml.set("mouseOver", mouseOver);
-        p_prototypeXml.set("mouseOut", mouseOut);
-        p_prototypeXml.set("mouseMove", mouseMove);
+        if (mouseDown != "") p_prototypeXml.set("mouseDown", mouseDown);
+        if (mouseUp != "") p_prototypeXml.set("mouseUp", mouseUp);
+        if (mouseClick != "") p_prototypeXml.set("mouseClick", mouseClick);
+        if (mouseOver != "") p_prototypeXml.set("mouseOver", mouseOver);
+        if (mouseOut != "") p_prototypeXml.set("mouseOut", mouseOut);
+        if (mouseMove != "") p_prototypeXml.set("mouseMove", mouseMove);
 
         if (g2d_value != "") {
             var valueXml:Xml = Xml.createPCData(g2d_value);
@@ -765,6 +819,7 @@ class GUIElement implements IGPrototypable {
     }
 
     public function initPrototype(p_prototypeXml:Xml):Void {
+        if (p_prototypeXml.exists("align")) setAlign(Std.parseInt(p_prototypeXml.get("align")));
         if (p_prototypeXml.exists("anchorX")) anchorX = Std.parseFloat(p_prototypeXml.get("anchorX"));
         if (p_prototypeXml.exists("anchorY")) anchorY = Std.parseFloat(p_prototypeXml.get("anchorY"));
         if (p_prototypeXml.exists("anchorLeft")) anchorLeft = Std.parseFloat(p_prototypeXml.get("anchorLeft"));
@@ -782,6 +837,7 @@ class GUIElement implements IGPrototypable {
         if (p_prototypeXml.exists("name")) name = p_prototypeXml.get("name");
         if (p_prototypeXml.exists("skinId")) skinId = p_prototypeXml.get("skinId");
         if (p_prototypeXml.exists("mouseEnabled")) mouseEnabled = (p_prototypeXml.get("mouseEnabled") != "false" && p_prototypeXml.get("mouseEnabled") != "0");
+        if (p_prototypeXml.exists("mouseChildren")) mouseChildren = (p_prototypeXml.get("mouseChildren") != "false" && p_prototypeXml.get("mouseChildren") != "0");
         if (p_prototypeXml.exists("visible")) visible = (p_prototypeXml.get("visible") != "false" && p_prototypeXml.get("visible") != "0");
         if (p_prototypeXml.exists("flushBatch")) flushBatch = (p_prototypeXml.get("flushBatch") != "false" && p_prototypeXml.get("flushBatch") != "0");
 
@@ -880,10 +936,12 @@ class GUIElement implements IGPrototypable {
     private var g2d_mouseOverElement:GUIElement;
 
     public function processMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
-        var i:Int = g2d_numChildren;
-        while (i>0) {
-            i--;
-            p_captured = g2d_children[i].processMouseSignal(p_captured,p_cameraX,p_cameraY,p_contextSignal);
+        if (mouseChildren) {
+            var i:Int = g2d_numChildren;
+            while (i>0) {
+                i--;
+                p_captured = g2d_children[i].processMouseSignal(p_captured,p_cameraX,p_cameraY,p_contextSignal);
+            }
         }
 
         if (mouseEnabled) {
