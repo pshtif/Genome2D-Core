@@ -5,7 +5,7 @@
 
 # Include libraries
 -lib msignal
--swf-lib context/flash/lib/AGAL.swc
+-swf-lib Genome2D-ContextFlash/lib/AGAL.swc
 
 # Flash flags
 -swf-version 12
@@ -18,6 +18,6 @@
 
 # Documentation
 --macro include('com')
--xml ../docu/xml/genome2d.xml
+-xml docu/xml/genome2d.xml
 --no-output
 -swf dummy.swf
