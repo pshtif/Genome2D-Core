@@ -47,7 +47,7 @@ class GBloomPP extends GPostProcess
 
         var context:IContext = Genome2D.getInstance().getContext();
 
-        g2d_bright.render(p_parentTransformUpdate, p_parentColorUpdate, p_camera, p_node, bounds, null, g2d_passTextures[0]);
+        g2d_bright.renderNode(p_parentTransformUpdate, p_parentColorUpdate, p_camera, p_node, bounds, null, g2d_passTextures[0]);
         g2d_blur.render(p_parentTransformUpdate, p_parentColorUpdate, p_camera, p_node, bounds, g2d_passTextures[0], g2d_passTextures[1]);
 
         g2d_bloomFilter.texture = g2d_bright.getPassTexture(0);

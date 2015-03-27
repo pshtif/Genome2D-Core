@@ -8,6 +8,7 @@
  */
 package com.genome2d.postprocess;
 
+import com.genome2d.error.GError;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.context.stage3d.GStage3DContext;
 import com.genome2d.utils.GRenderTargetStack;
@@ -68,7 +69,43 @@ class GPostProcess {
         g2d_bottomMargin = p_bottomMargin;
     }
 
-    public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
+    public function render(p_source:GTexture, p_x:Float, p_y:Float, p_bounds:GRectangle = null, p_target:GTexture = null):Void {
+        var bounds:GRectangle = (p_bounds == null) ? g2d_definedBounds : p_bounds;
+        // Invalid bounds
+        if (bounds.width > 4096) return;
+
+        updatePassTextures(bounds);
+
+        var context:GStage3DContext = cast Genome2D.getInstance().getContext();
+
+        GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.g2d_renderTargetTransform);
+
+        if (p_source == null) GDebug.error("Invalid source for post process.");
+
+        g2d_matrix.identity();
+        g2d_matrix.prependTranslation(-bounds.x+g2d_leftMargin, -bounds.y+g2d_topMargin, 0);
+        context.setRenderTarget(g2d_passTextures[0], g2d_matrix, true);
+        context.draw(p_source,p_x,p_y,1,1,0,1,1,1,1);
+
+        var zero:GTexture = g2d_passTextures[0];
+        //g2d_passTextures[0] = p_source;
+
+        for (i in 1...g2d_passes) {
+            context.setRenderTarget(g2d_passTextures[i],null,true);
+            context.draw(g2d_passTextures[i-1], 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[i-1]);
+        }
+
+        if (p_target == null) {
+            GRenderTargetStack.popRenderTarget(context);
+            context.draw(g2d_passTextures[g2d_passes-1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
+        } else {
+            context.setRenderTarget(p_target);
+            context.draw(g2d_passTextures[g2d_passes-1], 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
+        }
+        g2d_passTextures[0] = zero;
+    }
+
+    public function renderNode(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
         var bounds:GRectangle = p_bounds;
         if (bounds == null) bounds = (g2d_definedBounds != null) ? g2d_definedBounds : p_node.getBounds(null, g2d_activeBounds);
 

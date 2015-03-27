@@ -20,7 +20,7 @@ class GHDRPP extends GPostProcess
 {
     private var g2d_empty:GFilterPP;
     private var g2d_blur:GBlurPP;
-    private var g2d_HDRPassFilter:GHDRPassFilter;
+    private var g2d_hdrPassFilter:GHDRPassFilter;
 
     #if swc @:extern #end
     public var blurX(get, set):Int;
@@ -54,11 +54,11 @@ class GHDRPP extends GPostProcess
     public var saturation(get, set):Float;
     #if swc @:getter(saturation) #end
     public function get_saturation():Float {
-        return g2d_HDRPassFilter.saturation;
+        return g2d_hdrPassFilter.saturation;
     }
     #if swc @:setter(saturation) #end
     public function set_saturation(p_value:Float):Float {
-        g2d_HDRPassFilter.saturation = p_value;
+        g2d_hdrPassFilter.saturation = p_value;
         return p_value;
     }
 
@@ -73,10 +73,28 @@ class GHDRPP extends GPostProcess
 
         g2d_blur = new GBlurPP(p_blurX, p_blurY, p_blurPasses);
 
-        g2d_HDRPassFilter = new GHDRPassFilter(p_saturation);
+        g2d_hdrPassFilter = new GHDRPassFilter(p_saturation);
     }
 
-    override public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
+    override public function render(p_source:GTexture, p_x:Float, p_y:Float, p_bounds:GRectangle = null, p_target:GTexture = null):Void {
+        var bounds:GRectangle = (p_bounds == null) ? g2d_definedBounds : p_bounds;
+        // Invalid bounds
+        if (bounds.x > 4096) return;
+        updatePassTextures(bounds);
+
+        g2d_empty.render(p_source,p_x,p_y,bounds,g2d_passTextures[0]);
+        g2d_blur.render(g2d_passTextures[0], 0, 0, bounds, g2d_passTextures[1]);
+
+        g2d_hdrPassFilter.texture = g2d_empty.getPassTexture(0);
+
+        var context:IContext = Genome2D.getInstance().getContext();
+
+        context.setRenderTarget(null);
+        //context.setActiveCamera(p_camera);
+        context.draw(g2d_passTextures[1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_hdrPassFilter);
+    }
+
+    override public function renderNode(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
         var bounds:GRectangle = (g2d_definedBounds != null) ? g2d_definedBounds : p_node.getBounds(null, g2d_activeBounds);
 
         // Invalid bounds
@@ -84,16 +102,16 @@ class GHDRPP extends GPostProcess
 
         updatePassTextures(bounds);
 
-        g2d_empty.render(p_parentTransformUpdate, p_parentColorUpdate, p_camera, p_node, bounds, null, g2d_passTextures[0]);
-        g2d_blur.render(p_parentTransformUpdate, p_parentColorUpdate, p_camera, p_node, bounds, g2d_passTextures[0], g2d_passTextures[1]);
+        g2d_empty.renderNode(p_parentTransformUpdate, p_parentColorUpdate, p_camera, p_node, bounds, null, g2d_passTextures[0]);
+        g2d_blur.renderNode(p_parentTransformUpdate, p_parentColorUpdate, p_camera, p_node, bounds, g2d_passTextures[0], g2d_passTextures[1]);
 
-        g2d_HDRPassFilter.texture = g2d_empty.getPassTexture(0);
+        g2d_hdrPassFilter.texture = g2d_empty.getPassTexture(0);
 
         var context:IContext = Genome2D.getInstance().getContext();
 
         context.setRenderTarget(null);
         context.setActiveCamera(p_camera);
-        context.draw(g2d_passTextures[1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_HDRPassFilter);
+        context.draw(g2d_passTextures[1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_hdrPassFilter);
     }
 
     override public function dispose():Void {

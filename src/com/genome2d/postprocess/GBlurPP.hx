@@ -139,14 +139,21 @@ class GBlurPP extends GPostProcess
         }
     }
 
-    override public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
+    override public function render(p_source:GTexture, p_x:Float, p_y:Float, p_bounds:GRectangle = null, p_target:GTexture = null):Void {
         if (g2d_invalidate) invalidateBlurFilters();
 
-        super.render(p_parentTransformUpdate, p_parentColorUpdate, p_camera, p_node, p_bounds, p_source, p_target);
+        super.render(p_source, p_x, p_y, p_bounds, p_target);
+    }
+
+    override public function renderNode(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
+        if (g2d_invalidate) invalidateBlurFilters();
+
+        super.renderNode(p_parentTransformUpdate, p_parentColorUpdate, p_camera, p_node, p_bounds, p_source, p_target);
     }
 
     private function invalidateBlurFilters():Void {
         var i:Int = g2d_passFilters.length-1;
+
         while (i>=0) {
             var filter:GBlurPassFilter = cast g2d_passFilters[i];
             filter.blur = (i<g2d_passes/2) ? g2d_blurY : g2d_blurX;

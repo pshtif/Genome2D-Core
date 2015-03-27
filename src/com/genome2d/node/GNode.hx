@@ -1531,7 +1531,7 @@ class GNode
                 while (child != null) {
                     var next:GNode = child.g2d_nextNode;
                     if (child.postProcess != null) {
-                        child.postProcess.render(invalidateTransform, invalidateColor, p_camera, child);
+                        child.postProcess.renderNode(invalidateTransform, invalidateColor, p_camera, child);
                     } else {
                         child.render(invalidateTransform, invalidateColor, p_camera, p_renderAsMask, useMatrix);
                     }

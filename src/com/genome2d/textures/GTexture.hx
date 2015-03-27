@@ -54,7 +54,7 @@ class GTexture extends GContextTexture
     }
     #if swc @:setter(region) #end
     inline private function set_region(p_value:GRectangle):GRectangle {
-        if (g2d_sourceAtlas == null) GDebug.error("Cant set error on standalone texture.");
+        //if (g2d_sourceAtlas == null) GDebug.error("Cant set error on standalone texture.");
 
         g2d_region = p_value;
 
