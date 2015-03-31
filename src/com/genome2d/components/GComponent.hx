@@ -8,6 +8,7 @@
  */
 package com.genome2d.components;
 
+import com.genome2d.debug.GDebug;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.node.GNode;
 import com.genome2d.signals.GMouseSignal;
@@ -136,7 +137,7 @@ class GComponent implements IGPrototypable
 		try {
 			Reflect.setProperty(this, p_propertyXml.get("name"), value);
 		} catch (e:Dynamic) {
-			//trace("bindPrototypeProperty error", e, p_propertyXml.get("name"), value);
+			//GDebug.warning("bindPrototypeProperty error", e, p_propertyXml.get("name"), value);
 		}
 	}
 	

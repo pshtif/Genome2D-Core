@@ -1,4 +1,5 @@
 package com.genome2d.text;
+import com.genome2d.debug.GDebug;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.utils.GHAlignType;
 import com.genome2d.utils.GVAlignType;
@@ -121,7 +122,8 @@ class GTextureTextRenderer extends GTextRenderer {
                 texture = g2d_textureAtlas.getSubTextureById(Std.string(currentCharCode));
                 if (texture == null) {
                     ++i;
-                    continue;// throw new GError("Texture for character "+g2d_text.charAt(i)+" with code "+g2d_text.charCodeAt(i)+" not found!");
+                    GDebug.warning("Texture for character "+g2d_text.charAt(i)+" with code "+g2d_text.charCodeAt(i)+" not found!");
+                    continue;
                 }
 
                 if (previousCharCode != -1) {
