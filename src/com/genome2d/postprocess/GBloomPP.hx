@@ -8,6 +8,7 @@
  */
 package com.genome2d.postprocess;
 
+import com.genome2d.utils.GRenderTargetStack;
 import com.genome2d.context.IContext;
 import com.genome2d.node.GNode;
 import com.genome2d.context.GCamera;
@@ -47,13 +48,19 @@ class GBloomPP extends GPostProcess
 
         var context:IContext = Genome2D.getInstance().getContext();
 
+        if (p_target == null) GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.g2d_renderTargetTransform);
+
         g2d_bright.render(p_source, p_x, p_y, bounds, g2d_passTextures[0]);
         g2d_blur.render(g2d_passTextures[0], 0, 0, bounds, g2d_passTextures[1]);
 
         g2d_bloomFilter.texture = g2d_bright.getPassTexture(0);
-
-        context.setRenderTarget(null);
-        context.draw(g2d_passTextures[1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_bloomFilter);
+        if (p_target == null) {
+            GRenderTargetStack.popRenderTarget(context);
+            context.draw(g2d_passTextures[1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_bloomFilter);
+        } else {
+            context.setRenderTarget(p_target);
+            context.draw(g2d_passTextures[1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_bloomFilter);
+        }
     }
 
     override public function renderNode(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {

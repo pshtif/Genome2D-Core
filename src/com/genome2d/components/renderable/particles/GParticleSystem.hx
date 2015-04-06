@@ -29,6 +29,8 @@ class GParticleSystem extends GComponent implements IRenderable
 {
     public var blendMode:Int = 1;
 
+    public var timeDilation:Float = 1;
+
     public var emit:Bool = true;
 
     private var g2d_initializers:Array<IGInitializer>;
@@ -102,23 +104,26 @@ class GParticleSystem extends GComponent implements IRenderable
     }
 
     public function update(p_deltaTime:Float):Void {
+        p_deltaTime *= timeDilation;
         if (emit && emission != null ) {
             var dt:Float = p_deltaTime * .001;
-            g2d_accumulatedTime += dt;
-            g2d_accumulatedSecond += dt;
-            if (loop && duration!=0 && g2d_accumulatedTime>duration) g2d_accumulatedTime-=duration;
-            if (duration==0 || g2d_accumulatedTime<duration) {
-                //while (nAccumulatedTime>duration) nAccumulatedTime-=duration;
-                //var currentEmission:Float = emission.calculate(nAccumulatedTime/duration);
-                while (g2d_accumulatedSecond>1) g2d_accumulatedSecond-=1;
-                var currentEmission:Float = (emissionPerDuration && duration!=0) ? emission.calculate(g2d_accumulatedTime/duration) : emission.calculate(g2d_accumulatedSecond);
+            if (dt>0) {
+                g2d_accumulatedTime += dt;
+                g2d_accumulatedSecond += dt;
+                if (loop && duration!=0 && g2d_accumulatedTime>duration) g2d_accumulatedTime-=duration;
+                if (duration==0 || g2d_accumulatedTime<duration) {
+                    //while (nAccumulatedTime>duration) nAccumulatedTime-=duration;
+                    //var currentEmission:Float = emission.calculate(nAccumulatedTime/duration);
+                    while (g2d_accumulatedSecond>1) g2d_accumulatedSecond-=1;
+                    var currentEmission:Float = (emissionPerDuration && duration!=0) ? emission.calculate(g2d_accumulatedTime/duration) : emission.calculate(g2d_accumulatedSecond);
 
-                if (currentEmission<0) currentEmission = 0;
-                g2d_accumulatedEmission += currentEmission * dt;
+                    if (currentEmission<0) currentEmission = 0;
+                    g2d_accumulatedEmission += currentEmission * dt;
 
-                while (g2d_accumulatedEmission > 0) {
-                    activateParticle();
-                    g2d_accumulatedEmission--;
+                    while (g2d_accumulatedEmission > 0) {
+                        activateParticle();
+                        g2d_accumulatedEmission--;
+                    }
                 }
             }
         }
@@ -172,6 +177,24 @@ class GParticleSystem extends GComponent implements IRenderable
     }
 
     private function activateParticle():Void {
+        var particle:GParticle = particlePool.g2d_get();
+        if (g2d_lastParticle != null) {
+            particle.g2d_previous = g2d_lastParticle;
+            g2d_lastParticle.g2d_next = particle;
+            g2d_lastParticle = particle;
+        } else {
+            g2d_firstParticle = particle;
+            g2d_lastParticle = particle;
+        }
+
+        particle.init(this);
+
+        for (i in 0...g2d_initializersCount) {
+            g2d_initializers[i].initialize(this, particle);
+        }
+    }
+
+    private function activateParticle2():Void {
         var particle:GParticle = particlePool.g2d_get();
         if (g2d_firstParticle != null) {
             particle.g2d_next = g2d_firstParticle;

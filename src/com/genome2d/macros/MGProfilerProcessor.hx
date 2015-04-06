@@ -73,7 +73,7 @@ class MGProfilerProcessor {
 
     static public function getProfileMeta(p_meta:Array<MetadataEntry>):Int {
         for (i in 0...p_meta.length) {
-            if (p_meta[i].name == "profile") return i;
+            if (p_meta[i].name == "genome_profile") return i;
         }
         return -1;
     }

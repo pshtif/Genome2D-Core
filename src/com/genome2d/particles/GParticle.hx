@@ -54,14 +54,22 @@ class GParticle
 
     private var g2d_next:GParticle;
     private var g2d_previous:GParticle;
+    #if swc @:extern #end
+    public var previous(get, never):GParticle;
+    #if swc @:getter(previous) #end
+    inline private function get_previous():GParticle {
+        return g2d_previous;
+    }
+
     private var g2d_nextAvailableInstance:GParticle;
 
-    private var g2d_id:Int = 0;
+    public var index:Int = 0;
     private var g2d_pool:GParticlePool;
 
     @:dox(hide)
     public function new(p_pool:GParticlePool):Void {
         g2d_pool = p_pool;
+        index = g2d_pool.g2d_count;
     }
 
     @:dox(hide)

@@ -77,7 +77,7 @@ class GPostProcess {
 
         var context:GStage3DContext = cast Genome2D.getInstance().getContext();
 
-        GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.g2d_renderTargetTransform);
+        if (p_target == null) GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.g2d_renderTargetTransform);
 
         if (p_source == null) GDebug.error("Invalid source for post process.");
 

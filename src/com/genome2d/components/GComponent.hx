@@ -24,6 +24,18 @@ class GComponent implements IGPrototypable
     private var g2d_previous:GComponent;
     private var g2d_next:GComponent;
 
+    /**
+	    Abstract reference to user defined data, if you want keep some custom data binded to component instance use it.
+	**/
+    private var g2d_userData:Map<String, Dynamic>;
+    #if swc @:extern #end
+    public var userData(get, never):Map<String, Dynamic>;
+    #if swc @:getter(userData) #end
+    inline private function get_userData():Map<String, Dynamic> {
+        if (g2d_userData == null) g2d_userData = new Map<String,Dynamic>();
+        return g2d_userData;
+    }
+
 	public function isActive():Bool {
 		return g2d_active;
 	}

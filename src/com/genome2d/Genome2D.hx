@@ -8,10 +8,9 @@
  */
 package com.genome2d;
 
+import com.genome2d.debug.IGDebuggableInternal;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.macros.MGBuildID;
-import haxe.crypto.Md5;
-import com.genome2d.debug.GDebug;
 import com.genome2d.ui.skin.GUISkinManager;
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.proto.GPrototypeFactory;
@@ -23,14 +22,13 @@ import com.genome2d.components.GCameraController;
 import com.genome2d.node.GNode;
 import com.genome2d.signals.GMouseSignal;
 import msignal.Signal;
-import haxe.Timer.stamp;
 
 import com.genome2d.context.GContextConfig;
 
 /**
     Genome2D core class
 **/
-class Genome2D
+class Genome2D implements IGDebuggableInternal
 {
     /**
         Genome2D Version
@@ -197,8 +195,7 @@ class Genome2D
     **/
     @:dox(hide)
 	private function new() {
-        MGDebug.DUMP();
-		if (!g2d_instantiable) GDebug.error("Can't instantiate singleton directly");
+		if (!g2d_instantiable) MGDebug.ERROR("Can't instantiate singleton directly");
 
 		g2d_instance = this;
 
@@ -217,8 +214,6 @@ class Genome2D
         @param p_config `GContextConfig` instance configuring Genome2D context
     **/
 	public function init(p_config:GContextConfig):Void {
-        MGDebug.INFO(p_config);
-
         GPrototypeFactory.initializePrototypes();
         GAssetManager.init();
 
@@ -249,8 +244,6 @@ class Genome2D
         This method is called automatically if `autoUpdateAndRender` is true
     **/
 	public function update(p_deltaTime:Float):Void {
-        MGDebug.DUMP(p_deltaTime);
-
         g2d_currentFrameDeltaTime = p_deltaTime;
         onUpdate.dispatch(g2d_currentFrameDeltaTime);
 	}
@@ -262,8 +255,6 @@ class Genome2D
     **/
     @:access(com.genome2d.components.GTransform)
 	public function render(p_camera:GCameraController = null):Void {
-        MGDebug.INFO(p_camera);
-
 		if (g2d_context.begin()) {
             onPreRender.dispatch();
 
@@ -301,8 +292,6 @@ class Genome2D
         Dispose Genome2D framework
     **/
     public function dispose():Void {
-        MGDebug.INFO();
-
         if (g2d_root != null) g2d_root.dispose();
         g2d_root = null;
 

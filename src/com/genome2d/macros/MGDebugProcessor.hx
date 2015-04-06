@@ -16,14 +16,28 @@ class MGDebugProcessor {
     static public function build() : Array<Field> {
         var pos = Context.currentPos();
         var fields = Context.getBuildFields();
+        //var interfaces = Context.getLocalClass().get().interfaces
+        var autoDumpPriority:Int = 1;
+        for (inter in Context.getLocalClass().get().interfaces) {
+            if (inter.t.get().name == "IGDebuggableInternal") autoDumpPriority = 0;
+        }
 
         for (field in fields) {
             switch (field.kind) {
                 case FFun(f):
-                    if (!hasNoDebugMeta(field.meta)) {
+                    var ignore:Bool = false;
+                    for (access in field.access) {
+                        switch (access) {
+                            case AInline:
+                                ignore = true;
+                            case _:
+                        }
+                    }
+                    if (!hasNoDebugMeta(field.meta) && !ignore) {
                         var priority:Int = getDebugPriority(field.meta);
+                        if (priority == 0) priority = autoDumpPriority;
                         #if !genome_debug_autodump
-                        if (priority>0) {
+                        if (priority>2) {
                         #end
                         var insertedExpr = com.genome2d.macros.MGDebugProcessor.PROCESSOR_DEBUG(Context.makeExpr(priority,pos), f);
                         f.expr = macro {
@@ -76,7 +90,7 @@ class MGDebugProcessor {
                     }
                 }
 
-                return 1;
+                return 2;
             }
         }
 
@@ -87,47 +101,47 @@ class MGDebugProcessor {
         #if genome_debug
         switch (p_function.args.length) {
             case 1:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name});
             case 2:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name});
             case 3:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name});
             case 4:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name});
             case 5:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name});
             case 6:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name});
             case 7:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name});
             case 8:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name});
             case 9:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name});
             case 10:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name});
             case 11:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name});
             case 12:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name});
             case 13:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name});
             case 14:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name});
             case 15:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name}, $i{p_function.args[14].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name}, $i{p_function.args[14].name});
             case 16:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name}, $i{p_function.args[14].name}, $i{p_function.args[15].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name}, $i{p_function.args[14].name}, $i{p_function.args[15].name});
             case 17:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name}, $i{p_function.args[14].name}, $i{p_function.args[15].name}, $i{p_function.args[16].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name}, $i{p_function.args[14].name}, $i{p_function.args[15].name}, $i{p_function.args[16].name});
             case 18:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name}, $i{p_function.args[14].name}, $i{p_function.args[15].name}, $i{p_function.args[16].name}, $i{p_function.args[17].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name}, $i{p_function.args[14].name}, $i{p_function.args[15].name}, $i{p_function.args[16].name}, $i{p_function.args[17].name});
             case 19:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name}, $i{p_function.args[14].name}, $i{p_function.args[15].name}, $i{p_function.args[16].name}, $i{p_function.args[17].name}, $i{p_function.args[18].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name}, $i{p_function.args[14].name}, $i{p_function.args[15].name}, $i{p_function.args[16].name}, $i{p_function.args[17].name}, $i{p_function.args[18].name});
             case 20:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name}, $i{p_function.args[14].name}, $i{p_function.args[15].name}, $i{p_function.args[16].name}, $i{p_function.args[17].name}, $i{p_function.args[18].name}, $i{p_function.args[19].name});
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority, $i{p_function.args[0].name}, $i{p_function.args[1].name}, $i{p_function.args[2].name}, $i{p_function.args[3].name}, $i{p_function.args[4].name}, $i{p_function.args[5].name}, $i{p_function.args[6].name}, $i{p_function.args[7].name}, $i{p_function.args[8].name}, $i{p_function.args[9].name}, $i{p_function.args[10].name}, $i{p_function.args[11].name}, $i{p_function.args[12].name}, $i{p_function.args[13].name}, $i{p_function.args[14].name}, $i{p_function.args[15].name}, $i{p_function.args[16].name}, $i{p_function.args[17].name}, $i{p_function.args[18].name}, $i{p_function.args[19].name});
             case _:
-                return macro @:pos(p_function.expr.pos) GDebug.debug($p_priority);
+                return macro @:pos(p_function.expr.pos) com.genome2d.debug.GDebug.debug($p_priority);
         }
         return macro null;
         #else
