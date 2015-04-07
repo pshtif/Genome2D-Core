@@ -12,7 +12,7 @@ import haxe.macro.ComplexTypeTools;
 import haxe.macro.Compiler;
 
 class MGDebugProcessor {
-
+    #if macro
     static public function build() : Array<Field> {
         var pos = Context.currentPos();
         var fields = Context.getBuildFields();
@@ -148,4 +148,5 @@ class MGDebugProcessor {
         return macro null;
         #end
     }
+    #end
 }

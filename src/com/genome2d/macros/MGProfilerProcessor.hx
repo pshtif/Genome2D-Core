@@ -11,6 +11,7 @@ import haxe.macro.ComplexTypeTools;
 import haxe.macro.Compiler;
 
 class MGProfilerProcessor {
+    #if macro
     static private var hasReturn:Bool;
 
     static public function build() : Array<Field> {
@@ -95,4 +96,5 @@ class MGProfilerProcessor {
 
         return 0;
     }
+    #end
 }
