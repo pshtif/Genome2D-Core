@@ -16,5 +16,5 @@ import com.genome2d.macros.MGPrototypeProcessor;
 @:autoBuild(com.genome2d.macros.MGPrototypeProcessor.build())
 interface IGPrototypable {
     public function getPrototype(p_xml:Xml = null):Xml;
-    public function initPrototype(p_xml:Xml):Void;
+    public function bindPrototype(p_xml:Xml):Void;
 }

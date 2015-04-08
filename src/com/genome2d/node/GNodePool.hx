@@ -11,7 +11,6 @@ package com.genome2d.node;
 /**
     Node pool based on proto
 **/
-@:allow(com.genome2d.node.GNode)
 @:access(com.genome2d.node.GNode)
 class GNodePool
 {
@@ -43,10 +42,17 @@ class GNodePool
 			node = g2d_createNew();
 		} else {
 			node = g2d_first;
+            g2d_putToBack(node);
 			node.setActive(true);
 		}
 		return node;
 	}
+
+    public function recycle(p_node:GNode, p_reset:Bool = false):Void {
+        p_node.setActive(false);
+        p_node.bindPrototype(g2d_prototype);
+        g2d_putToFront(p_node);
+    }
 
 	private function g2d_putToFront(p_node:GNode):Void {
 		if (p_node == g2d_first) return;

@@ -97,10 +97,10 @@ class GFlashObject extends GTexturedQuad {
         g2d_textureId = "GFlashObject#"+g2d_count++;
         g2d_nativeMatrix = new GMatrix();
 
-        node.core.onUpdate.add(g2d_updateHandler);
+        node.core.onUpdate.add(g2d_update_handler);
     }
 
-    private function g2d_updateHandler(p_deltaTime:Float):Void {
+    private function g2d_update_handler(p_deltaTime:Float):Void {
         if (nativeObject != null && (updateFrameRate != 0 || g2d_invalidate)) {
             invalidateTexture(false);
 

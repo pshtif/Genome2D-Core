@@ -91,8 +91,8 @@ class GAssetManager {
             g2d_loading = true;
             var asset:GAsset = g2d_loadQueue.shift();
 
-            asset.onLoaded.addOnce(g2d_assetLoadedHandler);
-            asset.onFailed.addOnce(g2d_assetFailedHandler);
+            asset.onLoaded.addOnce(g2d_assetLoaded_handler);
+            asset.onFailed.addOnce(g2d_assetFailed_handler);
             asset.load();
         }
     }
@@ -107,11 +107,11 @@ class GAssetManager {
         return PATH_REGEX.matched(2);
     }
 
-    static private function g2d_assetLoadedHandler(p_asset:GAsset):Void {
+    static private function g2d_assetLoaded_handler(p_asset:GAsset):Void {
         g2d_loadQueueNext();
     }
 
-    static private function g2d_assetFailedHandler(p_asset:GAsset):Void {
+    static private function g2d_assetFailed_handler(p_asset:GAsset):Void {
         g2d_onQueueFailed.dispatch(p_asset);
         if (ignoreFailed) g2d_loadQueueNext();
     }

@@ -113,18 +113,18 @@ class GComponent implements IGPrototypable
     /**
 
     **/
-	public function initPrototype(p_prototypeXml:Xml):Void {
+	public function bindPrototype(p_prototypeXml:Xml):Void {
 		//id = p_prototypeXml.get("id");
 
 		var propertiesXml:Xml = p_prototypeXml.firstElement();
 		
 		var it:Iterator<Xml> = propertiesXml.elements();
 		while (it.hasNext()) {
-			g2d_initPrototypeProperty(it.next());
+			g2d_bindPrototypeProperty(it.next());
 		}
 	}
 	
-	private function g2d_initPrototypeProperty(p_propertyXml:Xml):Void {
+	private function g2d_bindPrototypeProperty(p_propertyXml:Xml):Void {
 		var value:Dynamic = null;
 		var type:Array<String> = p_propertyXml.get("type").split(":");
 		
@@ -142,7 +142,7 @@ class GComponent implements IGPrototypable
                 if (value != "null") {
                     var c:Class<Dynamic> = cast Type.resolveClass(type[0]);
                     value = Type.createInstance(c,[]);
-                    value.initPrototype(Xml.parse(property));
+                    value.bindPrototype(Xml.parse(property));
                 }
 		}
 

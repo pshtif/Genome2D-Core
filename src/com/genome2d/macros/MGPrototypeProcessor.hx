@@ -70,13 +70,12 @@ class MGPrototypeProcessor {
         }
 
         var hasGetPrototype = false;
-        var hasInitPrototype = false;
-        var hasInitEmpty = false;
+        var hasBindPrototype = false;
 
         for (i in fields) {
             // Check if we need proto methods
             if (i.name == "getPrototype") hasGetPrototype = true;
-            if (i.name == "initPrototype") hasInitPrototype = true;
+            if (i.name == "bindPrototype") hasBindPrototype = true;
 
             if (i.meta.length == 0 || i.access.indexOf(APublic) == -1) continue;
 
@@ -132,25 +131,25 @@ class MGPrototypeProcessor {
         }
 
         if (!superPrototype || prototypeNameOverride) {
-            var initPrototype = generateInitPrototype();
-            switch (initPrototype) {
+            var bindPrototype = generateBindPrototype();
+            switch (bindPrototype) {
                 case TAnonymous(f):
                     if (superPrototype) {
                         switch (f[0].kind) {
                             case FFun(a):
                                 switch (a.expr.expr) {
                                     case EBlock(b):
-                                        b.unshift(macro super.initPrototype(p_prototypeXml));
+                                        b.unshift(macro super.bindPrototype(p_prototypeXml));
                                     default:
                                 }
                             default:
                         }
                     }
-                    if (superPrototype && !hasInitPrototype) {
+                    if (superPrototype && !hasBindPrototype) {
                         f[0].access.push(AOverride);
                     }
-                    if (hasInitPrototype) {
-                        f[0].name = "initPrototypeDefault";
+                    if (hasBindPrototype) {
+                        f[0].name = "bindPrototypeDefault";
                     }
                     fields = fields.concat(f);
                 default:
@@ -246,10 +245,10 @@ class MGPrototypeProcessor {
         }
     }
 
-    inline static private function generateInitPrototype() {
+    inline static private function generateBindPrototype() {
         return macro : {
-            public function initPrototype(p_prototypeXml:Xml):Void {
-                com.genome2d.proto.GPrototypeFactory.g2d_initPrototype(this, p_prototypeXml, PROTOTYPE_PROPERTY_NAMES, PROTOTYPE_PROPERTY_TYPES);
+            public function bindPrototype(p_prototypeXml:Xml):Void {
+                com.genome2d.proto.GPrototypeFactory.g2d_bindPrototype(this, p_prototypeXml, PROTOTYPE_PROPERTY_NAMES, PROTOTYPE_PROPERTY_TYPES);
             }
         }
     }

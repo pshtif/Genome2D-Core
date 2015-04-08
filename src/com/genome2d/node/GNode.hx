@@ -8,6 +8,7 @@
  */
 package com.genome2d.node;
 
+import com.genome2d.components.renderable.GFlipBook;
 import com.genome2d.geom.GPoint;
 import com.genome2d.context.filters.GFilter;
 import com.genome2d.context.GBlendMode;
@@ -37,17 +38,31 @@ import com.genome2d.signals.GMouseSignal;
     Node class
 **/
 @:access(com.genome2d.Genome2D)
+@:access(com.genome2d.node.GNodePool)
 class GNode
 {
+    /****************************************************************************************************
+	 * 	FACTORY METHODS
+	 ****************************************************************************************************/
+
     /**
-        FACTORY METHODS
-    **/
+	 * 	Create empty node instance
+	 *
+	 *	@param p_name optional name for the node
+	 */
     static public function create(p_name:String = ""):GNode {
         var node:GNode = new GNode();
         if (p_name != "") node.name = p_name;
         return node;
     }
 
+    /**
+	 * 	Create node with a specific component
+	 *
+	 *	@param p_componentClass component type that should be instanced and attached to this node
+	 *  @param p_name optional name for the node
+	 *  @param p_lookupClass option lookup class for component
+	 */
     static public function createWithComponent(p_componentClass:Class<GComponent>, p_name:String = "", p_lookupClass:Class<GComponent> = null):GComponent {
         var node:GNode = new GNode();
         if (p_name != "") node.name = p_name;
@@ -55,20 +70,25 @@ class GNode
         return node.addComponent(p_componentClass, p_lookupClass);
     }
 
-    static public function createFromPrototype(p_prototypeXml:Xml):GNode {
-        if (p_prototypeXml == null) GDebug.error("Null proto");
+    /**
+	 * 	Create node from a prototype definition
+	 *
+	 *	@param p_prototype prototype definition
+	 */
+    static public function createFromPrototype(p_prototype:Xml):GNode {
+        if (p_prototype == null) GDebug.error("Null proto");
 
-        if (p_prototypeXml.nodeType == Xml.Document) {
-            p_prototypeXml = p_prototypeXml.firstChild();
+        if (p_prototype.nodeType == Xml.Document) {
+            p_prototype = p_prototype.firstChild();
         }
 
-        if (p_prototypeXml.nodeName != "node") GDebug.error("Incorrect GNode proto XML");
+        if (p_prototype.nodeName != "node") GDebug.error("Incorrect GNode proto XML");
 
         var node:GNode = new GNode();
-        node.mouseEnabled = (p_prototypeXml.get("mouseEnabled") == "true") ? true : false;
-        node.mouseChildren = (p_prototypeXml.get("mouseChildren") == "true") ? true : false;
+        node.mouseEnabled = (p_prototype.get("mouseEnabled") == "true") ? true : false;
+        node.mouseChildren = (p_prototype.get("mouseChildren") == "true") ? true : false;
 
-        var it:Iterator<Xml> = p_prototypeXml.elements();
+        var it:Iterator<Xml> = p_prototype.elements();
 
         while (it.hasNext()) {
             var xml:Xml = it.next();
@@ -98,6 +118,9 @@ class GNode
     static private var g2d_cachedMatrix:GMatrix;
     static private var g2d_activeMasks:Array<GNode>;
 
+    /**
+	    Genome2D core instance
+	**/
     static private var g2d_core:Genome2D;
     #if swc @:extern #end
     public var core(get, never):Genome2D;
@@ -116,8 +139,14 @@ class GNode
 	private var g2d_poolNext:GNode;
 	private var g2d_poolPrevious:GNode;
 
+    /**
+	    Masking rectangle
+	**/
     public var maskRect:GRectangle;
 
+    /**
+	    Masking node
+	**/
     private var g2d_usedAsMask:Int = 0;
     private var g2d_mask:GNode;
     #if swc @:extern #end
@@ -149,23 +178,21 @@ class GNode
 
 	private var g2d_active:Bool = true;
 
+    /**
+	    Check if node is active
+	**/
 	inline public function isActive():Bool {
         return g2d_active;
 	}
 
+    /**
+	    Set node active state
+	**/
 	public function setActive(p_value:Bool):Void {
 		if (p_value != g2d_active) {
 			if (g2d_disposed) GDebug.error("Node already disposed.");
 			
 			g2d_active = p_value;
-			
-			if (g2d_pool != null) {
-				if (p_value) {
-                    g2d_pool.g2d_putToBack(this);
-                } else {
-                    g2d_pool.g2d_putToFront(this);
-                }
-			}
 
             for (i in 0...g2d_numComponents) {
                 g2d_components[i].setActive(p_value);
@@ -179,7 +206,6 @@ class GNode
             }
 		}
 	}
-    /**/
 
 	private var g2d_id:Int;
     #if swc @:extern #end
@@ -194,8 +220,14 @@ class GNode
 	**/
 	public var name:String;
 
+    /**
+	    Node postprocess
+	**/
     public var postProcess:GPostProcess;
 
+    /**
+	    Node parent
+	**/
 	private var g2d_parent:GNode;
 	#if swc @:extern #end
 	public var parent(get, never):GNode;
@@ -204,6 +236,9 @@ class GNode
 		return g2d_parent;
 	}
 
+    /**
+	    Check if the node is disposed
+	**/
 	private var g2d_disposed:Bool = false;
     inline private function isDisposed():Bool {
         return g2d_disposed;
@@ -230,18 +265,19 @@ class GNode
 		if (g2d_disposed) return;
 		
 		disposeChildren();
-
-        while (g2d_numComponents>0) {
-            g2d_components.pop().g2d_dispose();
-            g2d_numComponents--;
-        }
-        g2d_renderable = null;
+        disposeComponents();
 		
 		if (parent != null) {
 			parent.removeChild(this);
 		}
 
-		// Dispose signals
+		disposeSignals();
+		
+		g2d_disposed = true;
+	}
+
+    public function disposeSignals():Void {
+        // Dispose signals
         if (g2d_onAddedToStage != null) {
             g2d_onAddedToStage.removeAll();
             g2d_onAddedToStage = null;
@@ -296,14 +332,15 @@ class GNode
             g2d_onRightMouseUp.removeAll();
             g2d_onRightMouseUp = null;
         }
-		
-		g2d_disposed = true;
-	}
+    }
 	
 	/****************************************************************************************************
 	 * 	PROTOTYPE CODE
 	 ****************************************************************************************************/
-	
+
+    /**
+	    Return the node prototype
+	**/
 	public function getPrototype():Xml {
 		if (g2d_disposed) GDebug.error("Node already disposed.");
 
@@ -333,14 +370,68 @@ class GNode
 		return prototypeXml;
 	}
 
+    public function bindPrototype(p_prototype:Xml):Void {
+        if (p_prototype == null) GDebug.error("Null prototype");
+
+        if (p_prototype.nodeType == Xml.Document) {
+            p_prototype = p_prototype.firstChild();
+        }
+
+        if (p_prototype.nodeName != "node") GDebug.error("Incorrect GNode prototype XML");
+
+        disposeComponents();
+        disposeChildren();
+        disposeSignals();
+
+        mouseEnabled = (p_prototype.get("mouseEnabled") == "true") ? true : false;
+        mouseChildren = (p_prototype.get("mouseChildren") == "true") ? true : false;
+
+        var it:Iterator<Xml> = p_prototype.elements();
+
+        while (it.hasNext()) {
+            var xml:Xml = it.next();
+            if (xml.nodeName == "components") {
+                var componentsIt:Iterator<Xml> = xml.elements();
+                while (componentsIt.hasNext()) {
+                    var componentXml:Xml = componentsIt.next();
+
+                    addComponentPrototype(componentXml);
+                }
+            }
+
+            if (xml.nodeName == "children") {
+                var childIt:Iterator<Xml> = xml.elements();
+                while (childIt.hasNext()) {
+                    addChild(GNode.createFromPrototype(childIt.next()));
+                }
+            }
+        }
+    }
+
 	/****************************************************************************************************
 	 * 	MOUSE CODE
 	 ****************************************************************************************************/
+
+    /**
+	    True if children should process mouse signals
+	**/
 	public var mouseChildren:Bool = true;
+    /**
+	    True if node should process mouse signals
+	**/
 	public var mouseEnabled:Bool = false;
 
+    /**
+	    True if mouse signals should use pixel perfect check (needs to have texture in memory)
+	**/
     public var mousePixelEnabled:Bool = false;
+    /**
+	    Used when mousePixelEnabled is true for alpha treshold
+	**/
     public var mousePixelTreshold:Int = 0;
+    /**
+	    Return if node is active
+	**/
     public var filter:GFilter;
 	
 	// Mouse signals
@@ -420,24 +511,9 @@ class GNode
 		}
 		
 		if (mouseEnabled) {
-            // Check if there is texture
-            if (texture != null) {
-                // If there was a MOUSE UP signal and we didn't capture it reset the mouse down node
-                if (p_captured && p_signal.type == GMouseSignalType.MOUSE_UP) g2d_mouseDownNode = null;
-                if (p_captured || texture == null || texture.width == 0 || texture.height == 0 || g2d_worldScaleX == 0 || g2d_worldScaleY == 0) {
-                    if (g2d_mouseOverNode == this) dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, this, 0, 0, p_signal);
-                } else  {
-                    var hit:Bool = hitTestPoint(p_cameraX, p_cameraY, mousePixelEnabled, false);
-                    if (hit) {
-                        dispatchNodeMouseSignal(p_signal.type, this, 0, 0, p_signal);
-                        if (g2d_mouseOverNode != this) {
-                            dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OVER, this, 0, 0, p_signal);
-                        }
-                        p_captured = true;
-                    } else if (g2d_mouseOverNode == this) {
-                        dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, this, 0, 0, p_signal);
-                    }
-                }
+            // Check if there is default renderable
+            if (g2d_defaultRenderable != null) {
+                p_captured = p_captured || g2d_renderable.processContextMouseSignal(p_captured, p_cameraX, p_cameraY, p_signal);
             // Check renderable component
             } else if (g2d_renderable != null) {
                 p_captured = p_captured || g2d_renderable.processContextMouseSignal(p_captured, p_cameraX, p_cameraY, p_signal);
@@ -483,6 +559,7 @@ class GNode
 	 * 	COMPONENT CODE
 	 ****************************************************************************************************/
     private var g2d_renderable:IRenderable;
+    private var g2d_defaultRenderable:GFlipBook;
 	private var g2d_components:Array<GComponent>;
 	private var g2d_numComponents:Int = 0;
 	
@@ -520,6 +597,7 @@ class GNode
 	 */
 	public function addComponent(p_componentClass:Class<GComponent>, p_componentLookupClass:Class<GComponent> = null):GComponent {
 		if (g2d_disposed) GDebug.error("Node already disposed.");
+
 		if (p_componentLookupClass == null) p_componentLookupClass = p_componentClass;
         var lookup:GComponent = getComponent(p_componentLookupClass);
 		if (lookup != null) return lookup;
@@ -529,7 +607,9 @@ class GNode
         component.g2d_node = this;
         component.g2d_lookupClass = p_componentLookupClass;
 
-        if (Std.is(component, IRenderable)) {
+        if (Std.is(component, GFlipBook)) {
+            g2d_defaultRenderable = cast component;
+        } else if (Std.is(component, IRenderable)) {
             g2d_renderable = cast component;
         }
 
@@ -556,7 +636,7 @@ class GNode
         }
         var component:GComponent = addComponent(componentClass, componentLookupClass);
 
-        component.initPrototype(p_prototype);
+        component.bindPrototype(p_prototype);
 
         return component;
     }
@@ -576,12 +656,24 @@ class GNode
         g2d_components.remove(component);
         g2d_numComponents--;
 
-        if (Std.is(component, IRenderable)) {
-            g2d_renderable = cast component;
+        if (Std.is(component, GFlipBook)) {
+            g2d_defaultRenderable = null;
+        } else if (Std.is(component, IRenderable)) {
+            g2d_renderable = null;
         }
 		
 		component.g2d_dispose();
 	}
+
+    public function disposeComponents():Void {
+        while (g2d_numComponents>0) {
+            g2d_components.pop().g2d_dispose();
+            g2d_numComponents--;
+        }
+
+        g2d_defaultRenderable = null;
+        g2d_renderable = null;
+    }
 	
 	/****************************************************************************************************
 	 * 	CONTAINER CODE
@@ -900,8 +992,8 @@ class GNode
         var maxY:Float = -10000000;
         var aabb:GRectangle = new GRectangle(0,0,0,0);
 
-        if (texture != null) {
-            aabb.setTo(-texture.width*.5-texture.pivotX, -texture.height*.5-texture.pivotY, texture.width, texture.height);
+        if (g2d_defaultRenderable != null) {
+            g2d_defaultRenderable.getBounds(aabb);
         } else if (g2d_renderable != null) {
             g2d_renderable.getBounds(aabb);
         }
@@ -1444,35 +1536,7 @@ class GNode
 	 * 	RENDER
 	 ****************************************************************************************************/
 
-    public var texture:GTexture;
-
-    /**
-        Texture id used by this sprite
-    **/
-    #if swc @:extern #end
-    @prototype public var textureId(get, set):String;
-    #if swc @:getter(textureId) #end
-    inline private function get_textureId():String {
-        return (texture != null) ? texture.id : "";
-    }
-    #if swc @:setter(textureId) #end
-    inline private function set_textureId(p_value:String):String {
-        if (p_value == "") {
-            texture = null;
-        } else {
-            texture = GTextureManager.getTextureById(p_value);
-            if (texture == null) GDebug.warning("Invalid texture with id "+p_value);
-        }
-        return (texture == null) ? "" : p_value;
-    }
-
-    public var ignoreMatrix:Bool = false;
-
-    @prototype public var blendMode:Int = GBlendMode.NORMAL;
-
-    /**
-	 *
-	 */
+    @:dox(hide)
     public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_renderAsMask:Bool, p_useMatrix:Bool):Void {
         if (g2d_active) {
             /*  Masking  */
@@ -1515,13 +1579,8 @@ class GNode
                     core.g2d_renderMatrixIndex++;
                 }
 
-                if (texture != null) {
-                    if (p_useMatrix && !ignoreMatrix) {
-                        var matrix:GMatrix = core.g2d_renderMatrix;
-                        g2d_core.getContext().drawMatrix(texture, matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty, g2d_worldRed, g2d_worldGreen, g2d_worldBlue, g2d_worldAlpha, blendMode, filter);
-                    } else {
-                        g2d_core.getContext().draw(texture, g2d_worldX, g2d_worldY, g2d_worldScaleX, g2d_worldScaleY, g2d_worldRotation, g2d_worldRed, g2d_worldGreen, g2d_worldBlue, g2d_worldAlpha, blendMode, filter);
-                    }
+                if (g2d_defaultRenderable != null) {
+                    g2d_defaultRenderable.render(p_camera, useMatrix);
                 } else if (g2d_renderable != null) {
                     g2d_renderable.render(p_camera, useMatrix);
                 }
@@ -1556,38 +1615,5 @@ class GNode
                 }
             }
         }
-    }
-
-
-    /**
-     *   Check if a point is inside this node
-     */
-    inline public function hitTestPoint(p_x:Float, p_y:Float, p_pixelEnabled:Bool = false, p_includeChildren:Bool = true):Bool {
-        var tx:Float = p_x - g2d_worldX;
-        var ty:Float = p_y - g2d_worldY;
-
-        if (g2d_worldRotation != 0) {
-            var cos:Float = Math.cos( - g2d_worldRotation);
-            var sin:Float = Math.sin( - g2d_worldRotation);
-
-            var ox:Float = tx;
-            tx = (tx * cos - ty * sin);
-            ty = (ty * cos + ox * sin);
-        }
-
-        tx /= g2d_worldScaleX * texture.width;
-        ty /= g2d_worldScaleY * texture.height;
-
-        tx += .5;
-        ty += .5;
-
-        if (tx >= -texture.pivotX / texture.width && tx <= 1 - texture.pivotX / texture.width && ty >= -texture.pivotY / texture.height && ty <= 1 - texture.pivotY / texture.height) {
-            if (p_pixelEnabled && texture.getAlphaAtUV(tx+texture.pivotX/texture.width, ty+texture.pivotY/texture.height) <= mousePixelTreshold) {
-                return false;
-            }
-            return true;
-        }
-
-        return false;
     }
 }

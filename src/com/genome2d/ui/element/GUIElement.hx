@@ -818,7 +818,7 @@ class GUIElement implements IGPrototypable {
         return p_prototypeXml;
     }
 
-    public function initPrototype(p_prototypeXml:Xml):Void {
+    public function bindPrototype(p_prototypeXml:Xml):Void {
         if (p_prototypeXml.exists("align")) setAlign(Std.parseInt(p_prototypeXml.get("align")));
         if (p_prototypeXml.exists("anchorX")) anchorX = Std.parseFloat(p_prototypeXml.get("anchorX"));
         if (p_prototypeXml.exists("anchorY")) anchorY = Std.parseFloat(p_prototypeXml.get("anchorY"));

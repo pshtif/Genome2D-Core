@@ -29,8 +29,7 @@ import com.genome2d.context.GContextConfig;
     Genome2D core class
 **/
 class Genome2D implements IGDebuggableInternal
-{
-    /**
+{    /**
         Genome2D Version
     **/
 	inline static public var VERSION:String = "1.1";
@@ -44,9 +43,11 @@ class Genome2D implements IGDebuggableInternal
         Get the singleton instance of Genome2D
     **/
 	inline static public function getInstance():Genome2D {
-		g2d_instantiable = true;
-		if (g2d_instance == null) new Genome2D();
-		g2d_instantiable = false;
+		if (g2d_instance == null) {
+            g2d_instantiable = true;
+            new Genome2D();
+		    g2d_instantiable = false;
+        }
 		return g2d_instance;
 	}
 
@@ -232,9 +233,9 @@ class Genome2D implements IGDebuggableInternal
         if (g2d_context != null) g2d_context.dispose();
         g2d_contextConfig = p_config;
 		g2d_context = Type.createInstance(p_config.contextClass, [g2d_contextConfig]);
-		g2d_context.onInitialized.add(g2d_contextInitializedHandler);
-		g2d_context.onFailed.add(g2d_contextFailedHandler);
-        g2d_context.onInvalidated.add(g2d_contextInvalidatedHandler);
+		g2d_context.onInitialized.add(g2d_contextInitialized_handler);
+		g2d_context.onFailed.add(g2d_contextFailed_handler);
+        g2d_context.onInvalidated.add(g2d_contextInvalidated_handler);
 		g2d_context.init();
 	}
 
@@ -307,33 +308,33 @@ class Genome2D implements IGDebuggableInternal
         g2d_context = null;
     }
 
-    private function g2d_contextInitializedHandler():Void {
+    private function g2d_contextInitialized_handler():Void {
         GTextureManager.init();
         GUISkinManager.init();
 
-        g2d_context.onFrame.add(g2d_frameHandler);
-        g2d_context.onMouseSignal.add(g2d_contextMouseSignalHandler);
-        g2d_context.onKeyboardSignal.add(g2d_contextKeySignalHandler);
+        g2d_context.onFrame.add(g2d_frame_handler);
+        g2d_context.onMouseSignal.add(g2d_contextMouseSignal_handler);
+        g2d_context.onKeyboardSignal.add(g2d_contextKeySignal_handler);
 
         onInitialized.dispatch();
     }
 
-    private function g2d_contextFailedHandler(p_error:String):Void {
+    private function g2d_contextFailed_handler(p_error:String):Void {
         if (g2d_contextConfig.fallbackContextClass != null) {
             g2d_context = Type.createInstance(g2d_contextConfig.fallbackContextClass, [g2d_contextConfig]);
-            g2d_context.onInitialized.add(g2d_contextInitializedHandler);
-            g2d_context.onFailed.add(g2d_contextFailedHandler);
+            g2d_context.onInitialized.add(g2d_contextInitialized_handler);
+            g2d_context.onFailed.add(g2d_contextFailed_handler);
             g2d_context.init();
         }
 
         onFailed.dispatch(p_error);
     }
 
-    private function g2d_contextInvalidatedHandler():Void {
+    private function g2d_contextInvalidated_handler():Void {
         onInvalidated.dispatch();
     }
 
-    private function g2d_frameHandler(p_deltaTime:Float):Void {
+    private function g2d_frame_handler(p_deltaTime:Float):Void {
         if (autoUpdateAndRender) {
             g2d_currentFrameId++;
             g2d_runTime += p_deltaTime;
@@ -358,7 +359,7 @@ class Genome2D implements IGDebuggableInternal
     }
 
     @:access(com.genome2d.components.GCameraController)
-	private function g2d_contextMouseSignalHandler(p_signal:GMouseSignal):Void {
+	private function g2d_contextMouseSignal_handler(p_signal:GMouseSignal):Void {
         // If there is no camera process the signals directly by root node
 		if (g2d_cameras.length == 0) {
             root.processContextMouseSignal(p_signal.nativeCaptured, p_signal.x, p_signal.y, p_signal, null);
@@ -376,7 +377,7 @@ class Genome2D implements IGDebuggableInternal
 		}
 	}
 
-    private function g2d_contextKeySignalHandler(p_signal:GKeyboardSignal):Void {
+    private function g2d_contextKeySignal_handler(p_signal:GKeyboardSignal):Void {
         onKeySignal.dispatch(p_signal);
     }
 }

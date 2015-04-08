@@ -43,7 +43,7 @@ class GPrototypeFactory {
         var proto:IGPrototypable = Type.createInstance(prototypeClass,[]);
         if (proto == null) GDebug.error("Invalid prototype class "+prototypeName);
 
-        proto.initPrototype(prototypeXml);
+        proto.bindPrototype(prototypeXml);
 
         return proto;
     }
@@ -82,14 +82,16 @@ class GPrototypeFactory {
         return p_prototypeXml;
     }
 
-    static public function g2d_initPrototype(p_instance:IGPrototypable, p_prototypeXml:Xml, p_propertyNames:Array<String>, p_propertyTypes:Array<String>):Void {
+    static public function g2d_bindPrototype(p_instance:IGPrototypable, p_prototype:Xml, p_propertyNames:Array<String>, p_propertyTypes:Array<String>):Void {
+        if (p_prototype == null) GDebug.error("Null prototype");
+
         for (i in 0...p_propertyNames.length) {
             var name:String = p_propertyNames[i];
             var type:String = p_propertyTypes[i];
             var realValue:Dynamic = null;
 
-            if (type != "IGPrototypable" && p_prototypeXml.exists(name)) {
-                var value:String = p_prototypeXml.get(name);
+            if (type != "IGPrototypable" && p_prototype.exists(name)) {
+                var value:String = p_prototype.get(name);
                 switch (type) {
                     case "Bool":
                         realValue = (value != "false" && value != "0");
@@ -102,7 +104,7 @@ class GPrototypeFactory {
                     default:
                 }
             } else {
-                var it:Iterator<Xml> = p_prototypeXml.elementsNamed(name);
+                var it:Iterator<Xml> = p_prototype.elementsNamed(name);
                 if (it.hasNext()) realValue = com.genome2d.proto.GPrototypeFactory.createPrototype(it.next().firstElement());
             }
 
