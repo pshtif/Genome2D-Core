@@ -1,8 +1,8 @@
 package com.genome2d.components.renderable.ui;
 import com.genome2d.ui.skin.GUISkin;
 import com.genome2d.ui.element.GUIElement;
-import com.genome2d.signals.GMouseSignal;
-import com.genome2d.signals.GMouseSignalType;
+import com.genome2d.input.GMouseInput;
+import com.genome2d.input.GMouseInputType;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GCamera;
 import com.genome2d.components.renderable.IRenderable;
@@ -43,20 +43,20 @@ class GUI extends GComponent implements IRenderable {
         return null;
     }
 
-    public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
-        if (p_captured && p_contextSignal.type == GMouseSignalType.MOUSE_UP) node.g2d_mouseDownNode = null;
+    public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
+        if (p_captured && p_contextInput.type == GMouseInputType.MOUSE_UP) node.g2d_mouseDownNode = null;
 
-        var capture:Bool = root.processMouseSignal(p_captured, p_cameraX, p_cameraY, p_contextSignal);
+        var capture:Bool = root.processMouseInput(p_captured, p_cameraX, p_cameraY, p_contextInput);
 
         if (!p_captured && capture) {
             var tx:Float = p_cameraX - node.g2d_worldX;
             var ty:Float = p_cameraY - node.g2d_worldY;
 
             if (node.g2d_mouseOverNode != node) {
-                node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OVER, node, tx, ty, p_contextSignal);
+                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OVER, node, tx, ty, p_contextInput);
             }
         } else {
-            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, 0, 0, p_contextSignal);
+            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_contextInput);
         }
 
         return p_captured || capture;

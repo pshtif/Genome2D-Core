@@ -8,7 +8,7 @@
  */
 package com.genome2d.components.renderable.particles;
 
-import com.genome2d.signals.GMouseSignal;
+import com.genome2d.input.GMouseInput;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.particles.GParticlePool;
 import com.genome2d.particles.IGInitializer;
@@ -229,7 +229,7 @@ class GParticleSystem extends GComponent implements IRenderable
         super.dispose();
     }
 
-    public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
+    public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
         return false;
     }
 }

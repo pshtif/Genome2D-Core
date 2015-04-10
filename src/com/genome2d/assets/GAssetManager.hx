@@ -8,9 +8,8 @@
  */
 package com.genome2d.assets;
 
+import com.genome2d.callbacks.GCallback;
 import com.genome2d.textures.GTextureManager;
-import msignal.Signal.Signal0;
-import msignal.Signal.Signal1;
 
 class GAssetManager {
     static public var PATH_REGEX:EReg = ~/([^\?\/\\]+?)(?:\.([\w\-]+))?(?:\?.*)?$/;
@@ -29,19 +28,19 @@ class GAssetManager {
         return g2d_loading;
     }
 
-    static private var g2d_onQueueLoaded:Signal0;
+    static private var g2d_onQueueLoaded:GCallback0;
     #if swc @:extern #end
-    static public var onQueueLoaded(get,never):Signal0;
+    static public var onQueueLoaded(get,never):GCallback0;
     #if swc @:getter(onQueueLoaded) #end
-    inline static private function get_onQueueLoaded():Signal0 {
+    inline static private function get_onQueueLoaded():GCallback0 {
         return g2d_onQueueLoaded;
     }
 
-    static private var g2d_onQueueFailed:Signal1<GAsset>;
+    static private var g2d_onQueueFailed:GCallback1<GAsset>;
     #if swc @:extern #end
-    static public var onQueueFailed(get,never):Signal1<GAsset>;
+    static public var onQueueFailed(get,never):GCallback1<GAsset>;
     #if swc @:getter(onQueueFailed) #end
-    inline static private function get_onQueueFailed():Signal1<GAsset> {
+    inline static private function get_onQueueFailed():GCallback1<GAsset> {
         return g2d_onQueueFailed;
     }
 
@@ -49,8 +48,8 @@ class GAssetManager {
         g2d_loadQueue = new Array<GAsset>();
         g2d_references = new Map<String,GAsset>();
 
-        g2d_onQueueLoaded = new Signal0();
-        g2d_onQueueFailed = new Signal1(GAsset);
+        g2d_onQueueLoaded = new GCallback0();
+        g2d_onQueueFailed = new GCallback1(GAsset);
     }
 
     static public function getAssetById(p_id:String):GAsset {

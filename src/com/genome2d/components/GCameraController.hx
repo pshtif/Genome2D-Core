@@ -14,7 +14,7 @@ import com.genome2d.context.IContext;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GCamera;
 import com.genome2d.node.GNode;
-import com.genome2d.signals.GMouseSignal;
+import com.genome2d.input.GMouseInput;
 
 /**
     Component used for adding and handling custom camera
@@ -113,7 +113,7 @@ class GCameraController extends GComponent
 		node.core.root.render(false, false, g2d_contextCamera, false, false);
 	}
 
-	public function captureMouseEvent(p_context:IContext, p_captured:Bool, p_signal:GMouseSignal):Bool {
+	public function captureMouseInput(p_context:IContext, p_captured:Bool, p_input:GMouseInput):Bool {
 		if (g2d_capturedThisFrame || !node.isActive()) return false;
 		g2d_capturedThisFrame = true;
 
@@ -123,10 +123,10 @@ class GCameraController extends GComponent
                                 stageRect.width*g2d_contextCamera.normalizedViewWidth,
                                 stageRect.height*g2d_contextCamera.normalizedViewHeight);
 
-		if (!g2d_viewRectangle.contains(p_signal.x, p_signal.y)) return false;
+		if (!g2d_viewRectangle.contains(p_input.x, p_input.y)) return false;
 
-	    var tx:Float = p_signal.x - g2d_viewRectangle.x - g2d_viewRectangle.width/2;
-        var ty:Float = p_signal.y - g2d_viewRectangle.y - g2d_viewRectangle.height/2;
+	    var tx:Float = p_input.x - g2d_viewRectangle.x - g2d_viewRectangle.width/2;
+        var ty:Float = p_input.y - g2d_viewRectangle.y - g2d_viewRectangle.height/2;
 
 		var cos:Float = Math.cos(-node.g2d_worldRotation);
 		var sin:Float = Math.sin(-node.g2d_worldRotation);
@@ -137,7 +137,7 @@ class GCameraController extends GComponent
 		rx /= zoom;
 		ry /= zoom;
 
-		return node.core.root.processContextMouseSignal(p_captured, rx+node.g2d_worldX, ry+node.g2d_worldY, p_signal, g2d_contextCamera);
+		return node.core.root.processContextMouseInput(p_captured, rx+node.g2d_worldX, ry+node.g2d_worldY, p_input, g2d_contextCamera);
 	}
 
 	override public function dispose():Void {

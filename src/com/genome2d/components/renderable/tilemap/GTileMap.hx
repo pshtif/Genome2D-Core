@@ -1,8 +1,8 @@
 package com.genome2d.components.renderable.tilemap;
 
 import com.genome2d.tilemap.GTile;
-import com.genome2d.signals.GMouseSignal;
-import com.genome2d.signals.GMouseSignalType;
+import com.genome2d.input.GMouseInput;
+import com.genome2d.input.GMouseInputType;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.textures.GTexture;
 import com.genome2d.geom.GRectangle;
@@ -162,11 +162,11 @@ class GTileMap extends GComponent implements IRenderable
         return g2d_tiles[indexY*g2d_width+indexX];
     }
 
-    public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
-        if (p_captured && p_contextSignal.type == GMouseSignalType.MOUSE_UP) node.g2d_mouseDownNode = null;
+    public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
+        if (p_captured && p_contextInput.type == GMouseInputType.MOUSE_UP) node.g2d_mouseDownNode = null;
 
         if (p_captured || node.g2d_worldScaleX == 0 || node.g2d_worldScaleY == 0) {
-            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, 0, 0, p_contextSignal);
+            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_contextInput);
             return false;
         }
 
@@ -189,15 +189,15 @@ class GTileMap extends GComponent implements IRenderable
         ty += .5;
 
         if (tx >= 0 && tx <= 1 && ty >= 0 && ty <= 1) {
-            node.dispatchNodeMouseSignal(p_contextSignal.type, node, tx*g2d_width*g2d_tileWidth, ty*g2d_height*g2d_tileHeight, p_contextSignal);
+            node.dispatchNodeMouseCallback(p_contextInput.type, node, tx*g2d_width*g2d_tileWidth, ty*g2d_height*g2d_tileHeight, p_contextInput);
             if (node.g2d_mouseOverNode != node) {
-                node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OVER, node, tx*g2d_width*g2d_tileWidth, ty*g2d_height*g2d_tileHeight, p_contextSignal);
+                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OVER, node, tx*g2d_width*g2d_tileWidth, ty*g2d_height*g2d_tileHeight, p_contextInput);
             }
 
             return true;
         } else {
             if (node.g2d_mouseOverNode == node) {
-                node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, tx*g2d_width*g2d_tileWidth, ty*g2d_height*g2d_tileHeight, p_contextSignal);
+                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*g2d_width*g2d_tileWidth, ty*g2d_height*g2d_tileHeight, p_contextInput);
             }
         }
 

@@ -168,7 +168,7 @@ class GFlashObject extends GTexturedQuad {
     }
 
     override public function dispose():Void {
-        node.core.onUpdate.remove(g2d_updateHandler);
+        node.core.onUpdate.remove(g2d_update_handler);
         texture.dispose();
 
         super.dispose();

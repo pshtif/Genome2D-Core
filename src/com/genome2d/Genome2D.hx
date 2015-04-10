@@ -8,6 +8,7 @@
  */
 package com.genome2d;
 
+import com.genome2d.callbacks.GCallback;
 import com.genome2d.debug.IGDebuggableInternal;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.macros.MGBuildID;
@@ -15,13 +16,12 @@ import com.genome2d.ui.skin.GUISkinManager;
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.textures.GTextureManager;
-import com.genome2d.signals.GKeyboardSignal;
+import com.genome2d.input.GKeyboardInput;
 import com.genome2d.context.IContext;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.components.GCameraController;
 import com.genome2d.node.GNode;
-import com.genome2d.signals.GMouseSignal;
-import msignal.Signal;
+import com.genome2d.input.GMouseInput;
 
 import com.genome2d.context.GContextConfig;
 
@@ -59,87 +59,87 @@ class Genome2D implements IGDebuggableInternal
     public var autoUpdateAndRender:Bool = true;
 
     /*
-     *  SIGNALS
+     *  CALLBACKS
      */
-    private var g2d_onInitialized:Signal0;
+    private var g2d_onInitialized:GCallback0;
     /**
-        Signal dispatched when Genome2D initializes successfully
+        Callback dispatched when Genome2D initializes successfully
     **/
     #if swc @:extern #end
-	public var onInitialized(get, never):Signal0;
+	public var onInitialized(get, never):GCallback0;
     #if swc @:getter(onInitialized) #end
-    inline private function get_onInitialized():Signal0 {
+    inline private function get_onInitialized():GCallback0 {
         return g2d_onInitialized;
     }
 
-    private var g2d_onFailed:Signal1<String>;
+    private var g2d_onFailed:GCallback1<String>;
     /**
-        Signal dispatched when Genome2D fails to initialize
+        Callback dispatched when Genome2D fails to initialize
 
         Sends reason message
     **/
     #if swc @:extern #end
-	public var onFailed(get, never):Signal1<String>;
+	public var onFailed(get, never):GCallback1<String>;
     #if swc @:getter(onFailed) #end
-    inline private function get_onFailed():Signal1<String> {
+    inline private function get_onFailed():GCallback1<String> {
         return g2d_onFailed;
     }
 
-    private var g2d_onInvalidated:Signal0;
+    private var g2d_onInvalidated:GCallback0;
     /**
-        Signal dispatched when Genome2D is invalidated
+        Callback dispatched when Genome2D is invalidated
     **/
     #if swc @:extern #end
-    public var onInvalidated(get, never):Signal0;
+    public var onInvalidated(get, never):GCallback0;
     #if swc @:getter(onInvalidated) #end
-    inline private function get_onInvalidated():Signal0 {
+    inline private function get_onInvalidated():GCallback0 {
         return g2d_onInvalidated;
     }
 
-    private var g2d_onUpdate:Signal1<Float>;
+    private var g2d_onUpdate:GCallback1<Float>;
     /**
-        Signal dispatched when Genome2D is updated to next frame
+        Callback dispatched when Genome2D is updated to next frame
 
         Sends deltaTime `Float` passed between updates
     **/
     #if swc @:extern #end
-	public var onUpdate(get, never):Signal1<Float>;
+	public var onUpdate(get, never):GCallback1<Float>;
     #if swc @:getter(onUpdate) #end
-    inline private function get_onUpdate():Signal1<Float> {
+    inline private function get_onUpdate():GCallback1<Float> {
         return g2d_onUpdate;
     }
 
-    private var g2d_onPreRender:Signal0;
+    private var g2d_onPreRender:GCallback0;
     /**
-        Signal dispatched when Genome2D is rendering, before it renders its own node graph
+        Callback dispatched when Genome2D is rendering, before it renders its own node graph
     **/
     #if swc @:extern #end
-	public var onPreRender(get, never):Signal0;
+	public var onPreRender(get, never):GCallback0;
     #if swc @:getter(onPreRender) #end
-    inline private function get_onPreRender():Signal0 {
+    inline private function get_onPreRender():GCallback0 {
         return g2d_onPreRender;
     }
 
-    private var g2d_onPostRender:Signal0;
+    private var g2d_onPostRender:GCallback0;
     /**
-        Signal dispatched when Genome2D is rendering, after it rendered its own node graph
+        Callback dispatched when Genome2D is rendering, after it rendered its own node graph
     **/
     #if swc @:extern #end
-	public var onPostRender(get, never):Signal0;
+	public var onPostRender(get, never):GCallback0;
     #if swc @:getter(onPostRender) #end
-    inline private function get_onPostRender():Signal0 {
+    inline private function get_onPostRender():GCallback0 {
         return g2d_onPostRender;
     }
 
-    private var g2d_onKeySignal:Signal1<GKeyboardSignal>;
+    private var g2d_onKeyboardInput:GCallback1<GKeyboardInput>;
     /**
-        Signal dispatched when Genome2D processes keyboard signals
+        Callback dispatched when Genome2D processes keyboard callbacks
     **/
     #if swc @:extern #end
-    public var onKeySignal(get, never):Signal1<GKeyboardSignal>;
-    #if swc @:getter(onKeySignal) #end
-    inline private function get_onKeySignal():Signal1<GKeyboardSignal> {
-        return g2d_onKeySignal;
+    public var onKeyboardInput(get, never):GCallback1<GKeyboardInput>;
+    #if swc @:getter(onKeyboardInput) #end
+    inline private function get_onKeyboardInput():GCallback1<GKeyboardInput> {
+        return g2d_onKeyboardInput;
     }
 
 	private var g2d_currentFrameId:Int = 0;
@@ -200,13 +200,13 @@ class Genome2D implements IGDebuggableInternal
 
 		g2d_instance = this;
 
-        g2d_onInitialized = new Signal0();
-        g2d_onFailed = new Signal1<String>();
-        g2d_onInvalidated = new Signal0();
-        g2d_onUpdate = new Signal1<Float>();
-        g2d_onPreRender = new Signal0();
-        g2d_onPostRender = new Signal0();
-        g2d_onKeySignal = new Signal1<GKeyboardSignal>();
+        g2d_onInitialized = new GCallback0();
+        g2d_onFailed = new GCallback1<String>();
+        g2d_onInvalidated = new GCallback0();
+        g2d_onUpdate = new GCallback1<Float>();
+        g2d_onPreRender = new GCallback0();
+        g2d_onPostRender = new GCallback0();
+        g2d_onKeyboardInput = new GCallback1<GKeyboardInput>();
 	}
 
     /**
@@ -280,7 +280,7 @@ class Genome2D implements IGDebuggableInternal
                 }
             }
 
-            if (onPostRender.numListeners>0) {
+            if (onPostRender.hasListeners()) {
                 g2d_context.setActiveCamera(g2d_context.getDefaultCamera());
                 g2d_context.setRenderTarget(null);
                 onPostRender.dispatch();
@@ -302,7 +302,7 @@ class Genome2D implements IGDebuggableInternal
         g2d_onPreRender.removeAll();
         g2d_onUpdate.removeAll();
         g2d_onInvalidated.removeAll();
-        g2d_onKeySignal.removeAll();
+        g2d_onKeyboardInput.removeAll();
 
         g2d_context.dispose();
         g2d_context = null;
@@ -313,8 +313,8 @@ class Genome2D implements IGDebuggableInternal
         GUISkinManager.init();
 
         g2d_context.onFrame.add(g2d_frame_handler);
-        g2d_context.onMouseSignal.add(g2d_contextMouseSignal_handler);
-        g2d_context.onKeyboardSignal.add(g2d_contextKeySignal_handler);
+        g2d_context.onMouseInput.add(g2d_contextMouseInput_handler);
+        g2d_context.onKeyboardInput.add(g2d_contextKeyboardInput_handler);
 
         onInitialized.dispatch();
     }
@@ -359,25 +359,25 @@ class Genome2D implements IGDebuggableInternal
     }
 
     @:access(com.genome2d.components.GCameraController)
-	private function g2d_contextMouseSignal_handler(p_signal:GMouseSignal):Void {
-        // If there is no camera process the signals directly by root node
+	private function g2d_contextMouseInput_handler(p_input:GMouseInput):Void {
+        // If there is no camera process the callbacks directly by root node
 		if (g2d_cameras.length == 0) {
-            root.processContextMouseSignal(p_signal.nativeCaptured, p_signal.x, p_signal.y, p_signal, null);
-        // If there are cameras we need to process the signals through them
+            root.processContextMouseInput(p_input.nativeCaptured, p_input.x, p_input.y, p_input, null);
+        // If there are cameras we need to process the callbacks through them
 		} else {
-            var captured:Bool = p_signal.nativeCaptured;
+            var captured:Bool = p_input.nativeCaptured;
 		    for (i in 0...g2d_cameras.length) {
 				g2d_cameras[i].g2d_capturedThisFrame = false;
 			}
             var i:Int = g2d_cameras.length-1;
             while (i>=0) {
-                captured = captured || g2d_cameras[i].captureMouseEvent(g2d_context, captured, p_signal);
+                captured = captured || g2d_cameras[i].captureMouseInput(g2d_context, captured, p_input);
                 i--;
             }
 		}
 	}
 
-    private function g2d_contextKeySignal_handler(p_signal:GKeyboardSignal):Void {
-        onKeySignal.dispatch(p_signal);
+    private function g2d_contextKeyboardInput_handler(p_input:GKeyboardInput):Void {
+        onKeyboardInput.dispatch(p_input);
     }
 }

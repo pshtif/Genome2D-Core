@@ -1,6 +1,6 @@
 package com.genome2d.components.renderable;
 
-import com.genome2d.signals.GMouseSignal;
+import com.genome2d.input.GMouseInput;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.context.GCamera;

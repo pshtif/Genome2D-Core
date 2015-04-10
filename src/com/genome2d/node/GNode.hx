@@ -8,6 +8,8 @@
  */
 package com.genome2d.node;
 
+import com.genome2d.callbacks.GCallback;
+import com.genome2d.callbacks.GNodeMouseInput;
 import com.genome2d.components.renderable.GFlipBook;
 import com.genome2d.geom.GPoint;
 import com.genome2d.context.filters.GFilter;
@@ -27,12 +29,10 @@ import com.genome2d.geom.GMatrixUtils;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.components.renderable.IRenderable;
 import com.genome2d.context.GCamera;
-import com.genome2d.signals.GMouseSignalType;
-import com.genome2d.signals.GNodeMouseSignal;
-import msignal.Signal;
+import com.genome2d.input.GMouseInputType;
 import com.genome2d.components.GComponent;
 import com.genome2d.debug.GDebug;
-import com.genome2d.signals.GMouseSignal;
+import com.genome2d.input.GMouseInput;
 
 /**
     Node class
@@ -259,7 +259,7 @@ class GNode
 	}
 	
 	/**
-	 * 	This method disposes this node, this will also dispose all of its children, components and signals
+	 * 	This method disposes this node, this will also dispose all of its children, components and callbacks
 	 */
 	public function dispose():Void {
 		if (g2d_disposed) return;
@@ -271,13 +271,13 @@ class GNode
 			parent.removeChild(this);
 		}
 
-		disposeSignals();
+		disposeCallbacks();
 		
 		g2d_disposed = true;
 	}
 
-    public function disposeSignals():Void {
-        // Dispose signals
+    public function disposeCallbacks():Void {
+        // Dispose callbacks
         if (g2d_onAddedToStage != null) {
             g2d_onAddedToStage.removeAll();
             g2d_onAddedToStage = null;
@@ -381,7 +381,7 @@ class GNode
 
         disposeComponents();
         disposeChildren();
-        disposeSignals();
+        disposeCallbacks();
 
         mouseEnabled = (p_prototype.get("mouseEnabled") == "true") ? true : false;
         mouseChildren = (p_prototype.get("mouseChildren") == "true") ? true : false;
@@ -413,16 +413,16 @@ class GNode
 	 ****************************************************************************************************/
 
     /**
-	    True if children should process mouse signals
+	    True if children should process mouse callbacks
 	**/
 	public var mouseChildren:Bool = true;
     /**
-	    True if node should process mouse signals
+	    True if node should process mouse callbacks
 	**/
 	public var mouseEnabled:Bool = false;
 
     /**
-	    True if mouse signals should use pixel perfect check (needs to have texture in memory)
+	    True if mouse callbacks should use pixel perfect check (needs to have texture in memory)
 	**/
     public var mousePixelEnabled:Bool = false;
     /**
@@ -434,78 +434,78 @@ class GNode
 	**/
     public var filter:GFilter;
 	
-	// Mouse signals
-	private var g2d_onMouseDown:Signal1<GNodeMouseSignal>;
+	// Mouse callbacks
+	private var g2d_onMouseDown:GCallback1<GNodeMouseInput>;
     #if swc @:extern #end
-	public var onMouseDown(get, never):Signal1<GNodeMouseSignal>;
+	public var onMouseDown(get, never):GCallback1<GNodeMouseInput>;
     #if swc @:getter(onMouseDown) #end
-	private function get_onMouseDown():Signal1<GNodeMouseSignal> {
-		if (g2d_onMouseDown == null) g2d_onMouseDown = new Signal1(GMouseSignal);
+	private function get_onMouseDown():GCallback1<GNodeMouseInput> {
+		if (g2d_onMouseDown == null) g2d_onMouseDown = new GCallback1(GMouseInput);
 		return g2d_onMouseDown;
 	}
-	private var g2d_onMouseMove:Signal1<GNodeMouseSignal>;
+	private var g2d_onMouseMove:GCallback1<GNodeMouseInput>;
     #if swc @:extern #end
-	public var onMouseMove(get, never):Signal1<GNodeMouseSignal>;
+	public var onMouseMove(get, never):GCallback1<GNodeMouseInput>;
     #if swc @:getter(onMouseMove) #end
-	private function get_onMouseMove():Signal1<GNodeMouseSignal> {
-		if (g2d_onMouseMove == null) g2d_onMouseMove = new Signal1(GMouseSignal);
+	private function get_onMouseMove():GCallback1<GNodeMouseInput> {
+		if (g2d_onMouseMove == null) g2d_onMouseMove = new GCallback1(GMouseInput);
 		return g2d_onMouseMove;
 	}
-	private var g2d_onMouseClick:Signal1<GNodeMouseSignal>;
+	private var g2d_onMouseClick:GCallback1<GNodeMouseInput>;
     #if swc @:extern #end
-	public var onMouseClick(get, never):Signal1<GNodeMouseSignal>;
+	public var onMouseClick(get, never):GCallback1<GNodeMouseInput>;
     #if swc @:getter(onMouseClick) #end
-	private function get_onMouseClick():Signal1<GNodeMouseSignal> {
-		if (g2d_onMouseClick == null) g2d_onMouseClick = new Signal1(GMouseSignal);
+	private function get_onMouseClick():GCallback1<GNodeMouseInput> {
+		if (g2d_onMouseClick == null) g2d_onMouseClick = new GCallback1(GMouseInput);
 		return g2d_onMouseClick;
 	}
-	private var g2d_onMouseUp:Signal1<GNodeMouseSignal>;
+	private var g2d_onMouseUp:GCallback1<GNodeMouseInput>;
     #if swc @:extern #end
-	public var onMouseUp(get, never):Signal1<GNodeMouseSignal>;
+	public var onMouseUp(get, never):GCallback1<GNodeMouseInput>;
     #if swc @:getter(onMouseUp) #end
-	private function get_onMouseUp():Signal1<GNodeMouseSignal> {
-		if (g2d_onMouseUp == null) g2d_onMouseUp = new Signal1(GMouseSignal);
+	private function get_onMouseUp():GCallback1<GNodeMouseInput> {
+		if (g2d_onMouseUp == null) g2d_onMouseUp = new GCallback1(GMouseInput);
 		return g2d_onMouseUp;
 	}
-	private var g2d_onMouseOver:Signal1<GNodeMouseSignal>;
+	private var g2d_onMouseOver:GCallback1<GNodeMouseInput>;
     #if swc @:extern #end
-	public var onMouseOver(get, never):Signal1<GNodeMouseSignal>;
+	public var onMouseOver(get, never):GCallback1<GNodeMouseInput>;
     #if swc @:getter(onMouseOver) #end
-	private function get_onMouseOver():Signal1<GNodeMouseSignal> {
-		if (g2d_onMouseOver == null) g2d_onMouseOver = new Signal1(GMouseSignal);
+	private function get_onMouseOver():GCallback1<GNodeMouseInput> {
+		if (g2d_onMouseOver == null) g2d_onMouseOver = new GCallback1(GMouseInput);
 		return g2d_onMouseOver;
 	}
-	private var g2d_onMouseOut:Signal1<GNodeMouseSignal>;
+	private var g2d_onMouseOut:GCallback1<GNodeMouseInput>;
     #if swc @:extern #end
-	public var onMouseOut(get, never):Signal1<GNodeMouseSignal>;
+	public var onMouseOut(get, never):GCallback1<GNodeMouseInput>;
     #if swc @:getter(onMouseOut) #end
-	private function get_onMouseOut():Signal1<GNodeMouseSignal> {
-		if (g2d_onMouseOut == null) g2d_onMouseOut = new Signal1(GMouseSignal);
+	private function get_onMouseOut():GCallback1<GNodeMouseInput> {
+		if (g2d_onMouseOut == null) g2d_onMouseOut = new GCallback1(GMouseInput);
 		return g2d_onMouseOut;
 	}
 
-	private var g2d_onRightMouseDown:Signal1<GNodeMouseSignal>;
-	public var onRightMouseDown:Signal1<GNodeMouseSignal>;
-	private var g2d_onRightMouseUp:Signal1<GNodeMouseSignal>;
-	public var onRightMouseUp:Signal1<GNodeMouseSignal>;
-	private var g2d_onRightMouseClick:Signal1<GNodeMouseSignal>;
-	public var onRightMouseClick:Signal1<GNodeMouseSignal>;
+	private var g2d_onRightMouseDown:GCallback1<GNodeMouseInput>;
+	public var onRightMouseDown:GCallback1<GNodeMouseInput>;
+	private var g2d_onRightMouseUp:GCallback1<GNodeMouseInput>;
+	public var onRightMouseUp:GCallback1<GNodeMouseInput>;
+	private var g2d_onRightMouseClick:GCallback1<GNodeMouseInput>;
+	public var onRightMouseClick:GCallback1<GNodeMouseInput>;
 
 	public var g2d_mouseDownNode:GNode;
 	public var g2d_mouseOverNode:GNode;
 	public var g2d_rightMouseDownNode:GNode;
 
 	/**
-     *  Process context mouse signals
+     *  Process context mouse callbacks
      **/
-	public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_signal:GMouseSignal, p_camera:GCamera):Bool {
+	public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_input:GMouseInput, p_camera:GCamera):Bool {
 		if (!isActive() || !visible || (p_camera != null && (cameraGroup&p_camera.mask) == 0 && cameraGroup != 0)) return false;
 
 		if (mouseChildren) {
             var child:GNode = g2d_lastChild;
             while (child != null) {
                 var previous:GNode = child.g2d_previousNode;
-				p_captured = p_captured || child.processContextMouseSignal(p_captured, p_cameraX, p_cameraY, p_signal, p_camera);
+				p_captured = p_captured || child.processContextMouseInput(p_captured, p_cameraX, p_cameraY, p_input, p_camera);
                 child = previous;
 			}
 		}
@@ -513,10 +513,10 @@ class GNode
 		if (mouseEnabled) {
             // Check if there is default renderable
             if (g2d_defaultRenderable != null) {
-                p_captured = p_captured || g2d_renderable.processContextMouseSignal(p_captured, p_cameraX, p_cameraY, p_signal);
+                p_captured = p_captured || g2d_renderable.processContextMouseInput(p_captured, p_cameraX, p_cameraY, p_input);
             // Check renderable component
             } else if (g2d_renderable != null) {
-                p_captured = p_captured || g2d_renderable.processContextMouseSignal(p_captured, p_cameraX, p_cameraY, p_signal);
+                p_captured = p_captured || g2d_renderable.processContextMouseInput(p_captured, p_cameraX, p_cameraY, p_input);
             }
 		}
 		
@@ -524,35 +524,35 @@ class GNode
 	}
 
 	/**
-     *  Dispatch node mouse signals
+     *  Dispatch node mouse callbacks
      **/
-	public function dispatchNodeMouseSignal(p_type:String, p_object:GNode, p_localX:Float, p_localY:Float, p_contextSignal:GMouseSignal):Void {
+	public function dispatchNodeMouseCallback(p_type:String, p_object:GNode, p_localX:Float, p_localY:Float, p_contextInput:GMouseInput):Void {
 		if (mouseEnabled) { 
-			var mouseSignal:GNodeMouseSignal = new GNodeMouseSignal(p_type, this, p_object, p_localX, p_localY, p_contextSignal);
+			var mouseInput:GNodeMouseInput = new GNodeMouseInput(p_type, this, p_object, p_localX, p_localY, p_contextInput);
 
             switch (p_type) {
-                case GMouseSignalType.MOUSE_DOWN:
+                case GMouseInputType.MOUSE_DOWN:
                     g2d_mouseDownNode = p_object;
-                    if (g2d_onMouseDown != null) g2d_onMouseDown.dispatch(mouseSignal);
-                case GMouseSignalType.MOUSE_MOVE:
-                    if (g2d_onMouseMove != null) g2d_onMouseMove.dispatch(mouseSignal);
-                case GMouseSignalType.MOUSE_UP:
+                    if (g2d_onMouseDown != null) g2d_onMouseDown.dispatch(mouseInput);
+                case GMouseInputType.MOUSE_MOVE:
+                    if (g2d_onMouseMove != null) g2d_onMouseMove.dispatch(mouseInput);
+                case GMouseInputType.MOUSE_UP:
                     if (g2d_mouseDownNode == p_object && g2d_onMouseClick != null) {
-                        var mouseClickSignal:GNodeMouseSignal = new GNodeMouseSignal(GMouseSignalType.MOUSE_UP, this, p_object, p_localX, p_localY, p_contextSignal);
-                        g2d_onMouseClick.dispatch(mouseClickSignal);
+                        var mouseClickInput:GNodeMouseInput = new GNodeMouseInput(GMouseInputType.MOUSE_UP, this, p_object, p_localX, p_localY, p_contextInput);
+                        g2d_onMouseClick.dispatch(mouseClickInput);
                     }
                     g2d_mouseDownNode = null;
-                    if (g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseSignal);
-                case GMouseSignalType.MOUSE_OVER:
+                    if (g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseInput);
+                case GMouseInputType.MOUSE_OVER:
                     g2d_mouseOverNode = p_object;
-                    if (g2d_onMouseOver != null) g2d_onMouseOver.dispatch(mouseSignal);
-                case GMouseSignalType.MOUSE_OUT:
+                    if (g2d_onMouseOver != null) g2d_onMouseOver.dispatch(mouseInput);
+                case GMouseInputType.MOUSE_OUT:
                     g2d_mouseOverNode = null;
-                    if (g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseSignal);
+                    if (g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseInput);
             }
 		}
 		
-		if (parent != null) parent.dispatchNodeMouseSignal(p_type, p_object, p_localX, p_localY, p_contextSignal);
+		if (parent != null) parent.dispatchNodeMouseCallback(p_type, p_object, p_localX, p_localY, p_contextInput);
 	}
 	
 	/****************************************************************************************************
@@ -705,21 +705,21 @@ class GNode
         return g2d_numChildren;
     }
 
-    private var g2d_onAddedToStage:Signal0;
+    private var g2d_onAddedToStage:GCallback0;
     #if swc @:extern #end
-    public var onAddedToStage(get, never):Signal0;
+    public var onAddedToStage(get, never):GCallback0;
     #if swc @:getter(onAddedToStage) #end
-    inline private function get_onAddedToStage():Signal0 {
-        if (g2d_onAddedToStage == null) g2d_onAddedToStage = new Signal0();
+    inline private function get_onAddedToStage():GCallback0 {
+        if (g2d_onAddedToStage == null) g2d_onAddedToStage = new GCallback0();
         return g2d_onAddedToStage;
     }
 
-    private var g2d_onRemovedFromStage:Signal0;
+    private var g2d_onRemovedFromStage:GCallback0;
     #if swc @:extern #end
-    public var onRemovedFromStage(get, never):Signal0;
+    public var onRemovedFromStage(get, never):GCallback0;
     #if swc @:getter(onRemovedFromStage) #end
-    inline private function get_onRemovedFromStage():Signal0 {
-        if (g2d_onRemovedFromStage == null) g2d_onRemovedFromStage = new Signal0();
+    inline private function get_onRemovedFromStage():GCallback0 {
+        if (g2d_onRemovedFromStage == null) g2d_onRemovedFromStage = new GCallback0();
         return g2d_onRemovedFromStage;
     }
 	

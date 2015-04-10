@@ -11,7 +11,7 @@ package com.genome2d.components;
 import com.genome2d.debug.GDebug;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.node.GNode;
-import com.genome2d.signals.GMouseSignal;
+import com.genome2d.input.GMouseInput;
 
 /**
     Component super class all components need to extend it

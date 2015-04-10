@@ -10,9 +10,9 @@ package com.genome2d.components.renderable.text;
 
 import com.genome2d.text.GTextRenderer;
 import com.genome2d.geom.GRectangle;
-import com.genome2d.signals.GMouseSignalType;
+import com.genome2d.input.GMouseInputType;
 import com.genome2d.node.GNode;
-import com.genome2d.signals.GMouseSignal;
+import com.genome2d.input.GMouseInput;
 import com.genome2d.context.GCamera;
 
 /**
@@ -150,11 +150,11 @@ class GText extends GComponent implements IRenderable
 	}
 	
 	@:dox(hide)
-    public function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool {
+    public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
 		if (renderer == null || renderer.width == 0 || renderer.height == 0) return false;
 
 		if (p_captured) {
-            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, 0, 0, p_contextSignal);
+            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_contextInput);
             return false;
 		}
 
@@ -178,15 +178,15 @@ class GText extends GComponent implements IRenderable
         var th:Float = 0;
 
         if (tx >= -tw && tx <= 1 - tw && ty >= -th && ty <= 1 - th) {
-            node.dispatchNodeMouseSignal(p_contextSignal.type, node, tx*renderer.width, ty*renderer.height, p_contextSignal);
+            node.dispatchNodeMouseCallback(p_contextInput.type, node, tx*renderer.width, ty*renderer.height, p_contextInput);
             if (node.g2d_mouseOverNode != node) {
-                node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OVER, node, tx*renderer.width, ty*renderer.height, p_contextSignal);
+                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OVER, node, tx*renderer.width, ty*renderer.height, p_contextInput);
             }
 
             return true;
         } else {
             if (node.g2d_mouseOverNode == node) {
-                node.dispatchNodeMouseSignal(GMouseSignalType.MOUSE_OUT, node, tx*renderer.width, ty*renderer.height, p_contextSignal);
+                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*renderer.width, ty*renderer.height, p_contextInput);
             }
         }
 

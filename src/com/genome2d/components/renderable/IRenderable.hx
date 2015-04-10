@@ -8,7 +8,7 @@
  */
 package com.genome2d.components.renderable;
 
-import com.genome2d.signals.GMouseSignal;
+import com.genome2d.input.GMouseInput;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GCamera;
 
@@ -32,5 +32,5 @@ interface IRenderable {
     /**
      *
      **/
-    function processContextMouseSignal(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextSignal:GMouseSignal):Bool;
+    function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool;
 }

@@ -6,14 +6,15 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.signals;
+package com.genome2d.callbacks;
 
+import com.genome2d.input.GMouseInput;
 import com.genome2d.node.GNode;
 
 /**
 
 **/
-class GNodeMouseSignal {
+class GNodeMouseInput {
     public var target:GNode;
     public var dispatcher:GNode;
     public var type:String;
@@ -21,15 +22,15 @@ class GNodeMouseSignal {
     public var localX:Float;
     public var localY:Float;
 
-    private var g2d_contextSignal:GMouseSignal;
+    private var g2d_contextInput:GMouseInput;
     #if swc @:extern #end
-    @prototype public var contextSignal(get, never):GMouseSignal;
-    #if swc @:getter(contextSignal) #end
-    public function get_contextSignal():GMouseSignal {
-        return g2d_contextSignal;
+    @prototype public var contextInput(get, never):GMouseInput;
+    #if swc @:getter(contextInput) #end
+    public function get_contextInput():GMouseInput {
+        return g2d_contextInput;
     }
 
-    public function new(p_type:String, p_target:GNode, p_dispatcher:GNode, p_localX:Float, p_localY:Float, p_contextSignal:GMouseSignal) {
+    public function new(p_type:String, p_target:GNode, p_dispatcher:GNode, p_localX:Float, p_localY:Float, p_contextInput:GMouseInput) {
         type = p_type;
         target = p_target;
         dispatcher = p_dispatcher;
@@ -37,6 +38,6 @@ class GNodeMouseSignal {
         localX = p_localX;
         localY = p_localY;
 
-        g2d_contextSignal = p_contextSignal;
+        g2d_contextInput = p_contextInput;
     }
 }
