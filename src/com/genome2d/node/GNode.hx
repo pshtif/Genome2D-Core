@@ -8,9 +8,9 @@
  */
 package com.genome2d.node;
 
+import com.genome2d.components.renderable.GSprite;
 import com.genome2d.callbacks.GCallback;
 import com.genome2d.callbacks.GNodeMouseInput;
-import com.genome2d.components.renderable.GFlipBook;
 import com.genome2d.geom.GPoint;
 import com.genome2d.context.filters.GFilter;
 import com.genome2d.context.GBlendMode;
@@ -498,14 +498,14 @@ class GNode
 	/**
      *  Process context mouse callbacks
      **/
-	public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_input:GMouseInput, p_camera:GCamera):Bool {
+	public function captureContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_input:GMouseInput, p_camera:GCamera):Bool {
 		if (!isActive() || !visible || (p_camera != null && (cameraGroup&p_camera.mask) == 0 && cameraGroup != 0)) return false;
 
 		if (mouseChildren) {
             var child:GNode = g2d_lastChild;
             while (child != null) {
                 var previous:GNode = child.g2d_previousNode;
-				p_captured = p_captured || child.processContextMouseInput(p_captured, p_cameraX, p_cameraY, p_input, p_camera);
+				p_captured = p_captured || child.captureContextMouseInput(p_captured, p_cameraX, p_cameraY, p_input, p_camera);
                 child = previous;
 			}
 		}
@@ -559,7 +559,7 @@ class GNode
 	 * 	COMPONENT CODE
 	 ****************************************************************************************************/
     private var g2d_renderable:IRenderable;
-    private var g2d_defaultRenderable:GFlipBook;
+    private var g2d_defaultRenderable:GSprite;
 	private var g2d_components:Array<GComponent>;
 	private var g2d_numComponents:Int = 0;
 	
@@ -607,7 +607,7 @@ class GNode
         component.g2d_node = this;
         component.g2d_lookupClass = p_componentLookupClass;
 
-        if (Std.is(component, GFlipBook)) {
+        if (Std.is(component, GSprite)) {
             g2d_defaultRenderable = cast component;
         } else if (Std.is(component, IRenderable)) {
             g2d_renderable = cast component;
@@ -656,7 +656,7 @@ class GNode
         g2d_components.remove(component);
         g2d_numComponents--;
 
-        if (Std.is(component, GFlipBook)) {
+        if (Std.is(component, GSprite)) {
             g2d_defaultRenderable = null;
         } else if (Std.is(component, IRenderable)) {
             g2d_renderable = null;

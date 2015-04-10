@@ -21,7 +21,7 @@ import com.genome2d.textures.GTexture;
 /**
     Component used for rendering textured quads used as a super class for `GSprite` and `GMovieClip`
 **/
-class GFlipBook extends GTexturedQuad
+class GSprite extends GTexturedQuad
 {
     public var timeDilation:Float = 1;
 

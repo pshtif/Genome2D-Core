@@ -362,7 +362,7 @@ class Genome2D implements IGDebuggableInternal
 	private function g2d_contextMouseInput_handler(p_input:GMouseInput):Void {
         // If there is no camera process the callbacks directly by root node
 		if (g2d_cameras.length == 0) {
-            root.processContextMouseInput(p_input.nativeCaptured, p_input.x, p_input.y, p_input, null);
+            root.captureContextMouseInput(p_input.nativeCaptured, p_input.x, p_input.y, p_input, null);
         // If there are cameras we need to process the callbacks through them
 		} else {
             var captured:Bool = p_input.nativeCaptured;
