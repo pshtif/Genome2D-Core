@@ -11,7 +11,7 @@ class GTile
     public var texture:GTexture;#if swc @:extern #end
     @prototype public var textureId(get, set):String;
     #if swc @:getter(textureId) #end
-    private function get_textureId():String {
+    inline private function get_textureId():String {
         return (texture != null) ? texture.id : "";
     }
     #if swc @:setter(textureId) #end

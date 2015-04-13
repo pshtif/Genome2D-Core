@@ -53,6 +53,7 @@ class GTileMap extends GComponent implements IRenderable
         if (p_tile != null) {
             for (i in 0...p_tile.sizeX) {
                 for (j in 0...p_tile.sizeY) {
+					untyped __global__["trace"](p_tileIndex, i, j, p_tile.sizeX, p_tile.sizeY, p_tile.textureId);
                     if (g2d_tiles[p_tileIndex+i+j*g2d_width] != null) removeTile(p_tileIndex+i+j*g2d_width);
                     g2d_tiles[p_tileIndex+i+j*g2d_width] = p_tile;
                 }
@@ -66,6 +67,7 @@ class GTileMap extends GComponent implements IRenderable
         if (p_tileIndex<0 || p_tileIndex>= g2d_tiles.length) GDebug.error("Tile index out of bounds.");
         var tile:GTile = g2d_tiles[p_tileIndex];
         if (tile != null) {
+			untyped __global__["trace"]("REMOVE", tile.textureId);
             if (tile.mapX != -1 && tile.mapY != -1) {
                 for (i in 0...tile.sizeX) {
                     for (j in 0...tile.sizeY) {
@@ -107,9 +109,9 @@ class GTileMap extends GComponent implements IRenderable
         var indexWidth:Int = Std.int((endX - firstX) / g2d_tileWidth - indexX+2);
         if (indexWidth>g2d_width-indexX) indexWidth = g2d_width - indexX;
 
-        var indexHeight:Int = Std.int((endY - firstY) / (g2d_iso ? g2d_tileHeight/2 : g2d_tileHeight) - indexY+2);
-        if (indexHeight>g2d_height-indexY) indexHeight = g2d_height - indexY;
-        //trace(indexX, indexY, indexWidth, indexHeight);
+        var indexHeight:Int = Std.int((endY - firstY) / (g2d_iso ? g2d_tileHeight / 2 : g2d_tileHeight) - indexY + 2);
+        if (indexHeight > g2d_height - indexY) indexHeight = g2d_height - indexY;
+		
         var tileCount:Int = indexWidth*indexHeight;
         for (i in 0...tileCount) {
             var row:Int = Std.int(i / indexWidth);
@@ -122,15 +124,15 @@ class GTileMap extends GComponent implements IRenderable
             if (tile != null && tile.texture != null) {
                 var frameId:Int = node.core.getCurrentFrameId();
                 var time:Float = node.core.getRunTime();
-                if (tile.sizeX != 1 || tile.sizeY != 1) {
-                    if (tile.lastFrameRendered != frameId) {
-                        x -= (indexX +  i % indexWidth - tile.mapX) * g2d_tileWidth;
-                        y -= (indexY+row-tile.mapY) * g2d_tileHeight;
-                        tile.render(node.core.getContext(), x, y, frameId, time, blendMode);
-                    }
-                } else {
+                //if (tile.sizeX != 1 || tile.sizeY != 1) {
+                    //if (tile.lastFrameRendered != frameId) {
+                        //x -= (indexX +  i % indexWidth - tile.mapX) * g2d_tileWidth - (tile.sizeX - 1) * g2d_tileWidth/2;
+                        //y -= (indexY + row - tile.mapY) * g2d_tileHeight - (tile.sizeY - 1) * g2d_tileHeight/2;
+                        //tile.render(node.core.getContext(), x, y, frameId, time, blendMode);
+                    //}
+                //} else {
                     tile.render(node.core.getContext(), x, y, frameId, time, blendMode);
-                }
+                //}
             }
         }
     }
