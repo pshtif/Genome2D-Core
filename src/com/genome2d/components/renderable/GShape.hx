@@ -55,7 +55,11 @@ class GShape extends GComponent implements IRenderable
         return null;
     }
 
-    public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
+    public function captureMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
+        return false;
+    }
+	
+	public function hitTest(p_x:Float, p_y:Float):Bool {
         return false;
     }
 }

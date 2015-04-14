@@ -137,7 +137,7 @@ class GCameraController extends GComponent
 		rx /= zoom;
 		ry /= zoom;
 
-		return node.core.root.captureContextMouseInput(p_captured, rx+node.g2d_worldX, ry+node.g2d_worldY, p_input, g2d_contextCamera);
+		return node.core.root.captureMouseInput(p_captured, rx+node.g2d_worldX, ry+node.g2d_worldY, p_input, g2d_contextCamera);
 	}
 
 	override public function dispose():Void {

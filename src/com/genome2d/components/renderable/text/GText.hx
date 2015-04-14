@@ -150,11 +150,11 @@ class GText extends GComponent implements IRenderable
 	}
 	
 	@:dox(hide)
-    public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
+    public function captureMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
 		if (renderer == null || renderer.width == 0 || renderer.height == 0) return false;
 
 		if (p_captured) {
-            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_contextInput);
+            if (node.g2d_mouseOverNode == node) node.dispatchMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_contextInput);
             return false;
 		}
 
@@ -178,20 +178,24 @@ class GText extends GComponent implements IRenderable
         var th:Float = 0;
 
         if (tx >= -tw && tx <= 1 - tw && ty >= -th && ty <= 1 - th) {
-            node.dispatchNodeMouseCallback(p_contextInput.type, node, tx*renderer.width, ty*renderer.height, p_contextInput);
+            node.dispatchMouseCallback(p_contextInput.type, node, tx*renderer.width, ty*renderer.height, p_contextInput);
             if (node.g2d_mouseOverNode != node) {
-                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OVER, node, tx*renderer.width, ty*renderer.height, p_contextInput);
+                node.dispatchMouseCallback(GMouseInputType.MOUSE_OVER, node, tx*renderer.width, ty*renderer.height, p_contextInput);
             }
 
             return true;
         } else {
             if (node.g2d_mouseOverNode == node) {
-                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*renderer.width, ty*renderer.height, p_contextInput);
+                node.dispatchMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*renderer.width, ty*renderer.height, p_contextInput);
             }
         }
 
         return false;
 	}
+	
+	public function hitTest(p_x:Float, p_y:Float):Bool {
+        return false;
+    }
 
     public function getBounds(p_bounds:GRectangle = null):GRectangle {
         if (p_bounds != null) p_bounds.setTo(0, 0, renderer.width, renderer.height);

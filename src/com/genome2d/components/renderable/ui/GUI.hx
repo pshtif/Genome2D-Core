@@ -43,7 +43,7 @@ class GUI extends GComponent implements IRenderable {
         return null;
     }
 
-    public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
+    public function captureMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
         if (p_captured && p_contextInput.type == GMouseInputType.MOUSE_UP) node.g2d_mouseDownNode = null;
 
         var capture:Bool = root.processMouseInput(p_captured, p_cameraX, p_cameraY, p_contextInput);
@@ -53,12 +53,16 @@ class GUI extends GComponent implements IRenderable {
             var ty:Float = p_cameraY - node.g2d_worldY;
 
             if (node.g2d_mouseOverNode != node) {
-                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OVER, node, tx, ty, p_contextInput);
+                node.dispatchMouseCallback(GMouseInputType.MOUSE_OVER, node, tx, ty, p_contextInput);
             }
         } else {
-            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_contextInput);
+            if (node.g2d_mouseOverNode == node) node.dispatchMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_contextInput);
         }
 
         return p_captured || capture;
+    }
+	
+	public function hitTest(p_x:Float, p_y:Float):Bool {
+        return false;
     }
 }

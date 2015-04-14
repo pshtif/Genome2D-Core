@@ -70,30 +70,15 @@ class GTexturedQuad extends GComponent implements IRenderable
 	/**
         Check if a point is inside this quad
     **/
-    public function hitTestPoint(p_x:Float, p_y:Float, p_pixelEnabled:Bool = false, p_w:Float = 0, p_h:Float = 0):Bool {
-        var tx:Float = p_x - node.g2d_worldX;
-        var ty:Float = p_y - node.g2d_worldY;
+    public function hitTest(p_x:Float, p_y:Float):Bool {
+        p_x /= texture.width;
+        p_y /= texture.height;
 
-        if (node.g2d_worldRotation != 0) {
-            var cos:Float = Math.cos(-node.g2d_worldRotation);
-            var sin:Float = Math.sin(-node.g2d_worldRotation);
+        p_x += .5;
+        p_y += .5;
 
-            var ox:Float = tx;
-            tx = (tx*cos - ty*sin);
-            ty = (ty*cos + ox*sin);
-        }
-
-        tx /= node.g2d_worldScaleX*texture.width;
-        ty /= node.g2d_worldScaleY*texture.height;
-
-        if (p_w != 0) p_w /= node.g2d_worldScaleX*texture.width;
-        if (p_h != 0) p_h /= node.g2d_worldScaleY*texture.height;
-
-        tx += .5;
-        ty += .5;
-
-        if (tx+p_w >= -texture.pivotX / texture.width && tx-p_w <= 1 - texture.pivotX / texture.width && ty+p_h >= -texture.pivotY / texture.height && ty-p_h <= 1 - texture.pivotY / texture.height) {
-            if (p_pixelEnabled && texture.getAlphaAtUV(tx+texture.pivotX/texture.width, ty+texture.pivotY/texture.height) <= mousePixelTreshold) {
+        if (p_x >= -texture.pivotX / texture.width && p_x <= 1 - texture.pivotX / texture.width && p_y >= -texture.pivotY / texture.height && p_y <= 1 - texture.pivotY / texture.height) {
+            if (mousePixelEnabled && texture.getAlphaAtUV(p_x+texture.pivotX/texture.width, p_y+texture.pivotY/texture.height) <= mousePixelTreshold) {
                 return false;
             }
             return true;
@@ -103,14 +88,7 @@ class GTexturedQuad extends GComponent implements IRenderable
     }
 
     @:dox(hide)
-	public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
-		if (p_captured && p_contextInput.type == GMouseInputType.MOUSE_UP) node.g2d_mouseDownNode = null;
-
-		if (p_captured || texture == null || texture.width == 0 || texture.height == 0 || node.g2d_worldScaleX == 0 || node.g2d_worldScaleY == 0) {
-			if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_contextInput);
-			return false;
-		}
-
+	public function captureMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
         // Invert translations
         var tx:Float = p_cameraX - node.g2d_worldX;
         var ty:Float = p_cameraY - node.g2d_worldY;
@@ -133,20 +111,20 @@ class GTexturedQuad extends GComponent implements IRenderable
 		if (tx >= -texture.pivotX / texture.width && tx <= 1 - texture.pivotX / texture.width && ty >= -texture.pivotY / texture.height && ty <= 1 - texture.pivotY / texture.height) {
 			if (mousePixelEnabled && texture.getAlphaAtUV(tx+texture.pivotX/texture.width, ty+texture.pivotY/texture.height) <= mousePixelTreshold) {
 				if (node.g2d_mouseOverNode == node) {
-					node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*texture.width-texture.width*.5, ty*texture.height-texture.height*.5, p_contextInput);
+					node.dispatchMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*texture.width-texture.width*.5, ty*texture.height-texture.height*.5, p_contextInput);
 				}
 				return false;
 			}
 
-			node.dispatchNodeMouseCallback(p_contextInput.type, node, tx*texture.width-texture.width*.5, ty*texture.height-texture.height*.5, p_contextInput);
+			node.dispatchMouseCallback(p_contextInput.type, node, tx*texture.width-texture.width*.5, ty*texture.height-texture.height*.5, p_contextInput);
 			if (node.g2d_mouseOverNode != node) {
-				node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OVER, node, tx*texture.width-texture.width*.5, ty*texture.height-texture.height*.5, p_contextInput);
+				node.dispatchMouseCallback(GMouseInputType.MOUSE_OVER, node, tx*texture.width-texture.width*.5, ty*texture.height-texture.height*.5, p_contextInput);
 			}
 			
 			return true;
 		} else {
 			if (node.g2d_mouseOverNode == node) {
-				node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*texture.width-texture.width*.5, ty*texture.height-texture.height*.5, p_contextInput);
+				node.dispatchMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*texture.width-texture.width*.5, ty*texture.height-texture.height*.5, p_contextInput);
 			}
 		}
 		
