@@ -15,12 +15,13 @@ class GUI extends GComponent implements IRenderable {
 
     override public function init():Void {
         root = new GUIElement();
+		var rect:GRectangle = node.core.getContext().getStageViewRect();
         root.g2d_worldLeft = 0;
-        root.g2d_worldRight = 1024;
+        root.g2d_worldRight = rect.width;
         root.g2d_worldTop = 0;
-        root.g2d_worldBottom = 768;
-        root.g2d_finalWidth = 1024;
-        root.g2d_finalHeight = 768;
+        root.g2d_worldBottom = rect.height;
+        root.g2d_finalWidth = rect.width;
+        root.g2d_finalHeight = rect.height;
         root.name = "root";
         root.mouseEnabled = false;
     }
@@ -43,22 +44,11 @@ class GUI extends GComponent implements IRenderable {
         return null;
     }
 
-    public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
-        if (p_captured && p_contextInput.type == GMouseInputType.MOUSE_UP) node.g2d_mouseDownNode = null;
-
-        var capture:Bool = root.processMouseInput(p_captured, p_cameraX, p_cameraY, p_contextInput);
-
-        if (!p_captured && capture) {
-            var tx:Float = p_cameraX - node.g2d_worldX;
-            var ty:Float = p_cameraY - node.g2d_worldY;
-
-            if (node.g2d_mouseOverNode != node) {
-                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OVER, node, tx, ty, p_contextInput);
-            }
-        } else {
-            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_contextInput);
-        }
-
-        return p_captured || capture;
+    public function captureMouseInput(p_input:GMouseInput):Void {
+        root.captureMouseInput(p_input);
+    }
+	
+	public function hitTest(p_x:Float, p_y:Float):Bool {
+        return false;
     }
 }

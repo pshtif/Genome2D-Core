@@ -1,32 +1,13 @@
-/*
- * 	Genome2D - 2D GPU Framework
- * 	http://www.genome2d.com
- *
- *	Copyright 2011-2014 Peter Stefcek. All rights reserved.
- *
- *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
- */
-package com.genome2d.components.renderable;
-
-import com.genome2d.geom.GRectangle;
-import com.genome2d.geom.GMatrix;
-import com.genome2d.context.filters.GFilter;
-import com.genome2d.context.GCamera;
-import com.genome2d.input.GMouseInputType;
-import com.genome2d.node.GNode;
-import com.genome2d.components.GComponent;
-import com.genome2d.input.GMouseInput;
+package com.genome2d.components;
+import com.genome2d.components.renderable.GSprite;
 import com.genome2d.textures.GTexture;
 
-/**
-    Component used for rendering textured quads used as a super class for `GSprite` and `GMovieClip`
-**/
-class GSprite extends GTexturedQuad
+class GFrameAnimator extends GAnimator
 {
-    public var timeDilation:Float = 1;
+	public var timeDilation:Float = 1;
 
     /**
-        Is movieclip repeating after reaching the last frame, default true
+        Is animation repeating after reaching the last frame, default true
     **/
     public var repeatable:Bool = true;
 
@@ -34,25 +15,20 @@ class GSprite extends GTexturedQuad
         Is playback reversed, default false
     **/
     public var reversed:Bool = false;
-
+	
     private var g2d_speed:Float = 1000/30;
     private var g2d_accumulatedTime:Float = 0;
     private var g2d_lastUpdatedFrameId:Int = 0;
     private var g2d_startIndex:Int = -1;
     private var g2d_endIndex:Int = -1;
     private var g2d_playing:Bool = true;
-
-	public var frameRate(get, set):Int;
-    #if swc @:getter(frameRate) #end
-    inline private function get_frameRate():Int {
-        return Std.int(1000 / g2d_speed);
-    }
-	#if swc @:setter(frameRate) #end
-    inline private function set_frameRate(p_value:Int):Int {
-        g2d_speed = 1000 / p_value;
-		return p_value;
-    }
 	
+	private var g2d_sprite:GSprite;
+	private function getSprite():GSprite {
+		if (g2d_sprite == null) g2d_sprite = cast node.getComponent(GSprite);
+		return g2d_sprite;
+	}
+
     /**
         Get the current frame count
     **/
@@ -87,9 +63,9 @@ class GSprite extends GTexturedQuad
         g2d_frameCount = p_value.length;
         g2d_currentFrame = 0;
         if (g2d_frameTextures.length>0) {
-            texture = g2d_frameTextures[0];
+            getSprite().texture = g2d_frameTextures[0];
         } else {
-            texture = null;
+            getSprite().texture = null;
         }
 
         return g2d_frameTextures;
@@ -102,7 +78,7 @@ class GSprite extends GTexturedQuad
         if (g2d_frameTextures == null) return;
         g2d_currentFrame = p_frame;
         g2d_currentFrame %= g2d_frameCount;
-        texture = g2d_frameTextures[g2d_currentFrame];
+        getSprite().texture = g2d_frameTextures[g2d_currentFrame];
     }
 
     /**
@@ -135,22 +111,7 @@ class GSprite extends GTexturedQuad
         g2d_playing = true;
     }
 	
-
-    @:dox(hide)
-    inline override public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
-        update(g2d_node.core.getCurrentFrameDeltaTime());
-
-        if (texture != null) {
-            if (p_useMatrix && !ignoreMatrix) {
-                var matrix:GMatrix = node.core.g2d_renderMatrix;
-                node.core.getContext().drawMatrix(texture, matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, blendMode, filter);
-            } else {
-                node.core.getContext().draw(texture, node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, blendMode, filter);
-            }
-        }
-    }
-
-    inline public function update(p_deltaTime:Float):Void {
+	inline public function update(p_deltaTime:Float):Void {
         if (g2d_playing && g2d_frameCount>1) {
             g2d_accumulatedTime += p_deltaTime*timeDilation;
 
@@ -171,7 +132,8 @@ class GSprite extends GTexturedQuad
                         g2d_playing = false;
                     }
                 }
-                texture = g2d_frameTextures[g2d_currentFrame];
+				if (g2d_sprite == null) g2d_sprite = cast node.getComponent(GSprite);
+                if (g2d_sprite != null) g2d_sprite.texture = g2d_frameTextures[g2d_currentFrame];
             }
             g2d_accumulatedTime %= g2d_speed;
         }

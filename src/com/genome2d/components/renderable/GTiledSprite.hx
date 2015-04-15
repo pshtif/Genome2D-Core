@@ -93,17 +93,18 @@ class GTiledSprite extends GComponent implements IRenderable {
     }
 
     @:dox(hide)
-    public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
-        if (p_captured && p_contextInput.type == GMouseInputType.MOUSE_UP) node.g2d_mouseDownNode = null;
+    public function captureMouseInput(p_input:GMouseInput):Void {
+		/*
+        if (p_captured && p_input.type == GMouseInputType.MOUSE_UP) node.g2d_mouseDownNode = null;
 
         if (p_captured || texture == null || g2d_width == 0 || g2d_height == 0 || node.g2d_worldScaleX == 0 || node.g2d_worldScaleY == 0) {
-            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_contextInput);
+            if (node.g2d_mouseOverNode == node) node.dispatchMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_input);
             return false;
         }
 
         // Invert translations
-        var tx:Float = p_cameraX - node.g2d_worldX;
-        var ty:Float = p_cameraY - node.g2d_worldY;
+        var tx:Float = p_input.worldX - node.g2d_worldX;
+        var ty:Float = p_input.worldY - node.g2d_worldY;
 
         if (node.g2d_worldRotation != 0) {
             var cos:Float = Math.cos(-node.g2d_worldRotation);
@@ -118,19 +119,18 @@ class GTiledSprite extends GComponent implements IRenderable {
         ty /= node.g2d_worldScaleY*g2d_height;
 
         if (tx >= 0 && tx <= 1 && ty >= 0 && ty <= 1) {
-            node.dispatchNodeMouseCallback(p_contextInput.type, node, tx*g2d_width, ty*g2d_height, p_contextInput);
+            node.dispatchMouseCallback(p_input.type, node, tx*g2d_width, ty*g2d_height, p_input);
             if (node.g2d_mouseOverNode != node) {
-                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OVER, node, tx*g2d_width, ty*g2d_height, p_contextInput);
+                node.dispatchMouseCallback(GMouseInputType.MOUSE_OVER, node, tx*g2d_width, ty*g2d_height, p_input);
             }
 
             return true;
         } else {
             if (node.g2d_mouseOverNode == node) {
-                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*g2d_width, ty*g2d_height, p_contextInput);
+                node.dispatchMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*g2d_width, ty*g2d_height, p_input);
             }
         }
-
-        return false;
+		/**/
     }
 
     /**
@@ -146,5 +146,9 @@ class GTiledSprite extends GComponent implements IRenderable {
         }
 
         return p_bounds;
+    }
+	
+	public function hitTest(p_x:Float, p_y:Float):Bool {
+        return false;
     }
 }

@@ -150,17 +150,18 @@ class GText extends GComponent implements IRenderable
 	}
 	
 	@:dox(hide)
-    public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
+    public function captureMouseInput(p_input:GMouseInput):Void {
+		/*
 		if (renderer == null || renderer.width == 0 || renderer.height == 0) return false;
 
 		if (p_captured) {
-            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_contextInput);
+            if (node.g2d_mouseOverNode == node) node.dispatchMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_input);
             return false;
 		}
 
         // Invert translations
-        var tx:Float = p_cameraX - node.g2d_worldX;
-        var ty:Float = p_cameraY - node.g2d_worldY;
+        var tx:Float = p_input.worldX - node.g2d_worldX;
+        var ty:Float = p_input.worldY - node.g2d_worldY;
 
         if (node.g2d_worldRotation != 0) {
             var cos:Float = Math.cos(-node.g2d_worldRotation);
@@ -178,19 +179,18 @@ class GText extends GComponent implements IRenderable
         var th:Float = 0;
 
         if (tx >= -tw && tx <= 1 - tw && ty >= -th && ty <= 1 - th) {
-            node.dispatchNodeMouseCallback(p_contextInput.type, node, tx*renderer.width, ty*renderer.height, p_contextInput);
+            node.dispatchMouseCallback(p_input.type, node, tx*renderer.width, ty*renderer.height, p_input);
             if (node.g2d_mouseOverNode != node) {
-                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OVER, node, tx*renderer.width, ty*renderer.height, p_contextInput);
+                node.dispatchMouseCallback(GMouseInputType.MOUSE_OVER, node, tx*renderer.width, ty*renderer.height, p_input);
             }
 
             return true;
         } else {
             if (node.g2d_mouseOverNode == node) {
-                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*renderer.width, ty*renderer.height, p_contextInput);
+                node.dispatchMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*renderer.width, ty*renderer.height, p_input);
             }
         }
-
-        return false;
+		/**/
 	}
 
     public function getBounds(p_bounds:GRectangle = null):GRectangle {
@@ -199,4 +199,8 @@ class GText extends GComponent implements IRenderable
 
         return p_bounds;
     }
+	
+	public function hitTest(p_x:Float, p_y:Float):Bool {
+		return false;
+	}
 }

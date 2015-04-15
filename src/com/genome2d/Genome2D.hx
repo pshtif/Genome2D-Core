@@ -313,7 +313,7 @@ class Genome2D implements IGDebuggableInternal
         GUISkinManager.init();
 
         g2d_context.onFrame.add(g2d_frame_handler);
-        g2d_context.onMouseInput.add(g2d_contextMouseInput_handler);
+        g2d_context.g2d_onMouseInputInternal = g2d_contextMouseInput_handler;
         g2d_context.onKeyboardInput.add(g2d_contextKeyboardInput_handler);
 
         onInitialized.dispatch();
@@ -362,16 +362,15 @@ class Genome2D implements IGDebuggableInternal
 	private function g2d_contextMouseInput_handler(p_input:GMouseInput):Void {
         // If there is no camera process the callbacks directly by root node
 		if (g2d_cameras.length == 0) {
-            root.captureContextMouseInput(p_input.nativeCaptured, p_input.x, p_input.y, p_input, null);
+            root.captureMouseInput(p_input);
         // If there are cameras we need to process the callbacks through them
 		} else {
-            var captured:Bool = p_input.nativeCaptured;
 		    for (i in 0...g2d_cameras.length) {
 				g2d_cameras[i].g2d_capturedThisFrame = false;
 			}
             var i:Int = g2d_cameras.length-1;
             while (i>=0) {
-                captured = captured || g2d_cameras[i].captureMouseInput(g2d_context, captured, p_input);
+                g2d_cameras[i].captureMouseInput(p_input);
                 i--;
             }
 		}

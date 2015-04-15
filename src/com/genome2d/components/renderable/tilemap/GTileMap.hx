@@ -45,6 +45,11 @@ class GTileMap extends GComponent implements IRenderable
         }
         g2d_iso = p_iso;
     }
+	
+	public function getTile(p_tileIndex:Int):GTile {
+		if (p_tileIndex < 0 || p_tileIndex >= g2d_tiles.length) GDebug.error("Tile index out of bounds.");
+		return g2d_tiles[p_tileIndex];
+	}
 
     public function setTile(p_tileIndex:Int, p_tile:GTile):Void {
         if (p_tileIndex<0 || p_tileIndex>= g2d_tiles.length) GDebug.error("Tile index out of bounds.");
@@ -107,9 +112,9 @@ class GTileMap extends GComponent implements IRenderable
         var indexWidth:Int = Std.int((endX - firstX) / g2d_tileWidth - indexX+2);
         if (indexWidth>g2d_width-indexX) indexWidth = g2d_width - indexX;
 
-        var indexHeight:Int = Std.int((endY - firstY) / (g2d_iso ? g2d_tileHeight/2 : g2d_tileHeight) - indexY+2);
-        if (indexHeight>g2d_height-indexY) indexHeight = g2d_height - indexY;
-        //trace(indexX, indexY, indexWidth, indexHeight);
+        var indexHeight:Int = Std.int((endY - firstY) / (g2d_iso ? g2d_tileHeight / 2 : g2d_tileHeight) - indexY + 2);
+        if (indexHeight > g2d_height - indexY) indexHeight = g2d_height - indexY;
+		
         var tileCount:Int = indexWidth*indexHeight;
         for (i in 0...tileCount) {
             var row:Int = Std.int(i / indexWidth);
@@ -124,8 +129,8 @@ class GTileMap extends GComponent implements IRenderable
                 var time:Float = node.core.getRunTime();
                 if (tile.sizeX != 1 || tile.sizeY != 1) {
                     if (tile.lastFrameRendered != frameId) {
-                        x -= (indexX +  i % indexWidth - tile.mapX) * g2d_tileWidth;
-                        y -= (indexY+row-tile.mapY) * g2d_tileHeight;
+                        x -= (indexX +  i % indexWidth - tile.mapX) * g2d_tileWidth;// - (tile.sizeX - 1) * g2d_tileWidth / 2;
+                        y -= (indexY + row - tile.mapY) * g2d_tileHeight;// - (tile.sizeY - 1) * g2d_tileHeight / 2;
                         tile.render(node.core.getContext(), x, y, frameId, time, blendMode);
                     }
                 } else {
@@ -162,49 +167,19 @@ class GTileMap extends GComponent implements IRenderable
         return g2d_tiles[indexY*g2d_width+indexX];
     }
 
-    public function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool {
-        if (p_captured && p_contextInput.type == GMouseInputType.MOUSE_UP) node.g2d_mouseDownNode = null;
-
-        if (p_captured || node.g2d_worldScaleX == 0 || node.g2d_worldScaleY == 0) {
-            if (node.g2d_mouseOverNode == node) node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_contextInput);
-            return false;
-        }
-
-        // Invert translations
-        var tx:Float = p_cameraX - node.g2d_worldX;
-        var ty:Float = p_cameraY - node.g2d_worldY;
-
-        if (node.g2d_worldRotation != 0) {
-            var cos:Float = Math.cos(-node.g2d_worldRotation);
-            var sin:Float = Math.sin(-node.g2d_worldRotation);
-
-            var ox:Float = tx;
-            tx = (tx*cos - ty*sin);
-            ty = (ty*cos + ox*sin);
-        }
-
-        tx /= node.g2d_worldScaleX*g2d_width*g2d_tileWidth;
-        ty /= node.g2d_worldScaleY*g2d_height*g2d_tileHeight;
-        tx += .5;
-        ty += .5;
-
-        if (tx >= 0 && tx <= 1 && ty >= 0 && ty <= 1) {
-            node.dispatchNodeMouseCallback(p_contextInput.type, node, tx*g2d_width*g2d_tileWidth, ty*g2d_height*g2d_tileHeight, p_contextInput);
-            if (node.g2d_mouseOverNode != node) {
-                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OVER, node, tx*g2d_width*g2d_tileWidth, ty*g2d_height*g2d_tileHeight, p_contextInput);
-            }
-
-            return true;
-        } else {
-            if (node.g2d_mouseOverNode == node) {
-                node.dispatchNodeMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*g2d_width*g2d_tileWidth, ty*g2d_height*g2d_tileHeight, p_contextInput);
-            }
-        }
-
-        return false;
-    }
-
     public function getBounds(p_bounds:GRectangle = null):GRectangle {
         return null;
     }
+	
+	public function hitTest(p_x:Float, p_y:Float):Bool {
+		p_x = p_x / (g2d_width * g2d_tileWidth) + .5;
+        p_y = p_y / (g2d_height * g2d_tileHeight) + .5;
+
+        return (p_x >= 0 && p_x <= 1 && p_y >= 0 && p_y <= 1);
+    }
+	
+	@:dox(hide)
+	public function captureMouseInput(p_input:GMouseInput):Void {
+        p_input.g2d_captured = p_input.g2d_captured || hitTest(p_input.localX, p_input.localY);
+	}
 }

@@ -29,8 +29,13 @@ interface IRenderable {
      **/
     function getBounds(p_target:GRectangle = null):GRectangle;
 
-    /**
-     *
+	/**
+     *  Capture mouse input
      **/
-    function processContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_contextInput:GMouseInput):Bool;
+	function captureMouseInput(p_input:GMouseInput):Void;
+	
+	/**
+     *  Check for hit test in local space
+     **/
+	function hitTest(p_x:Float, p_y:Float):Bool;
 }

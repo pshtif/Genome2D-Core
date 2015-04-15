@@ -10,10 +10,10 @@ package com.genome2d.node;
 
 import com.genome2d.components.renderable.GSprite;
 import com.genome2d.callbacks.GCallback;
-import com.genome2d.callbacks.GNodeMouseInput;
 import com.genome2d.geom.GPoint;
 import com.genome2d.context.filters.GFilter;
 import com.genome2d.context.GBlendMode;
+import com.genome2d.input.IGInteractive;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.stage3d.GStage3DContext;
@@ -39,7 +39,7 @@ import com.genome2d.input.GMouseInput;
 **/
 @:access(com.genome2d.Genome2D)
 @:access(com.genome2d.node.GNodePool)
-class GNode
+class GNode implements IGInteractive
 {
     /****************************************************************************************************
 	 * 	FACTORY METHODS
@@ -334,6 +334,40 @@ class GNode
         }
     }
 	
+	public function hitTest(p_x:Float, p_y:Float, p_hierarchy:Bool = false):Bool {
+		if (isActive() && visible) {
+			if (p_hierarchy) {
+				var child:GNode = g2d_lastChild;
+				while (child != null) {
+					var previous:GNode = child.g2d_previousNode;
+					if (child.hitTest(p_x, p_y, true)) return true;
+					child = previous;
+				}
+			}
+			
+			if (g2d_renderable != null || g2d_defaultRenderable != null) {
+				var tx:Float = p_x - g2d_worldX;
+				var ty:Float = p_y - g2d_worldY;
+
+				if (g2d_worldRotation != 0) {
+					var cos:Float = Math.cos(-g2d_worldRotation);
+					var sin:Float = Math.sin(-g2d_worldRotation);
+
+					var ox:Float = tx;
+					tx = (tx*cos - ty*sin);
+					ty = (ty*cos + ox*sin);
+				}
+
+				tx /= g2d_worldScaleX;
+				ty /= g2d_worldScaleY;
+				
+				if ((g2d_defaultRenderable != null) ? g2d_defaultRenderable.hitTest(tx, ty) : g2d_renderable.hitTest(tx, ty)) return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	/****************************************************************************************************
 	 * 	PROTOTYPE CODE
 	 ****************************************************************************************************/
@@ -435,100 +469,125 @@ class GNode
     public var filter:GFilter;
 	
 	// Mouse callbacks
-	private var g2d_onMouseDown:GCallback1<GNodeMouseInput>;
+	private var g2d_onMouseDown:GCallback1<GMouseInput>;
     #if swc @:extern #end
-	public var onMouseDown(get, never):GCallback1<GNodeMouseInput>;
+	public var onMouseDown(get, never):GCallback1<GMouseInput>;
     #if swc @:getter(onMouseDown) #end
-	private function get_onMouseDown():GCallback1<GNodeMouseInput> {
+	private function get_onMouseDown():GCallback1<GMouseInput> {
 		if (g2d_onMouseDown == null) g2d_onMouseDown = new GCallback1(GMouseInput);
 		return g2d_onMouseDown;
 	}
-	private var g2d_onMouseMove:GCallback1<GNodeMouseInput>;
+	private var g2d_onMouseMove:GCallback1<GMouseInput>;
     #if swc @:extern #end
-	public var onMouseMove(get, never):GCallback1<GNodeMouseInput>;
+	public var onMouseMove(get, never):GCallback1<GMouseInput>;
     #if swc @:getter(onMouseMove) #end
-	private function get_onMouseMove():GCallback1<GNodeMouseInput> {
+	private function get_onMouseMove():GCallback1<GMouseInput> {
 		if (g2d_onMouseMove == null) g2d_onMouseMove = new GCallback1(GMouseInput);
 		return g2d_onMouseMove;
 	}
-	private var g2d_onMouseClick:GCallback1<GNodeMouseInput>;
+	private var g2d_onMouseClick:GCallback1<GMouseInput>;
     #if swc @:extern #end
-	public var onMouseClick(get, never):GCallback1<GNodeMouseInput>;
+	public var onMouseClick(get, never):GCallback1<GMouseInput>;
     #if swc @:getter(onMouseClick) #end
-	private function get_onMouseClick():GCallback1<GNodeMouseInput> {
+	private function get_onMouseClick():GCallback1<GMouseInput> {
 		if (g2d_onMouseClick == null) g2d_onMouseClick = new GCallback1(GMouseInput);
 		return g2d_onMouseClick;
 	}
-	private var g2d_onMouseUp:GCallback1<GNodeMouseInput>;
+	private var g2d_onMouseUp:GCallback1<GMouseInput>;
     #if swc @:extern #end
-	public var onMouseUp(get, never):GCallback1<GNodeMouseInput>;
+	public var onMouseUp(get, never):GCallback1<GMouseInput>;
     #if swc @:getter(onMouseUp) #end
-	private function get_onMouseUp():GCallback1<GNodeMouseInput> {
+	private function get_onMouseUp():GCallback1<GMouseInput> {
 		if (g2d_onMouseUp == null) g2d_onMouseUp = new GCallback1(GMouseInput);
 		return g2d_onMouseUp;
 	}
-	private var g2d_onMouseOver:GCallback1<GNodeMouseInput>;
+	private var g2d_onMouseOver:GCallback1<GMouseInput>;
     #if swc @:extern #end
-	public var onMouseOver(get, never):GCallback1<GNodeMouseInput>;
+	public var onMouseOver(get, never):GCallback1<GMouseInput>;
     #if swc @:getter(onMouseOver) #end
-	private function get_onMouseOver():GCallback1<GNodeMouseInput> {
+	private function get_onMouseOver():GCallback1<GMouseInput> {
 		if (g2d_onMouseOver == null) g2d_onMouseOver = new GCallback1(GMouseInput);
 		return g2d_onMouseOver;
 	}
-	private var g2d_onMouseOut:GCallback1<GNodeMouseInput>;
+	private var g2d_onMouseOut:GCallback1<GMouseInput>;
     #if swc @:extern #end
-	public var onMouseOut(get, never):GCallback1<GNodeMouseInput>;
+	public var onMouseOut(get, never):GCallback1<GMouseInput>;
     #if swc @:getter(onMouseOut) #end
-	private function get_onMouseOut():GCallback1<GNodeMouseInput> {
+	private function get_onMouseOut():GCallback1<GMouseInput> {
 		if (g2d_onMouseOut == null) g2d_onMouseOut = new GCallback1(GMouseInput);
 		return g2d_onMouseOut;
 	}
 
-	private var g2d_onRightMouseDown:GCallback1<GNodeMouseInput>;
-	public var onRightMouseDown:GCallback1<GNodeMouseInput>;
-	private var g2d_onRightMouseUp:GCallback1<GNodeMouseInput>;
-	public var onRightMouseUp:GCallback1<GNodeMouseInput>;
-	private var g2d_onRightMouseClick:GCallback1<GNodeMouseInput>;
-	public var onRightMouseClick:GCallback1<GNodeMouseInput>;
+	private var g2d_onRightMouseDown:GCallback1<GMouseInput>;
+	public var onRightMouseDown:GCallback1<GMouseInput>;
+	private var g2d_onRightMouseUp:GCallback1<GMouseInput>;
+	public var onRightMouseUp:GCallback1<GMouseInput>;
+	private var g2d_onRightMouseClick:GCallback1<GMouseInput>;
+	public var onRightMouseClick:GCallback1<GMouseInput>;
 
 	public var g2d_mouseDownNode:GNode;
 	public var g2d_mouseOverNode:GNode;
 	public var g2d_rightMouseDownNode:GNode;
 
 	/**
-     *  Process context mouse callbacks
+     *  Capture context mouse callbacks
      **/
-	public function captureContextMouseInput(p_captured:Bool, p_cameraX:Float, p_cameraY:Float, p_input:GMouseInput, p_camera:GCamera):Bool {
-		if (!isActive() || !visible || (p_camera != null && (cameraGroup&p_camera.mask) == 0 && cameraGroup != 0)) return false;
+	public function captureMouseInput(p_input:GMouseInput):Void {
+		if (!isActive() || !visible || (p_input.camera != null && (cameraGroup&p_input.camera.mask) == 0 && cameraGroup != 0)) return;
 
 		if (mouseChildren) {
             var child:GNode = g2d_lastChild;
             while (child != null) {
                 var previous:GNode = child.g2d_previousNode;
-				p_captured = p_captured || child.captureContextMouseInput(p_captured, p_cameraX, p_cameraY, p_input, p_camera);
+				child.captureMouseInput(p_input);
                 child = previous;
 			}
 		}
 		
 		if (mouseEnabled) {
-            // Check if there is default renderable
-            if (g2d_defaultRenderable != null) {
-                p_captured = p_captured || g2d_renderable.processContextMouseInput(p_captured, p_cameraX, p_cameraY, p_input);
-            // Check renderable component
-            } else if (g2d_renderable != null) {
-                p_captured = p_captured || g2d_renderable.processContextMouseInput(p_captured, p_cameraX, p_cameraY, p_input);
-            }
+			if (p_input.g2d_captured && p_input.type == GMouseInputType.MOUSE_UP) g2d_mouseDownNode = null;
+			
+			var previouslyCaptured:Bool = p_input.g2d_captured;
+			
+			if (g2d_renderable != null || g2d_defaultRenderable != null) {
+				var tx:Float = p_input.worldX - g2d_worldX;
+				var ty:Float = p_input.worldY - g2d_worldY;
+
+				if (g2d_worldRotation != 0) {
+					var cos:Float = Math.cos(-g2d_worldRotation);
+					var sin:Float = Math.sin(-g2d_worldRotation);
+					var ox:Float = tx;
+					tx = (tx*cos - ty*sin);
+					ty = (ty*cos + ox*sin);
+				}
+
+				p_input.localX = (g2d_worldScaleX == 0) ? Math.POSITIVE_INFINITY : tx / g2d_worldScaleX;
+				p_input.localY = (g2d_worldScaleY == 0) ? Math.POSITIVE_INFINITY : ty / g2d_worldScaleY;
+
+				if (g2d_defaultRenderable != null) {
+					g2d_defaultRenderable.captureMouseInput(p_input);
+				} else {
+					g2d_renderable.captureMouseInput(p_input);
+				}
+			}
+			
+			if (!previouslyCaptured && p_input.g2d_captured) {
+				g2d_dispatchMouseCallback(p_input.type, this, p_input);
+				if (g2d_mouseOverNode != this) {
+					g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, this, p_input);
+				}
+			} else if (g2d_mouseOverNode == this) {
+				g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, this, p_input);
+			}
 		}
-		
-		return p_captured;
 	}
 
 	/**
      *  Dispatch node mouse callbacks
      **/
-	public function dispatchNodeMouseCallback(p_type:String, p_object:GNode, p_localX:Float, p_localY:Float, p_contextInput:GMouseInput):Void {
+	private function g2d_dispatchMouseCallback(p_type:String, p_object:GNode, p_input:GMouseInput):Void {
 		if (mouseEnabled) { 
-			var mouseInput:GNodeMouseInput = new GNodeMouseInput(p_type, this, p_object, p_localX, p_localY, p_contextInput);
+			var mouseInput:GMouseInput = p_input.clone(this, p_object, p_type);
 
             switch (p_type) {
                 case GMouseInputType.MOUSE_DOWN:
@@ -538,7 +597,7 @@ class GNode
                     if (g2d_onMouseMove != null) g2d_onMouseMove.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_UP:
                     if (g2d_mouseDownNode == p_object && g2d_onMouseClick != null) {
-                        var mouseClickInput:GNodeMouseInput = new GNodeMouseInput(GMouseInputType.MOUSE_UP, this, p_object, p_localX, p_localY, p_contextInput);
+                        var mouseClickInput:GMouseInput = p_input.clone(this, p_object, GMouseInputType.MOUSE_UP);
                         g2d_onMouseClick.dispatch(mouseClickInput);
                     }
                     g2d_mouseDownNode = null;
@@ -552,7 +611,7 @@ class GNode
             }
 		}
 		
-		if (parent != null) parent.dispatchNodeMouseCallback(p_type, p_object, p_localX, p_localY, p_contextInput);
+		if (parent != null) parent.g2d_dispatchMouseCallback(p_type, p_object, p_input);
 	}
 	
 	/****************************************************************************************************

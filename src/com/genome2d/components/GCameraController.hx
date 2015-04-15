@@ -113,20 +113,20 @@ class GCameraController extends GComponent
 		node.core.root.render(false, false, g2d_contextCamera, false, false);
 	}
 
-	public function captureMouseInput(p_context:IContext, p_captured:Bool, p_input:GMouseInput):Bool {
-		if (g2d_capturedThisFrame || !node.isActive()) return false;
+	public function captureMouseInput(p_input:GMouseInput):Void {
+		if (g2d_capturedThisFrame || !node.isActive()) return;
 		g2d_capturedThisFrame = true;
 
-        var stageRect:GRectangle = p_context.getStageViewRect();
+        var stageRect:GRectangle = node.core.getContext().getStageViewRect();
         g2d_viewRectangle.setTo(stageRect.width*g2d_contextCamera.normalizedViewX,
                                 stageRect.height*g2d_contextCamera.normalizedViewY,
                                 stageRect.width*g2d_contextCamera.normalizedViewWidth,
                                 stageRect.height*g2d_contextCamera.normalizedViewHeight);
 
-		if (!g2d_viewRectangle.contains(p_input.x, p_input.y)) return false;
+		if (!g2d_viewRectangle.contains(p_input.contextX, p_input.contextY)) return;
 
-	    var tx:Float = p_input.x - g2d_viewRectangle.x - g2d_viewRectangle.width/2;
-        var ty:Float = p_input.y - g2d_viewRectangle.y - g2d_viewRectangle.height/2;
+	    var tx:Float = p_input.contextX - g2d_viewRectangle.x - g2d_viewRectangle.width/2;
+        var ty:Float = p_input.contextY - g2d_viewRectangle.y - g2d_viewRectangle.height/2;
 
 		var cos:Float = Math.cos(-node.g2d_worldRotation);
 		var sin:Float = Math.sin(-node.g2d_worldRotation);
@@ -136,8 +136,12 @@ class GCameraController extends GComponent
 		
 		rx /= zoom;
 		ry /= zoom;
+		
+		p_input.worldX = rx + node.g2d_worldX;
+		p_input.worldY = ry + node.g2d_worldY;
+		p_input.camera = g2d_contextCamera;
 
-		return node.core.root.captureContextMouseInput(p_captured, rx+node.g2d_worldX, ry+node.g2d_worldY, p_input, g2d_contextCamera);
+		node.core.root.captureMouseInput(p_input);
 	}
 
 	override public function dispose():Void {
