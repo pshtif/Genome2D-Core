@@ -107,11 +107,12 @@ class GFlashObject extends GTexturedQuad {
             g2d_accumulatedTime += p_deltaTime;
             var updateTime:Float = 1000/updateFrameRate;
             if (g2d_invalidate || g2d_accumulatedTime > updateTime) {
-                //texture.g2d_bitmapData.fillRect(texture.g2d_bitmapData.rect, 0x0);
+				var bitmapData:BitmapData = cast texture.source;
+                bitmapData.fillRect(bitmapData.rect, 0x0);
                 var bounds:GRectangle = nativeObject.getBounds(nativeObject);
                 g2d_nativeMatrix.tx = -bounds.x;
                 g2d_nativeMatrix.ty = -bounds.y;
-                //texture.g2d_bitmapData.draw(nativeObject, g2d_nativeMatrix);
+                bitmapData.draw(nativeObject, g2d_nativeMatrix);
                 texture.invalidateNativeTexture(false);
 
                 g2d_accumulatedTime %= updateTime;
@@ -135,12 +136,11 @@ class GFlashObject extends GTexturedQuad {
             bitmapData = new BitmapData(g2d_lastNativeWidth, g2d_lastNativeHeight, g2d_transparent, 0x0);
         }
 
-        if (texture == null || texture.gpuWidth != GTextureUtils.getNextValidTextureSize(g2d_lastNativeWidth) || texture.gpuHeight != GTextureUtils.getNearestValidTextureSize(g2d_lastNativeHeight)) {
-            if(texture != null) texture.dispose();
+        if (texture == null) {
             texture = GTextureManager.createTextureFromBitmapData(g2d_textureId, bitmapData);
         } else {
-            //texture.g2d_bitmapData = bitmapData;
-            //texture.setRegion(bitmapData.rect);
+            texture.source = bitmapData;
+			texture.invalidateNativeTexture(false);
         }
 
         g2d_invalidateAlign();

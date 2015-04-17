@@ -15,9 +15,11 @@ class GFlashText extends GFlashObject {
     }
 
     override public function init():Void {
-        updateFrameRate = 0;
+        updateFrameRate = 1;
 
         nativeObject = g2d_textField = new TextField();
+		
+		super.init();
     }
 }
 #end
