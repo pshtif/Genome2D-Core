@@ -14,7 +14,7 @@ import com.genome2d.utils.GRenderTargetStack;
 import com.genome2d.debug.GDebug;
 import com.genome2d.geom.GMatrix3D;
 import com.genome2d.geom.GRectangle;
-import com.genome2d.context.IContext;
+import com.genome2d.context.IGContext;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GCamera;
 import com.genome2d.textures.GTextureFilteringType;

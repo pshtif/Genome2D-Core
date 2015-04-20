@@ -8,7 +8,7 @@
  */
 package com.genome2d.textures;
 
-import com.genome2d.context.IContext;
+import com.genome2d.context.IGContext;
 import com.genome2d.geom.GRectangle;
 
 class GCharTexture extends GTexture {

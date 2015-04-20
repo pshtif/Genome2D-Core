@@ -14,7 +14,7 @@ import flash.utils.RegExp;
 #end
 import UInt;
 import com.genome2d.textures.GTexture;
-import com.genome2d.context.IContext;
+import com.genome2d.context.IGContext;
 import com.genome2d.geom.GRectangle;
 
 @:access(com.genome2d.textures.GTexture)

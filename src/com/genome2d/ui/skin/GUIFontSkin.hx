@@ -1,7 +1,7 @@
 package com.genome2d.ui.skin;
 import com.genome2d.ui.element.GUIElement;
 import com.genome2d.ui.skin.GUIFontSkin;
-import com.genome2d.context.IContext;
+import com.genome2d.context.IGContext;
 import com.genome2d.text.GTextureTextRenderer;
 import com.genome2d.textures.GContextTexture;
 import com.genome2d.textures.GTextureManager;

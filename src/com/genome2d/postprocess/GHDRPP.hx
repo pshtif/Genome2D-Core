@@ -9,7 +9,7 @@
 package com.genome2d.postprocess;
 
 import com.genome2d.utils.GRenderTargetStack;
-import com.genome2d.context.IContext;
+import com.genome2d.context.IGContext;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.node.GNode;
 import com.genome2d.context.GCamera;
@@ -84,7 +84,7 @@ class GHDRPP extends GPostProcess
 
         updatePassTextures(bounds);
 
-        var context:IContext = Genome2D.getInstance().getContext();
+        var context:IGContext = Genome2D.getInstance().getContext();
         if (p_target == null) GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.g2d_renderTargetTransform);
 
         g2d_empty.render(p_source,p_x,p_y,bounds,g2d_passTextures[0]);
@@ -114,7 +114,7 @@ class GHDRPP extends GPostProcess
 
         g2d_hdrPassFilter.texture = g2d_empty.getPassTexture(0);
 
-        var context:IContext = Genome2D.getInstance().getContext();
+        var context:IGContext = Genome2D.getInstance().getContext();
 
         context.setRenderTarget(null);
         context.setActiveCamera(p_camera);

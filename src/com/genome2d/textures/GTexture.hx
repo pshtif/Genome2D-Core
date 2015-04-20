@@ -12,7 +12,7 @@ import com.genome2d.debug.GDebug;
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.assets.GImageAsset;
 import com.genome2d.context.GContextFeature;
-import com.genome2d.context.IContext;
+import com.genome2d.context.IGContext;
 import com.genome2d.geom.GRectangle;
 
 class GTexture extends GContextTexture

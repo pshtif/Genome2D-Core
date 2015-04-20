@@ -17,7 +17,7 @@ import com.genome2d.assets.GAssetManager;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.input.GKeyboardInput;
-import com.genome2d.context.IContext;
+import com.genome2d.context.IGContext;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.components.GCameraController;
 import com.genome2d.node.GNode;
@@ -177,8 +177,8 @@ class Genome2D implements IGDebuggableInternal
         return g2d_root;
     }
 
-	private var g2d_context:IContext;
-	inline public function getContext():IContext {
+	private var g2d_context:IGContext;
+	inline public function getContext():IGContext {
 		return g2d_context;
 	}
 

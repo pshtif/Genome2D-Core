@@ -20,7 +20,7 @@ import com.genome2d.context.stage3d.GStage3DContext;
 import com.genome2d.node.GNode;
 import com.genome2d.components.GComponent;
 import com.genome2d.context.GContextFeature;
-import com.genome2d.context.IContext;
+import com.genome2d.context.IGContext;
 import com.genome2d.context.stats.GStats;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.postprocess.GPostProcess;

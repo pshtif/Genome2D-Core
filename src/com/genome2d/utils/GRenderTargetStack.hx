@@ -1,5 +1,5 @@
 package com.genome2d.utils;
-import com.genome2d.context.IContext;
+import com.genome2d.context.IGContext;
 import com.genome2d.geom.GMatrix3D;
 import com.genome2d.textures.GContextTexture;
 class GRenderTargetStack {
@@ -15,7 +15,7 @@ class GRenderTargetStack {
         g2d_transforms.push(p_transform);
     }
 
-    static public function popRenderTarget(p_context:IContext):Void {
+    static public function popRenderTarget(p_context:IGContext):Void {
         if (g2d_stack == null) return null;
         p_context.setRenderTarget(g2d_stack.pop(), g2d_transforms.pop(), false);
     }

@@ -9,7 +9,7 @@
 package com.genome2d.postprocess;
 
 import com.genome2d.utils.GRenderTargetStack;
-import com.genome2d.context.IContext;
+import com.genome2d.context.IGContext;
 import com.genome2d.node.GNode;
 import com.genome2d.context.GCamera;
 import com.genome2d.geom.GRectangle;
@@ -46,7 +46,7 @@ class GBloomPP extends GPostProcess
 
         updatePassTextures(bounds);
 
-        var context:IContext = Genome2D.getInstance().getContext();
+        var context:IGContext = Genome2D.getInstance().getContext();
 
         if (p_target == null) GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.g2d_renderTargetTransform);
 
@@ -71,7 +71,7 @@ class GBloomPP extends GPostProcess
 
         updatePassTextures(bounds);
 
-        var context:IContext = Genome2D.getInstance().getContext();
+        var context:IGContext = Genome2D.getInstance().getContext();
 
         g2d_bright.renderNode(p_parentTransformUpdate, p_parentColorUpdate, p_camera, p_node, bounds, null, g2d_passTextures[0]);
         g2d_blur.renderNode(p_parentTransformUpdate, p_parentColorUpdate, p_camera, p_node, bounds, g2d_passTextures[0], g2d_passTextures[1]);

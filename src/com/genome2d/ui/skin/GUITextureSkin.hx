@@ -2,7 +2,7 @@ package com.genome2d.ui.skin;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.textures.GContextTexture;
-import com.genome2d.context.IContext;
+import com.genome2d.context.IGContext;
 import com.genome2d.textures.GTexture;
 
 @prototypeName("textureSkin")
@@ -44,7 +44,7 @@ class GUITextureSkin extends GUISkin {
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Bool {
         var rendered:Bool = false;
         if (texture != null && super.render(p_left, p_top, p_right, p_bottom)) {
-            var context:IContext = Genome2D.getInstance().getContext();
+            var context:IGContext = Genome2D.getInstance().getContext();
 
             var width:Float = p_right - p_left;
             var height:Float = p_bottom - p_top;
