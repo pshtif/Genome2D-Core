@@ -14,6 +14,7 @@ import com.genome2d.input.GMouseInputType;
 import com.genome2d.node.GNode;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.context.GCamera;
+import com.genome2d.text.GTextureTextRenderer;
 
 /**
     Component used for rendering textures based text
@@ -141,6 +142,10 @@ class GText extends GComponent implements IRenderable
         renderer.height = p_value;
         return p_value;
     }
+	
+	override public function init():Void {
+		renderer = new GTextureTextRenderer();
+	}
 
     @:dox(hide)
 	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
@@ -149,7 +154,6 @@ class GText extends GComponent implements IRenderable
         if (renderer != null) renderer.render(node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation);
 	}
 	
-	@:dox(hide)
     public function captureMouseInput(p_input:GMouseInput):Void {
 		/*
 		if (renderer == null || renderer.width == 0 || renderer.height == 0) return false;
