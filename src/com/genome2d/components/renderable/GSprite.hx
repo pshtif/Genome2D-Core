@@ -22,6 +22,7 @@ import com.genome2d.textures.GTexture;
 /**
     Component used for rendering textured quads used as a super class for `GSprite` and `GMovieClip`
 **/
+@prototypeName("GSprite")
 class GSprite extends GTexturedQuad
 {
 	public var frameAnimation:GFrameAnimation;

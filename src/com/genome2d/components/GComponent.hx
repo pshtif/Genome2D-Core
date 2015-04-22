@@ -20,9 +20,6 @@ import com.genome2d.input.GMouseInput;
 class GComponent implements IGPrototypable
 {
 	private var g2d_active:Bool = true;
-    private var g2d_lookupClass:Class<GComponent>;
-    private var g2d_previous:GComponent;
-    private var g2d_next:GComponent;
 
     /**
 	    Abstract reference to user defined data, if you want keep some custom data binded to component instance use it.
@@ -60,12 +57,11 @@ class GComponent implements IGPrototypable
 	/****************************************************************************************************
 	 * 	PROTOTYPE CODE
 	 ****************************************************************************************************/
+	/*
 	public function getPrototype(p_xml:Xml = null):Xml {
-		var prototypeXml:Xml = Xml.createElement("components");
+		if (p_xml == null) p_xml = Xml.createElement("components");
 
-		//prototypeXml.set("id", id);
-		prototypeXml.set("class", Type.getClassName(Type.getClass(this)));
-		prototypeXml.set("lookupClass", Type.getClassName(g2d_lookupClass));
+		p_xml.set("class", Type.getClassName(Type.getClass(this)));
 		
 		var propertiesXml:Xml = Xml.createElement("properties");
 
@@ -78,9 +74,9 @@ class GComponent implements IGPrototypable
             }
         }
 		
-		prototypeXml.addChild(propertiesXml);
+		p_xml.addChild(propertiesXml);
 		
-		return prototypeXml;
+		return p_xml;
 	}
 	
 	private function g2d_addPrototypeProperty(p_name:String, p_type:String, p_parentXml:Xml = null):Void {
@@ -114,8 +110,6 @@ class GComponent implements IGPrototypable
 
     **/
 	public function bindPrototype(p_prototypeXml:Xml):Void {
-		//id = p_prototypeXml.get("id");
-
 		var propertiesXml:Xml = p_prototypeXml.firstElement();
 		
 		var it:Iterator<Xml> = propertiesXml.elements();
@@ -162,8 +156,5 @@ class GComponent implements IGPrototypable
 		g2d_active = false;
 		
 		g2d_node = null;
-		
-		g2d_next = null;
-		g2d_previous = null;
 	}
 }

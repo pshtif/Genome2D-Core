@@ -63,11 +63,11 @@ class GNode implements IGInteractive
 	 *  @param p_name optional name for the node
 	 *  @param p_lookupClass option lookup class for component
 	 */
-    static public function createWithComponent(p_componentClass:Class<GComponent>, p_name:String = "", p_lookupClass:Class<GComponent> = null):GComponent {
+    static public function createWithComponent<T:GComponent>(p_componentClass:Class<GComponent>, p_name:String = ""):T {
         var node:GNode = new GNode();
         if (p_name != "") node.name = p_name;
 
-        return node.addComponent(p_componentClass, p_lookupClass);
+        return node.addComponent(p_componentClass);
     }
 
     /**
@@ -627,12 +627,12 @@ class GNode implements IGInteractive
 	 * 
 	 * 	@param p_componentClass Component type that should be retrieved
 	 */
-	public function getComponent(p_componentLookupClass:Class<GComponent>):GComponent {
+	public function getComponent<T:GComponent>(p_componentClass:Class<GComponent>):T {
         // TODO use Lambda
 		if (g2d_disposed) GDebug.error("Node already disposed.");
         for (i in 0...g2d_numComponents) {
-            var component:GComponent = g2d_components[i];
-            if (component.g2d_lookupClass == p_componentLookupClass) return component;
+            var component:T = cast g2d_components[i];
+            if (Std.is(component,p_componentClass)) return component;
         }
 		return null;
 	}
@@ -654,17 +654,16 @@ class GNode implements IGInteractive
 	 * 
 	 *	@param p_componentClass Component type that should be instanced and attached to this node
 	 */
-	public function addComponent(p_componentClass:Class<GComponent>, p_componentLookupClass:Class<GComponent> = null):GComponent {
+	public function addComponent<T:GComponent>(p_componentClass:Class<GComponent>):T {
 		if (g2d_disposed) GDebug.error("Node already disposed.");
 
-		if (p_componentLookupClass == null) p_componentLookupClass = p_componentClass;
-        var lookup:GComponent = getComponent(p_componentLookupClass);
+
+        var lookup:T = getComponent(p_componentClass);
 		if (lookup != null) return lookup;
 
-        var component:GComponent = Type.createInstance(p_componentClass,[]);
+        var component:T = cast Type.createInstance(p_componentClass,[]);
         if (component == null) GDebug.error("Invalid components.");
         component.g2d_node = this;
-        component.g2d_lookupClass = p_componentLookupClass;
 
         if (Std.is(component, GSprite)) {
             g2d_defaultRenderable = cast component;
@@ -682,18 +681,14 @@ class GNode implements IGInteractive
 		return component;
 	}
 
-    public function addComponentPrototype(p_prototype:Xml):GComponent {
+    public function addComponentPrototype<T:GComponent>(p_prototype:Xml):T {
         if (g2d_disposed) GDebug.error("Node already disposed.");
 
         var componentClass:Class<GComponent> = cast Type.resolveClass(p_prototype.get("class"));
         if (componentClass == null) {
             GDebug.error("Non existing componentClass "+p_prototype.get("class"));
         }
-        var componentLookupClass:Class<GComponent> = cast Type.resolveClass(p_prototype.get("lookupClass"));
-        if (componentLookupClass == null) {
-            GDebug.error("Non existing componentLookupClass "+p_prototype.get("lookupClass"));
-        }
-        var component:GComponent = addComponent(componentClass, componentLookupClass);
+        var component:T = addComponent(componentClass);
 
         component.bindPrototype(p_prototype);
 
@@ -706,9 +701,9 @@ class GNode implements IGInteractive
 	 * 
 	 * 	@param p_componentClass Component type that should be removed
 	 */
-	public function removeComponent(p_componentLookupClass:Class<GComponent>):Void {
+	public function removeComponent(p_componentClass:Class<GComponent>):Void {
 		if (g2d_disposed) GDebug.error("Node already disposed.");
-		var component:GComponent = getComponent(p_componentLookupClass);
+		var component:GComponent = getComponent(p_componentClass);
 
 		if (component == null) return;
 

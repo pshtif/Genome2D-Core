@@ -21,7 +21,7 @@ import com.genome2d.text.GTextureTextRenderer;
 **/
 class GText extends GComponent implements IRenderable
 {
-    public var renderer:GTextRenderer;
+    public var renderer:GTextureTextRenderer;
 
     /*
      *  Character tracking
@@ -206,5 +206,19 @@ class GText extends GComponent implements IRenderable
 	
 	public function hitTest(p_x:Float, p_y:Float):Bool {
 		return false;
+	}
+	
+	override public function getPrototype(p_xml:Xml = null):Xml {
+		p_xml = super.getPrototype(p_xml);
+		
+		p_xml.set("font", renderer.textureAtlasId);
+		
+		return p_xml;
+	}
+	
+	override public function bindPrototype(p_xml:Xml):Void {
+		super.bindPrototype(p_xml);
+		
+		renderer.textureAtlasId = p_xml.get("font");
 	}
 }

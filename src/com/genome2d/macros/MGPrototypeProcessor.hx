@@ -35,9 +35,6 @@ class MGPrototypeProcessor {
         var prototypePropertyNames:Array<String> = [];
         var prototypePropertyTypes:Array<String> = [];
 
-        var variableNames:Array<String> = [];
-        var variableDefaults:Array<Constant> = [];
-
         var localClass = Context.getLocalClass().get();
 
         var kind = TPath({ pack : localClass.pack, name : localClass.name, params : []});
@@ -102,7 +99,7 @@ class MGPrototypeProcessor {
             }
         }
 
-        if (!superPrototype || prototypeNameOverride) {
+        if (true) {//!superPrototype || prototypeNameOverride) {
             var getPrototype = generateGetPrototype();
             switch (getPrototype) {
                 case TAnonymous(f):
@@ -112,7 +109,6 @@ class MGPrototypeProcessor {
                                 switch (a.expr.expr) {
                                     case EBlock(b):
                                         b[b.length-1] = macro return super.getPrototype(p_prototypeXml);
-                                        //trace(b[b.length-1]);
                                     default:
                                 }
                             default:
@@ -130,7 +126,7 @@ class MGPrototypeProcessor {
             }
         }
 
-        if (!superPrototype || prototypeNameOverride) {
+        if (true) {//!superPrototype || prototypeNameOverride) {
             var bindPrototype = generateBindPrototype();
             switch (bindPrototype) {
                 case TAnonymous(f):

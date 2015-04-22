@@ -34,7 +34,7 @@ class GPrototypeFactory {
         } else {
             prototypeXml = Xml.parse(p_prototype).firstElement();
         }
-        var prototypeName:String = prototypeXml.nodeName;
+        var prototypeName:String = prototypeXml.get("class");
         var prototypeClass:Class<IGPrototypable> = g2d_lookups[prototypeName];
         if (prototypeClass == null) {
             GDebug.error("Non existing prototype class "+prototypeName);
@@ -61,7 +61,9 @@ class GPrototypeFactory {
     }
 
     static public function g2d_getPrototype(p_instance:IGPrototypable, p_prototypeXml:Xml, p_prototypeName:String, p_propertyNames:Array<String>, p_propertyTypes:Array<String>):Xml {
-        if (p_prototypeXml==null) p_prototypeXml = Xml.createElement(p_prototypeName);
+        if (p_prototypeXml == null) p_prototypeXml = Xml.createElement("prototype");
+		
+		p_prototypeXml.set("class", p_prototypeName);
 
         if (p_propertyNames != null) {
             for (i in 0...p_propertyNames.length) {

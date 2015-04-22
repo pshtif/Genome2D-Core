@@ -92,4 +92,9 @@ class GTexture extends GContextTexture
 
         g2d_init();
 	}
+	
+	@:from
+	static public function fromString(p_id:String) {
+		return GTextureManager.getTextureById(p_id);
+	}
 }
