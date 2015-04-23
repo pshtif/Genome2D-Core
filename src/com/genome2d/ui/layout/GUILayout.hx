@@ -18,4 +18,8 @@ class GUILayout implements IGPrototypable {
 
     private function invalidateHeight(p_element:GUIElement):Void {
     }
+	
+	public function toReference():String {
+		return null;
+	}
 }

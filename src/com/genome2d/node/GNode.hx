@@ -14,6 +14,7 @@ import com.genome2d.geom.GPoint;
 import com.genome2d.context.filters.GFilter;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.input.IGInteractive;
+import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.stage3d.GStage3DContext;
@@ -684,7 +685,7 @@ class GNode implements IGInteractive
     public function addComponentPrototype<T:GComponent>(p_prototype:Xml):T {
         if (g2d_disposed) GDebug.error("Node already disposed.");
 
-        var componentClass:Class<GComponent> = cast Type.resolveClass(p_prototype.get("class"));
+        var componentClass:Class<GComponent> = cast GPrototypeFactory.getPrototypeClass(p_prototype.nodeName);
         if (componentClass == null) {
             GDebug.error("Non existing componentClass "+p_prototype.get("class"));
         }

@@ -54,18 +54,27 @@ class MGPrototypeProcessor {
 
         var superClass = localClass.superClass;
         var superPrototype = superClass != null;
+		
+		var hasGetPrototypeDefault = false;
+        var hasBindPrototypeDefault = false;
 
         while (superClass != null) {
             var c = superClass.t.get();
+			
+			for (i in c.fields.get()) {
+				if (i.name == "getPrototypeDefault") hasGetPrototypeDefault = true;
+				if (i.name == "bindPrototypeDefault") hasBindPrototypeDefault = true;
+			}
+			/*
             if (prototypeNameOverride) {
                 for (meta in localClass.meta.get()) {
                     if (meta.name == 'prototypeName' && meta.params != null) prototypeName = ExprTools.getValue(meta.params[0]);
                 }
             }
-
+			/**/
             superClass = c.superClass;
         }
-
+		
         var hasGetPrototype = false;
         var hasBindPrototype = false;
 
@@ -78,19 +87,28 @@ class MGPrototypeProcessor {
 
             for (meta in i.meta) {
                 if (meta.name == "prototype") {
+					var param:String = (meta.params.length > 0) ? ExprTools.getValue(meta.params[0]) : "";
                     switch (i.kind) {
                         case FVar(t,e):
                             switch (t) {
                                 case TPath(p):
                                     prototypePropertyNames.push(i.name);
-                                    prototypePropertyTypes.push(extractType(p));
+									if (param == "") {
+										prototypePropertyTypes.push(extractType(p));
+									} else {
+										prototypePropertyTypes.push("R:"+param);
+									}
                                 case _:
                             }
                         case FProp(get,set,t,e):
                             switch (t) {
                                 case TPath(p):
                                     prototypePropertyNames.push(i.name);
-                                    prototypePropertyTypes.push(extractType(p));
+                                    if (param == "") {
+										prototypePropertyTypes.push(extractType(p));
+									} else {
+										prototypePropertyTypes.push("R:"+param);
+									}
                                 case _:
                             }
                         case _:
@@ -119,6 +137,7 @@ class MGPrototypeProcessor {
                     }
                     if (hasGetPrototype) {
                         f[0].name = "getPrototypeDefault";
+						if (hasGetPrototypeDefault) f[0].access.push(AOverride);
                     }
                     fields = fields.concat(f);
                 default:
@@ -146,6 +165,7 @@ class MGPrototypeProcessor {
                     }
                     if (hasBindPrototype) {
                         f[0].name = "bindPrototypeDefault";
+						if (hasBindPrototypeDefault) f[0].access.push(AOverride);
                     }
                     fields = fields.concat(f);
                 default:

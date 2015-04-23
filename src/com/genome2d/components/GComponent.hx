@@ -106,9 +106,7 @@ class GComponent implements IGPrototypable
 
     }
 
-    /**
-
-    **/
+    /*
 	public function bindPrototype(p_prototypeXml:Xml):Void {
 		var propertiesXml:Xml = p_prototypeXml.firstElement();
 		
@@ -156,5 +154,9 @@ class GComponent implements IGPrototypable
 		g2d_active = false;
 		
 		g2d_node = null;
+	}
+	
+	public function toReference():String {
+		return null;
 	}
 }

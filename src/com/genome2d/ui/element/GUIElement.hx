@@ -935,30 +935,32 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     private var g2d_mouseOverElement:GUIElement;
 
     public function captureMouseInput(p_input:GMouseInput):Void {
-        if (mouseChildren) {
-            var i:Int = g2d_numChildren;
-            while (i>0) {
-                i--;
-                g2d_children[i].captureMouseInput(p_input);
-            }
-        }
+		if (visible) {
+			if (mouseChildren) {
+				var i:Int = g2d_numChildren;
+				while (i>0) {
+					i--;
+					g2d_children[i].captureMouseInput(p_input);
+				}
+			}
 
-        if (mouseEnabled) {
-			if (p_input.g2d_captured && p_input.type == GMouseInputType.MOUSE_UP) g2d_mouseDownElement = null;
-			
-			p_input.localX = p_input.worldX - g2d_worldLeft;
-			p_input.localY = p_input.worldY - g2d_worldTop;
-			
-            if (!p_input.g2d_captured && p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom) {
-				p_input.g2d_captured = true;
-                g2d_dispatchMouseCallback(p_input.type, this, p_input);
-                if (g2d_mouseOverElement != this) {
-                    g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, this, p_input);
-                }
-            } else {
-                if (g2d_mouseOverElement == this) g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, this, p_input);
-            }
-        }
+			if (mouseEnabled) {
+				if (p_input.g2d_captured && p_input.type == GMouseInputType.MOUSE_UP) g2d_mouseDownElement = null;
+				
+				p_input.localX = p_input.worldX - g2d_worldLeft;
+				p_input.localY = p_input.worldY - g2d_worldTop;
+				
+				if (!p_input.g2d_captured && p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom) {
+					p_input.g2d_captured = true;
+					g2d_dispatchMouseCallback(p_input.type, this, p_input);
+					if (g2d_mouseOverElement != this) {
+						g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, this, p_input);
+					}
+				} else {
+					if (g2d_mouseOverElement == this) g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, this, p_input);
+				}
+			}
+		}
     }
 
     private function g2d_dispatchMouseCallback(p_type:String, p_element:GUIElement, p_input:GMouseInput):Void {
@@ -989,4 +991,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
         if (parent != null) parent.g2d_dispatchMouseCallback(p_type, p_element, p_input);
     }
+	
+	public function toReference():String {
+		return null;
+	}
 }

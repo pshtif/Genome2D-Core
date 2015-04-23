@@ -122,4 +122,8 @@ class GUISkin implements IGPrototypable {
 
         if (GUISkinManager.getSkinById(g2d_id) != null) GUISkinManager.g2d_references.remove(g2d_id);
     }
+	
+	public function toReference():String {
+		return null;
+	}
 }

@@ -209,16 +209,15 @@ class GText extends GComponent implements IRenderable
 	}
 	
 	override public function getPrototype(p_xml:Xml = null):Xml {
-		p_xml = super.getPrototype(p_xml);
-		
+		p_xml = getPrototypeDefault(p_xml);
 		p_xml.set("font", renderer.textureAtlasId);
 		
 		return p_xml;
 	}
 	
 	override public function bindPrototype(p_xml:Xml):Void {
-		super.bindPrototype(p_xml);
-		
 		renderer.textureAtlasId = p_xml.get("font");
+		
+		super.bindPrototype(p_xml);
 	}
 }
