@@ -243,9 +243,22 @@ class MGPrototypeProcessor {
         return value;
     }
 
-    inline static private function extractType(typePath) {
+	
+	inline static private function extractType(typePath) {
         var typeName = typePath.name;
-        if (typeName != "Int" && typeName != "Bool" && typeName != "Float" && typeName != "String") {
+		if (typeName == "Array") {
+			var param = typePath.params[0];
+			switch (param) {
+				case TPType(t):
+					switch (t) {
+						case TPath(p):
+							trace(p.name);
+							typeName += ":" + ((p.name != "Int" && p.name != "Bool" && p.name != "Float" && p.name != "String")?"IGPrototypable":p.name);
+						case _:
+					}
+				case _:
+			}
+		} else if (typeName != "Int" && typeName != "Bool" && typeName != "Float" && typeName != "String") {
             typeName = "IGPrototypable";
         }
 

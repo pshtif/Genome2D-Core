@@ -26,11 +26,15 @@ class GPrototypeFactory {
     static public function getPrototypeClass(p_prototypeName:String):Class<IGPrototypable> {
         return g2d_lookups.get(p_prototypeName);
     }
+	
+	static public function getPrototype(p_instance:IGPrototypable):Xml {
+		return p_instance.getPrototype();
+	}
 
     static public function createPrototype(p_prototype:Dynamic):IGPrototypable {
         var prototypeXml:Xml;
         if (Std.is(p_prototype,Xml)) {
-            prototypeXml = p_prototype;
+            prototypeXml = (p_prototype.nodeType == Xml.Document) ? p_prototype.firstChild() : p_prototype;
         } else {
             prototypeXml = Xml.parse(p_prototype).firstElement();
         }
@@ -67,16 +71,46 @@ class GPrototypeFactory {
         if (p_propertyNames != null) {
             for (i in 0...p_propertyNames.length) {
                 var name:String = p_propertyNames[i];
-                if (p_propertyTypes[i] == "IGPrototypable") {
+				var type:String = p_propertyTypes[i];
+				
+				// Prototypable needs an own Xml node
+				if (type == "IGPrototypable") {
                     var xml:Xml = Xml.createElement(name);
                     var property:com.genome2d.proto.IGPrototypable = cast Reflect.getProperty(p_instance, name);
                     if (property != null) {
                         xml.addChild(property.getPrototype());
                         p_prototypeXml.addChild(xml);
                     }
-                } else if (p_propertyTypes[i].indexOf("R:") == 0) {
+					
+				// Array
+                } else if (type.indexOf("Array") == 0) {
+					var subtype:String = type.substr(6);
+					
+					// Prototypable array
+					if (subtype == "IGPrototypable") {
+						var xml:Xml = Xml.createElement(name);
+						p_prototypeXml.addChild(xml);
+						
+						var items:Array<IGPrototypable> = Reflect.getProperty(p_instance, name);
+						if (items != null) {
+							for (item in items) {
+								xml.addChild(item.getPrototype());
+							}
+							
+						}
+						
+					// Array of basic types
+					} else {
+						var value:String = Std.string(Reflect.getProperty(p_instance, name));
+						p_prototypeXml.set(name, value.substr(1,value.length-2));
+					}
+					
+				// Reference
+				} else if (type.indexOf("R:") == 0) {
 					var field:Dynamic = Reflect.field(p_instance, name);
 					p_prototypeXml.set(name, (field == null)?"":field.toReference());
+					
+				// Basic type
 				} else {
                     p_prototypeXml.set(name,Std.string(Reflect.getProperty(p_instance, name)));
                 }
@@ -93,15 +127,52 @@ class GPrototypeFactory {
             var name:String = p_propertyNames[i];
             var type:String = p_propertyTypes[i];
             var realValue:Dynamic = null;
-			// Basic type or reference
-            if (type != "IGPrototypable" && p_prototype.exists(name)) {
+			
+			// Prototypable has own Xml node
+            if (type == "IGPrototypable") {
+				var it:Iterator<Xml> = p_prototype.elementsNamed(name);
+                if (it.hasNext()) realValue = com.genome2d.proto.GPrototypeFactory.createPrototype(it.next().firstElement());
+				
+			// Exists as a Xml attribute
+			} else if (p_prototype.exists(name)) {
                 var value:String = p_prototype.get(name);
-				// Its a reference
-				if (type.indexOf("R:") == 0) {
+				
+				// Array
+				if (type.indexOf("Array") == 0) {
+					var subtype:String = type.substr(6);
+					switch (subtype) {
+						case "Bool":
+							realValue = new Array<Bool>();
+						case "Int":
+							realValue = new Array<Int>();
+						case "Float":
+							realValue = new Array<Float>();
+						case "String":
+							realValue = new Array<String>();
+						case _:
+					}
+					var split:Array<String> = value.split(",");
+					for (item in split) {
+						switch (subtype) {
+							case "Bool":
+								realValue.push((item != "false" && item != "0"));
+							case "Int":
+								realValue.push(Std.parseInt(item));
+							case "Float":
+								realValue.push(Std.parseFloat(item));
+							case "String":
+								realValue.push(item);
+							case _:
+						}
+					}
+					
+				// Reference
+				} else if (type.indexOf("R:") == 0) {
 					type = type.substr(2);
 					var c:Class<Dynamic> = Type.resolveClass(type.substring(0, type.lastIndexOf(".")));
-					realValue = Reflect.callMethod(c, Reflect.field(c, type.substr(type.lastIndexOf(".")+1)), [value]);
-				// Its a basic type
+					realValue = Reflect.callMethod(c, Reflect.field(c, type.substr(type.lastIndexOf(".") + 1)), [value]);
+					
+				// Basic
 				} else {
 					switch (type) {
 						case "Bool":
@@ -112,14 +183,10 @@ class GPrototypeFactory {
 							realValue = Std.parseFloat(value);
 						case "String":
 							realValue = value;
-						default:
+						case _:
 					}
 				}
-			// Its a complex IGPrototypable
-            } else {
-                var it:Iterator<Xml> = p_prototype.elementsNamed(name);
-                if (it.hasNext()) realValue = com.genome2d.proto.GPrototypeFactory.createPrototype(it.next().firstElement());
-            }
+			}
 
             if (realValue != null) {
                 try {

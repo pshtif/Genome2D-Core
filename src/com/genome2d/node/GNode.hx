@@ -15,6 +15,7 @@ import com.genome2d.context.filters.GFilter;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.input.IGInteractive;
 import com.genome2d.proto.GPrototypeFactory;
+import com.genome2d.proto.IGPrototypable;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.stage3d.GStage3DContext;
@@ -40,7 +41,8 @@ import com.genome2d.input.GMouseInput;
 **/
 @:access(com.genome2d.Genome2D)
 @:access(com.genome2d.node.GNodePool)
-class GNode implements IGInteractive
+@prototypeName("node")
+class GNode implements IGInteractive implements IGPrototypable
 {
     /****************************************************************************************************
 	 * 	FACTORY METHODS
@@ -83,7 +85,7 @@ class GNode implements IGInteractive
             p_prototype = p_prototype.firstChild();
         }
 
-        if (p_prototype.nodeName != "node") GDebug.error("Incorrect GNode proto XML");
+        if (p_prototype.nodeName != PROTOTYPE_NAME) GDebug.error("Incorrect GNode proto XML", p_prototype.nodeName);
 
         var node:GNode = new GNode();
         node.mouseEnabled = (p_prototype.get("mouseEnabled") == "true") ? true : false;
@@ -195,13 +197,13 @@ class GNode implements IGInteractive
 			
 			g2d_active = p_value;
 
-            for (i in 0...g2d_numComponents) {
+            for (i in 0...g2d_componentCount) {
                 g2d_components[i].setActive(p_value);
             }
 
             var child:GNode = g2d_firstChild;
             while (child != null) {
-                var next:GNode = child.g2d_nextNode;
+                var next:GNode = child.g2d_next;
                 child.setActive(p_value);
                 child = next;
             }
@@ -340,7 +342,7 @@ class GNode implements IGInteractive
 			if (p_hierarchy) {
 				var child:GNode = g2d_lastChild;
 				while (child != null) {
-					var previous:GNode = child.g2d_previousNode;
+					var previous:GNode = child.g2d_previous;
 					if (child.hitTest(p_x, p_y, true)) return true;
 					child = previous;
 				}
@@ -373,55 +375,34 @@ class GNode implements IGInteractive
 	 * 	PROTOTYPE CODE
 	 ****************************************************************************************************/
 
-    /**
-	    Return the node prototype
-	**/
-	public function getPrototype():Xml {
-		if (g2d_disposed) GDebug.error("Node already disposed.");
-
-		var prototypeXml:Xml = Xml.createElement("node");
-		prototypeXml.set("name", name);
-		prototypeXml.set("mouseEnabled", Std.string(mouseEnabled));
-		prototypeXml.set("mouseChildren", Std.string(mouseChildren));
+	public function getPrototype(p_xml:Xml = null):Xml {
+		p_xml = getPrototypeDefault(p_xml);
 		
 		var componentsXml:Xml = Xml.parse("<components/>").firstElement();
 
-		for (i in 0...g2d_numComponents) {
+		for (i in 0...g2d_componentCount) {
 			componentsXml.addChild(g2d_components[i].getPrototype());
 		}
-		prototypeXml.addChild(componentsXml);
-
+		p_xml.addChild(componentsXml);
+		
 		var childrenXml:Xml = Xml.createElement("children");
 
         var child:GNode = g2d_firstChild;
         while (child != null) {
-            var next:GNode = child.g2d_nextNode;
+            var next:GNode = child.g2d_next;
 			childrenXml.addChild(child.getPrototype());
             child = next;
 		}
 		
-		prototypeXml.addChild(childrenXml);
+		p_xml.addChild(childrenXml);
 		
-		return prototypeXml;
+		return p_xml;
 	}
-
-    public function bindPrototype(p_prototype:Xml):Void {
-        if (p_prototype == null) GDebug.error("Null prototype");
-
-        if (p_prototype.nodeType == Xml.Document) {
-            p_prototype = p_prototype.firstChild();
-        }
-
-        if (p_prototype.nodeName != "node") GDebug.error("Incorrect GNode prototype XML");
-
-        disposeComponents();
-        disposeChildren();
-        disposeCallbacks();
-
-        mouseEnabled = (p_prototype.get("mouseEnabled") == "true") ? true : false;
-        mouseChildren = (p_prototype.get("mouseChildren") == "true") ? true : false;
-
-        var it:Iterator<Xml> = p_prototype.elements();
+	
+	public function bindPrototype(p_xml:Xml):Void {
+		bindPrototypeDefault(p_xml);
+		
+		var it:Iterator<Xml> = p_xml.elements();
 
         while (it.hasNext()) {
             var xml:Xml = it.next();
@@ -429,7 +410,6 @@ class GNode implements IGInteractive
                 var componentsIt:Iterator<Xml> = xml.elements();
                 while (componentsIt.hasNext()) {
                     var componentXml:Xml = componentsIt.next();
-
                     addComponentPrototype(componentXml);
                 }
             }
@@ -441,7 +421,7 @@ class GNode implements IGInteractive
                 }
             }
         }
-    }
+	}
 
 	/****************************************************************************************************
 	 * 	MOUSE CODE
@@ -539,7 +519,7 @@ class GNode implements IGInteractive
 		if (mouseChildren) {
             var child:GNode = g2d_lastChild;
             while (child != null) {
-                var previous:GNode = child.g2d_previousNode;
+                var previous:GNode = child.g2d_previous;
 				child.captureMouseInput(p_input);
                 child = previous;
 			}
@@ -621,7 +601,7 @@ class GNode implements IGInteractive
     private var g2d_renderable:IRenderable;
     private var g2d_defaultRenderable:GSprite;
 	private var g2d_components:Array<GComponent>;
-	private var g2d_numComponents:Int = 0;
+	private var g2d_componentCount:Int = 0;
 	
 	/**
 	 * 	Get a components of specified type attached to this node
@@ -631,7 +611,7 @@ class GNode implements IGInteractive
 	public function getComponent<T:GComponent>(p_componentClass:Class<GComponent>):T {
         // TODO use Lambda
 		if (g2d_disposed) GDebug.error("Node already disposed.");
-        for (i in 0...g2d_numComponents) {
+        for (i in 0...g2d_componentCount) {
             var component:T = cast g2d_components[i];
             if (Std.is(component,p_componentClass)) return component;
         }
@@ -676,7 +656,7 @@ class GNode implements IGInteractive
             g2d_components = new Array<GComponent>();
         }
 		g2d_components.push(component);
-		g2d_numComponents++;
+		g2d_componentCount++;
 
         component.init();
 		return component;
@@ -709,7 +689,7 @@ class GNode implements IGInteractive
 		if (component == null) return;
 
         g2d_components.remove(component);
-        g2d_numComponents--;
+        g2d_componentCount--;
 
         if (Std.is(component, GSprite)) {
             g2d_defaultRenderable = null;
@@ -721,9 +701,9 @@ class GNode implements IGInteractive
 	}
 
     public function disposeComponents():Void {
-        while (g2d_numComponents>0) {
+        while (g2d_componentCount>0) {
             g2d_components.pop().g2d_dispose();
-            g2d_numComponents--;
+            g2d_componentCount--;
         }
 
         g2d_defaultRenderable = null;
@@ -742,22 +722,34 @@ class GNode implements IGInteractive
     }
 
     private var g2d_lastChild:GNode;
-
-    private var g2d_nextNode:GNode;
-    #if swc @:extern #end
-    public var nextNode(get, never):GNode;
-    #if swc @:getter(nextNode) #end
-    inline private function get_nextNode():GNode {
-        return g2d_nextNode;
+	#if swc @:extern #end
+    public var lastChild(get, never):GNode;
+    #if swc @:getter(lastChild) #end
+    inline private function get_lastChild():GNode {
+        return g2d_lastChild;
     }
-    private var g2d_previousNode:GNode;
 
-    private var g2d_numChildren:Int = 0;
+    private var g2d_next:GNode;
     #if swc @:extern #end
-	public var numChildren(get, never):Int;
-    #if swc @:getter(numChildren) #end
-    inline private function get_numChildren():Int {
-        return g2d_numChildren;
+    public var next(get, never):GNode;
+    #if swc @:getter(next) #end
+    inline private function get_next():GNode {
+        return g2d_next;
+    }
+    private var g2d_previous:GNode;
+	#if swc @:extern #end
+    public var previous(get, never):GNode;
+    #if swc @:getter(previous) #end
+    inline private function get_previous():GNode {
+        return g2d_previous;
+    }
+
+    private var g2d_childCount:Int = 0;
+    #if swc @:extern #end
+	public var childCount(get, never):Int;
+    #if swc @:getter(childCount) #end
+    inline private function get_childCount():Int {
+        return g2d_childCount;
     }
 
     private var g2d_onAddedToStage:GCallback0;
@@ -793,23 +785,23 @@ class GNode implements IGInteractive
             g2d_lastChild = p_child;
         } else {
             if (p_before == null) {
-                g2d_lastChild.g2d_nextNode = p_child;
-                p_child.g2d_previousNode = g2d_lastChild;
+                g2d_lastChild.g2d_next = p_child;
+                p_child.g2d_previous = g2d_lastChild;
                 g2d_lastChild = p_child;
             } else {
                 if (p_before != g2d_firstChild) {
-                    p_before.g2d_previousNode.g2d_nextNode = p_child;
+                    p_before.g2d_previous.g2d_next = p_child;
                 } else {
                     g2d_firstChild = p_child;
                 }
-                p_child.g2d_previousNode = p_before.g2d_previousNode;
-                p_child.g2d_nextNode = p_before;
-                p_before.g2d_previousNode = p_child;
+                p_child.g2d_previous = p_before.g2d_previous;
+                p_child.g2d_next = p_before;
+                p_before.g2d_previous = p_child;
             }
         }
 
-		g2d_numChildren++;
-        if (g2d_numChildren == 1 && hasUniformRotation()) g2d_useMatrix++;
+		g2d_childCount++;
+        if (g2d_childCount == 1 && hasUniformRotation()) g2d_useMatrix++;
 		
 		if (isOnStage()) p_child.g2d_addedToStage();
         return p_child;
@@ -823,17 +815,17 @@ class GNode implements IGInteractive
         var i:Int = 0;
         var after:GNode = g2d_firstChild;
         while (i<p_index && after != null) {
-            after = after.g2d_nextNode;
+            after = after.g2d_next;
             i++;
         }
         return addChild(p_child, (after == null) ? null : after);
     }
 	
 	public function getChildAt(p_index:Int):GNode {
-        if (p_index>=g2d_numChildren) GDebug.error("Index out of bounds.");
+        if (p_index>=g2d_childCount) GDebug.error("Index out of bounds.");
         var child:GNode = g2d_firstChild;
         for (i in 0...p_index) {
-            child = child.g2d_nextNode;
+            child = child.g2d_next;
         }
 		return child;
 	}
@@ -841,44 +833,44 @@ class GNode implements IGInteractive
     public function getChildIndex(p_child:GNode):Int {
         if (p_child.parent != this) return -1;
         var child:GNode = g2d_firstChild;
-        for (i in 0...g2d_numChildren) {
+        for (i in 0...g2d_childCount) {
             if (child == p_child) return i;
-            child = child.g2d_nextNode;
+            child = child.g2d_next;
         }
         return -1;
     }
 
     public function setChildIndex(p_child:GNode, p_index:Int):Void {
         if (p_child.parent != this) GDebug.error("Not a child of this node.");
-        if (p_index>=g2d_numChildren) GDebug.error("Index out of bounds.");
+        if (p_index>=g2d_childCount) GDebug.error("Index out of bounds.");
 
         var index:Int = 0;
         var child:GNode = g2d_firstChild;
         while (child!=null && index<p_index) {
-            child = child.g2d_nextNode;
+            child = child.g2d_next;
             index++;
         }
         if (index == p_index && child != p_child) {
             // Remove child from current index
             if (p_child != g2d_lastChild) {
-                p_child.g2d_nextNode.g2d_previousNode = p_child.g2d_previousNode;
+                p_child.g2d_next.g2d_previous = p_child.g2d_previous;
             } else {
-                g2d_lastChild = p_child.g2d_previousNode;
+                g2d_lastChild = p_child.g2d_previous;
             }
             if (p_child != g2d_firstChild) {
-                p_child.g2d_previousNode.g2d_nextNode = p_child.g2d_nextNode;
+                p_child.g2d_previous.g2d_next = p_child.g2d_next;
             } else {
-                g2d_firstChild = p_child.g2d_nextNode;
+                g2d_firstChild = p_child.g2d_next;
             }
             // Insert it before the found one
             if (child != g2d_firstChild) {
-                child.g2d_previousNode.g2d_nextNode = p_child;
+                child.g2d_previous.g2d_next = p_child;
             } else {
                 g2d_firstChild = p_child;
             }
-            p_child.g2d_previousNode = child.g2d_previousNode;
-            p_child.g2d_nextNode = child;
-            child.g2d_previousNode = p_child;
+            p_child.g2d_previous = child.g2d_previous;
+            p_child.g2d_next = child;
+            child.g2d_previous = p_child;
         }
     }
 
@@ -889,32 +881,32 @@ class GNode implements IGInteractive
     public function swapChildren(p_child1:GNode, p_child2:GNode):Void {
         if (p_child1.parent != this || p_child2.parent != this) return;
 
-        var temp:GNode = p_child1.g2d_nextNode;
-        if (p_child2.g2d_nextNode == p_child1) {
-            p_child1.g2d_nextNode = p_child2;
+        var temp:GNode = p_child1.g2d_next;
+        if (p_child2.g2d_next == p_child1) {
+            p_child1.g2d_next = p_child2;
         } else {
-            p_child1.g2d_nextNode = p_child2.g2d_nextNode;
-            if (p_child1.g2d_nextNode != null) p_child1.g2d_nextNode.g2d_previousNode = p_child1;
+            p_child1.g2d_next = p_child2.g2d_next;
+            if (p_child1.g2d_next != null) p_child1.g2d_next.g2d_previous = p_child1;
         }
         if (temp == p_child2) {
-            p_child2.g2d_nextNode = p_child1;
+            p_child2.g2d_next = p_child1;
         } else {
-            p_child2.g2d_nextNode = temp;
-            if (p_child2.g2d_nextNode != null)  p_child2.g2d_nextNode.g2d_previousNode = p_child2;
+            p_child2.g2d_next = temp;
+            if (p_child2.g2d_next != null)  p_child2.g2d_next.g2d_previous = p_child2;
         }
 
-        temp = p_child1.g2d_previousNode;
-        if (p_child2.g2d_previousNode == p_child1) {
-            p_child1.g2d_previousNode = p_child2;
+        temp = p_child1.g2d_previous;
+        if (p_child2.g2d_previous == p_child1) {
+            p_child1.g2d_previous = p_child2;
         } else {
-            p_child1.g2d_previousNode = p_child2.g2d_previousNode;
-            if (p_child1.g2d_previousNode != null)  p_child1.g2d_previousNode.g2d_nextNode = p_child1;
+            p_child1.g2d_previous = p_child2.g2d_previous;
+            if (p_child1.g2d_previous != null)  p_child1.g2d_previous.g2d_next = p_child1;
         }
         if (temp == p_child2) {
-            p_child2.g2d_previousNode = p_child1;
+            p_child2.g2d_previous = p_child1;
         } else {
-            p_child2.g2d_previousNode = temp;
-            if (p_child2.g2d_previousNode != null) p_child2.g2d_previousNode.g2d_nextNode = p_child2;
+            p_child2.g2d_previous = temp;
+            if (p_child2.g2d_previous != null) p_child2.g2d_previous.g2d_next = p_child2;
         }
 
         if (p_child1 == g2d_firstChild) g2d_firstChild = p_child2;
@@ -926,26 +918,26 @@ class GNode implements IGInteractive
     public function putChildToFront(p_child:GNode):Void {
         if (p_child.parent != this || p_child == g2d_lastChild) return;
 
-        if (p_child.g2d_nextNode != null) p_child.g2d_nextNode.g2d_previousNode = p_child.g2d_previousNode;
-        if (p_child.g2d_previousNode != null) p_child.g2d_previousNode.g2d_nextNode = p_child.g2d_nextNode;
-        if (p_child == g2d_firstChild) g2d_firstChild = g2d_firstChild.g2d_nextNode;
+        if (p_child.g2d_next != null) p_child.g2d_next.g2d_previous = p_child.g2d_previous;
+        if (p_child.g2d_previous != null) p_child.g2d_previous.g2d_next = p_child.g2d_next;
+        if (p_child == g2d_firstChild) g2d_firstChild = g2d_firstChild.g2d_next;
 
-        if (g2d_lastChild != null) g2d_lastChild.g2d_nextNode = p_child;
-        p_child.g2d_previousNode = g2d_lastChild;
-        p_child.g2d_nextNode = null;
+        if (g2d_lastChild != null) g2d_lastChild.g2d_next = p_child;
+        p_child.g2d_previous = g2d_lastChild;
+        p_child.g2d_next = null;
         g2d_lastChild = p_child;
     }
 
     public function putChildToBack(p_child:GNode):Void {
         if (p_child.parent != this || p_child == g2d_firstChild) return;
 
-        if (p_child.g2d_nextNode != null) p_child.g2d_nextNode.g2d_previousNode = p_child.g2d_previousNode;
-        if (p_child.g2d_previousNode != null) p_child.g2d_previousNode.g2d_nextNode = p_child.g2d_nextNode;
-        if (p_child == g2d_lastChild) g2d_lastChild = g2d_lastChild.g2d_previousNode;
+        if (p_child.g2d_next != null) p_child.g2d_next.g2d_previous = p_child.g2d_previous;
+        if (p_child.g2d_previous != null) p_child.g2d_previous.g2d_next = p_child.g2d_next;
+        if (p_child == g2d_lastChild) g2d_lastChild = g2d_lastChild.g2d_previous;
 
-        if (g2d_firstChild != null) g2d_firstChild.g2d_previousNode = p_child;
-        p_child.g2d_previousNode = null;
-        p_child.g2d_nextNode = g2d_firstChild;
+        if (g2d_firstChild != null) g2d_firstChild.g2d_previous = p_child;
+        p_child.g2d_previous = null;
+        p_child.g2d_next = g2d_firstChild;
         g2d_firstChild = p_child;
     }
 
@@ -958,32 +950,32 @@ class GNode implements IGInteractive
 		if (g2d_disposed) GDebug.error("Node already disposed.");
 		if (p_child.parent != this) return null;
 
-		if (p_child.g2d_previousNode != null) {
-            p_child.g2d_previousNode.g2d_nextNode = p_child.g2d_nextNode;
+		if (p_child.g2d_previous != null) {
+            p_child.g2d_previous.g2d_next = p_child.g2d_next;
         } else {
-            g2d_firstChild = g2d_firstChild.g2d_nextNode;
+            g2d_firstChild = g2d_firstChild.g2d_next;
         }
-        if (p_child.g2d_nextNode != null) {
-            p_child.g2d_nextNode.g2d_previousNode = p_child.g2d_previousNode;
+        if (p_child.g2d_next != null) {
+            p_child.g2d_next.g2d_previous = p_child.g2d_previous;
         } else {
-            g2d_lastChild = g2d_lastChild.g2d_previousNode;
+            g2d_lastChild = g2d_lastChild.g2d_previous;
         }
 
-        p_child.g2d_nextNode = p_child.g2d_previousNode = p_child.g2d_parent = null;
+        p_child.g2d_next = p_child.g2d_previous = p_child.g2d_parent = null;
 		
-		g2d_numChildren--;
-        if (g2d_numChildren == 0 && hasUniformRotation()) g2d_useMatrix--;
+		g2d_childCount--;
+        if (g2d_childCount == 0 && hasUniformRotation()) g2d_useMatrix--;
 
 		if (isOnStage()) p_child.g2d_removedFromStage();
         return p_child;
 	}
 
 	public function removeChildAt(p_index:Int):GNode {
-        if (p_index>=g2d_numChildren) GDebug.error("Index out of bounds.");
+        if (p_index>=g2d_childCount) GDebug.error("Index out of bounds.");
         var index:Int = 0;
         var child:GNode = g2d_firstChild;
 		while (child != null && index<p_index) {
-            child = child.g2d_nextNode;
+            child = child.g2d_next;
             index++;
         }
 
@@ -1005,7 +997,7 @@ class GNode implements IGInteractive
 
         var child:GNode = g2d_firstChild;
         while (child != null) {
-            var next:GNode = child.g2d_nextNode;
+            var next:GNode = child.g2d_next;
 			child.g2d_addedToStage();
             child = next;
 		}
@@ -1017,7 +1009,7 @@ class GNode implements IGInteractive
 
         var child:GNode = g2d_firstChild;
         while (child != null) {
-            var next:GNode = child.g2d_nextNode;
+            var next:GNode = child.g2d_next;
 			child.g2d_removedFromStage();
             child = next;
 		}
@@ -1074,7 +1066,7 @@ class GNode implements IGInteractive
 
         var child:GNode = g2d_firstChild;
         while (child != null) {
-            var next:GNode = child.g2d_nextNode;
+            var next:GNode = child.g2d_next;
             child.getBounds(p_targetSpace, aabb);
             if (aabb.width == 0 || aabb.height == 0) {
                 child = next;
@@ -1137,7 +1129,7 @@ class GNode implements IGInteractive
                 psize = 0;
                 for (i in 0...insize) {
                     psize++;
-                    q = q.g2d_nextNode;
+                    q = q.g2d_next;
                     if (q == null) break;
                 }
 
@@ -1146,41 +1138,41 @@ class GNode implements IGInteractive
                 while (psize > 0 || (qsize > 0 && q != null)) {
                     if (psize == 0) {
                         e = q;
-                        q = q.g2d_nextNode;
+                        q = q.g2d_next;
                         qsize--;
                     } else if (qsize == 0 || q == null) {
                         e = p;
-                        p = p.g2d_nextNode;
+                        p = p.g2d_next;
                         psize--;
                     } else if (p_ascending) {
                         if (p.userData[p_property] >= q.userData[p_property]) {
                             e = p;
-                            p = p.g2d_nextNode;
+                            p = p.g2d_next;
                             psize--;
                         } else {
                             e = q;
-                            q = q.g2d_nextNode;
+                            q = q.g2d_next;
                             qsize--;
                         }
                     } else {
                         if (p.userData[p_property] <= q.userData[p_property]) {
                             e = p;
-                            p = p.g2d_nextNode;
+                            p = p.g2d_next;
                             psize--;
                         } else {
                             e = q;
-                            q = q.g2d_nextNode;
+                            q = q.g2d_next;
                             qsize--;
                         }
                     }
 
                     if (g2d_lastChild != null) {
-                        g2d_lastChild.g2d_nextNode = e;
+                        g2d_lastChild.g2d_next = e;
                     } else {
                         g2d_firstChild = e;
                     }
 
-                    e.g2d_previousNode = g2d_lastChild;
+                    e.g2d_previous = g2d_lastChild;
 
                     g2d_lastChild = e;
                 }
@@ -1188,7 +1180,7 @@ class GNode implements IGInteractive
                 p = q;
             }
 
-            g2d_lastChild.g2d_nextNode = null;
+            g2d_lastChild.g2d_next = null;
 
             if (nmerges <= 1) return;
 
@@ -1220,7 +1212,7 @@ class GNode implements IGInteractive
                 psize = 0;
                 for (i in 0...insize) {
                     psize++;
-                    q = q.g2d_nextNode;
+                    q = q.g2d_next;
                     if (q == null) break;
                 }
 
@@ -1229,41 +1221,41 @@ class GNode implements IGInteractive
                 while (psize > 0 || (qsize > 0 && q != null)) {
                     if (psize == 0) {
                         e = q;
-                        q = q.g2d_nextNode;
+                        q = q.g2d_next;
                         qsize--;
                     } else if (qsize == 0 || q == null) {
                         e = p;
-                        p = p.g2d_nextNode;
+                        p = p.g2d_next;
                         psize--;
                     } else if (p_ascending) {
                         if (p.y >= q.y) {
                             e = p;
-                            p = p.g2d_nextNode;
+                            p = p.g2d_next;
                             psize--;
                         } else {
                             e = q;
-                            q = q.g2d_nextNode;
+                            q = q.g2d_next;
                             qsize--;
                         }
                     } else {
                         if (p.y <= q.y) {
                             e = p;
-                            p = p.g2d_nextNode;
+                            p = p.g2d_next;
                             psize--;
                         } else {
                             e = q;
-                            q = q.g2d_nextNode;
+                            q = q.g2d_next;
                             qsize--;
                         }
                     }
 
                     if (g2d_lastChild != null) {
-                        g2d_lastChild.g2d_nextNode = e;
+                        g2d_lastChild.g2d_next = e;
                     } else {
                         g2d_firstChild = e;
                     }
 
-                    e.g2d_previousNode = g2d_lastChild;
+                    e.g2d_previous = g2d_lastChild;
 
                     g2d_lastChild = e;
                 }
@@ -1271,7 +1263,7 @@ class GNode implements IGInteractive
                 p = q;
             }
 
-            g2d_lastChild.g2d_nextNode = null;
+            g2d_lastChild.g2d_next = null;
 
             if (nmerges <= 1) return;
 
@@ -1293,8 +1285,10 @@ class GNode implements IGInteractive
     private var g2d_transformDirty:Bool = false;
     private var g2d_colorDirty:Bool = false;
 
-    @prototype public var useWorldSpace:Bool = false;
-    @prototype public var useWorldColor:Bool = false;
+    @prototype
+	public var useWorldSpace:Bool = false;
+    @prototype
+	public var useWorldColor:Bool = false;
 
     public var visible:Bool = true;
 
@@ -1302,7 +1296,8 @@ class GNode implements IGInteractive
     public var g2d_worldX:Float = 0;
     private var g2d_localX:Float = 0;
     #if swc @:extern #end
-    @prototype public var x(get, set):Float;
+    @prototype
+	public var x(get, set):Float;
     #if swc @:getter(x) #end
     inline private function get_x():Float {
         return g2d_localX;
@@ -1317,7 +1312,8 @@ class GNode implements IGInteractive
     public var g2d_worldY:Float = 0;
     private var g2d_localY:Float = 0;
     #if swc @:extern #end
-    @prototype public var y(get, set):Float;
+    @prototype
+	public var y(get, set):Float;
     #if swc @:getter(y) #end
     inline private function get_y():Float {
         return g2d_localY;
@@ -1347,15 +1343,16 @@ class GNode implements IGInteractive
     public var g2d_worldScaleX:Float = 1;
     private var g2d_localScaleX:Float = 1;
     #if swc @:extern #end
-    @prototype public var scaleX(get, set):Float;
+    @prototype
+	public var scaleX(get, set):Float;
     #if swc @:getter(scaleX) #end
     inline private function get_scaleX():Float {
         return g2d_localScaleX;
     }
     #if swc @:setter(scaleX) #end
     inline private function set_scaleX(p_value:Float):Float {
-        if (g2d_localScaleX == g2d_localScaleY && p_value != g2d_localScaleY && g2d_localRotation != 0 && g2d_numChildren>0) g2d_useMatrix++;
-        if (g2d_localScaleX == g2d_localScaleY && p_value == g2d_localScaleY && g2d_localRotation != 0 && g2d_numChildren>0) g2d_useMatrix--;
+        if (g2d_localScaleX == g2d_localScaleY && p_value != g2d_localScaleY && g2d_localRotation != 0 && g2d_childCount>0) g2d_useMatrix++;
+        if (g2d_localScaleX == g2d_localScaleY && p_value == g2d_localScaleY && g2d_localRotation != 0 && g2d_childCount>0) g2d_useMatrix--;
 
         g2d_transformDirty = g2d_matrixDirty = true;
         return g2d_localScaleX = g2d_worldScaleX = p_value;
@@ -1365,15 +1362,16 @@ class GNode implements IGInteractive
     public var g2d_worldScaleY:Float = 1;
     private var g2d_localScaleY:Float = 1;
     #if swc @:extern #end
-    @prototype public var scaleY(get, set):Float;
+    @prototype
+	public var scaleY(get, set):Float;
     #if swc @:getter(scaleY) #end
     inline private function get_scaleY():Float {
         return g2d_localScaleY;
     }
     #if swc @:setter(scaleY) #end
     inline private function set_scaleY(p_value:Float):Float {
-        if (g2d_localScaleX == g2d_localScaleY && p_value != g2d_localScaleX && g2d_localRotation != 0 && g2d_numChildren>0) g2d_useMatrix++;
-        if (g2d_localScaleX == g2d_localScaleY && p_value == g2d_localScaleX && g2d_localRotation != 0 && g2d_numChildren>0) g2d_useMatrix--;
+        if (g2d_localScaleX == g2d_localScaleY && p_value != g2d_localScaleX && g2d_localRotation != 0 && g2d_childCount>0) g2d_useMatrix++;
+        if (g2d_localScaleX == g2d_localScaleY && p_value == g2d_localScaleX && g2d_localRotation != 0 && g2d_childCount>0) g2d_useMatrix--;
 
         g2d_transformDirty = g2d_matrixDirty = true;
         return g2d_localScaleY = g2d_worldScaleY = p_value;
@@ -1383,15 +1381,16 @@ class GNode implements IGInteractive
     public var g2d_worldRotation:Float = 0;
     private var g2d_localRotation:Float = 0;
     #if swc @:extern #end
-    @prototype public var rotation(get, set):Float;
+    @prototype
+	public var rotation(get, set):Float;
     #if swc @:getter(rotation) #end
     inline private function get_rotation():Float {
         return g2d_localRotation;
     }
     #if swc @:setter(rotation) #end
     inline private function set_rotation(p_value:Float):Float {
-        if (g2d_localRotation == 0 && p_value != 0 && g2d_localScaleX != g2d_localScaleY && g2d_numChildren>0) g2d_useMatrix++;
-        if (g2d_localRotation != 0 && p_value == 0 && g2d_localScaleX != g2d_localScaleY && g2d_numChildren>0) g2d_useMatrix--;
+        if (g2d_localRotation == 0 && p_value != 0 && g2d_localScaleX != g2d_localScaleY && g2d_childCount>0) g2d_useMatrix++;
+        if (g2d_localRotation != 0 && p_value == 0 && g2d_localScaleX != g2d_localScaleY && g2d_childCount>0) g2d_useMatrix--;
 
         g2d_transformDirty = g2d_matrixDirty = true;
         return g2d_localRotation = g2d_worldRotation = p_value;
@@ -1401,7 +1400,8 @@ class GNode implements IGInteractive
     public var g2d_worldRed:Float = 1;
     private var g2d_localRed:Float = 1;
     #if swc @:extern #end
-    public var red(get, set):Float;
+    @prototype
+	public var red(get, set):Float;
     #if swc @:getter(red) #end
     inline private function get_red():Float {
         return g2d_localRed;
@@ -1416,7 +1416,8 @@ class GNode implements IGInteractive
     public var g2d_worldGreen:Float = 1;
     private var g2d_localGreen:Float = 1;
     #if swc @:extern #end
-    public var green(get, set):Float;
+    @prototype
+	public var green(get, set):Float;
     #if swc @:getter(green) #end
     inline private function get_green():Float {
         return g2d_localGreen;
@@ -1431,7 +1432,8 @@ class GNode implements IGInteractive
     public var g2d_worldBlue:Float = 1;
     private var g2d_localBlue:Float = 1;
     #if swc @:extern #end
-    public var blue(get, set):Float;
+    @prototype
+	public var blue(get, set):Float;
     #if swc @:getter(blue) #end
     inline private function get_blue():Float {
         return g2d_localBlue;
@@ -1446,7 +1448,8 @@ class GNode implements IGInteractive
     public var g2d_worldAlpha:Float = 1;
     private var g2d_localAlpha:Float = 1;
     #if swc @:extern #end
-    @prototype public var alpha(get, set):Float;
+    @prototype
+	public var alpha(get, set):Float;
     #if swc @:getter(alpha) #end
     inline private function get_alpha():Float {
         return g2d_localAlpha;
@@ -1643,7 +1646,7 @@ class GNode implements IGInteractive
                 /*  Render children  */
                 var child:GNode = g2d_firstChild;
                 while (child != null) {
-                    var next:GNode = child.g2d_nextNode;
+                    var next:GNode = child.g2d_next;
                     if (child.postProcess != null) {
                         child.postProcess.renderNode(invalidateTransform, invalidateColor, p_camera, child);
                     } else {

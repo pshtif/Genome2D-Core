@@ -26,6 +26,9 @@ class GSprite extends GTexturedQuad
 {
 	public var frameAnimation:GFrameAnimation;
 	
+	override public function init():Void {
+	}
+	
     @:dox(hide)
     inline override public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         if (frameAnimation != null) {
