@@ -1,6 +1,8 @@
 package com.genome2d.ui.element;
 
 import com.genome2d.callbacks.GCallback;
+import com.genome2d.focus.GFocusManager;
+import com.genome2d.input.GKeyboardInput;
 import com.genome2d.input.IGInteractive;
 import flash.utils.Object;
 import com.genome2d.ui.skin.GUISkinManager;
@@ -16,14 +18,18 @@ import com.genome2d.ui.skin.GUISkin;
 @:access(com.genome2d.ui.skin.GUISkin)
 @prototypeName("element")
 class GUIElement implements IGPrototypable implements IGInteractive {
-    @prototype public var mouseEnabled:Bool = true;
-    @prototype public var mouseChildren:Bool = true;
+    @prototype 
+	public var mouseEnabled:Bool = true;
+    @prototype 
+	public var mouseChildren:Bool = true;
 
     public var visible:Bool = true;
 
-    @prototype public var flushBatch:Bool = false;
+    @prototype 
+	public var flushBatch:Bool = false;
 
-    @prototype public var name:String = "GUIElement";
+    @prototype 
+	public var name:String = "GUIElement";
 
     private var g2d_currentClient:Dynamic;
     private var g2d_client:Dynamic;
@@ -712,7 +718,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                         g2d_worldLeft = worldAnchorLeft + g2d_anchorX - w * g2d_pivotX;
                         g2d_worldRight = worldAnchorLeft + g2d_anchorX + w * (1 - g2d_pivotX);
                     }
-
+					
                     g2d_finalWidth = g2d_worldRight - g2d_worldLeft;
                 }
 
@@ -951,7 +957,9 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 				p_input.localY = p_input.worldY - g2d_worldTop;
 				
 				if (!p_input.g2d_captured && p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom) {
+					if (g2d_activeSkin != null) g2d_activeSkin.captureMouseInput(p_input);
 					p_input.g2d_captured = true;
+					GFocusManager.activeFocus = this;
 					g2d_dispatchMouseCallback(p_input.type, this, p_input);
 					if (g2d_mouseOverElement != this) {
 						g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, this, p_input);

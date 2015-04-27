@@ -1,4 +1,5 @@
 package com.genome2d.ui.skin;
+import com.genome2d.input.GMouseInput;
 import com.genome2d.ui.element.GUIElement;
 import com.genome2d.ui.skin.GUIFontSkin;
 import com.genome2d.context.IGContext;
@@ -19,7 +20,7 @@ class GUIFontSkin extends GUISkin {
     #if swc @:setter(text) #end
     inline private function set_text(p_value:String):String {
         g2d_textRenderer.text = p_value;
-
+		trace("here");
         return p_value;
     }
 
@@ -67,6 +68,32 @@ class GUIFontSkin extends GUISkin {
         g2d_textRenderer.fontScale = p_value;
         return p_value;
     }
+	
+	#if swc @:extern #end
+    public var cursorStartIndex(get, set):Int;
+    #if swc @:getter(cursorStartIndex) #end
+    inline private function get_cursorStartIndex():Int {
+        return g2d_textRenderer.cursorStartIndex;
+    }
+    #if swc @:setter(cursorStartIndex) #end
+    inline private function set_cursorStartIndex(p_value:Int):Int {
+        g2d_textRenderer.cursorStartIndex = p_value;
+
+        return p_value;
+    }
+	
+	#if swc @:extern #end
+    public var cursorEndIndex(get, set):Int;
+    #if swc @:getter(cursorEndIndex) #end
+    inline private function get_cursorEndIndex():Int {
+        return g2d_textRenderer.cursorEndIndex;
+    }
+    #if swc @:setter(cursorEndIndex) #end
+    inline private function set_cursorEndIndex(p_value:Int):Int {
+        g2d_textRenderer.cursorEndIndex = p_value;
+
+        return p_value;
+    }
 
     override public function getTexture():GContextTexture {
         return g2d_textRenderer.textureAtlas;
@@ -93,6 +120,7 @@ class GUIFontSkin extends GUISkin {
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Bool {
         var rendered:Bool = false;
+		//trace(p_left, p_right, p_top, p_bottom);
         if (super.render(p_left, p_top, p_right, p_bottom)) {
             g2d_textRenderer.width = p_right - p_left;
             g2d_textRenderer.height = p_bottom - p_top;
@@ -110,4 +138,8 @@ class GUIFontSkin extends GUISkin {
         var clone:GUIFontSkin = new GUIFontSkin("", fontAtlasId, fontScale, autoSize);
         return clone;
     }
+	
+	override public function captureMouseInput(p_input:GMouseInput):Void {
+		g2d_textRenderer.captureMouseInput(p_input);
+	}
 }

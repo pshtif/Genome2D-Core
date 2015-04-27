@@ -1,4 +1,5 @@
 package com.genome2d.ui.skin;
+import com.genome2d.input.GMouseInput;
 import com.genome2d.ui.element.GUIElement;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.textures.GContextTexture;
@@ -108,6 +109,10 @@ class GUISkin implements IGPrototypable {
 
     private function elementValueChanged_handler(p_element:GUIElement):Void {
     }
+	
+	public function captureMouseInput(p_input:GMouseInput):Void {
+				
+	}
 
     private function clone():GUISkin {
         return null;
