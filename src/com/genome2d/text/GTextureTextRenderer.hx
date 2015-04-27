@@ -190,6 +190,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				char.g2d_x = offsetX;
 				char.g2d_y = offsetY;
 				char.g2d_whiteSpace = true;
+				charIndex++;
             } else {
                 if (!g2d_autoSize && offsetY + g2d_textureAtlas.lineHeight + g2d_lineSpace > g2d_height / g2d_fontScale) break;
 
@@ -197,7 +198,7 @@ class GTextureTextRenderer extends GTextRenderer {
                 texture = g2d_textureAtlas.getSubTextureById(Std.string(currentCharCode));
                 if (texture == null) {
                     GDebug.warning("Texture for character " + g2d_text.charAt(i) + " with code " + g2d_text.charCodeAt(i) + " not found!");
-					++i;
+					i++;
                     continue;
                 }
 
