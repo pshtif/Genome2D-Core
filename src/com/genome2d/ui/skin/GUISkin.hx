@@ -2,7 +2,7 @@ package com.genome2d.ui.skin;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.ui.element.GUIElement;
 import com.genome2d.proto.IGPrototypable;
-import com.genome2d.textures.GContextTexture;
+import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTexture;
 import com.genome2d.debug.GDebug;
 
@@ -10,7 +10,7 @@ import com.genome2d.debug.GDebug;
 @:allow(com.genome2d.ui.skin.GUISkinManager)
 class GUISkin implements IGPrototypable {
     static private var g2d_batchQueue:Array<GUISkin>;
-    static private var g2d_currentBatchTexture:GContextTexture;
+    static private var g2d_currentBatchTexture:GTexture;
 
     static private function batchRender(p_skin:GUISkin):Bool {
         var batched:Bool = false;
@@ -88,7 +88,7 @@ class GUISkin implements IGPrototypable {
         render(g2d_renderLeft, g2d_renderTop, g2d_renderRight, g2d_renderBottom);
     }
 
-    public function getTexture():GContextTexture {
+    public function getTexture():GTexture {
         return null;
     }
 

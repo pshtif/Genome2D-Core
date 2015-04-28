@@ -121,9 +121,9 @@ class GAssetManager {
             if (GTextureManager.getContextTextureById(asset.id) != null) continue;
             var idPart:String = asset.id.substring(0,asset.id.length-3);
             if (GAssetManager.getXmlAssetById(idPart+"xml") != null) {
-                GTextureManager.createAtlasFromAssets(asset.id, cast asset, GAssetManager.getXmlAssetById(idPart+"xml"), p_scaleFactor);
+                //GTextureManager.createAtlasFromAssets(asset.id, cast asset, GAssetManager.getXmlAssetById(idPart+"xml"), p_scaleFactor);
             } else if (GAssetManager.getXmlAssetById(idPart+"fnt") != null) {
-                GTextureManager.createFontAtlasFromAssets(asset.id, cast asset, GAssetManager.getXmlAssetById(idPart+"fnt"), p_scaleFactor);
+                //GTextureManager.createFontAtlasFromAssets(asset.id, cast asset, GAssetManager.getXmlAssetById(idPart+"fnt"), p_scaleFactor);
             } else {
                 GTextureManager.createTextureFromAsset(asset.id, cast asset, p_scaleFactor);
             }

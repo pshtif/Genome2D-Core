@@ -4,9 +4,8 @@ import com.genome2d.ui.element.GUIElement;
 import com.genome2d.ui.skin.GUIFontSkin;
 import com.genome2d.context.IGContext;
 import com.genome2d.text.GTextureTextRenderer;
-import com.genome2d.textures.GContextTexture;
+import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
-import com.genome2d.textures.GTextureFontAtlas;
 
 @prototypeName("fontSkin")
 class GUIFontSkin extends GUISkin {
@@ -95,8 +94,8 @@ class GUIFontSkin extends GUISkin {
         return p_value;
     }
 
-    override public function getTexture():GContextTexture {
-        return g2d_textRenderer.textureAtlas;
+    override public function getTexture():GTexture {
+        return g2d_textRenderer.textureFont;
     }
 
     override public function getMinWidth():Float {

@@ -1,7 +1,7 @@
 package com.genome2d.ui.skin;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.textures.GTextureManager;
-import com.genome2d.textures.GContextTexture;
+import com.genome2d.textures.GTexture;
 import com.genome2d.context.IGContext;
 import com.genome2d.textures.GTexture;
 
@@ -59,8 +59,8 @@ class GUITextureSkin extends GUISkin {
             var sw:Float = sr-sl;
             var sh:Float = sb-st;
 
-            var rx:Float = (texture.region != null) ? texture.region.x : 0;
-            var ry:Float = (texture.region != null) ? texture.region.y : 0;
+            var rx:Float = texture.u * texture.gpuWidth;// (texture.region != null) ? texture.region.x : 0;
+            var ry:Float = texture.v * texture.gpuHeight;// (texture.region != null) ? texture.region.y : 0;
 
             if (sw == 0 || sh == 0) {
                 context.draw(texture, x, y, scaleX, scaleY, 0, 1, 1, 1, 1, 1, null);
@@ -169,7 +169,7 @@ class GUITextureSkin extends GUISkin {
         return rendered;
     }
 
-    override public function getTexture():GContextTexture {
+    override public function getTexture():GTexture {
         return texture;
     }
 

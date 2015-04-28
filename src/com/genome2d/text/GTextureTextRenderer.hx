@@ -7,9 +7,7 @@ import com.genome2d.textures.GTextureManager;
 import com.genome2d.utils.GHAlignType;
 import com.genome2d.utils.GVAlignType;
 import com.genome2d.context.IGContext;
-import com.genome2d.textures.GCharTexture;
 import com.genome2d.context.GCamera;
-import com.genome2d.textures.GTextureFontAtlas;
 import flash.display.BitmapData;
 class GTextureTextRenderer extends GTextRenderer {
 
@@ -27,18 +25,18 @@ class GTextureTextRenderer extends GTextRenderer {
         return g2d_fontScale;
     }
 
-    private var g2d_textureAtlas:GTextureFontAtlas;
+    private var g2d_textureFont:GTextureFont;
     #if swc @:extern #end
-    public var textureAtlas(get, set):GTextureFontAtlas;
-    #if swc @:getter(textureAtlas) #end
-    inline private function get_textureAtlas():GTextureFontAtlas{
-        return g2d_textureAtlas;
+    public var textureFont(get, set):GTextureFont;
+    #if swc @:getter(textureFont) #end
+    inline private function get_textureAtlas():GTextureFont{
+        return g2d_textureFont;
     }
-    #if swc @:setter(textureAtlas) #end
-    inline private function set_textureAtlas(p_value:GTextureFontAtlas):GTextureFontAtlas {
-        g2d_textureAtlas = p_value;
+    #if swc @:setter(textureFont) #end
+    inline private function set_textureAtlas(p_value:GTextureFont):GTextureFont {
+        g2d_textureFont = p_value;
         g2d_dirty = true;
-        return g2d_textureAtlas;
+        return g2d_textureFont;
     }
 
     /*
@@ -48,11 +46,11 @@ class GTextureTextRenderer extends GTextRenderer {
     @prototype public var textureAtlasId(get, set):String;
     #if swc @:getter(textureAtlasId) #end
     inline private function get_textureAtlasId():String {
-        return (g2d_textureAtlas != null) ? g2d_textureAtlas.id : "";
+        return (g2d_textureFont != null) ? g2d_textureFont.id : "";
     }
     #if swc @:setter(textureAtlasId) #end
     inline private function set_textureAtlasId(p_value:String):String {
-        textureAtlas = GTextureManager.getFontAtlasById(p_value);
+        textureFont = GTextureManager.getFontAtlasById(p_value);
         return p_value;
     }
 
@@ -76,7 +74,7 @@ class GTextureTextRenderer extends GTextRenderer {
 	}
 
     override public function render(p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_rotation:Float):Void {
-        if (g2d_textureAtlas == null) return;
+        if (g2d_textureFont == null) return;
         if (g2d_dirty) invalidate();
 		
 		renderSelection(p_x, p_y, p_scaleX, p_scaleY, 0);
@@ -122,7 +120,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				tx = char.g2d_x * p_scaleX * g2d_fontScale + p_x + (cursorStartIndex>=g2d_textLength?char.g2d_texture.xadvance + g2d_tracking:0);
 				ty = char.g2d_y * p_scaleY * g2d_fontScale + p_y;
 			}
-			var texture:GTexture = g2d_textureAtlas.getSubTextureById(Std.string(124));
+			var texture:GTexture = g2d_textureFont.getSubTextureById(Std.string(124));
 			g2d_context.draw(texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
 		} else if (cursorStartIndex != cursorEndIndex) {
 			var startChar:GTextureChar = (cursorStartIndex >= g2d_textLength) ? g2d_chars[g2d_textLength - 1] : g2d_chars[cursorStartIndex];
@@ -134,20 +132,20 @@ class GTextureTextRenderer extends GTextRenderer {
 			var ey:Float = endChar.g2d_y * p_scaleY * g2d_fontScale + p_y;
 			
 			if (sy == ey) {
-				g2d_context.draw(g2d_helperTexture, sx, sy, (ex-sx)/4*p_scaleX * g2d_fontScale, g2d_textureAtlas.lineHeight/4*p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
+				g2d_context.draw(g2d_helperTexture, sx, sy, (ex-sx)/4*p_scaleX * g2d_fontScale, g2d_textureFont.lineHeight/4*p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
 			} else {
-				g2d_context.draw(g2d_helperTexture, sx, sy, (g2d_width + p_x - sx) / 4 * p_scaleX * g2d_fontScale, g2d_textureAtlas.lineHeight / 4 * p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
-				for (i in 1...Std.int((ey - sy) / g2d_textureAtlas.lineHeight)) {
-					g2d_context.draw(g2d_helperTexture, p_x, sy+i*g2d_textureAtlas.lineHeight, g2d_width / 4 * p_scaleX * g2d_fontScale, g2d_textureAtlas.lineHeight / 4 * p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
+				g2d_context.draw(g2d_helperTexture, sx, sy, (g2d_width + p_x - sx) / 4 * p_scaleX * g2d_fontScale, g2d_textureFont.lineHeight / 4 * p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
+				for (i in 1...Std.int((ey - sy) / g2d_textureFont.lineHeight)) {
+					g2d_context.draw(g2d_helperTexture, p_x, sy+i*g2d_textureFont.lineHeight, g2d_width / 4 * p_scaleX * g2d_fontScale, g2d_textureFont.lineHeight / 4 * p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
 				}
-				g2d_context.draw(g2d_helperTexture, p_x, ey, (ex - p_x) / 4 * p_scaleX * g2d_fontScale, g2d_textureAtlas.lineHeight / 4 * p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
+				g2d_context.draw(g2d_helperTexture, p_x, ey, (ex - p_x) / 4 * p_scaleX * g2d_fontScale, g2d_textureFont.lineHeight / 4 * p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
 			}
 		}
 	}
 
     override public function invalidate():Void {
         if (g2d_chars == null) g2d_chars = new Array<GTextureChar>();
-        if (g2d_textureAtlas == null) return;
+        if (g2d_textureFont == null) return;
 
         if (g2d_autoSize) {
             g2d_width = 0;
@@ -156,7 +154,7 @@ class GTextureTextRenderer extends GTextRenderer {
         var offsetX:Float = 0;
         var offsetY:Float =  0;
         var char:GTextureChar;
-        var texture:GCharTexture = null;
+        var texture:GTextureChar = null;
         var currentCharCode:Int = -1;
         var previousCharCode:Int = -1;
         var lastChar:Int = 0;
@@ -183,19 +181,19 @@ class GTextureTextRenderer extends GTextRenderer {
                 previousCharCode = -1;
                 lines.push(currentLine);
                 currentLine = new Array<GTextureChar>();
-                if (!g2d_autoSize && offsetY + 2*(g2d_textureAtlas.lineHeight + g2d_lineSpace) > g2d_height/g2d_fontScale) break;
+                if (!g2d_autoSize && offsetY + 2*(g2d_textureFont.lineHeight + g2d_lineSpace) > g2d_height/g2d_fontScale) break;
                 offsetX = 0;
-                offsetY += g2d_textureAtlas.lineHeight + g2d_lineSpace;
+                offsetY += g2d_textureFont.lineHeight + g2d_lineSpace;
 				
 				char.g2d_x = offsetX;
 				char.g2d_y = offsetY;
 				char.g2d_whiteSpace = true;
 				charIndex++;
             } else {
-                if (!g2d_autoSize && offsetY + g2d_textureAtlas.lineHeight + g2d_lineSpace > g2d_height / g2d_fontScale) break;
+                if (!g2d_autoSize && offsetY + g2d_textureFont.lineHeight + g2d_lineSpace > g2d_height / g2d_fontScale) break;
 
                 currentCharCode = g2d_text.charCodeAt(i);
-                texture = g2d_textureAtlas.getSubTextureById(Std.string(currentCharCode));
+                texture = g2d_textureFont.getSubTextureById(Std.string(currentCharCode));
                 if (texture == null) {
                     GDebug.warning("Texture for character " + g2d_text.charAt(i) + " with code " + g2d_text.charCodeAt(i) + " not found!");
 					i++;
@@ -203,7 +201,7 @@ class GTextureTextRenderer extends GTextRenderer {
                 }
 
                 if (previousCharCode != -1) {
-                    offsetX += g2d_textureAtlas.getKerning(previousCharCode,currentCharCode);
+                    offsetX += g2d_textureFont.getKerning(previousCharCode,currentCharCode);
                 }
 
 				char.g2d_code = currentCharCode;
@@ -218,11 +216,11 @@ class GTextureTextRenderer extends GTextRenderer {
 					charIndex -= backtrack;
 
 					if (backtrack >= currentCount) break;
-					if (!g2d_autoSize && offsetY + 2 * (g2d_textureAtlas.lineHeight + g2d_lineSpace) > g2d_height / g2d_fontScale) break;
+					if (!g2d_autoSize && offsetY + 2 * (g2d_textureFont.lineHeight + g2d_lineSpace) > g2d_height / g2d_fontScale) break;
 
 					i = whiteSpaceIndex+1;
 					offsetX = 0;
-					offsetY += g2d_textureAtlas.lineHeight + g2d_lineSpace;
+					offsetY += g2d_textureFont.lineHeight + g2d_lineSpace;
 					continue;
 				}
 
@@ -254,10 +252,10 @@ class GTextureTextRenderer extends GTextRenderer {
 
         if (g2d_autoSize) {
             g2d_width = (offsetX>g2d_width) ? offsetX : g2d_width;
-            g2d_height = offsetY + g2d_textureAtlas.lineHeight;
+            g2d_height = offsetY + g2d_textureFont.lineHeight;
         }
 
-        var bottom:Float = offsetY + g2d_textureAtlas.lineHeight;
+        var bottom:Float = offsetY + g2d_textureFont.lineHeight;
         var offsetY:Float = 0;
         if (g2d_vAlign == GVAlignType.MIDDLE) {
             offsetY = (g2d_height - bottom) * .5;
@@ -306,7 +304,7 @@ class GTextureTextRenderer extends GTextRenderer {
 			if (difX < 0) continue;
 			var difY:Float = p_y - ty;
 			if (difY < -char.g2d_texture.yoffset * g2d_fontScale) continue;
-			if (difX < minX && difY < g2d_textureAtlas.lineHeight * g2d_fontScale) {
+			if (difX < minX && difY < g2d_textureFont.lineHeight * g2d_fontScale) {
 				minX = difX;
 				minY = difY;
 				minIndex = i;
@@ -339,7 +337,7 @@ class GTextureTextRenderer extends GTextRenderer {
 class GTextureChar
 {
     private var g2d_code:Int;
-    private var g2d_texture:GCharTexture;
+    private var g2d_texture:GTextureChar;
 
     private var g2d_x:Float;
     private var g2d_y:Float;

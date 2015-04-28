@@ -6,12 +6,11 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.textures;
+package com.genome2d.text;
 
-import com.genome2d.context.IGContext;
 import com.genome2d.geom.GRectangle;
 
-class GCharTexture extends GTexture {
+class GTextureChar {
     private var g2d_xoffset:Float = 0;
     #if swc @:extern #end
     public var xoffset(get, set):Float;

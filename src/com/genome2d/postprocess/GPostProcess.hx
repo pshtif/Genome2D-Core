@@ -155,7 +155,7 @@ class GPostProcess {
         var h:Int = Std.int(p_bounds.height + g2d_topMargin + g2d_bottomMargin);
         if (g2d_passTextures[0].width != w || g2d_passTextures[0].height != h) {
             var i:Int = g2d_passTextures.length-1;
-            while (i>=0) {
+            while (i >= 0) {
                 var texture:GTexture = g2d_passTextures[i];
                 texture.region = new GRectangle(0, 0, w, h);
                 texture.pivotX = -texture.width/2;
