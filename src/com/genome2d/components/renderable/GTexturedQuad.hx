@@ -72,11 +72,15 @@ class GTexturedQuad extends GComponent implements IRenderable
         Check if a point is inside this quad
     **/
     inline public function hitTest(p_x:Float, p_y:Float):Bool {
-		p_x = p_x / texture.width + .5;
-		p_y = p_y / texture.height + .5;
+		var hit:Bool = false;
+		if (texture != null) {
+			p_x = p_x / texture.width + .5;
+			p_y = p_y / texture.height + .5;
 
-        return (p_x >= -texture.pivotX / texture.width && p_x <= 1 - texture.pivotX / texture.width && p_y >= -texture.pivotY / texture.height && p_y <= 1 - texture.pivotY / texture.height &&
-			   (!mousePixelEnabled || texture.getAlphaAtUV(p_x + texture.pivotX / texture.width, p_y + texture.pivotY / texture.height) <= mousePixelTreshold));
+			hit = (p_x >= -texture.pivotX / texture.width && p_x <= 1 - texture.pivotX / texture.width && p_y >= -texture.pivotY / texture.height && p_y <= 1 - texture.pivotY / texture.height &&
+				  (!mousePixelEnabled || texture.getAlphaAtUV(p_x + texture.pivotX / texture.width, p_y + texture.pivotY / texture.height) <= mousePixelTreshold));
+		}
+		return hit;
     }
 
 	inline public function captureMouseInput(p_input:GMouseInput):Void {
