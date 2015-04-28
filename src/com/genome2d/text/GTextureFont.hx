@@ -9,40 +9,41 @@
 package com.genome2d.text;
 
 import com.genome2d.geom.GRectangle;
+import com.genome2d.textures.GTexture;
+import com.genome2d.textures.GTextureManager;
 
 class GTextureFont {
+	private var g2d_texture:GTexture;
     public var lineHeight:Int = 0;
-    public var g2d_kerning:Map<Int,Map<Int,Int>>;
+	private var g2d_chars:Map<String,GTextureChar>;
+    private var g2d_kerning:Map<Int,Map<Int,Int>>;
+	
+	public function new(p_texture:GTexture):Void {
+		g2d_texture = p_texture;
+	}
 
-    public function getCharById(p_subId:String):Void {
-        //return cast g2d_subTextures.get(p_subId);
+    public function getCharById(p_subId:String):GTextureChar {
+        return cast g2d_chars.get(p_subId);
     }
 
-    public function addChar(p_subId:String, p_region:GRectangle, p_frame:GRectangle):Void {
-		/*
-        var texture:GTextureChar = new GTextureChar(g2d_id+"_"+p_subId, this);
-        texture.g2d_subId = p_subId;
-        texture.g2d_filteringType = g2d_filteringType;
-        texture.g2d_nativeTexture = nativeTexture;
-        texture.g2d_scaleFactor = scaleFactor;
+    public function addChar(p_charId:String, p_region:GRectangle, p_frame:GRectangle):GTextureChar {
+        var texture:GTexture = new GTexture(g2d_texture);
+		texture.region = p_region;
+		
+		var char:GTextureChar = new GTextureChar(texture);
+        g2d_chars.set(p_charId, char);
 
-        texture.region = p_region;
-
-        g2d_subTextures.set(p_subId, texture);
-
-        return texture;
-		/**/
+        return char;
     }
 
     public function getKerning(p_first:Int, p_second:Int):Float {
-		/*
         if (g2d_kerning != null) {
             var map:Map<Int,Int> = g2d_kerning.get(p_first);
             if (map != null) {
                 if (!map.exists(p_second)) {
                     return 0;
                 } else {
-                    return map.get(p_second)*scaleFactor;
+                    return map.get(p_second)*g2d_texture.scaleFactor;
                 }
             }
         }
