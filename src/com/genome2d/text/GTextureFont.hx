@@ -27,7 +27,7 @@ class GTextureFont {
     }
 
     public function addChar(p_charId:String, p_region:GRectangle, p_frame:GRectangle):GTextureChar {
-        var texture:GTexture = new GTexture(g2d_texture);
+        var texture:GTexture = new GTexture(g2d_texture.id+"_"+p_charId, g2d_texture);
 		texture.region = p_region;
 		
 		var char:GTextureChar = new GTextureChar(texture);
