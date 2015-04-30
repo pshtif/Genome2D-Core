@@ -52,6 +52,12 @@ class GTextureChar {
     }
 	
 	private var g2d_texture:GTexture;
+	#if swc @:extern #end
+    public var texture(get, never):GTexture;
+    #if swc @:getter(texture) #end
+    inline private function get_texture():GTexture {
+        return g2d_texture;
+    }
 	
 	public function new(p_texture:GTexture):Void {
 		g2d_texture = p_texture;

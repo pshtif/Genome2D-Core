@@ -12,6 +12,7 @@ import com.genome2d.callbacks.GCallback;
 import com.genome2d.debug.IGDebuggableInternal;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.macros.MGBuildID;
+import com.genome2d.text.GFontManager;
 import com.genome2d.ui.skin.GUISkinManager;
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.proto.GPrototypeFactory;
@@ -217,6 +218,9 @@ class Genome2D implements IGDebuggableInternal
 	public function init(p_config:GContextConfig):Void {
         GPrototypeFactory.initializePrototypes();
         GAssetManager.init();
+		GFontManager.init();
+		GTextureManager.init();
+        GUISkinManager.init();
 
         // Initialize root
         if (g2d_root != null) g2d_root.dispose();
@@ -309,9 +313,6 @@ class Genome2D implements IGDebuggableInternal
     }
 
     private function g2d_contextInitialized_handler():Void {
-        GTextureManager.init();
-        GUISkinManager.init();
-
         g2d_context.onFrame.add(g2d_frame_handler);
         g2d_context.g2d_onMouseInputInternal = g2d_contextMouseInput_handler;
         g2d_context.onKeyboardInput.add(g2d_contextKeyboardInput_handler);

@@ -19,8 +19,8 @@ import com.genome2d.geom.GRectangle;
 
 class GTextureAtlas {
     private var g2d_subTextures:Map<String, GTexture>;
-    public function getSubTextureById(p_subId:String):GTexture {
-        return g2d_subTextures.get(p_subId);
+    public function getSubTexture(p_id:String):GTexture {
+        return g2d_subTextures.get(p_id);
     }
     public function getSubTextures(p_regExp:EReg = null):Array<GTexture> {
         var found:Array<GTexture> = new Array<GTexture>();
@@ -37,12 +37,11 @@ class GTextureAtlas {
         return found;
     }
 
-    public function new(p_id:String, p_source:Dynamic) {
+    public function new(p_texture:GTexture) {
         g2d_subTextures = new Map<String,GTexture>();
     }
 
     public function addSubTexture(p_subId:String, p_region:GRectangle, p_frame:GRectangle):GTexture {
-		/*
         var texture:GTexture = new GTexture(g2d_id+"_"+p_subId, this);
         texture.g2d_subId = p_subId;
         texture.g2d_filteringType = g2d_filteringType;
@@ -60,7 +59,6 @@ class GTextureAtlas {
         texture.region = p_region;
 
         g2d_subTextures.set(p_subId, texture);
-		/**/
 
         return null;
     }
@@ -70,9 +68,6 @@ class GTextureAtlas {
         g2d_subTextures.remove(p_subId);
     }
 
-    /**
-	 * 	Dispose this atlas and all its sub textures
-	 */
     public function dispose():Void {
     }
 }
