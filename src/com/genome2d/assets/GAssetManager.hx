@@ -9,6 +9,7 @@
 package com.genome2d.assets;
 
 import com.genome2d.callbacks.GCallback;
+import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 
 class GAssetManager {
@@ -119,13 +120,13 @@ class GAssetManager {
         for (asset in g2d_references) {
             if (!Std.is(asset,GImageAsset) || !asset.isLoaded()) continue;
             if (GTextureManager.getTexture(asset.id) != null) continue;
-            var idPart:String = asset.id.substring(0,asset.id.length-3);
-            if (GAssetManager.getXmlAssetById(idPart+"xml") != null) {
-                //GTextureManager.createAtlasFromAssets(asset.id, cast asset, GAssetManager.getXmlAssetById(idPart+"xml"), p_scaleFactor);
-            } else if (GAssetManager.getXmlAssetById(idPart+"fnt") != null) {
-                //GTextureManager.createFontAtlasFromAssets(asset.id, cast asset, GAssetManager.getXmlAssetById(idPart+"fnt"), p_scaleFactor);
-            } else {
-                GTextureManager.createTexture(asset.id, cast asset, p_scaleFactor);
+            var idPart:String = asset.id.substring(0, asset.id.length - 3);
+			var texture:GTexture = GTextureManager.createTexture(asset.id, cast asset, p_scaleFactor);
+			
+            if (GAssetManager.getXmlAssetById(idPart + "xml") != null) {
+				GTextureManager.createSubTextures(texture, GAssetManager.getXmlAssetById(idPart + "xml").xml);
+            } else if (GAssetManager.getXmlAssetById(idPart + "fnt") != null) {
+				GTextureManager.createSubTextures(texture, GAssetManager.getXmlAssetById(idPart + "fnt").xml);
             }
         }
     }

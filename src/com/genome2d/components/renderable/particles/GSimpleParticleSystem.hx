@@ -130,7 +130,7 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
         return blendMode+"|"+emit+"|"+useWorldSpace+"|"+initialScale+"|"+initialScaleVariance+"|"+endScale+"|"+endScaleVariance+"|"+energy+"|"+energyVariance+"|"+emission+"|"+emissionVariance+"|"+emissionTime+"|"+emissionDelay+"|"+initialVelocity+"|"+initialVelocityVariance+"|"+initialAcceleration+"|"+initialAccelerationVariance+"|"+initialAngularVelocity+"|"+initialAngularVelocityVariance+"|"+
         initialRed+"|"+initialRedVariance+"|"+initialGreen+"|"+initialGreenVariance+"|"+initialBlue+"|"+initialBlueVariance+"|"+initialAlpha+"|"+initialAlphaVariance+"|"+
         endRed+"|"+endRedVariance+"|"+endGreen+"|"+endGreenVariance+"|"+endBlue+"|"+endBlueVariance+"|"+endAlpha+"|"+endAlphaVariance+"|"+
-        dispersionXVariance+"|"+dispersionYVariance+"|"+dispersionAngle+"|"+dispersionAngleVariance+"|"+initialAngle+"|"+initialAngleVariance+"|"+burst+"|"+textureId;
+        dispersionXVariance+"|"+dispersionYVariance+"|"+dispersionAngle+"|"+dispersionAngleVariance+"|"+initialAngle+"|"+initialAngleVariance+"|"+burst+"|"+texture.id;
     }
     #if swc @:setter(settings) #end
     inline private function set_settings(p_value:String):String {
@@ -183,25 +183,12 @@ class GSimpleParticleSystem extends GComponent implements IRenderable
         initialAngleVariance = Std.parseFloat(split[40]);
         burst = split[41]=="true" ? true : false;
 
-        textureId = split[42];
+        texture = GTextureManager.getTexture(split[42]);
 
         return p_value;
     }
 	
 	public var texture:GTexture;
-	
-	#if swc @:extern #end
-	public var textureId(get, set):String;
-	#if swc @:getter(textureId) #end
-	inline private function get_textureId():String {
-		return (texture != null) ? texture.id : "";
-	}
-	#if swc @:setter(textureId) #end
-	inline private function set_textureId(p_value:String):String {
-		texture = GTextureManager.getTextureById(p_value);
-        if (texture == null) GDebug.warning("Invalid textures with id "+p_value);
-		return (texture == null) ? "" : p_value;
-	}
 
 	private function setInitialParticlePosition(p_particle:GSimpleParticle):Void {
         p_particle.g2d_x = (useWorldSpace) ? node.g2d_worldX : 0;
