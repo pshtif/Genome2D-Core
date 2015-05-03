@@ -1,11 +1,14 @@
 package com.genome2d.fbx;
 
+import com.genome2d.context.GBlendMode;
+import com.genome2d.context.stage3d.GProjectionMatrix;
+import com.genome2d.context.stage3d.GStage3DContext;
+import com.genome2d.context.stage3d.renderers.GFbxRenderer;
 import com.genome2d.fbx.GFbxParserNode;
 import com.genome2d.fbx.GFbxTools;
 
 import com.genome2d.geom.GFloat4;
 import com.genome2d.geom.GMatrix3D;
-import com.genome2d.context.stage3d.renderers.GCustomRenderer;
 import com.genome2d.Genome2D;
 import com.genome2d.context.IGContext;
 import com.genome2d.textures.GTextureManager;
@@ -15,10 +18,17 @@ class GFbxScene {
     public var ambientColor:GFloat4;
     public var lightColor:GFloat4;
     public var tintColor:GFloat4;
-
     private var g2d_renderers:Array<GFbxRenderer>;
     private var g2d_fbxData:GFbxParserNode;
     private var g2d_nodes:Map<String,GFbxNode>;
+	
+	private var g2d_projectionMatrix:GProjectionMatrix;
+	public function getProjectionMatrix():GProjectionMatrix {
+		return g2d_projectionMatrix;
+	}
+	public function setProjectionMatrix(p_value:GProjectionMatrix):Void {
+		g2d_projectionMatrix = p_value;
+	}
 
     private var g2d_modelMatrix:GMatrix3D;
     public function getModelMatrix():GMatrix3D {
@@ -104,41 +114,58 @@ class GFbxScene {
         for (node in g2d_nodes) {
             var model:GFbxModel = (Std.is(node,GFbxModel)) ? cast node : null;
             if (model != null) {
-                var fbxRenderer:GFbxRenderer = new GFbxRenderer(this, model);
-                g2d_renderers.push(fbxRenderer);
+				var fbxGeometry:GFbxGeometry = model.getGeometry();
+				if (fbxGeometry == null) throw "Invalid model.";
+				
+				var fbxRenderer:GFbxRenderer = new GFbxRenderer(fbxGeometry.vertices, fbxGeometry.uvs, fbxGeometry.indices, fbxGeometry.vertexNormals, false);
+
+				var fbxTexture:GFbxTexture = model.getMaterial().getTexture();
+				if (fbxTexture == null) throw "Invalid texture.";
+
+				fbxRenderer.texture = GTextureManager.getTexture(fbxTexture.relativePath);
             }
         }
     }
 
     public function render(p_cameraMatrix:GMatrix3D, p_type:Int = 1):Void {
         for (renderer in g2d_renderers) {
-            renderer.renderer.ambientColor = ambientColor;
-            renderer.renderer.lightColor = lightColor;
-            renderer.renderer.tintColor = tintColor;
+            renderer.ambientColor = ambientColor;
+            renderer.lightColor = lightColor;
+            renderer.tintColor = tintColor;
+			renderer.modelMatrix = g2d_modelMatrix;
+			renderer.cameraMatrix = p_cameraMatrix;
+			renderer.projectionMatrix = g2d_projectionMatrix;
         }
-
+		
+		var context:GStage3DContext = cast Genome2D.getInstance().getContext();
+        context.setBlendMode(GBlendMode.NORMAL, true);
+		
         switch (p_type) {
             // Normal
             case 1:
                 for (renderer in g2d_renderers) {
-                    renderer.render(p_cameraMatrix, g2d_modelMatrix, 2, 1);
+					context.bindRenderer(renderer);
+                    renderer.draw(2, 1);
                 }
             // Reflection
             case 2:
                 for (renderer in g2d_renderers) {
-                    renderer.render(p_cameraMatrix, g2d_modelMatrix, 1, 1);
+					context.bindRenderer(renderer);
+                    renderer.draw(1, 1);
                 }
             // Shadow
             case 3:
                 for (renderer in g2d_renderers) {
-                    renderer.render(p_cameraMatrix, g2d_modelMatrix, 1, 2);
+					context.bindRenderer(renderer);
+                    renderer.draw(1, 2);
                 }
             // Invisible
             case 4:
                 for (renderer in g2d_renderers) {
-                    renderer.renderer.tintColor.w = 0;
-                    renderer.render(p_cameraMatrix, g2d_modelMatrix, 2, 1);
-                    renderer.renderer.tintColor.w = 0;
+					context.bindRenderer(renderer);
+                    renderer.tintColor.w = 0;
+                    renderer.draw(2, 1);
+                    renderer.tintColor.w = 0;
                 }
 
         }

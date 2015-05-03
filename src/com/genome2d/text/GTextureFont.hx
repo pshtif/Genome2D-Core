@@ -13,13 +13,17 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 
 class GTextureFont {
-	private var g2d_texture:GTexture;
+	public var texture:GTexture;
+	
+	public var id:String;
+	
     public var lineHeight:Int = 0;
 	private var g2d_chars:Map<String,GTextureChar>;
     public var kerning:Map<Int,Map<Int,Int>>;
 	
-	public function new(p_texture:GTexture):Void {
-		g2d_texture = p_texture;
+	public function new(p_id:String, p_texture:GTexture):Void {
+		id = p_id;
+		texture = p_texture;
 		g2d_chars = new Map<String,GTextureChar>();
 	}
 
@@ -28,12 +32,12 @@ class GTextureFont {
     }
 
     public function addChar(p_charId:String, p_region:GRectangle, p_xoffset:Float, p_yoffset:Float, p_xadvance:Float):GTextureChar {
-        var texture:GTexture = new GTexture(g2d_texture.id+"_"+p_charId, g2d_texture);
-		texture.region = p_region;
-		texture.pivotX = -p_region.width/2;
-        texture.pivotY = -p_region.height/2;
+        var charTexture:GTexture = new GTexture(texture.id+"_"+p_charId, texture);
+		charTexture.region = p_region;
+		charTexture.pivotX = -p_region.width/2;
+        charTexture.pivotY = -p_region.height/2;
 		
-		var char:GTextureChar = new GTextureChar(texture);
+		var char:GTextureChar = new GTextureChar(charTexture);
 		char.xoffset = p_xoffset;
 		char.yoffset = p_yoffset;
 		char.xadvance = p_xadvance;
@@ -49,7 +53,7 @@ class GTextureFont {
                 if (!map.exists(p_second)) {
                     return 0;
                 } else {
-                    return map.get(p_second)*g2d_texture.scaleFactor;
+                    return map.get(p_second)*texture.scaleFactor;
                 }
             }
         }

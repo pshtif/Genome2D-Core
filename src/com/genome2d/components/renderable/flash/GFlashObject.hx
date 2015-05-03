@@ -137,7 +137,7 @@ class GFlashObject extends GTexturedQuad {
         }
 
         if (texture == null) {
-            texture = GTextureManager.createTextureFromBitmapData(g2d_textureId, bitmapData);
+            texture = GTextureManager.createTexture(g2d_textureId, bitmapData);
         } else {
             texture.source = bitmapData;
 			texture.invalidateNativeTexture(false);

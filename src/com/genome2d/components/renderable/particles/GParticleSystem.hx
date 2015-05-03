@@ -70,18 +70,6 @@ class GParticleSystem extends GComponent implements IRenderable
 
     public var texture:GTexture;
 
-    #if swc @:extern #end
-    public var textureId(get, set):String;
-    #if swc @:getter(textureId) #end
-    inline private function get_textureId():String {
-        return (texture != null) ? texture.id : "";
-    }
-    #if swc @:setter(textureId) #end
-    inline private function set_textureId(p_value:String):String {
-        texture = GTextureManager.getTextureById(p_value);
-        return p_value;
-    }
-
     override public function init():Void {
         particlePool = GParticlePool.g2d_defaultPool;
 

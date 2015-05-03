@@ -14,19 +14,6 @@ class GUITextureSkin extends GUISkin {
     @prototype public var sliceRight:Int = 0;
     @prototype public var sliceBottom:Int = 0;
 
-    #if swc @:extern #end
-    @prototype public var textureId(get, set):String;
-    #if swc @:getter(textureId) #end
-    inline private function get_textureId():String {
-        return (texture != null) ? texture.id : "";
-    }
-    #if swc @:setter(textureId) #end
-    inline private function set_textureId(p_value:String):String {
-        texture = GTextureManager.getTextureById(p_value);
-
-        return p_value;
-    }
-
     override public function getMinWidth():Float {
         return (texture != null) ? texture.width : 0;
     }
@@ -35,10 +22,10 @@ class GUITextureSkin extends GUISkin {
         return (texture != null) ? texture.height : 0;
     }
 
-    public function new(p_id:String = "", p_textureId:String = "") {
+    public function new(p_id:String = "", p_texture:GTexture) {
         super(p_id);
 
-        textureId = p_textureId;
+        texture = p_texture;
     }
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Bool {
@@ -174,7 +161,7 @@ class GUITextureSkin extends GUISkin {
     }
 
     override public function clone():GUISkin {
-        var clone:GUITextureSkin = new GUITextureSkin("", textureId);
+        var clone:GUITextureSkin = new GUITextureSkin("", texture);
         return clone;
     }
 }

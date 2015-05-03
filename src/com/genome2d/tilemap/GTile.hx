@@ -16,7 +16,7 @@ class GTile
     }
     #if swc @:setter(textureId) #end
     inline private function set_textureId(p_value:String):String {
-        texture = GTextureManager.getTextureById(p_value);
+        texture = GTextureManager.getTexture(p_value);
         if (texture == null) GDebug.error("Invalid textures with id "+p_value);
         return p_value;
     }
@@ -94,27 +94,6 @@ class GTile
         }
         if (g2d_frameTextures.length>1) g2d_playing = true;
         return g2d_frameTextures;
-    }
-
-    #if swc @:extern #end
-    public var frameTextureIds(never, set):Array<String>;
-    #if swc @:setter(frameTextureIds) #end
-    inline private function set_frameTextureIds(p_value:Array<String>):Array<String> {
-        g2d_frameTextures = new Array<GTexture>();
-        g2d_frameTexturesCount = p_value.length;
-        for (i in 0...g2d_frameTexturesCount) {
-            var frameTexture:GTexture = GTextureManager.getTextureById(p_value[i]);
-            if (frameTexture == null) GDebug.error("Invalid texture id "+p_value[i]);
-            g2d_frameTextures.push(frameTexture);
-        }
-        g2d_currentFrame = 0;
-        if (g2d_frameTextures.length>0) {
-            texture = g2d_frameTextures[0];
-        } else {
-            texture = null;
-        }
-        if (g2d_frameTexturesCount>1) g2d_playing = true;
-        return p_value;
     }
 
     #if swc @:extern #end

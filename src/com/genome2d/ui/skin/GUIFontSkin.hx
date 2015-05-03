@@ -1,5 +1,6 @@
 package com.genome2d.ui.skin;
 import com.genome2d.input.GMouseInput;
+import com.genome2d.text.GFontManager;
 import com.genome2d.ui.element.GUIElement;
 import com.genome2d.ui.skin.GUIFontSkin;
 import com.genome2d.context.IGContext;
@@ -45,18 +46,6 @@ class GUIFontSkin extends GUISkin {
     }
 
     #if swc @:extern #end
-    @prototype public var fontAtlasId(get, set):String;
-    #if swc @:getter(fontAtlasId) #end
-    inline private function get_fontAtlasId():String {
-        return g2d_textRenderer.textureAtlasId;
-    }
-    #if swc @:setter(fontAtlasId) #end
-    inline private function set_fontAtlasId(p_value:String):String {
-        g2d_textRenderer.textureAtlasId = p_value;
-        return p_value;
-    }
-
-    #if swc @:extern #end
     @prototype public var fontScale(get, set):Float;
     #if swc @:getter(fontScale) #end
     inline private function get_fontScale():Float {
@@ -65,6 +54,19 @@ class GUIFontSkin extends GUISkin {
     #if swc @:setter(fontScale) #end
     inline private function set_fontScale(p_value:Float):Float {
         g2d_textRenderer.fontScale = p_value;
+        return p_value;
+    }
+	
+	#if swc @:extern #end
+    @prototype
+	public var fontId(get, set):String;
+    #if swc @:getter(fontId) #end
+    inline private function get_fontId():String {
+        return g2d_textRenderer.textureFont.id;
+    }
+    #if swc @:setter(fontId) #end
+    inline private function set_fontId(p_value:String):String {
+        g2d_textRenderer.textureFont = GFontManager.getFont(p_value);
         return p_value;
     }
 	
@@ -95,7 +97,7 @@ class GUIFontSkin extends GUISkin {
     }
 
     override public function getTexture():GTexture {
-        return g2d_textRenderer.textureFont;
+        return g2d_textRenderer.textureFont.texture;
     }
 
     override public function getMinWidth():Float {
@@ -106,13 +108,13 @@ class GUIFontSkin extends GUISkin {
         return autoSize ? g2d_textRenderer.height*fontScale : 0;
     }
 
-    public function new(p_id:String = "", p_fontAtlasId:String = "", p_fontScale:Float = 1, p_autoSize:Bool = true) {
+    public function new(p_id:String = "", p_fontId:String = "", p_fontScale:Float = 1, p_autoSize:Bool = true) {
         super(p_id);
 
         g2d_textRenderer = new GTextureTextRenderer();
         g2d_textRenderer.autoSize = p_autoSize;
 
-        if (p_fontAtlasId != "") fontAtlasId = p_fontAtlasId;
+        if (p_fontId != "") fontId = p_fontId;
         fontScale = p_fontScale;
         autoSize = p_autoSize;
     }
@@ -134,7 +136,7 @@ class GUIFontSkin extends GUISkin {
     }
 
     override public function clone():GUISkin {
-        var clone:GUIFontSkin = new GUIFontSkin("", fontAtlasId, fontScale, autoSize);
+        var clone:GUIFontSkin = new GUIFontSkin("", fontId, fontScale, autoSize);
         return clone;
     }
 	

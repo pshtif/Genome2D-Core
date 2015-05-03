@@ -23,7 +23,7 @@ class GFontManager
 	}
 	
 	static public function createTextureFont(p_id:String, p_texture:GTexture, p_fontXml:Xml):GTextureFont {
-        var textureFont:GTextureFont = new GTextureFont(p_texture);
+        var textureFont:GTextureFont = new GTextureFont(p_id, p_texture);
 
         var root:Xml = p_fontXml.firstElement();
 
