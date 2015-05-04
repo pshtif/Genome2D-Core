@@ -8,18 +8,7 @@ import com.genome2d.debug.GDebug;
 @:allow(com.genome2d.components.renderables.tilemap.GTileMap)
 class GTile
 {
-    public var texture:GTexture;#if swc @:extern #end
-    @prototype public var textureId(get, set):String;
-    #if swc @:getter(textureId) #end
-    inline private function get_textureId():String {
-        return (texture != null) ? texture.id : "";
-    }
-    #if swc @:setter(textureId) #end
-    inline private function set_textureId(p_value:String):String {
-        texture = GTextureManager.getTexture(p_value);
-        if (texture == null) GDebug.error("Invalid textures with id "+p_value);
-        return p_value;
-    }
+    public var texture:GTexture;
 
     public var value:Int = 0;
     public var rotation:Float = 0;

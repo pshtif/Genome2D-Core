@@ -47,6 +47,7 @@ class GTextureTextRenderer extends GTextRenderer {
 	public var cursorStartIndex:Int = 0;
 	public var cursorEndIndex:Int = 0;
 	private var g2d_cursorCurrentIndex:Int = 0;
+	public var enableCursor:Bool = false;
 	
 	static private var g2d_helperTexture:GTexture;
 	
@@ -63,7 +64,7 @@ class GTextureTextRenderer extends GTextRenderer {
         if (g2d_textureFont == null) return;
         if (g2d_dirty) invalidate();
 		
-		if (input) renderSelection(p_x, p_y, p_scaleX, p_scaleY, 0);
+		if (enableCursor) renderSelection(p_x, p_y, p_scaleX, p_scaleY, 0);
 
         var charCount:Int = g2d_chars.length;
         var cos:Float = 1;
@@ -307,7 +308,6 @@ class GTextureTextRenderer extends GTextRenderer {
 		var index:Int = getCharAt(p_input.localX, p_input.localY);
 		if (p_input.type == GMouseInputType.MOUSE_DOWN) {
 			g2d_cursorCurrentIndex = cursorEndIndex = cursorStartIndex = index;
-			trace(g2d_cursorCurrentIndex);
 		} else if (p_input.type == GMouseInputType.MOUSE_MOVE && p_input.buttonDown) {
 			if (index < g2d_cursorCurrentIndex) {
 				cursorStartIndex = index;

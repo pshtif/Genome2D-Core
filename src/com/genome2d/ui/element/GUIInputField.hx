@@ -18,7 +18,6 @@ class GUIInputField extends GUIElement
 	
 	private function keyboardInput_handler(input:GKeyboardInput):Void {
 		if (GFocusManager.activeFocus == this && input.type == GKeyboardInputType.KEY_DOWN && g2d_activeSkin != null) {
-			trace(input.keyCode);
 			var skin:GUIFontSkin = cast g2d_activeSkin;
 			switch (input.keyCode) {
 				// ENTER

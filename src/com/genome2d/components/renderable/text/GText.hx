@@ -8,6 +8,7 @@
  */
 package com.genome2d.components.renderable.text;
 
+import com.genome2d.text.GFontManager;
 import com.genome2d.text.GTextRenderer;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.input.GMouseInputType;
@@ -210,13 +211,13 @@ class GText extends GComponent implements IRenderable
 	
 	override public function getPrototype(p_xml:Xml = null):Xml {
 		p_xml = getPrototypeDefault(p_xml);
-		//p_xml.set("font", renderer.textureAtlasId);
+		p_xml.set("font", renderer.textureFont.id);
 		
 		return p_xml;
 	}
 	
 	override public function bindPrototype(p_xml:Xml):Void {
-		//renderer.textureAtlasId = p_xml.get("font");
+		renderer.textureFont = GFontManager.getFont(p_xml.get("font"));
 		
 		super.bindPrototype(p_xml);
 	}

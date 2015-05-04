@@ -20,7 +20,6 @@ class GUIFontSkin extends GUISkin {
     #if swc @:setter(text) #end
     inline private function set_text(p_value:String):String {
         g2d_textRenderer.text = p_value;
-		trace("here");
         return p_value;
     }
 

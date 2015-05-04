@@ -123,6 +123,7 @@ class GFbxScene {
 				if (fbxTexture == null) throw "Invalid texture.";
 
 				fbxRenderer.texture = GTextureManager.getTexture(fbxTexture.relativePath);
+				g2d_renderers.push(fbxRenderer);
             }
         }
     }

@@ -26,7 +26,8 @@ class GTexturedQuad extends GComponent implements IRenderable
     /**
         Blend mode used for rendering
     **/
-    @prototype public var blendMode:Int = 1;
+    @prototype 
+	public var blendMode:Int = 1;
 
     /**
         Enable/disable pixel perfect mouse detection, not supported by all contexts.
@@ -42,7 +43,7 @@ class GTexturedQuad extends GComponent implements IRenderable
     /**
         Texture used for rendering
     **/
-	@prototype("com.genome2d.textures.GTextureManager.getTextureById")
+	@prototype("com.genome2d.textures.GTextureManager.getTexture")
 	public var texture:GTexture;
 
     /**
