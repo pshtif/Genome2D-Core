@@ -17,4 +17,5 @@ import com.genome2d.macros.MGPrototypeProcessor;
 interface IGPrototypable {
     public function getPrototype(p_xml:Xml = null):Xml;
     public function bindPrototype(p_xml:Xml):Void;
+	public function toReference():String;
 }

@@ -9,6 +9,7 @@
 package com.genome2d.assets;
 
 import com.genome2d.callbacks.GCallback;
+import com.genome2d.text.GFontManager;
 import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 
@@ -126,7 +127,8 @@ class GAssetManager {
             if (GAssetManager.getXmlAssetById(idPart + "xml") != null) {
 				GTextureManager.createSubTextures(texture, GAssetManager.getXmlAssetById(idPart + "xml").xml);
             } else if (GAssetManager.getXmlAssetById(idPart + "fnt") != null) {
-				GTextureManager.createSubTextures(texture, GAssetManager.getXmlAssetById(idPart + "fnt").xml);
+				GFontManager.createTextureFont(texture.id, texture, GAssetManager.getXmlAssetById(idPart + "fnt").xml);
+				//GTextureManager.createSubTextures(texture, GAssetManager.getXmlAssetById(idPart + "fnt").xml);
             }
         }
     }

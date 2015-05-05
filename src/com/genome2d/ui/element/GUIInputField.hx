@@ -13,6 +13,8 @@ class GUIInputField extends GUIElement
 	public function new(p_skin:GUIFontSkin) {
 		super(p_skin);
 		
+		cast (g2d_activeSkin,GUIFontSkin).textRenderer.enableCursor = true;
+		
 		Genome2D.getInstance().onKeyboardInput.add(keyboardInput_handler);
 	}
 	

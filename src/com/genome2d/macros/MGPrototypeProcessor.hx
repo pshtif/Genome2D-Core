@@ -25,6 +25,7 @@ import haxe.macro.Compiler;
 class MGPrototypeProcessor {
     #if macro
 
+	static public var helperIndex:Int = 0;
     static public var prototypes = [];
     static public var previous:String = "com.genome2d.proto.GPrototypeHelper";
 
@@ -36,10 +37,6 @@ class MGPrototypeProcessor {
         var prototypePropertyTypes:Array<String> = [];
 
         var localClass = Context.getLocalClass().get();
-
-        var kind = TPath({ pack : localClass.pack, name : localClass.name, params : []});
-        var field = { name : localClass.name, doc : null, meta : [], access : [APublic,AStatic], kind : FVar(kind,null), pos : pos };
-        prototypes.push(field);
 
         var prototypeName:String = localClass.name;
         var prototypeNameOverride:Bool = false;
@@ -57,6 +54,8 @@ class MGPrototypeProcessor {
 		
 		var hasGetPrototypeDefault = false;
         var hasBindPrototypeDefault = false;
+		
+		var hasToReference = false;
 
         while (superClass != null) {
             var c = superClass.t.get();
@@ -64,6 +63,7 @@ class MGPrototypeProcessor {
 			for (i in c.fields.get()) {
 				if (i.name == "getPrototypeDefault") hasGetPrototypeDefault = true;
 				if (i.name == "bindPrototypeDefault") hasBindPrototypeDefault = true;
+				if (i.name == "toReference") hasToReference = true;
 			}
 			/*
             if (prototypeNameOverride) {
@@ -82,21 +82,22 @@ class MGPrototypeProcessor {
             // Check if we need proto methods
             if (i.name == "getPrototype") hasGetPrototype = true;
             if (i.name == "bindPrototype") hasBindPrototype = true;
+			if (i.name == "toReference") hasToReference = true;
 
             if (i.meta.length == 0 || i.access.indexOf(APublic) == -1) continue;
 
             for (meta in i.meta) {
-                if (meta.name == "prototype") {
-					var param:String = (meta.params.length > 0) ? ExprTools.getValue(meta.params[0]) : "";
+                if (meta.name == "prototype" || meta.name == "reference") {
+					//var param:String = (meta.params.length > 0) ? ExprTools.getValue(meta.params[0]) : "";
                     switch (i.kind) {
                         case FVar(t,e):
                             switch (t) {
                                 case TPath(p):
                                     prototypePropertyNames.push(i.name);
-									if (param == "") {
+									if (meta.name == "prototype") {
 										prototypePropertyTypes.push(extractType(p));
 									} else {
-										prototypePropertyTypes.push("R:"+param);
+										prototypePropertyTypes.push("R:"+extractType(p));
 									}
                                 case _:
                             }
@@ -104,10 +105,10 @@ class MGPrototypeProcessor {
                             switch (t) {
                                 case TPath(p):
                                     prototypePropertyNames.push(i.name);
-                                    if (param == "") {
+                                    if (meta.name == "prototype") {
 										prototypePropertyTypes.push(extractType(p));
 									} else {
-										prototypePropertyTypes.push("R:"+param);
+										prototypePropertyTypes.push("R:"+extractType(p));
 									}
                                 case _:
                             }
@@ -172,6 +173,15 @@ class MGPrototypeProcessor {
                     throw "Prototype error!";
             }
         }
+		
+		if (!hasToReference) {
+			var toReference = generateToReference();
+			switch (toReference) {
+                case TAnonymous(f):
+					fields = fields.concat(f);
+				default:
+			}
+		}
 
         var declPropertyNames:Array<Expr> = [];
         for (i in prototypePropertyNames) {
@@ -187,16 +197,24 @@ class MGPrototypeProcessor {
         fields.push({ name : "PROTOTYPE_PROPERTY_TYPES",      doc : null, meta : [], access : [APublic,AStatic], kind : FVar(kind,{expr:EArrayDecl(declPropertyTypes),pos:pos}), pos : pos });
         fields.push({ name : "PROTOTYPE_NAME",       doc : null, meta : [], access : [APublic,AStatic], kind : FVar(macro : String, macro $v{prototypeName}), pos : pos});
 
-        switch (Context.getType("com.genome2d.proto.IGPrototypable")) {
-            case TInst(c,_):
-                if (!c.get().meta.has(prototypeName)) c.get().meta.add(prototypeName, [macro $v{localClass.module}], pos);
-            default:
-        }
-
-        var helperName = "G"+Math.floor(10000000*Math.random());
+		// Prototype class name lookup
+		//var kind = TPath( { pack : [], name : "Class", params : [TPType(TPath( { name : localClass.name, pack : localClass.pack, params : [] } ))] } );
+		var field = { name : localClass.name, doc : null, meta : [], access : [APublic,AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
+		prototypes.push(field);
+		// We have a custom prototype name lookup as well
+		if (prototypeName != localClass.name) {
+			var field = { name : prototypeName, doc : null, meta : [], access : [APublic,AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
+			prototypes.push(field);
+		}
+		// Prototype class implementation to avoid DCE
+		var kind = TPath({ pack : localClass.pack, name : localClass.name, params : []});
+        var field = { name : localClass.name+"_IG2DR", doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, null), pos : pos };
+		prototypes.push(field);
+		
+        var helperName = "G" + (helperIndex++);
 		var helperClass = {
 			pack:[], name: helperName, pos: pos,
-			meta: [ { name:":native", params:[macro "com.genome2d.proto.GPrototypeHelper"], pos:pos }, { name:":keep", params:[], pos:pos } ],
+			meta: [ { name:":native", params:[macro "com.genome2d.proto.GPrototypeHelper"], pos:pos }, { name:":keep", params:[], pos:pos }], //, { name:":rtti", params:[], pos:pos } ],
 			kind: TDClass(), fields:prototypes
 		}
 		Context.defineType( helperClass );
@@ -252,15 +270,14 @@ class MGPrototypeProcessor {
 				case TPType(t):
 					switch (t) {
 						case TPath(p):
-							trace(p.name);
-							typeName += ":" + ((p.name != "Int" && p.name != "Bool" && p.name != "Float" && p.name != "String")?"IGPrototypable":p.name);
+							typeName += ":" + p.name;
 						case _:
 					}
 				case _:
 			}
-		} else if (typeName != "Int" && typeName != "Bool" && typeName != "Float" && typeName != "String") {
-            typeName = "IGPrototypable";
-        }
+		}
+		//else if (typeName != "Int" && typeName != "Bool" && typeName != "Float" && typeName != "String") {
+        //}
 
         return typeName;
     }
@@ -278,6 +295,14 @@ class MGPrototypeProcessor {
         return macro : {
             public function bindPrototype(p_prototypeXml:Xml):Void {
                 com.genome2d.proto.GPrototypeFactory.g2d_bindPrototype(this, p_prototypeXml, PROTOTYPE_PROPERTY_NAMES, PROTOTYPE_PROPERTY_TYPES);
+            }
+        }
+    }
+	
+	inline static private function generateToReference() {
+        return macro : {
+            public function toReference():String {
+                return "";
             }
         }
     }

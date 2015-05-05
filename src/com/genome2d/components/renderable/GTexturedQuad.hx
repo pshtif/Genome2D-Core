@@ -43,7 +43,7 @@ class GTexturedQuad extends GComponent implements IRenderable
     /**
         Texture used for rendering
     **/
-	@prototype("com.genome2d.textures.GTextureManager.getTexture")
+	@reference
 	public var texture:GTexture;
 
     /**

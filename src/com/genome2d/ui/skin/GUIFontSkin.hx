@@ -1,6 +1,7 @@
 package com.genome2d.ui.skin;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.text.GFontManager;
+import com.genome2d.text.GTextureFont;
 import com.genome2d.ui.element.GUIElement;
 import com.genome2d.ui.skin.GUIFontSkin;
 import com.genome2d.context.IGContext;
@@ -96,7 +97,7 @@ class GUIFontSkin extends GUISkin {
     }
 
     override public function getTexture():GTexture {
-        return g2d_textRenderer.textureFont.texture;
+        return (g2d_textRenderer != null && g2d_textRenderer.textureFont != null) ? g2d_textRenderer.textureFont.texture : null;
     }
 
     override public function getMinWidth():Float {
@@ -107,13 +108,13 @@ class GUIFontSkin extends GUISkin {
         return autoSize ? g2d_textRenderer.height*fontScale : 0;
     }
 
-    public function new(p_id:String = "", p_fontId:String = "", p_fontScale:Float = 1, p_autoSize:Bool = true) {
+    public function new(p_id:String = "", p_font:GTextureFont = null, p_fontScale:Float = 1, p_autoSize:Bool = true) {
         super(p_id);
 
         g2d_textRenderer = new GTextureTextRenderer();
         g2d_textRenderer.autoSize = p_autoSize;
 
-        if (p_fontId != "") fontId = p_fontId;
+        if (p_font != null) fontId = p_font.id;
         fontScale = p_fontScale;
         autoSize = p_autoSize;
     }
@@ -135,7 +136,7 @@ class GUIFontSkin extends GUISkin {
     }
 
     override public function clone():GUISkin {
-        var clone:GUIFontSkin = new GUIFontSkin("", fontId, fontScale, autoSize);
+        var clone:GUIFontSkin = new GUIFontSkin("", g2d_textRenderer.textureFont, fontScale, autoSize);
         return clone;
     }
 	

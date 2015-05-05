@@ -39,6 +39,15 @@ class GUI extends GComponent implements IRenderable {
         root.render();
         GUISkin.flushBatch();
     }
+	
+	public function setBounds(p_bounds:GRectangle):Void {
+		root.g2d_worldLeft = p_bounds.left;
+		root.g2d_worldRight = p_bounds.right;
+		root.g2d_worldTop = p_bounds.top;
+		root.g2d_worldBottom = p_bounds.bottom;
+		root.g2d_finalWidth = p_bounds.width;
+		root.g2d_finalHeight = p_bounds.height;
+	}
 
     public function getBounds(p_target:GRectangle = null):GRectangle {
         return null;
