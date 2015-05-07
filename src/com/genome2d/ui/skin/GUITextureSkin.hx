@@ -9,27 +9,38 @@ import com.genome2d.textures.GTexture;
 class GUITextureSkin extends GUISkin {
     public var texture:GTexture;
 
-    @prototype public var sliceLeft:Int = 0;
-    @prototype public var sliceTop:Int = 0;
-    @prototype public var sliceRight:Int = 0;
-    @prototype public var sliceBottom:Int = 0;
+    @prototype 
+	public var sliceLeft:Int = 0;
+	
+    @prototype 
+	public var sliceTop:Int = 0;
+	
+    @prototype 
+	public var sliceRight:Int = 0;
+	
+    @prototype 
+	public var sliceBottom:Int = 0;
+	
+	public var autoSize:Bool = true;
 
     override public function getMinWidth():Float {
-        return (texture != null) ? texture.width : 0;
+        return (texture != null && autoSize) ? texture.width : 0;
     }
 
     override public function getMinHeight():Float {
-        return (texture != null) ? texture.height : 0;
+        return (texture != null && autoSize) ? texture.height : 0;
     }
 
-    public function new(p_id:String = "", p_texture:GTexture) {
+    public function new(p_id:String, p_texture:GTexture, p_autoSize:Bool = true) {
         super(p_id);
 
         texture = p_texture;
+		autoSize = p_autoSize;
     }
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Bool {
         var rendered:Bool = false;
+
         if (texture != null && super.render(p_left, p_top, p_right, p_bottom)) {
             var context:IGContext = Genome2D.getInstance().getContext();
 
@@ -162,6 +173,7 @@ class GUITextureSkin extends GUISkin {
 
     override public function clone():GUISkin {
         var clone:GUITextureSkin = new GUITextureSkin("", texture);
+		clone.autoSize = autoSize;
         return clone;
     }
 }

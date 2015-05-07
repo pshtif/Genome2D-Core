@@ -121,14 +121,14 @@ class GAssetManager {
         for (asset in g2d_references) {
             if (!Std.is(asset,GImageAsset) || !asset.isLoaded()) continue;
             if (GTextureManager.getTexture(asset.id) != null) continue;
-            var idPart:String = asset.id.substring(0, asset.id.length - 3);
-			var texture:GTexture = GTextureManager.createTexture(asset.id, cast asset, p_scaleFactor);
+
+			var id:String = asset.id.substring(0, asset.id.lastIndexOf("."));
+			var texture:GTexture = GTextureManager.createTexture(id, cast asset, p_scaleFactor);
 			
-            if (GAssetManager.getXmlAssetById(idPart + "xml") != null) {
-				GTextureManager.createSubTextures(texture, GAssetManager.getXmlAssetById(idPart + "xml").xml);
-            } else if (GAssetManager.getXmlAssetById(idPart + "fnt") != null) {
-				GFontManager.createTextureFont(texture.id, texture, GAssetManager.getXmlAssetById(idPart + "fnt").xml);
-				//GTextureManager.createSubTextures(texture, GAssetManager.getXmlAssetById(idPart + "fnt").xml);
+            if (GAssetManager.getXmlAssetById(id + ".xml") != null) {
+				GTextureManager.createSubTextures(texture, GAssetManager.getXmlAssetById(id + ".xml").xml);
+            } else if (GAssetManager.getXmlAssetById(id + ".fnt") != null) {
+				GFontManager.createTextureFont(texture.id, texture, GAssetManager.getXmlAssetById(id + ".fnt").xml);
             }
         }
     }

@@ -108,7 +108,7 @@ class GUIFontSkin extends GUISkin {
         return autoSize ? g2d_textRenderer.height*fontScale : 0;
     }
 
-    public function new(p_id:String = "", p_font:GTextureFont = null, p_fontScale:Float = 1, p_autoSize:Bool = true) {
+    public function new(p_id:String, p_font:GTextureFont, p_fontScale:Float = 1, p_autoSize:Bool = true) {
         super(p_id);
 
         g2d_textRenderer = new GTextureTextRenderer();
@@ -121,7 +121,6 @@ class GUIFontSkin extends GUISkin {
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Bool {
         var rendered:Bool = false;
-		//trace(p_left, p_right, p_top, p_bottom);
         if (super.render(p_left, p_top, p_right, p_bottom)) {
             g2d_textRenderer.width = p_right - p_left;
             g2d_textRenderer.height = p_bottom - p_top;

@@ -13,6 +13,9 @@ import com.genome2d.textures.GTexture;
 class GFontManager
 {
 	static private var g2d_fonts:Map<String,GTextureFont>;
+	static public function getAllFonts():Map<String,GTextureFont> {
+		return g2d_fonts;
+	}
 	
 	static public function init():Void {
         g2d_fonts = new Map<String,GTextureFont>();

@@ -47,15 +47,13 @@ class GTextureFont {
     }
 
     public function getKerning(p_first:Int, p_second:Int):Float {
-        if (kerning != null) {
+        if (kerning != null && kerning.exists(p_first)) {
             var map:Map<Int,Int> = kerning.get(p_first);
-            if (map != null) {
-                if (!map.exists(p_second)) {
-                    return 0;
-                } else {
-                    return map.get(p_second)*texture.scaleFactor;
-                }
-            }
+			if (!map.exists(p_second)) {
+				return 0;
+			} else {
+				return map.get(p_second)*texture.scaleFactor;
+			}
         }
 		/**/
         return 0;

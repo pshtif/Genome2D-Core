@@ -113,7 +113,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
 
 
-    private var g2d_mouseDown:String;
+    private var g2d_mouseDown:String = "";
     #if swc @:extern #end
     @prototype public var mouseDown(get,set):String;
     #if swc @:getter(mouseDown) #end
@@ -134,7 +134,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_mouseDown;
     }
 
-    private var g2d_mouseUp:String;
+    private var g2d_mouseUp:String = "";
     #if swc @:extern #end
     @prototype public var mouseUp(get,set):String;
     #if swc @:getter(mouseUp) #end
@@ -155,7 +155,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_mouseUp;
     }
 
-    private var g2d_mouseClick:String;
+    private var g2d_mouseClick:String = "";
     #if swc @:extern #end
     @prototype public var mouseClick(get,set):String;
     #if swc @:getter(mouseClick) #end
@@ -176,7 +176,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_mouseClick;
     }
 
-    private var g2d_mouseOver:String;
+    private var g2d_mouseOver:String = "";
     #if swc @:extern #end
     @prototype public var mouseOver(get,set):String;
     #if swc @:getter(mouseOver) #end
@@ -197,7 +197,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_mouseOver;
     }
 
-    private var g2d_mouseOut:String;
+    private var g2d_mouseOut:String = "";
     #if swc @:extern #end
     @prototype public var mouseOut(get,set):String;
     #if swc @:getter(mouseOut) #end
@@ -218,7 +218,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_mouseOut;
     }
 
-    private var g2d_mouseMove:String;
+    private var g2d_mouseMove:String = "";
     #if swc @:extern #end
     @prototype public var mouseMove(get,set):String;
     #if swc @:getter(mouseMove) #end
@@ -527,7 +527,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
     private var g2d_preferredWidth:Float = 0;
     #if swc @:extern #end
-    @prototype public var preferredWidth(get, set):Float;
+    @prototype 
+	public var preferredWidth(get, set):Float;
     #if swc @:getter(preferredWidth) #end
     inline private function get_preferredWidth():Float {
         return g2d_preferredWidth;
@@ -710,7 +711,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                     var worldAnchorLeft:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorLeft;
                     var worldAnchorRight:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorRight;
                     var w:Float = (g2d_preferredWidth > g2d_minWidth) ? g2d_preferredWidth : g2d_minWidth;
-
+					
                     if (g2d_anchorLeft != g2d_anchorRight) {
                         g2d_worldLeft = worldAnchorLeft + g2d_left;
                         g2d_worldRight = worldAnchorRight - g2d_right;
@@ -820,6 +821,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         for (i in 0...g2d_numChildren) {
             p_prototypeXml.addChild(g2d_children[i].getPrototype());
         }
+
         return p_prototypeXml;
     }
 
