@@ -7,6 +7,7 @@ import com.genome2d.textures.GTexture;
 
 @prototypeName("textureSkin")
 class GUITextureSkin extends GUISkin {
+	@reference
     public var texture:GTexture;
 
     @prototype 
@@ -21,6 +22,7 @@ class GUITextureSkin extends GUISkin {
     @prototype 
 	public var sliceBottom:Int = 0;
 	
+	@prototype
 	public var autoSize:Bool = true;
 
     override public function getMinWidth():Float {
@@ -31,7 +33,7 @@ class GUITextureSkin extends GUISkin {
         return (texture != null && autoSize) ? texture.height : 0;
     }
 
-    public function new(p_id:String, p_texture:GTexture, p_autoSize:Bool = true) {
+    public function new(p_id:String = "", p_texture:GTexture = null, p_autoSize:Bool = true) {
         super(p_id);
 
         texture = p_texture;

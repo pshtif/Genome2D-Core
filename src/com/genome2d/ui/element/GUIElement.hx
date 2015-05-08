@@ -321,7 +321,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     inline
     private function set_skinId(p_value:String):String {
         if (skin != null) skin.remove(this);
-        var s:GUISkin = GUISkinManager.getSkinById(p_value);
+        var s:GUISkin = GUISkinManager.getSkin(p_value);
         skin = (s != null) ? s : null;
         return skinId;
     }

@@ -107,7 +107,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				tx = char.x * p_scaleX * g2d_fontScale + p_x + (cursorStartIndex>=g2d_textLength?char.xadvance + g2d_tracking:0);
 				ty = char.y * p_scaleY * g2d_fontScale + p_y;
 			}
-			var char:GTextureChar = g2d_textureFont.getCharById(Std.string(124));
+			var char:GTextureChar = g2d_textureFont.getChar(Std.string(124));
 			g2d_context.draw(char.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
 		} else if (cursorStartIndex != cursorEndIndex) {
 			var startChar:GTextureCharRenderable = (cursorStartIndex >= g2d_textLength) ? g2d_chars[g2d_textLength - 1] : g2d_chars[cursorStartIndex];
@@ -180,7 +180,7 @@ class GTextureTextRenderer extends GTextRenderer {
                 if (!g2d_autoSize && offsetY + g2d_textureFont.lineHeight + g2d_lineSpace > g2d_height / g2d_fontScale) break;
 
                 currentCharCode = g2d_text.charCodeAt(i);
-                char = g2d_textureFont.getCharById(Std.string(currentCharCode));
+                char = g2d_textureFont.getChar(Std.string(currentCharCode));
 
                 if (char == null) {
                     GDebug.warning("Texture for character " + g2d_text.charAt(i) + " with code " + g2d_text.charCodeAt(i) + " not found!");
@@ -327,7 +327,7 @@ class GTextureCharRenderable
 	
 	private var fontChar:GTextureChar;
     inline private function setCharCode(p_value:Int):Void {
-		fontChar = renderer.textureFont.getCharById(Std.string(p_value));
+		fontChar = renderer.textureFont.getChar(Std.string(p_value));
 
         if (fontChar == null) GDebug.warning("Texture for character " + Std.string(p_value) + " with code " + p_value + " not found!");
 	}

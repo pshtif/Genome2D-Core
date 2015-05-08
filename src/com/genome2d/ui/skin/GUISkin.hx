@@ -43,10 +43,10 @@ class GUISkin implements IGPrototypable {
     #if swc @:setter(id) #end
     inline private function set_id(p_value:String):String {
         if (p_value != g2d_id && p_value.length>0) {
-            if (GUISkinManager.getSkinById(p_value) != null) GDebug.error("Duplicate style id: "+p_value);
+            if (GUISkinManager.getSkin(p_value) != null) GDebug.error("Duplicate style id: "+p_value);
             GUISkinManager.g2d_references.set(p_value,this);
 
-            if (GUISkinManager.getSkinById(g2d_id) != null) GUISkinManager.g2d_references.remove(g2d_id);
+            if (GUISkinManager.getSkin(g2d_id) != null) GUISkinManager.g2d_references.remove(g2d_id);
             g2d_id = p_value;
         }
 
@@ -125,7 +125,7 @@ class GUISkin implements IGPrototypable {
             g2d_element = null;
         }
 
-        if (GUISkinManager.getSkinById(g2d_id) != null) GUISkinManager.g2d_references.remove(g2d_id);
+        if (GUISkinManager.getSkin(g2d_id) != null) GUISkinManager.g2d_references.remove(g2d_id);
     }
 	
 	public function toReference():String {

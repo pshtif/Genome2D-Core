@@ -165,7 +165,6 @@ class GPrototypeFactory {
 				} else if (type.indexOf("R:") == 0) {
 					type = type.substr(2);
 					var c:Class<IGPrototypable> = getPrototypeClass(type);//Type.resolveClass(type.substring(0, type.lastIndexOf(".")));
-					trace(c, type);
 					realValue = Reflect.callMethod(c, Reflect.field(c, "fromReference"), [value]);//Reflect.callMethod(c, Reflect.field(c, type.substr(type.lastIndexOf(".") + 1)), [value]);
 					
 				// Basic

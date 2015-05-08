@@ -27,7 +27,7 @@ class GTextureFont {
 		g2d_chars = new Map<String,GTextureChar>();
 	}
 
-    public function getCharById(p_subId:String):GTextureChar {
+    public function getChar(p_subId:String):GTextureChar {
         return cast g2d_chars.get(p_subId);
     }
 
