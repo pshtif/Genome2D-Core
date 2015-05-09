@@ -55,7 +55,7 @@ class GTextureTextRenderer extends GTextRenderer {
 		super();
 		
 		if (g2d_helperTexture == null) {
-			g2d_helperTexture = GTextureManager.createTexture("GTextureTextRenderer_helper", new BitmapData(4, 4, false, 0xFFFFFF));
+			g2d_helperTexture = GTextureManager.createTexture("g2d_GTextureTextRenderer_helper", new BitmapData(4, 4, false, 0xFFFFFF));
 			g2d_helperTexture.pivotX = g2d_helperTexture.pivotY = -2;
 		}
 	}

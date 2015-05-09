@@ -268,7 +268,7 @@ class Genome2D implements IGDebuggableInternal
                 g2d_renderMatrix.identity();
                 g2d_renderMatrixArray = [];
             }
-
+			
             if (p_camera != null) {
                 p_camera.render();
             } else {
@@ -347,6 +347,7 @@ class Genome2D implements IGDebuggableInternal
     @:allow(com.genome2d.components.GCameraController)
 	private function g2d_addCameraController(p_camera:GCameraController):Void {
         for (i in 0...g2d_cameras.length) {
+			trace(g2d_cameras[i] == p_camera);
             if (g2d_cameras[i] == p_camera) return;
         }
         g2d_cameras.push(p_camera);

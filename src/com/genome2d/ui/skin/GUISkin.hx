@@ -93,6 +93,7 @@ class GUISkin implements IGPrototypable {
     }
 
     private function attach(p_element:GUIElement):GUISkin {
+		trace(id, p_element);
         var origin:GUISkin = (g2d_origin == null) ? this : g2d_origin;
         var clone:GUISkin = origin.clone();
         clone.g2d_origin = origin;
@@ -103,8 +104,17 @@ class GUISkin implements IGPrototypable {
         return clone;
     }
 
-    private function remove(p_element:GUIElement):Void {
-        dispose();
+    private function remove(p_removedByElement:Bool):Void {
+        if (g2d_origin != null) {
+			if (!p_removedByElement) {
+				g2d_element.skin = null;
+				g2d_origin.g2d_clones.remove(this);
+			}
+			if (g2d_element != null) {
+				g2d_element.onValueChanged.remove(elementValueChanged_handler);
+				g2d_element = null;
+			}
+        }
     }
 
     private function elementValueChanged_handler(p_element:GUIElement):Void {
@@ -118,14 +128,17 @@ class GUISkin implements IGPrototypable {
         return null;
     }
 
-    private function dispose():Void {
-        if (g2d_origin != null) {
-            g2d_origin.g2d_clones.remove(this);
-            g2d_element.onValueChanged.remove(elementValueChanged_handler);
-            g2d_element = null;
-        }
-
-        if (GUISkinManager.getSkin(g2d_id) != null) GUISkinManager.g2d_references.remove(g2d_id);
+    public function dispose():Void {
+		if (g2d_origin == null) {
+			while (g2d_clones.length > 0) {
+				trace(g2d_clones.length, g2d_clones[0].id);
+				g2d_clones[0].remove(false);
+			}
+			trace(id, GUISkinManager.getSkin(id));
+			if (GUISkinManager.getSkin(id) != null) GUISkinManager.g2d_removeSkin(id);
+		} else {
+			g2d_origin.dispose();
+		}
     }
 	
 	public function toReference():String {

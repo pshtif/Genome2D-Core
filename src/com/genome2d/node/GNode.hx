@@ -1618,7 +1618,8 @@ class GNode implements IGInteractive implements IGPrototypable
                 invalidate(p_parentTransformUpdate, p_parentColorUpdate);
             }
 
-            if (g2d_active && visible && ((cameraGroup&p_camera.mask) != 0 || cameraGroup == 0) && (g2d_usedAsMask==0 || p_renderAsMask)) {
+            if (g2d_active && visible && ((cameraGroup & p_camera.mask) != 0 || cameraGroup == 0) && (g2d_usedAsMask == 0 || p_renderAsMask)) {
+				//trace(p_camera.mask, cameraGroup, g2d_defaultRenderable);
                 /*  Masking  */
                 if (!p_renderAsMask && mask != null) {
                     core.getContext().renderToStencil(g2d_activeMasks.length);
