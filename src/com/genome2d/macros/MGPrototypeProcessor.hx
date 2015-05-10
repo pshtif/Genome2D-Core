@@ -264,6 +264,7 @@ class MGPrototypeProcessor {
 	
 	inline static private function extractType(typePath) {
         var typeName = typePath.name;
+		
 		if (typeName == "Array") {
 			var param = typePath.params[0];
 			switch (param) {
