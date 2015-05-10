@@ -9,7 +9,7 @@ class GFlashText extends GFlashObject {
 
     #if swc @:extern #end
     public var textField(get,never):TextField;
-    #if swc @:setter(textField) #end
+    #if swc @:getter(textField) #end
     public function get_textField():TextField {
         return g2d_textField;
     }

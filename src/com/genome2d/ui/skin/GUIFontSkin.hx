@@ -108,8 +108,8 @@ class GUIFontSkin extends GUISkin {
         return autoSize ? g2d_textRenderer.height*fontScale : 0;
     }
 
-    public function new(p_id:String = "", p_font:GTextureFont = null, p_fontScale:Float = 1, p_autoSize:Bool = true) {
-        super(p_id);
+    public function new(p_id:String = "", p_font:GTextureFont = null, p_fontScale:Float = 1, p_autoSize:Bool = true, p_origin:GUIFontSkin = null) {
+        super(p_id, p_origin);
 
         g2d_textRenderer = new GTextureTextRenderer();
         g2d_textRenderer.autoSize = p_autoSize;
@@ -135,7 +135,7 @@ class GUIFontSkin extends GUISkin {
     }
 
     override public function clone():GUISkin {
-        var clone:GUIFontSkin = new GUIFontSkin("", g2d_textRenderer.textureFont, fontScale, autoSize);
+        var clone:GUIFontSkin = new GUIFontSkin("", g2d_textRenderer.textureFont, fontScale, autoSize, (g2d_origin == null)?this:cast g2d_origin);
         return clone;
     }
 	

@@ -208,9 +208,9 @@ class MGPrototypeProcessor {
 		}
 		// Prototype class implementation to avoid DCE
 		var kind = TPath({ pack : localClass.pack, name : localClass.name, params : []});
-        var field = { name : localClass.name+"_IG2DR", doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, null), pos : pos };
+        var field = { name : "g2d_"+localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, null), pos : pos };
 		prototypes.push(field);
-		
+
         var helperName = "G" + (helperIndex++);
 		var helperClass = {
 			pack:[], name: helperName, pos: pos,

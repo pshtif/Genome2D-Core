@@ -17,7 +17,7 @@ class GPrototypeFactory {
 		
 		var fields:Array<String> = Type.getClassFields(GPrototypeHelper);
 		for (i in fields) {
-			if (i.indexOf("_IG2DR") != -1) continue;
+			if (i.indexOf("g2d_") == 0) continue;
 			
 			var cls:Class<IGPrototypable> = cast Type.resolveClass(Reflect.field(GPrototypeHelper, i));
             if (cls != null) g2d_lookups.set(i, cls);

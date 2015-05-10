@@ -26,9 +26,6 @@ class GSprite extends GTexturedQuad
 {
 	public var frameAnimation:GFrameAnimation;
 	
-	@prototype
-	public var aaa:GSprite;
-	
 	override public function init():Void {
 	}
 	

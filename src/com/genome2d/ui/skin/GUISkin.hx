@@ -65,10 +65,13 @@ class GUISkin implements IGPrototypable {
     }
 
     static private var g2d_instanceCount:Int = 0;
-    public function new(p_id:String = "") {
+    public function new(p_id:String = "", p_origin:GUISkin) {
         g2d_instanceCount++;
-        id = (p_id != "") ? p_id : "GUISkin"+g2d_instanceCount;
-        g2d_clones = new Array<GUISkin>();
+		g2d_origin = p_origin;
+        if (g2d_origin == null) {
+			id = (p_id != "") ? p_id : "GUISkin" + g2d_instanceCount;
+			g2d_clones = new Array<GUISkin>();
+		}
     }
 
     private var g2d_renderLeft:Float;
@@ -96,7 +99,6 @@ class GUISkin implements IGPrototypable {
 		trace(id, p_element);
         var origin:GUISkin = (g2d_origin == null) ? this : g2d_origin;
         var clone:GUISkin = origin.clone();
-        clone.g2d_origin = origin;
         clone.g2d_element = p_element;
         clone.elementValueChanged_handler(p_element);
         origin.g2d_clones.push(clone);

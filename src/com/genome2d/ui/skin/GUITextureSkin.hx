@@ -33,8 +33,8 @@ class GUITextureSkin extends GUISkin {
         return (texture != null && autoSize) ? texture.height : 0;
     }
 
-    public function new(p_id:String = "", p_texture:GTexture = null, p_autoSize:Bool = true) {
-        super(p_id);
+    public function new(p_id:String = "", p_texture:GTexture = null, p_autoSize:Bool = true, p_origin:GUITextureSkin = null) {
+        super(p_id, p_origin);
 
         texture = p_texture;
 		autoSize = p_autoSize;
@@ -174,8 +174,7 @@ class GUITextureSkin extends GUISkin {
     }
 
     override public function clone():GUISkin {
-        var clone:GUITextureSkin = new GUITextureSkin("", texture);
-		clone.autoSize = autoSize;
+        var clone:GUITextureSkin = new GUITextureSkin("", texture, autoSize, (g2d_origin == null)?this:cast g2d_origin);
         return clone;
     }
 }

@@ -32,7 +32,8 @@ class GTiledSprite extends GComponent implements IRenderable {
     public var ignoreMatrix:Bool = true;
 
     private var g2d_width:Float = 110;
-    @prototype public var width(get, set):Float;
+    @prototype 
+	public var width(get, set):Float;
     #if swc @:getter(width) #end
     inline private function get_width():Float {
         return g2d_width;
