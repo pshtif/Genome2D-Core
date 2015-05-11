@@ -17,11 +17,7 @@ class GUISkinManager {
     }
 
     static public function g2d_removeSkin(p_id:String):Void {
-		trace(p_id);
         g2d_references.remove(p_id);
-		trace(g2d_references.get(p_id));
-		var i = g2d_references.keys();
-		while (i.hasNext()) trace(i.next());
     }
 
     static public function getAllSkins():Map<String,GUISkin> {

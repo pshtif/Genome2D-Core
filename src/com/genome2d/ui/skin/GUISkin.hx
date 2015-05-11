@@ -96,7 +96,6 @@ class GUISkin implements IGPrototypable {
     }
 
     private function attach(p_element:GUIElement):GUISkin {
-		trace(id, p_element);
         var origin:GUISkin = (g2d_origin == null) ? this : g2d_origin;
         var clone:GUISkin = origin.clone();
         clone.g2d_element = p_element;
@@ -133,10 +132,8 @@ class GUISkin implements IGPrototypable {
     public function dispose():Void {
 		if (g2d_origin == null) {
 			while (g2d_clones.length > 0) {
-				trace(g2d_clones.length, g2d_clones[0].id);
 				g2d_clones[0].remove(false);
 			}
-			trace(id, GUISkinManager.getSkin(id));
 			if (GUISkinManager.getSkin(id) != null) GUISkinManager.g2d_removeSkin(id);
 		} else {
 			g2d_origin.dispose();
