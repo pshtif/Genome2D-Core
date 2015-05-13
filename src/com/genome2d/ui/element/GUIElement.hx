@@ -1,9 +1,15 @@
 package com.genome2d.ui.element;
 
 import com.genome2d.callbacks.GCallback;
+import com.genome2d.context.GCamera;
+import com.genome2d.context.IGContext;
 import com.genome2d.focus.GFocusManager;
+import com.genome2d.geom.GRectangle;
 import com.genome2d.input.GKeyboardInput;
 import com.genome2d.input.IGInteractive;
+import com.genome2d.node.GNode;
+import com.genome2d.ui.layout.GUIHorizontalLayout;
+import com.genome2d.ui.layout.GUIVerticalLayout;
 import flash.utils.Object;
 import com.genome2d.ui.skin.GUISkinManager;
 import com.genome2d.ui.layout.GUILayout;
@@ -520,9 +526,11 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     public var g2d_worldTop:Float;
     public var g2d_worldRight:Float;
     public var g2d_worldBottom:Float;
+	
+	@prototype
+	public var expand:Bool = true;
 
     private var g2d_minWidth:Float = 0;
-    private var g2d_variableWidth:Float = 0;
     public var g2d_finalWidth:Float = 0;
 
     private var g2d_preferredWidth:Float = 0;
@@ -541,7 +549,6 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
 
     private var g2d_minHeight:Float = 0;
-    private var g2d_variableHeight:Float = 0;
     public var g2d_finalHeight:Float = 0;
 
     private var g2d_preferredHeight:Float = 0;
@@ -675,7 +682,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     public function getChildIndex(p_child:GUIElement):Int {
         return g2d_children.indexOf(p_child);
     }
-
+	
     private function calculateWidth():Void {
         if (g2d_dirty) {
             if (g2d_layout != null) {
@@ -710,8 +717,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                 if (g2d_parent.g2d_layout == null) {
                     var worldAnchorLeft:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorLeft;
                     var worldAnchorRight:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorRight;
-                    var w:Float = (g2d_preferredWidth > g2d_minWidth) ? g2d_preferredWidth : g2d_minWidth;
-					
+                    var w:Float = (g2d_preferredWidth > g2d_minWidth || !expand) ? g2d_preferredWidth : g2d_minWidth;
+
                     if (g2d_anchorLeft != g2d_anchorRight) {
                         g2d_worldLeft = worldAnchorLeft + g2d_left;
                         g2d_worldRight = worldAnchorRight - g2d_right;
@@ -744,7 +751,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                 if (g2d_parent.g2d_layout == null) {
                     var worldAnchorTop:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorTop;
                     var worldAnchorBottom:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorBottom;
-                    var h:Float = (g2d_preferredHeight > g2d_minHeight) ? g2d_preferredHeight : g2d_minHeight;
+                    var h:Float = (g2d_preferredHeight > g2d_minHeight || !expand) ? g2d_preferredHeight : g2d_minHeight;
+					
                     if (g2d_anchorTop != g2d_anchorBottom) {
                         g2d_worldTop = worldAnchorTop + g2d_top;
                         g2d_worldBottom = worldAnchorBottom - g2d_bottom;
@@ -769,21 +777,34 @@ class GUIElement implements IGPrototypable implements IGInteractive {
             }
         }
     }
+	
+	public var scrollbar:GUIScrollbar;
 
     public function render():Void {
         if (visible) {
-            if (flushBatch) GUISkin.flushBatch();
+			var context:IGContext = Genome2D.getInstance().getContext();
+			var previousMask:GRectangle = context.getMaskRect();
+			var camera:GCamera = context.getActiveCamera();
+			
+            if (flushBatch || !expand) GUISkin.flushBatch();
+			if (!expand) {
+				context.setMaskRect(new GRectangle(g2d_worldLeft*camera.scaleX, g2d_worldTop*camera.scaleY, (g2d_worldRight - g2d_worldLeft)*camera.scaleX, (g2d_worldBottom - g2d_worldTop)*camera.scaleY));
+			}
+			
             if (g2d_activeSkin != null) g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom);
 
             for (i in 0...g2d_numChildren) {
                 g2d_children[i].render();
             }
+			
+			if (!expand) context.setMaskRect(previousMask);
         }
     }
 
     public function getPrototype(p_prototypeXml:Xml = null):Xml {
         if (p_prototypeXml == null) p_prototypeXml = Xml.createElement("element");
 
+		if (expand != true) p_prototypeXml.set("expand", Std.string(anchorX));
         if (anchorX != 0) p_prototypeXml.set("anchorX", Std.string(anchorX));
         if (anchorY != 0) p_prototypeXml.set("anchorY", Std.string(anchorY));
         if (anchorLeft != 0) p_prototypeXml.set("anchorLeft", Std.string(anchorLeft));
@@ -826,6 +847,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
 
     public function bindPrototype(p_prototypeXml:Xml):Void {
+		if (p_prototypeXml.exists("expand")) expand = (p_prototypeXml.get("expand") != "false" && p_prototypeXml.get("expand") != "0");
         if (p_prototypeXml.exists("align")) setAlign(Std.parseInt(p_prototypeXml.get("align")));
         if (p_prototypeXml.exists("anchorX")) anchorX = Std.parseFloat(p_prototypeXml.get("anchorX"));
         if (p_prototypeXml.exists("anchorY")) anchorY = Std.parseFloat(p_prototypeXml.get("anchorY"));
@@ -854,7 +876,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         if (p_prototypeXml.exists("mouseOver")) mouseDown = p_prototypeXml.get("mouseOver");
         if (p_prototypeXml.exists("mouseOut")) mouseDown = p_prototypeXml.get("mouseOut");
         if (p_prototypeXml.exists("mouseMove")) mouseDown = p_prototypeXml.get("mouseMove");
-
+		
         var it:Iterator<Xml> = p_prototypeXml.iterator();
         while (it.hasNext()) {
             var xml:Xml = it.next();

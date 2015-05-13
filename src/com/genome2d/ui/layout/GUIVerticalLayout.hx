@@ -6,7 +6,8 @@ import com.genome2d.ui.element.GUIElement;
 @prototypeName("vertical")
 class GUIVerticalLayout extends GUILayout {
 
-    @prototype public var gap:Float = 10;
+    @prototype 
+	public var gap:Float = 10;
 
     override private function calculateWidth(p_element:GUIElement):Void {
         p_element.g2d_preferredWidth = p_element.g2d_minWidth = 0;
