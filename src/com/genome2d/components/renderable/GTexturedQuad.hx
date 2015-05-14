@@ -97,7 +97,7 @@ class GTexturedQuad extends GComponent implements IRenderable
             else p_bounds = new GRectangle(0, 0, 0, 0);
         } else {
             if (p_bounds != null) p_bounds.setTo(-texture.width*.5-texture.pivotX, -texture.height*.5-texture.pivotY, texture.width, texture.height);
-            else p_bounds = new GRectangle(-texture.width*.5-texture.pivotX, -texture.height*.5-texture.pivotY, texture.width, texture.height);
+            else p_bounds = new GRectangle( -texture.width * .5 - texture.pivotX, -texture.height * .5 - texture.pivotY, texture.width, texture.height);
         }
 
         return p_bounds;

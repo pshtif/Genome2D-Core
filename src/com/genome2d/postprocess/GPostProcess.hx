@@ -107,10 +107,10 @@ class GPostProcess {
     public function renderNode(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
         var bounds:GRectangle = p_bounds;
         if (bounds == null) bounds = (g2d_definedBounds != null) ? g2d_definedBounds : p_node.getBounds(null, g2d_activeBounds);
-
+		
         // Invalid bounds
         if (bounds.width > 4096) return;
-
+		
         updatePassTextures(bounds);
 
         var context:GStage3DContext = cast Genome2D.getInstance().getContext();
@@ -153,7 +153,8 @@ class GPostProcess {
     private function updatePassTextures(p_bounds:GRectangle):Void {
         var w:Int = Std.int(p_bounds.width + g2d_leftMargin + g2d_rightMargin);
         var h:Int = Std.int(p_bounds.height + g2d_topMargin + g2d_bottomMargin);
-        if (g2d_passTextures[0].width != w || g2d_passTextures[0].height != h) {
+		
+        if ((g2d_passTextures[0].width != w || g2d_passTextures[0].height != h) && w>0 && h>0) {
             var i:Int = g2d_passTextures.length-1;
             while (i >= 0) {
                 var texture:GTexture = g2d_passTextures[i];
@@ -168,7 +169,7 @@ class GPostProcess {
 
     private function createPassTextures():Void {
         for (i in 0...g2d_passes) {
-            var texture:GTexture = GTextureManager.createRenderTexture("g2d_pp_"+g2d_id+"_"+i, 2, 2);
+            var texture:GTexture = GTextureManager.createRenderTexture("g2d_pp_" + g2d_id + "_" + i, 2, 2);
             texture.filteringType = GTextureFilteringType.NEAREST;
             texture.pivotX = -texture.width/2;
             texture.pivotY = -texture.height/2;

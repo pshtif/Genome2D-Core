@@ -674,8 +674,14 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return (p_index>=0 && p_index<g2d_numChildren) ? g2d_children[p_index] : null;
     }
 
-    public function getChildByName(p_name:String):GUIElement {
-        for (i in 0...g2d_numChildren) if (g2d_children[i].name == p_name) return g2d_children[i];
+    public function getChildByName(p_name:String, p_recursive:Bool = false):GUIElement {
+        for (i in 0...g2d_numChildren) {
+			if (g2d_children[i].name == p_name) return g2d_children[i];
+			if (p_recursive) {
+				var childByName:GUIElement = g2d_children[i].getChildByName(p_name, true);
+				if (childByName != null) return childByName;
+			}
+		}
         return null;
     }
 
@@ -777,8 +783,6 @@ class GUIElement implements IGPrototypable implements IGInteractive {
             }
         }
     }
-	
-	public var scrollbar:GUIScrollbar;
 
     public function render():Void {
         if (visible) {

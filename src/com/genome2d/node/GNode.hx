@@ -1044,7 +1044,7 @@ class GNode implements IGInteractive implements IGPrototypable
         } else if (g2d_renderable != null) {
             g2d_renderable.getBounds(aabb);
         }
-
+		
         if (aabb.width != 0 && aabb.height != 0) {
             var m:GMatrix = getTransformationMatrix(p_targetSpace, g2d_cachedMatrix);
 
@@ -1619,7 +1619,6 @@ class GNode implements IGInteractive implements IGPrototypable
             }
 
             if (g2d_active && visible && ((cameraGroup & p_camera.mask) != 0 || cameraGroup == 0) && (g2d_usedAsMask == 0 || p_renderAsMask)) {
-				//trace(p_camera.mask, cameraGroup, g2d_defaultRenderable);
                 /*  Masking  */
                 if (!p_renderAsMask && mask != null) {
                     core.getContext().renderToStencil(g2d_activeMasks.length);
