@@ -1,5 +1,6 @@
 package com.genome2d.macros;
 
+import com.genome2d.debug.GProfiler;
 import haxe.macro.ExprTools;
 import haxe.macro.Type.ClassType;
 import haxe.macro.Context;

@@ -107,7 +107,7 @@ class GFlashObject extends GTexturedQuad {
             g2d_accumulatedTime += p_deltaTime;
             var updateTime:Float = 1000/updateFrameRate;
             if (g2d_invalidate || g2d_accumulatedTime > updateTime) {
-				var bitmapData:BitmapData = cast texture.source;
+				var bitmapData:BitmapData = cast texture.getSource();
                 bitmapData.fillRect(bitmapData.rect, 0x0);
                 var bounds:GRectangle = nativeObject.getBounds(nativeObject);
                 g2d_nativeMatrix.tx = -bounds.x;
@@ -139,7 +139,7 @@ class GFlashObject extends GTexturedQuad {
         if (texture == null) {
             texture = GTextureManager.createTexture(g2d_textureId, bitmapData);
         } else {
-            texture.source = bitmapData;
+            texture.setSource(bitmapData);
 			texture.invalidateNativeTexture(false);
         }
 

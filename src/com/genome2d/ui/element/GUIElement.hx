@@ -247,11 +247,11 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
     public var listItemPrototype:Xml;
 
-    private var g2d_value:String = "";
-    public function getValue():String {
-        return g2d_value;
+    private var g2d_model:String = "";
+    public function getModel():String {
+        return g2d_model;
     }
-    public function setValue(p_value:Dynamic):Void {
+    public function setModel(p_value:Dynamic):Void {
         if (Std.is(p_value,Xml)) {
             var xml:Xml = cast (p_value,Xml);
             var it:Iterator<Xml> = xml.elements();
@@ -267,9 +267,9 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                     var child:GUIElement = getChildByName(childXml.nodeName);
                     if (child != null) {
                         if (childXml.firstChild() != null && childXml.firstChild().nodeType == Xml.PCData) {
-                            child.setValue(childXml.firstChild().nodeValue);
+                            child.setModel(childXml.firstChild().nodeValue);
                         } else {
-                            child.setValue(childXml);
+                            child.setModel(childXml);
                         }
                     }
                 }
@@ -279,26 +279,26 @@ class GUIElement implements IGPrototypable implements IGInteractive {
             var it:Iterator<Dynamic> = cast (p_value,Array<Dynamic>).iterator();
             while (it.hasNext()) {
                 var child:GUIElement = cast GPrototypeFactory.createPrototype(listItemPrototype);
-                child.setValue(it.next());
+                child.setModel(it.next());
                 addChild(child);
             }
         } else if (Std.is(p_value,String)) {
-            g2d_value = p_value;
+            g2d_model = p_value;
         } else {
             for (it in Reflect.fields(p_value)) {
                 var child:GUIElement = getChildByName(it);
-                if (child != null) child.setValue(Reflect.field(p_value, it));
+                if (child != null) child.setModel(Reflect.field(p_value, it));
             }
         }
-        onValueChanged.dispatch(this);
+        onModelChanged.dispatch(this);
     }
 
-    private var g2d_onValueChanged:GCallback1<GUIElement>;
+    private var g2d_onModelChanged:GCallback1<GUIElement>;
     #if swc @:extern #end
-    public var onValueChanged(get, never):GCallback1<GUIElement>;
-    #if swc @:getter(onValueChanged) #end
-    inline private function get_onValueChanged():GCallback1<GUIElement> {
-        return g2d_onValueChanged;
+    public var onModelChanged(get, never):GCallback1<GUIElement>;
+    #if swc @:getter(onModelChanged) #end
+    inline private function get_onModelChanged():GCallback1<GUIElement> {
+        return g2d_onModelChanged;
     }
 
     private var g2d_layout:GUILayout;
@@ -318,7 +318,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     private var g2d_activeSkin:GUISkin;
 
     #if swc @:extern #end
-    @prototype public var skinId(get, set):String;
+    @prototype 
+	public var skinId(get, set):String;
     #if swc @:getter(skinId) #end
     inline private function get_skinId():String {
         return (g2d_skin != null) ? g2d_skin.id : "";
@@ -591,7 +592,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
 
     public function new(p_skin:GUISkin = null) {
-        g2d_onValueChanged = new GCallback1<GUIElement>();
+        g2d_onModelChanged = new GCallback1<GUIElement>();
 
         if (p_skin != null) skin = p_skin;
     }
@@ -837,8 +838,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         if (mouseOut != "") p_prototypeXml.set("mouseOut", mouseOut);
         if (mouseMove != "") p_prototypeXml.set("mouseMove", mouseMove);
 
-        if (g2d_value != "") {
-            var valueXml:Xml = Xml.createPCData(g2d_value);
+        if (g2d_model != "") {
+            var valueXml:Xml = Xml.createPCData(g2d_model);
             p_prototypeXml.addChild(valueXml);
         }
 
@@ -885,7 +886,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         while (it.hasNext()) {
             var xml:Xml = it.next();
             if (xml.nodeType == Xml.PCData) {
-                setValue(xml.nodeValue);
+                setModel(xml.nodeValue);
             } else if (xml.nodeType == Xml.Element) {
                 var prototype:IGPrototypable = GPrototypeFactory.createPrototype(xml);
                 if (Std.is(prototype, GUIElement)) {
