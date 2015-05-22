@@ -13,7 +13,8 @@ import com.genome2d.textures.GTextureManager;
 class GUIFontSkin extends GUISkin {
 
     #if swc @:extern #end
-    @prototype public var text(get, set):String;
+    @prototype 
+	public var text(get, set):String;
     #if swc @:getter(text) #end
     inline private function get_text():String {
         return g2d_textRenderer.text;
@@ -25,7 +26,8 @@ class GUIFontSkin extends GUISkin {
     }
 
     #if swc @:extern #end
-    @prototype public var autoSize(get, set):Bool;
+    @prototype(false) 
+	public var autoSize(get, set):Bool;
     #if swc @:getter(autoSize) #end
     inline private function get_autoSize():Bool {
         return g2d_textRenderer.autoSize;
@@ -46,7 +48,8 @@ class GUIFontSkin extends GUISkin {
     }
 
     #if swc @:extern #end
-    @prototype public var fontScale(get, set):Float;
+    @prototype 
+	public var fontScale(get, set):Float;
     #if swc @:getter(fontScale) #end
     inline private function get_fontScale():Float {
         return g2d_textRenderer.fontScale;

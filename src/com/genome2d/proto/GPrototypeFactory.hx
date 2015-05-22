@@ -66,7 +66,7 @@ class GPrototypeFactory {
         return proto;
     }
 
-    static public function g2d_getPrototype(p_instance:IGPrototypable, p_prototypeXml:Xml, p_prototypeName:String, p_propertyNames:Array<String>, p_propertyTypes:Array<String>):Xml {
+    static public function g2d_getPrototype(p_instance:IGPrototypable, p_prototypeXml:Xml, p_prototypeName:String, p_propertyNames:Array<String>, p_propertyTypes:Array<String>, p_propertyDefaults:Array<Dynamic>):Xml {
         if (p_prototypeXml == null) p_prototypeXml = Xml.createElement(p_prototypeName);
 
         if (p_propertyNames != null) {
@@ -112,7 +112,8 @@ class GPrototypeFactory {
                     }
 				// Basic type
 				} else {
-                    p_prototypeXml.set(name,Std.string(Reflect.getProperty(p_instance, name)));
+					var value = Reflect.getProperty(p_instance, name);
+					if (value != p_propertyDefaults[i]) p_prototypeXml.set(name,Std.string(Reflect.getProperty(p_instance, name)));
                 }
             }
         }

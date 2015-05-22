@@ -35,6 +35,7 @@ class MGPrototypeProcessor {
 
         var prototypePropertyNames:Array<String> = [];
         var prototypePropertyTypes:Array<String> = [];
+		var prototypePropertyDefaults:Array<Expr> = [];
 
         var localClass = Context.getLocalClass().get();
 
@@ -90,10 +91,12 @@ class MGPrototypeProcessor {
                 if (meta.name == "prototype" || meta.name == "reference") {
 					//var param:String = (meta.params.length > 0) ? ExprTools.getValue(meta.params[0]) : "";
                     switch (i.kind) {
-                        case FVar(t,e):
+                        case FVar(t, e):							
                             switch (t) {
                                 case TPath(p):
+									prototypePropertyDefaults.push(extractDefault(p.name, e, pos));
                                     prototypePropertyNames.push(i.name);
+									
 									if (meta.name == "prototype") {
 										prototypePropertyTypes.push(extractType(p));
 									} else {
@@ -104,6 +107,7 @@ class MGPrototypeProcessor {
                         case FProp(get,set,t,e):
                             switch (t) {
                                 case TPath(p):
+									prototypePropertyDefaults.push(extractDefault(p.name, e, pos));
                                     prototypePropertyNames.push(i.name);
                                     if (meta.name == "prototype") {
 										prototypePropertyTypes.push(extractType(p));
@@ -185,25 +189,27 @@ class MGPrototypeProcessor {
 
         var declPropertyNames:Array<Expr> = [];
         for (i in prototypePropertyNames) {
-            declPropertyNames.push({expr:EConst(CString(i)),pos:pos});
+            declPropertyNames.push( { expr:EConst(CString(i)), pos:pos } );
         }
         var declPropertyTypes:Array<Expr> = [];
         for (i in prototypePropertyTypes) {
-            declPropertyTypes.push({expr:EConst(CString(i)),pos:pos});
+            declPropertyTypes.push( { expr:EConst(CString(i)), pos:pos } );
         }
 
-        var kind = TPath({ pack : [], name : "Array", params : [TPType(TPath({name:"String", pack:[], params:[]}))] });
-        fields.push({ name : "PROTOTYPE_PROPERTY_NAMES", doc : null, meta : [], access : [APublic,AStatic], kind : FVar(kind,{expr:EArrayDecl(declPropertyNames),pos:pos}), pos : pos });
-        fields.push({ name : "PROTOTYPE_PROPERTY_TYPES",      doc : null, meta : [], access : [APublic,AStatic], kind : FVar(kind,{expr:EArrayDecl(declPropertyTypes),pos:pos}), pos : pos });
-        fields.push({ name : "PROTOTYPE_NAME",       doc : null, meta : [], access : [APublic,AStatic], kind : FVar(macro : String, macro $v{prototypeName}), pos : pos});
+        var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"Dynamic", pack:[], params:[] } ))] } );
+		fields.push( { name : "PROTOTYPE_PROPERTY_DEFAULTS", doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(prototypePropertyDefaults), pos:pos } ), pos : pos } );
+		var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"String", pack:[], params:[] } ))] } );
+        fields.push( { name : "PROTOTYPE_PROPERTY_NAMES",    doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyNames), pos:pos } )   , pos : pos } );
+        fields.push( { name : "PROTOTYPE_PROPERTY_TYPES",    doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyTypes), pos:pos } )   , pos : pos } );
+        fields.push( { name : "PROTOTYPE_NAME",              doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { prototypeName } )              , pos : pos } );
 
 		// Prototype class name lookup
 		//var kind = TPath( { pack : [], name : "Class", params : [TPType(TPath( { name : localClass.name, pack : localClass.pack, params : [] } ))] } );
-		var field = { name : localClass.name, doc : null, meta : [], access : [APublic,AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
+		var field = { name : localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
 		prototypes.push(field);
 		// We have a custom prototype name lookup as well
 		if (prototypeName != localClass.name) {
-			var field = { name : prototypeName, doc : null, meta : [], access : [APublic,AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
+			var field = { name : prototypeName, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
 			prototypes.push(field);
 		}
 		// Prototype class implementation to avoid DCE
@@ -224,41 +230,23 @@ class MGPrototypeProcessor {
         return fields;
     }
 
-    static private function extractDefault(typeName, e) {
-        var value = null;
-        if (e != null) {
-            switch (e.expr) {
-                case EConst(c):
-                    switch (c) {
-                        case CIdent(v):
-                            value = c;
-                        case CInt(v):
-                            value = c;
-                        case CFloat(v):
-                            value = c;
-                        case CString(v):
-                            value = c;
-                        default:
-                            trace(c);
-                    }
-                default:
-            }
-        }
-        if (value == null) {
+    static private function extractDefault(typeName, e, pos) {
+        if (e == null) {
             switch (typeName) {
                 case "Int":
-                    value = CInt("0");
+                    return {expr:EConst(CInt("0")), pos:pos};
                 case "Float":
-                    value = CFloat("0.0");
+                    return {expr:EConst(CFloat("0.0")), pos:pos};
                 case "Bool":
-                    value = CIdent("false");
+                    return {expr:EConst(CIdent("false")), pos:pos};
                 case "String":
-                    value = CString("");
+                    return {expr:EConst(CString("")), pos:pos};
                 default:
-                    trace(typeName, e);
+                    return {expr:EConst(CIdent("null")), pos:pos};
             }
-        }
-        return value;
+		} 
+
+		return e;
     }
 
 	
@@ -286,7 +274,7 @@ class MGPrototypeProcessor {
     inline static private function generateGetPrototype() {
         return macro : {
              public function getPrototype(p_prototypeXml:Xml = null):Xml {
-                p_prototypeXml = com.genome2d.proto.GPrototypeFactory.g2d_getPrototype(this, p_prototypeXml, PROTOTYPE_NAME, PROTOTYPE_PROPERTY_NAMES, PROTOTYPE_PROPERTY_TYPES);
+                p_prototypeXml = com.genome2d.proto.GPrototypeFactory.g2d_getPrototype(this, p_prototypeXml, PROTOTYPE_NAME, PROTOTYPE_PROPERTY_NAMES, PROTOTYPE_PROPERTY_TYPES, PROTOTYPE_PROPERTY_DEFAULTS);
                 return p_prototypeXml;
             }
         }

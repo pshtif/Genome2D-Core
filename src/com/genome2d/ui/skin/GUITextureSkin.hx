@@ -8,7 +8,7 @@ import com.genome2d.textures.GTexture;
 @prototypeName("textureSkin")
 class GUITextureSkin extends GUISkin {
 	@reference
-    public var texture:GTexture;
+    public var texture:GTexture = null;
 
     @prototype 
 	public var sliceLeft:Int = 0;
@@ -45,7 +45,7 @@ class GUITextureSkin extends GUISkin {
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Bool {
         var rendered:Bool = false;
-
+		
         if (texture != null && super.render(p_left, p_top, p_right, p_bottom)) {
             var context:IGContext = Genome2D.getInstance().getContext();
 

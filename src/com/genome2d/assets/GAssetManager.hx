@@ -117,13 +117,21 @@ class GAssetManager {
         if (ignoreFailed) g2d_loadQueueNext();
     }
 
-    static public function generateTextures(p_scaleFactor:Float = 1):Void {
+    static public function generateTextures(p_scaleFactor:Float = 1, p_overwrite:Bool = false):Void {
         for (asset in g2d_references) {
-            if (!Std.is(asset,GImageAsset) || !asset.isLoaded()) continue;
-            if (GTextureManager.getTexture(asset.id) != null) continue;
+            if (!Std.is(asset, GImageAsset) || !asset.isLoaded()) continue;
+			
+			var texture:GTexture = GTextureManager.getTexture(asset.id);
+            if (texture != null) {
+				if (p_overwrite) {
+					texture.dispose();
+				} else {
+					continue;
+				}
+			}
 
 			var id:String = asset.id.substring(0, asset.id.lastIndexOf("."));
-			var texture:GTexture = GTextureManager.createTexture(id, cast asset, p_scaleFactor);
+			texture = GTextureManager.createTexture(id, cast asset, p_scaleFactor);
 			
             if (GAssetManager.getXmlAssetById(id + ".xml") != null) {
 				GTextureManager.createSubTextures(texture, GAssetManager.getXmlAssetById(id + ".xml").xml);
