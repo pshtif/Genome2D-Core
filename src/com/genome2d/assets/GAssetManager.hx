@@ -10,6 +10,7 @@ package com.genome2d.assets;
 
 import com.genome2d.callbacks.GCallback;
 import com.genome2d.text.GFontManager;
+import com.genome2d.text.GTextureFont;
 import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 
@@ -76,6 +77,12 @@ class GAssetManager {
 
         return null;
     }
+	
+	static public function disposeAllAssets():Void {
+		for (asset in g2d_references) {
+			asset.dispose();
+		}
+	}
 
     static public function loadQueue():Void {
         for (asset in g2d_references) {
@@ -121,7 +128,8 @@ class GAssetManager {
         for (asset in g2d_references) {
             if (!Std.is(asset, GImageAsset) || !asset.isLoaded()) continue;
 			
-			var texture:GTexture = GTextureManager.getTexture(asset.id);
+			var id:String = asset.id.substring(0, asset.id.lastIndexOf("."));
+			var texture:GTexture = GTextureManager.getTexture(id);
             if (texture != null) {
 				if (p_overwrite) {
 					texture.dispose();
@@ -130,13 +138,13 @@ class GAssetManager {
 				}
 			}
 
-			var id:String = asset.id.substring(0, asset.id.lastIndexOf("."));
 			texture = GTextureManager.createTexture(id, cast asset, p_scaleFactor);
 			
             if (GAssetManager.getXmlAssetById(id + ".xml") != null) {
 				GTextureManager.createSubTextures(texture, GAssetManager.getXmlAssetById(id + ".xml").xml);
             } else if (GAssetManager.getXmlAssetById(id + ".fnt") != null) {
-				GFontManager.createTextureFont(texture.id, texture, GAssetManager.getXmlAssetById(id + ".fnt").xml);
+				var font:GTextureFont = GFontManager.createTextureFont(texture.id, texture, GAssetManager.getXmlAssetById(id + ".fnt").xml);
+				trace(font.getPrototype());
             }
         }
     }

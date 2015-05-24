@@ -19,7 +19,7 @@ import com.genome2d.textures.GTexture;
 /**
     Component used for shape rendering
 **/
-class GShape extends GComponent implements IRenderable
+class GShape extends GComponent implements IGRenderable
 {
     public var texture:GTexture;
     public var blendMode:Int = GBlendMode.NORMAL;

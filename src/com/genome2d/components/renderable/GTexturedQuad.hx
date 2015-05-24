@@ -21,7 +21,7 @@ import com.genome2d.textures.GTexture;
 /**
     Component used for rendering textured quads used as a super class for `GSprite` and `GMovieClip`
 **/
-class GTexturedQuad extends GComponent implements IRenderable
+class GTexturedQuad extends GComponent implements IGRenderable
 {
     /**
         Blend mode used for rendering

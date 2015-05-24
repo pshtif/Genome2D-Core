@@ -178,6 +178,10 @@ class GUITextureSkin extends GUISkin {
 
     override public function clone():GUISkin {
         var clone:GUITextureSkin = new GUITextureSkin("", texture, autoSize, (g2d_origin == null)?this:cast g2d_origin);
+		clone.sliceLeft = sliceLeft;
+		clone.sliceTop = sliceTop;
+		clone.sliceRight = sliceRight;
+		clone.sliceBottom = sliceBottom;
 		clone.alpha = alpha;
         return clone;
     }

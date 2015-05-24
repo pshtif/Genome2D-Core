@@ -25,7 +25,7 @@ import com.genome2d.context.GCamera;
     Component handling advanced particles systems with unlimited extendibility using custom particles instances and user defined affectors and initializers
  **/
 @:access(com.genome2d.particles.GParticle)
-class GParticleSystem extends GComponent implements IRenderable
+class GParticleSystem extends GComponent implements IGRenderable
 {
     public var blendMode:Int = 1;
 

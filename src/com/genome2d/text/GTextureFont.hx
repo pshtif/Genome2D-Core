@@ -9,16 +9,22 @@
 package com.genome2d.text;
 
 import com.genome2d.geom.GRectangle;
+import com.genome2d.proto.IGPrototypable;
 import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 
-class GTextureFont {
+class GTextureFont implements IGPrototypable {
+	@reference
 	public var texture:GTexture;
 	
+	@prototype
 	public var id:String;
 	
+	@prototype
     public var lineHeight:Int = 0;
+	
 	private var g2d_chars:Map<String,GTextureChar>;
+	
     public var kerning:Map<Int,Map<Int,Int>>;
 	
 	public function new(p_id:String, p_texture:GTexture):Void {
@@ -58,4 +64,8 @@ class GTextureFont {
 		/**/
         return 0;
     }
+	
+	static public function fromReference(p_reference:String) {
+		return GFontManager.getFont(p_reference);
+	}
 }

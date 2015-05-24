@@ -252,8 +252,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_model;
     }
     public function setModel(p_value:Dynamic):Void {
-        if (Std.is(p_value,Xml)) {
-            var xml:Xml = cast (p_value,Xml);
+        if (Std.is(p_value, Xml)) {
+            var xml:Xml = cast (p_value, Xml);
             var it:Iterator<Xml> = xml.elements();
             if (!it.hasNext()) {
                 if (xml.firstChild() != null && xml.firstChild().nodeType == Xml.PCData) {
@@ -264,7 +264,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
             } else {
                 while (it.hasNext()) {
                     var childXml:Xml = it.next();
-                    var child:GUIElement = getChildByName(childXml.nodeName);
+                    var child:GUIElement = getChildByName(childXml.nodeName,true);
                     if (child != null) {
                         if (childXml.firstChild() != null && childXml.firstChild().nodeType == Xml.PCData) {
                             child.setModel(childXml.firstChild().nodeValue);
@@ -316,21 +316,6 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
 
     private var g2d_activeSkin:GUISkin;
-
-    #if swc @:extern #end
-    @prototype 
-	public var skinId(get, set):String;
-    #if swc @:getter(skinId) #end
-    inline private function get_skinId():String {
-        return (g2d_skin != null) ? g2d_skin.id : "";
-    }
-    #if swc @:setter(skinId) #end
-    inline
-    private function set_skinId(p_value:String):String {
-        var s:GUISkin = GUISkinManager.getSkin(p_value);
-        skin = (s != null) ? s : null;
-        return skinId;
-    }
 
     private var g2d_skin:GUISkin;
     #if swc @:extern #end
@@ -825,7 +810,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         if (preferredWidth != 0) p_prototypeXml.set("preferredWidth", Std.string(preferredWidth));
         if (preferredHeight != 0) p_prototypeXml.set("preferredHeight", Std.string(preferredHeight));
         if (name != "") p_prototypeXml.set("name", name);
-        if (skinId != "") p_prototypeXml.set("skinId", skinId);
+        if (skin != null) p_prototypeXml.set("skin", skin.id);
         if (mouseEnabled != true) p_prototypeXml.set("mouseEnabled", Std.string(mouseEnabled));
         if (mouseChildren != true) p_prototypeXml.set("mouseChildren", Std.string(mouseChildren));
         if (visible != true) p_prototypeXml.set("visible", Std.string(visible));
@@ -869,7 +854,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         if (p_prototypeXml.exists("preferredWidth")) preferredWidth = Std.parseFloat(p_prototypeXml.get("preferredWidth"));
         if (p_prototypeXml.exists("preferredHeight")) preferredHeight = Std.parseFloat(p_prototypeXml.get("preferredHeight"));
         if (p_prototypeXml.exists("name")) name = p_prototypeXml.get("name");
-        if (p_prototypeXml.exists("skinId")) skinId = p_prototypeXml.get("skinId");
+        if (p_prototypeXml.exists("skin")) skin = GUISkinManager.getSkin(p_prototypeXml.get("skin"));
         if (p_prototypeXml.exists("mouseEnabled")) mouseEnabled = (p_prototypeXml.get("mouseEnabled") != "false" && p_prototypeXml.get("mouseEnabled") != "0");
         if (p_prototypeXml.exists("mouseChildren")) mouseChildren = (p_prototypeXml.get("mouseChildren") != "false" && p_prototypeXml.get("mouseChildren") != "0");
         if (p_prototypeXml.exists("visible")) visible = (p_prototypeXml.get("visible") != "false" && p_prototypeXml.get("visible") != "0");

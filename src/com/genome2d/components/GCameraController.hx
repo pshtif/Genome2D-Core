@@ -162,6 +162,7 @@ class GCameraController extends GComponent
 	}
 
     public function setViewport(p_width:Int, p_height:Int, p_resize:Bool = true):Void {
+		if (viewport != null) viewport.dispose();
         viewport = new GViewport(this, p_width, p_height, p_resize);
     }
 }

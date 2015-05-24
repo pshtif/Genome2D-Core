@@ -29,7 +29,7 @@ import com.genome2d.postprocess.GPostProcess;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.geom.GMatrixUtils;
 import com.genome2d.geom.GMatrix;
-import com.genome2d.components.renderable.IRenderable;
+import com.genome2d.components.renderable.IGRenderable;
 import com.genome2d.context.GCamera;
 import com.genome2d.input.GMouseInputType;
 import com.genome2d.components.GComponent;
@@ -170,14 +170,7 @@ class GNode implements IGInteractive implements IGPrototypable
 	/**
 	    Abstract reference to user defined data, if you want keep some custom data binded to G2DNode instance use it.
 	**/
-	private var g2d_userData:Map<String, Dynamic>;
-	#if swc @:extern #end
-	public var userData(get, never):Map<String, Dynamic>;
-	#if swc @:getter(userData) #end
-	inline private function get_userData():Map<String, Dynamic> {
-		if (g2d_userData == null) g2d_userData = new Map<String,Dynamic>();
-		return g2d_userData;
-	}
+	public var userData:Dynamic;
 
 	private var g2d_active:Bool = true;
 
@@ -598,7 +591,7 @@ class GNode implements IGInteractive implements IGPrototypable
 	/****************************************************************************************************
 	 * 	COMPONENT CODE
 	 ****************************************************************************************************/
-    private var g2d_renderable:IRenderable;
+    private var g2d_renderable:IGRenderable;
     private var g2d_defaultRenderable:GSprite;
 	private var g2d_components:Array<GComponent>;
 	private var g2d_componentCount:Int = 0;
@@ -648,7 +641,7 @@ class GNode implements IGInteractive implements IGPrototypable
 
         if (Std.is(component, GSprite)) {
             g2d_defaultRenderable = cast component;
-        } else if (Std.is(component, IRenderable)) {
+        } else if (Std.is(component, IGRenderable)) {
             g2d_renderable = cast component;
         }
 
@@ -693,7 +686,7 @@ class GNode implements IGInteractive implements IGPrototypable
 
         if (Std.is(component, GSprite)) {
             g2d_defaultRenderable = null;
-        } else if (Std.is(component, IRenderable)) {
+        } else if (Std.is(component, IGRenderable)) {
             g2d_renderable = null;
         }
 		
@@ -1105,7 +1098,7 @@ class GNode implements IGInteractive implements IGPrototypable
         return current;
     }
 
-    public function sortChildrenOnUserData(p_property:String, p_ascending:Bool = true):Void {
+    public function sortChildren(p_nodeSorter:IGNodeSorter, p_ascending:Bool = true):Void {
         if (g2d_firstChild == null) return;
 
         var insize:Int = 1;
@@ -1145,7 +1138,7 @@ class GNode implements IGInteractive implements IGPrototypable
                         p = p.g2d_next;
                         psize--;
                     } else if (p_ascending) {
-                        if (p.userData[p_property] >= q.userData[p_property]) {
+                        if (p_nodeSorter.getSortValue(p) >= p_nodeSorter.getSortValue(q)) {
                             e = p;
                             p = p.g2d_next;
                             psize--;
@@ -1155,7 +1148,7 @@ class GNode implements IGInteractive implements IGPrototypable
                             qsize--;
                         }
                     } else {
-                        if (p.userData[p_property] <= q.userData[p_property]) {
+                        if (p_nodeSorter.getSortValue(p) <= p_nodeSorter.getSortValue(q)) {
                             e = p;
                             p = p.g2d_next;
                             psize--;

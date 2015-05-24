@@ -10,7 +10,7 @@ import com.genome2d.context.GCamera;
 import com.genome2d.debug.GDebug;
 import com.genome2d.node.GNode;
 
-class GTileMap extends GComponent implements IRenderable
+class GTileMap extends GComponent implements IGRenderable
 {
     public var blendMode:Int = GBlendMode.NORMAL;
 

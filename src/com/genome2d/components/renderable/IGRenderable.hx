@@ -17,7 +17,7 @@ import com.genome2d.context.GCamera;
 
     Every `GNode` can have a single `IRenderable` components at any given time
 **/
-interface IRenderable {
+interface IGRenderable {
 
     /**
      *  Render the components

@@ -16,13 +16,13 @@ import com.genome2d.geom.GRectangle;
 import com.genome2d.components.GComponent;
 import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
-import com.genome2d.components.renderable.IRenderable;
+import com.genome2d.components.renderable.IGRenderable;
 import com.genome2d.context.GCamera;
 
 /**
     Component handling simple particles systems used for best performance
  **/
-class GSimpleParticleSystem extends GComponent implements IRenderable
+class GSimpleParticleSystem extends GComponent implements IGRenderable
 {
     public var blendMode:Int = 1;
 

@@ -20,7 +20,7 @@ import com.genome2d.text.GTextureTextRenderer;
 /**
     Component used for rendering textures based text
 **/
-class GText extends GComponent implements IRenderable
+class GText extends GComponent implements IGRenderable
 {
     public var renderer:GTextureTextRenderer;
 

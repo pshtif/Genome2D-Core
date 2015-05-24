@@ -8,7 +8,7 @@ import com.genome2d.context.GCamera;
 import com.genome2d.context.filters.GFilter;
 import com.genome2d.textures.GTexture;
 
-class GTiledSprite extends GComponent implements IRenderable {
+class GTiledSprite extends GComponent implements IGRenderable {
     /**
         Blend mode used for rendering
     **/
