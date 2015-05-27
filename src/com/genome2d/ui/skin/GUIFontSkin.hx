@@ -132,7 +132,7 @@ class GUIFontSkin extends GUISkin {
         return rendered;
     }
 
-    override private function elementValueChanged_handler(p_element:GUIElement):Void {
+    override private function elementModelChanged_handler(p_element:GUIElement):Void {
         text =  (p_element.getModel() != null) ? p_element.getModel().toString() : "";
     }
 

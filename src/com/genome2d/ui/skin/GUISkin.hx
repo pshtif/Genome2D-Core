@@ -99,9 +99,10 @@ class GUISkin implements IGPrototypable {
         var origin:GUISkin = (g2d_origin == null) ? this : g2d_origin;
         var clone:GUISkin = origin.clone();
         clone.g2d_element = p_element;
-        clone.elementValueChanged_handler(p_element);
-        origin.g2d_clones.push(clone);
-        p_element.onModelChanged.add(clone.elementValueChanged_handler);
+        clone.elementModelChanged_handler(p_element);
+        p_element.onModelChanged.add(clone.elementModelChanged_handler);
+		
+		origin.g2d_clones.push(clone);
         return clone;
     }
 
@@ -112,13 +113,13 @@ class GUISkin implements IGPrototypable {
 				g2d_origin.g2d_clones.remove(this);
 			}
 			if (g2d_element != null) {
-				g2d_element.onModelChanged.remove(elementValueChanged_handler);
+				g2d_element.onModelChanged.remove(elementModelChanged_handler);
 				g2d_element = null;
 			}
         }
     }
 
-    private function elementValueChanged_handler(p_element:GUIElement):Void {
+    private function elementModelChanged_handler(p_element:GUIElement):Void {
     }
 	
 	public function captureMouseInput(p_input:GMouseInput):Void {

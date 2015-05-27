@@ -4,6 +4,7 @@ import com.genome2d.textures.GTextureManager;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.IGContext;
 import com.genome2d.textures.GTexture;
+import com.genome2d.ui.element.GUIElement;
 
 @prototypeName("textureSkin")
 class GUITextureSkin extends GUISkin {
@@ -27,6 +28,9 @@ class GUITextureSkin extends GUISkin {
 	
 	@prototype
 	public var alpha:Float = 1;
+	
+	@prototype
+	public var bindTextureToModel:Bool = false;
 
     override public function getMinWidth():Float {
         return (texture != null && autoSize) ? texture.width : 0;
@@ -182,7 +186,14 @@ class GUITextureSkin extends GUISkin {
 		clone.sliceTop = sliceTop;
 		clone.sliceRight = sliceRight;
 		clone.sliceBottom = sliceBottom;
+		clone.bindTextureToModel = bindTextureToModel;
 		clone.alpha = alpha;
         return clone;
+    }
+	
+	override private function elementModelChanged_handler(p_element:GUIElement):Void {
+		if (bindTextureToModel) {
+			texture =  (p_element.getModel() != null) ? GTextureManager.getTexture(p_element.getModel().toString()) : null;
+		}
     }
 }

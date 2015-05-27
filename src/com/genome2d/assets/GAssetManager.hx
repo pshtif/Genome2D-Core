@@ -12,6 +12,7 @@ import com.genome2d.callbacks.GCallback;
 import com.genome2d.text.GFontManager;
 import com.genome2d.text.GTextureFont;
 import com.genome2d.textures.GTexture;
+import com.genome2d.textures.GTextureBase;
 import com.genome2d.textures.GTextureManager;
 
 class GAssetManager {
@@ -138,14 +139,15 @@ class GAssetManager {
 				}
 			}
 
-			texture = GTextureManager.createTexture(id, cast asset, p_scaleFactor);
+			texture = GTextureManager.createTexture(id, cast asset);
 			
             if (GAssetManager.getXmlAssetById(id + ".xml") != null) {
 				GTextureManager.createSubTextures(texture, GAssetManager.getXmlAssetById(id + ".xml").xml);
             } else if (GAssetManager.getXmlAssetById(id + ".fnt") != null) {
-				var font:GTextureFont = GFontManager.createTextureFont(texture.id, texture, GAssetManager.getXmlAssetById(id + ".fnt").xml);
-				trace(font.getPrototype());
+				GFontManager.createTextureFont(texture.id, texture, GAssetManager.getXmlAssetById(id + ".fnt").xml);
             }
+			
+			texture.invalidateNativeTexture(false);
         }
     }
 }

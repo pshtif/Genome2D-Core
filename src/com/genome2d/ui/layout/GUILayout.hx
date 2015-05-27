@@ -1,7 +1,16 @@
+/*
+ * 	Genome2D - 2D GPU Framework
+ * 	http://www.genome2d.com
+ *
+ *	Copyright 2011-2015 Peter Stefcek. All rights reserved.
+ *
+ *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
+ */
 package com.genome2d.ui.layout;
 
 import com.genome2d.ui.element.GUIElement;
 import com.genome2d.proto.IGPrototypable;
+
 @:access(com.genome2d.ui.element.GUIElement)
 @prototypeName("layout")
 class GUILayout implements IGPrototypable {

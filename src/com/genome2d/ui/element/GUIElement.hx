@@ -1,3 +1,11 @@
+/*
+ * 	Genome2D - 2D GPU Framework
+ * 	http://www.genome2d.com
+ *
+ *	Copyright 2011-2015 Peter Stefcek. All rights reserved.
+ *
+ *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
+ */
 package com.genome2d.ui.element;
 
 import com.genome2d.callbacks.GCallback;
@@ -8,6 +16,7 @@ import com.genome2d.geom.GRectangle;
 import com.genome2d.input.GKeyboardInput;
 import com.genome2d.input.IGInteractive;
 import com.genome2d.node.GNode;
+import com.genome2d.textures.GTextureManager;
 import com.genome2d.ui.layout.GUIHorizontalLayout;
 import com.genome2d.ui.layout.GUIVerticalLayout;
 import flash.utils.Object;
@@ -35,21 +44,21 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	public var flushBatch:Bool = false;
 
     @prototype 
-	public var name:String = "GUIElement";
+	public var name:String = "";
 
     private var g2d_currentClient:Dynamic;
-    private var g2d_client:Dynamic;
-    public function getClient():Dynamic {
-        return (g2d_client != null) ? g2d_client : (parent != null) ? parent.getClient() : null;
+    private var g2d_controller:Dynamic;
+    public function getController():Dynamic {
+        return (g2d_controller != null) ? g2d_controller : (parent != null) ? parent.getController() : null;
     }
-    public function setClient(p_value:Dynamic):Void {
-        g2d_client = p_value;
+    public function setController(p_value:Dynamic):Void {
+        g2d_controller = p_value;
 
         invalidateClient();
     }
 
     private function invalidateClient():Void {
-        var newClient:Dynamic = getClient();
+        var newClient:Dynamic = getController();
         if (newClient != g2d_currentClient) {
             if (g2d_mouseDown != "" && g2d_currentClient != null) {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentClient, g2d_mouseDown);
@@ -245,45 +254,34 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_mouseMove;
     }
 
-    public var listItemPrototype:Xml;
-
     private var g2d_model:String = "";
     public function getModel():String {
         return g2d_model;
     }
     public function setModel(p_value:Dynamic):Void {
+		// Xml assignment
         if (Std.is(p_value, Xml)) {
             var xml:Xml = cast (p_value, Xml);
             var it:Iterator<Xml> = xml.elements();
             if (!it.hasNext()) {
                 if (xml.firstChild() != null && xml.firstChild().nodeType == Xml.PCData) {
-                    p_value = xml.firstChild().nodeValue;
+                    g2d_model = xml.firstChild().nodeValue;
                 } else {
-                    p_value = "";
+                    g2d_model = "";
                 }
             } else {
                 while (it.hasNext()) {
                     var childXml:Xml = it.next();
                     var child:GUIElement = getChildByName(childXml.nodeName,true);
                     if (child != null) {
-                        if (childXml.firstChild() != null && childXml.firstChild().nodeType == Xml.PCData) {
-                            child.setModel(childXml.firstChild().nodeValue);
-                        } else {
-                            child.setModel(childXml);
-                        }
+                        child.setModel(childXml);
                     }
                 }
             }
-        } else if (Std.is(p_value,Array) && listItemPrototype != null) {
-            disposeChildren();
-            var it:Iterator<Dynamic> = cast (p_value,Array<Dynamic>).iterator();
-            while (it.hasNext()) {
-                var child:GUIElement = cast GPrototypeFactory.createPrototype(listItemPrototype);
-                child.setModel(it.next());
-                addChild(child);
-            }
+		// Just direct string assignment
         } else if (Std.is(p_value,String)) {
             g2d_model = p_value;
+		// Dynamic object lookup for public fields
         } else {
             for (it in Reflect.fields(p_value)) {
                 var child:GUIElement = getChildByName(it);
@@ -684,6 +682,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
                 for (i in 0...g2d_numChildren) {
                     g2d_children[i].calculateWidth();
+					if (g2d_minWidth < g2d_children[i].g2d_minWidth) g2d_minWidth = g2d_children[i].g2d_minWidth;
                 }
             }
         }
@@ -792,7 +791,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
 
     public function getPrototype(p_prototypeXml:Xml = null):Xml {
-        if (p_prototypeXml == null) p_prototypeXml = Xml.createElement("element");
+        if (p_prototypeXml == null) p_prototypeXml = Xml.createElement(PROTOTYPE_NAME);
 
 		if (expand != true) p_prototypeXml.set("expand", Std.string(anchorX));
         if (anchorX != 0) p_prototypeXml.set("anchorX", Std.string(anchorX));
@@ -870,15 +869,16 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         var it:Iterator<Xml> = p_prototypeXml.iterator();
         while (it.hasNext()) {
             var xml:Xml = it.next();
-            if (xml.nodeType == Xml.PCData) {
-                setModel(xml.nodeValue);
-            } else if (xml.nodeType == Xml.Element) {
-                var prototype:IGPrototypable = GPrototypeFactory.createPrototype(xml);
-                if (Std.is(prototype, GUIElement)) {
-                    addChild(cast prototype);
-                } else if (Std.is(prototype, GUILayout)) {
-                    layout = cast prototype;
-                }
+            if (xml.nodeType == Xml.Element) {
+				// Should not be defined within prototype as such nodes are reserved for prototype reference
+				if (xml.nodeName != "prototype") {
+					var prototype:IGPrototypable = GPrototypeFactory.createPrototype(xml);
+					if (Std.is(prototype, GUIElement)) {
+						addChild(cast prototype);
+					} else if (Std.is(prototype, GUILayout)) {
+						layout = cast prototype;
+					}
+				}
             }
         }
     }
@@ -1013,8 +1013,4 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
         if (parent != null) parent.g2d_dispatchMouseCallback(p_type, p_element, p_input);
     }
-	
-	public function toReference():String {
-		return null;
-	}
 }

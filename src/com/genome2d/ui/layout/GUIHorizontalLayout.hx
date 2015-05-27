@@ -1,6 +1,15 @@
+/*
+ * 	Genome2D - 2D GPU Framework
+ * 	http://www.genome2d.com
+ *
+ *	Copyright 2011-2015 Peter Stefcek. All rights reserved.
+ *
+ *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
+ */
 package com.genome2d.ui.layout;
 
 import com.genome2d.ui.element.GUIElement;
+
 @:access(com.genome2d.ui.element.GUIElement)
 @prototypeName("horizontal")
 class GUIHorizontalLayout extends GUILayout {
@@ -12,9 +21,9 @@ class GUIHorizontalLayout extends GUILayout {
         for (i in 0...p_element.g2d_numChildren) {
             var child:GUIElement = p_element.g2d_children[i];
             child.calculateWidth();
-
+			
             p_element.g2d_minWidth += child.g2d_minWidth + gap;
-            p_element.g2d_preferredWidth += child.g2d_preferredWidth + gap;
+            p_element.g2d_preferredWidth += ((child.g2d_preferredWidth>child.g2d_minWidth)?child.g2d_preferredWidth:child.g2d_minWidth) + gap;
         }
     }
 
@@ -26,7 +35,11 @@ class GUIHorizontalLayout extends GUILayout {
             var child:GUIElement = p_element.g2d_children[i];
 
             child.g2d_worldLeft = p_element.g2d_worldLeft + offsetX;
-            child.g2d_worldRight = child.g2d_worldLeft + child.g2d_minWidth + rest/p_element.g2d_numChildren;
+			// Left priority rest space distribution
+			var childDif:Float = (child.g2d_preferredWidth > child.g2d_minWidth)?child.g2d_preferredWidth - child.g2d_minWidth:0;
+			childDif = rest < childDif?rest:childDif;
+			rest -= childDif;
+            child.g2d_worldRight = child.g2d_worldLeft + child.g2d_minWidth + childDif;//rest/p_element.g2d_numChildren;
             child.g2d_finalWidth = child.g2d_worldRight - child.g2d_worldLeft;
             offsetX += child.g2d_finalWidth + gap;
 
