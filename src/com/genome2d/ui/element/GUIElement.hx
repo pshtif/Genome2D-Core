@@ -12,6 +12,7 @@ import com.genome2d.callbacks.GCallback;
 import com.genome2d.context.GCamera;
 import com.genome2d.context.IGContext;
 import com.genome2d.focus.GFocusManager;
+import com.genome2d.Genome2D;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.input.GKeyboardInput;
 import com.genome2d.input.IGInteractive;
@@ -45,6 +46,33 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
     @prototype 
 	public var name:String = "";
+	
+	static public var dragSensitivity:Float = 0;
+	
+	private var g2d_scrollable:Bool = false;
+	#if swc @:extern #end
+    @prototype 
+	public var scrollable(get,set):Bool;
+    #if swc @:getter(scrollable) #end
+    inline private function get_scrollable():Bool {
+        return g2d_scrollable;
+    }
+    #if swc @:setter(scrollable) #end
+    inline private function set_scrollable(p_value:Bool):Bool {
+		if (!g2d_scrollable && p_value) {
+			onMouseDown.add(mouseDown_handler);
+		} else if (g2d_scrollable && !p_value) {
+			onMouseDown.remove(mouseDown_handler);
+		}
+		g2d_scrollable = p_value;
+        return g2d_scrollable;
+    }
+	
+	private var g2d_dragging:Bool = false;
+	private var g2d_previousMouseX:Float;
+	private var g2d_previousMouseY:Float;
+	private var g2d_movedMouseX:Float;
+	private var g2d_movedMouseY:Float;
 
     private var g2d_currentClient:Dynamic;
     private var g2d_controller:Dynamic;
@@ -814,6 +842,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         if (mouseChildren != true) p_prototypeXml.set("mouseChildren", Std.string(mouseChildren));
         if (visible != true) p_prototypeXml.set("visible", Std.string(visible));
         if (flushBatch != false) p_prototypeXml.set("flushBatch", Std.string(flushBatch));
+		if (scrollable != false) p_prototypeXml.set("scrollable", Std.string(scrollable));
 
         if (mouseDown != "") p_prototypeXml.set("mouseDown", mouseDown);
         if (mouseUp != "") p_prototypeXml.set("mouseUp", mouseUp);
@@ -858,6 +887,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         if (p_prototypeXml.exists("mouseChildren")) mouseChildren = (p_prototypeXml.get("mouseChildren") != "false" && p_prototypeXml.get("mouseChildren") != "0");
         if (p_prototypeXml.exists("visible")) visible = (p_prototypeXml.get("visible") != "false" && p_prototypeXml.get("visible") != "0");
         if (p_prototypeXml.exists("flushBatch")) flushBatch = (p_prototypeXml.get("flushBatch") != "false" && p_prototypeXml.get("flushBatch") != "0");
+		if (p_prototypeXml.exists("scrollable")) scrollable = (p_prototypeXml.get("scrollable") != "false" && p_prototypeXml.get("scrollable") != "0");
 
         if (p_prototypeXml.exists("mouseDown")) mouseDown = p_prototypeXml.get("mouseDown");
         if (p_prototypeXml.exists("mouseUp")) mouseDown = p_prototypeXml.get("mouseUp");
@@ -975,6 +1005,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 					p_input.g2d_captured = true;
 					GFocusManager.activeFocus = this;
 					g2d_dispatchMouseCallback(p_input.type, this, p_input);
+					
 					if (g2d_mouseOverElement != this) {
 						g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, this, p_input);
 					}
@@ -984,6 +1015,34 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 			}
 		}
     }
+	
+	private function mouseDown_handler(p_input:GMouseInput):Void {
+		g2d_movedMouseX = g2d_movedMouseY = 0;
+		g2d_previousMouseX = p_input.contextX;
+		g2d_previousMouseY = p_input.contextY;
+		Genome2D.getInstance().getContext().onMouseInput.add(contextMouseInput_handler);
+		parent.onMouseMove.add(parentMouseMove_handler);
+	}
+	
+	private function parentMouseMove_handler(p_input:GMouseInput):Void {
+		g2d_movedMouseX += p_input.contextX - g2d_previousMouseX;
+		//g2d_movedMouseY += p_input.contextY - g2d_previousMouseY;
+		if (g2d_dragging || Math.abs(g2d_movedMouseX)>dragSensitivity || Math.abs(g2d_movedMouseY)>dragSensitivity) {
+			//_dragFrame = Genome2D.getInstance().getCurrentFrameId();
+			anchorX += (p_input.contextX - g2d_previousMouseX) / p_input.camera.scaleX;
+			g2d_dragging = true;
+		}
+		g2d_previousMouseX = p_input.contextX;
+		g2d_previousMouseY = p_input.contextY;
+	}
+	
+	private function contextMouseInput_handler(p_input:GMouseInput):Void {
+		if (p_input.type == GMouseInputType.MOUSE_UP) {
+			g2d_dragging = false;
+			parent.onMouseMove.remove(parentMouseMove_handler);
+			Genome2D.getInstance().getContext().onMouseInput.remove(contextMouseInput_handler);
+		}
+	}
 
     private function g2d_dispatchMouseCallback(p_type:String, p_element:GUIElement, p_input:GMouseInput):Void {
         if (mouseEnabled) {
