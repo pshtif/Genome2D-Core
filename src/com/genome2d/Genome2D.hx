@@ -216,12 +216,6 @@ class Genome2D implements IGDebuggableInternal
         @param p_config `GContextConfig` instance configuring Genome2D context
     **/
 	public function init(p_config:GContextConfig):Void {
-        GPrototypeFactory.initializePrototypes();
-        GAssetManager.init();
-		GFontManager.init();
-		GTextureManager.init();
-        GUISkinManager.init();
-
         // Initialize root
         if (g2d_root != null) g2d_root.dispose();
         g2d_root = GNode.create("root");
@@ -240,6 +234,13 @@ class Genome2D implements IGDebuggableInternal
 		g2d_context.onInitialized.add(g2d_contextInitialized_handler);
 		g2d_context.onFailed.add(g2d_contextFailed_handler);
         g2d_context.onInvalidated.add(g2d_contextInvalidated_handler);
+		
+		GPrototypeFactory.initializePrototypes();
+        GAssetManager.init();
+		GFontManager.init();
+		GTextureManager.init(g2d_context);
+        GUISkinManager.init();
+		
 		g2d_context.init();
 	}
 

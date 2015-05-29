@@ -710,7 +710,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
                 for (i in 0...g2d_numChildren) {
                     g2d_children[i].calculateWidth();
-					if (g2d_minWidth < g2d_children[i].g2d_minWidth) g2d_minWidth = g2d_children[i].g2d_minWidth;
+					//if (g2d_minWidth < g2d_children[i].g2d_minWidth) g2d_minWidth = g2d_children[i].g2d_minWidth;
                 }
             }
         }
@@ -1030,6 +1030,9 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 		if (g2d_dragging || Math.abs(g2d_movedMouseX)>dragSensitivity || Math.abs(g2d_movedMouseY)>dragSensitivity) {
 			//_dragFrame = Genome2D.getInstance().getCurrentFrameId();
 			anchorX += (p_input.contextX - g2d_previousMouseX) / p_input.camera.scaleX;
+			trace(anchorX, g2d_minWidth, g2d_preferredWidth, parent.g2d_minWidth, parent.g2d_preferredWidth);
+			if (anchorX > 0) anchorX = 0;
+			if (anchorX < parent.g2d_finalWidth - g2d_minWidth) anchorX = parent.g2d_finalWidth - g2d_minWidth;
 			g2d_dragging = true;
 		}
 		g2d_previousMouseX = p_input.contextX;

@@ -38,8 +38,7 @@ class GTextureFont implements IGPrototypable {
     }
 
     public function addChar(p_charId:String, p_region:GRectangle, p_xoffset:Float, p_yoffset:Float, p_xadvance:Float):GTextureChar {
-        var charTexture:GTexture = new GTexture(texture.id+"_"+p_charId, texture);
-		charTexture.region = p_region;
+        var charTexture:GTexture = GTextureManager.createSubTexture(texture.id+"_"+p_charId, texture, p_region);
 		charTexture.pivotX = -p_region.width/2;
         charTexture.pivotY = -p_region.height/2;
 		
