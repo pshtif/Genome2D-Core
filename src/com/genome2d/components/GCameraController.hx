@@ -51,6 +51,8 @@ class GCameraController extends GComponent
 
     public var viewport:GViewport;
 	
+	public var id:String;
+	
 	/**
 	    Get a viewport color
 	**/

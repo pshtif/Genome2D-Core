@@ -8,6 +8,7 @@
  */
 package com.genome2d.postprocess;
 
+import com.genome2d.context.stage3d.GStage3DContext;
 import com.genome2d.utils.GRenderTargetStack;
 import com.genome2d.context.IGContext;
 import com.genome2d.node.GNode;
@@ -48,7 +49,7 @@ class GBloomPP extends GPostProcess
 
         var context:IGContext = Genome2D.getInstance().getContext();
 
-        if (p_target == null) GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.g2d_renderTargetTransform);
+        if (p_target == null) GRenderTargetStack.pushRenderTarget(context.getRenderTarget(), context.getRenderTargetMatrix());
 
         g2d_bright.render(p_source, p_x, p_y, bounds, g2d_passTextures[0]);
         g2d_blur.render(g2d_passTextures[0], 0, 0, bounds, g2d_passTextures[1]);

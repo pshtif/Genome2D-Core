@@ -345,6 +345,14 @@ class Genome2D implements IGDebuggableInternal
         }
     }
 
+	public function getCamera(p_id:String):GCameraController {
+		for (i in 0...g2d_cameras.length) {
+            if (g2d_cameras[i].id == p_id) return g2d_cameras[i];
+        }
+		
+		return null;
+	}
+	
     @:allow(com.genome2d.components.GCameraController)
 	private function g2d_addCameraController(p_camera:GCameraController):Void {
         for (i in 0...g2d_cameras.length) {

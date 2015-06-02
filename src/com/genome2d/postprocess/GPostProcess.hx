@@ -75,9 +75,9 @@ class GPostProcess {
 
         updatePassTextures(bounds);
 
-        var context:GStage3DContext = cast Genome2D.getInstance().getContext();
+        var context:IGContext = Genome2D.getInstance().getContext();
 
-        if (p_target == null) GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.g2d_renderTargetTransform);
+        if (p_target == null) GRenderTargetStack.pushRenderTarget(context.getRenderTarget(), context.getRenderTargetMatrix());
 
         if (p_source == null) GDebug.error("Invalid source for post process.");
 
@@ -115,7 +115,7 @@ class GPostProcess {
 
         var context:GStage3DContext = cast Genome2D.getInstance().getContext();
 
-        GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.g2d_renderTargetTransform);
+        GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.getRenderTargetMatrix());
         if (p_source == null) {
             g2d_matrix.identity();
             g2d_matrix.prependTranslation(-bounds.x+g2d_leftMargin, -bounds.y+g2d_topMargin, 0);

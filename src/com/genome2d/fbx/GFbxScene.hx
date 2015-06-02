@@ -1,5 +1,6 @@
 package com.genome2d.fbx;
 
+import com.genome2d.assets.GAssetManager;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.context.stage3d.GProjectionMatrix;
 import com.genome2d.context.stage3d.GStage3DContext;
@@ -122,7 +123,7 @@ class GFbxScene {
 				var fbxTexture:GFbxTexture = model.getMaterial().getTexture();
 				if (fbxTexture == null) throw "Invalid texture.";
 
-				fbxRenderer.texture = GTextureManager.getTexture(fbxTexture.relativePath);
+				fbxRenderer.texture = GTextureManager.getTexture(fbxTexture.relativePath.substring(0, fbxTexture.relativePath.lastIndexOf(".")));
 				g2d_renderers.push(fbxRenderer);
             }
         }
