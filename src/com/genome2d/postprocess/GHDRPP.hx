@@ -85,7 +85,7 @@ class GHDRPP extends GPostProcess
         updatePassTextures(bounds);
 
         var context:IGContext = Genome2D.getInstance().getContext();
-        if (p_target == null) GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.g2d_renderTargetTransform);
+        if (p_target == null) GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.getRenderTargetMatrix());
 
         g2d_empty.render(p_source,p_x,p_y,bounds,g2d_passTextures[0]);
         g2d_blur.render(g2d_passTextures[0], 0, 0, bounds, g2d_passTextures[1]);
