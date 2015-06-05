@@ -11,7 +11,12 @@ import com.genome2d.context.IGContext;
 import com.genome2d.context.GCamera;
 import flash.display.BitmapData;
 class GTextureTextRenderer extends GTextRenderer {
-
+	
+	public var red:Float = 1;
+	public var green:Float = 1;
+	public var blue:Float = 1;
+	public var alpha:Float = 1;
+	
     private var g2d_fontScale:Float = 1;
     #if swc @:extern #end
     public var fontScale(get, set):Float;
@@ -93,7 +98,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				ty = cy * p_scaleY * g2d_fontScale + p_y;
 			}
 			
-			g2d_context.draw(renderable.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
+			g2d_context.draw(renderable.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red, green, blue, alpha, 1, null);
         }
 	}
 	
@@ -108,7 +113,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				ty = char.y * p_scaleY * g2d_fontScale + p_y;
 			}
 			var char:GTextureChar = g2d_textureFont.getChar(Std.string(124));
-			g2d_context.draw(char.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
+			g2d_context.draw(char.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red, green, blue, alpha, 1, null);
 		} else if (cursorStartIndex != cursorEndIndex) {
 			var startChar:GTextureCharRenderable = (cursorStartIndex >= g2d_textLength) ? g2d_chars[g2d_textLength - 1] : g2d_chars[cursorStartIndex];
 			var sx:Float = startChar.x * p_scaleX * g2d_fontScale + p_x + (cursorStartIndex >= g2d_textLength?startChar.xadvance + g2d_tracking:0);

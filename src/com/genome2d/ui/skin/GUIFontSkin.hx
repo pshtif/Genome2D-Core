@@ -11,7 +11,58 @@ import com.genome2d.textures.GTextureManager;
 
 @prototypeName("fontSkin")
 class GUIFontSkin extends GUISkin {
-
+	#if swc @:extern #end
+    @prototype
+	public var red(get, set):Float;
+    #if swc @:getter(red) #end
+    inline private function get_red():Float {
+        return g2d_textRenderer.red;
+    }
+    #if swc @:setter(red) #end
+    inline private function set_red(p_value:Float):Float {
+        g2d_textRenderer.red = p_value;
+        return p_value;
+    }
+	
+	#if swc @:extern #end
+    @prototype
+	public var green(get, set):Float;
+    #if swc @:getter(green) #end
+    inline private function get_green():Float {
+        return g2d_textRenderer.green;
+    }
+    #if swc @:setter(green) #end
+    inline private function set_green(p_value:Float):Float {
+        g2d_textRenderer.green = p_value;
+        return p_value;
+    }
+	
+	#if swc @:extern #end
+    @prototype
+	public var blue(get, set):Float;
+    #if swc @:getter(blue) #end
+    inline private function get_blue():Float {
+        return g2d_textRenderer.blue;
+    }
+    #if swc @:setter(blue) #end
+    inline private function set_blue(p_value:Float):Float {
+        g2d_textRenderer.blue = p_value;
+        return p_value;
+    }
+	
+	#if swc @:extern #end
+    @prototype
+	public var alpha(get, set):Float;
+    #if swc @:getter(alpha) #end
+    inline private function get_alpha():Float {
+        return g2d_textRenderer.alpha;
+    }
+    #if swc @:setter(alpha) #end
+    inline private function set_alpha(p_value:Float):Float {
+        g2d_textRenderer.alpha = p_value;
+        return p_value;
+    }
+	
     #if swc @:extern #end
 	public var text(get, set):String;
     #if swc @:getter(text) #end
@@ -34,7 +85,6 @@ class GUIFontSkin extends GUISkin {
     #if swc @:setter(autoSize) #end
     inline private function set_autoSize(p_value:Bool):Bool {
         g2d_textRenderer.autoSize = p_value;
-
         return p_value;
     }
 
@@ -138,6 +188,10 @@ class GUIFontSkin extends GUISkin {
 
     override public function clone():GUISkin {
         var clone:GUIFontSkin = new GUIFontSkin("", g2d_textRenderer.textureFont, fontScale, autoSize, (g2d_origin == null)?this:cast g2d_origin);
+		clone.red = red;
+		clone.green = green;
+		clone.blue = blue;
+		clone.alpha = alpha;
         return clone;
     }
 	
