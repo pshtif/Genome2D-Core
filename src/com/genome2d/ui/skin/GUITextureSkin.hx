@@ -39,14 +39,17 @@ class GUITextureSkin extends GUISkin {
 	public var alpha:Float = 1;
 	
 	@prototype
+	public var scale:Float = 1;
+	
+	@prototype
 	public var bindTextureToModel:Bool = false;
 
     override public function getMinWidth():Float {
-        return (texture != null && autoSize) ? texture.width : 0;
+        return (texture != null && autoSize) ? texture.width * scale : 0;
     }
 
     override public function getMinHeight():Float {
-        return (texture != null && autoSize) ? texture.height : 0;
+        return (texture != null && autoSize) ? texture.height * scale : 0;
     }
 
     public function new(p_id:String = "", p_texture:GTexture = null, p_autoSize:Bool = true, p_origin:GUITextureSkin = null) {
@@ -68,7 +71,7 @@ class GUITextureSkin extends GUISkin {
             var scaleY:Float = height / texture.height;
             var x:Float = p_left + (.5 * texture.width + texture.pivotX) * scaleX;
             var y:Float = p_top + (.5 * texture.height + texture.pivotY) * scaleY;
-            var sl:Float = sliceLeft>texture.nativeWidth ? texture.nativeWidth : sliceLeft<0 ? 0 :sliceLeft;
+            var sl:Float = sliceLeft > texture.nativeWidth ? texture.nativeWidth : sliceLeft < 0 ? 0 :sliceLeft;
             var st:Float = sliceTop > texture.nativeHeight ? texture.nativeHeight : sliceTop < 0 ? 0 :sliceTop;
             var sr:Float = sliceRight > texture.nativeWidth ? texture.nativeWidth : sliceRight<sliceLeft ? sliceRight>=0 ? sliceLeft : texture.nativeWidth+sliceRight : sliceRight;
             var sb:Float = sliceBottom > texture.nativeHeight ? texture.nativeHeight : sliceBottom<sliceTop ? sliceBottom>=0 ? sliceTop : texture.nativeHeight+sliceBottom : sliceBottom;
@@ -202,6 +205,7 @@ class GUITextureSkin extends GUISkin {
 		clone.green = green;
 		clone.blue = blue;
 		clone.alpha = alpha;
+		clone.scale = scale;
         return clone;
     }
 	

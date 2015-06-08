@@ -49,6 +49,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	
 	static public var dragSensitivity:Float = 0;
 	
+	public var userData:Dynamic;
+	
 	private var g2d_scrollable:Bool = false;
 	#if swc @:extern #end
     @prototype 
