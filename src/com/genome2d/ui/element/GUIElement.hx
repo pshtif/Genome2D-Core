@@ -94,10 +94,18 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseDown);
                 if (mdf != null) onMouseDown.remove(mdf);
             }
+			if (g2d_mouseUp != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseUp);
+                if (mdf != null) onMouseUp.remove(mdf);
+            }
             g2d_currentController = newController;
             if (g2d_mouseDown != "" && g2d_currentController != null) {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseDown);
                 if (mdf != null) onMouseDown.add(mdf);
+            }
+			if (g2d_mouseUp != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseUp);
+                if (mdf != null) onMouseUp.add(mdf);
             }
 
             for (i in 0...g2d_numChildren) {
@@ -892,11 +900,11 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 		if (p_prototypeXml.exists("scrollable")) scrollable = (p_prototypeXml.get("scrollable") != "false" && p_prototypeXml.get("scrollable") != "0");
 
         if (p_prototypeXml.exists("mouseDown")) mouseDown = p_prototypeXml.get("mouseDown");
-        if (p_prototypeXml.exists("mouseUp")) mouseDown = p_prototypeXml.get("mouseUp");
-        if (p_prototypeXml.exists("mouseClick")) mouseDown = p_prototypeXml.get("mouseClick");
-        if (p_prototypeXml.exists("mouseOver")) mouseDown = p_prototypeXml.get("mouseOver");
-        if (p_prototypeXml.exists("mouseOut")) mouseDown = p_prototypeXml.get("mouseOut");
-        if (p_prototypeXml.exists("mouseMove")) mouseDown = p_prototypeXml.get("mouseMove");
+        if (p_prototypeXml.exists("mouseUp")) mouseUp = p_prototypeXml.get("mouseUp");
+        if (p_prototypeXml.exists("mouseClick")) mouseClick = p_prototypeXml.get("mouseClick");
+        if (p_prototypeXml.exists("mouseOver")) mouseOver = p_prototypeXml.get("mouseOver");
+        if (p_prototypeXml.exists("mouseOut")) mouseOut = p_prototypeXml.get("mouseOut");
+        if (p_prototypeXml.exists("mouseMove")) mouseMove = p_prototypeXml.get("mouseMove");
 		
         var it:Iterator<Xml> = p_prototypeXml.iterator();
         while (it.hasNext()) {
