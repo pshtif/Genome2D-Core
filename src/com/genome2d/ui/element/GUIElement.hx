@@ -19,6 +19,7 @@ import com.genome2d.input.IGInteractive;
 import com.genome2d.node.GNode;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.ui.layout.GUIHorizontalLayout;
+import com.genome2d.ui.layout.GUILayoutType;
 import com.genome2d.ui.layout.GUIVerticalLayout;
 import flash.utils.Object;
 import com.genome2d.ui.skin.GUISkinManager;
@@ -777,7 +778,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     private function invalidateHeight():Void {
         if (g2d_dirty) {
             if (g2d_parent != null) {
-                if (g2d_parent.g2d_layout == null) {
+                if (g2d_parent.g2d_layout == null || !g2d_parent.g2d_layout.isVerticalLayout()) {
                     var worldAnchorTop:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorTop;
                     var worldAnchorBottom:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorBottom;
                     var h:Float = (g2d_preferredHeight > g2d_minHeight || !expand) ? g2d_preferredHeight : g2d_minHeight;

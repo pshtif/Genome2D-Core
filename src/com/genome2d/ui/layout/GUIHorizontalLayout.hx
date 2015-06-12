@@ -61,17 +61,8 @@ class GUIHorizontalLayout extends GUILayout {
     }
 
     override private function invalidateHeight(p_element:GUIElement):Void {
-        var offsetY:Float = 0;
-        var rest:Float = p_element.g2d_finalHeight - p_element.g2d_minHeight;
-        if (rest<0) rest = 0;
-
         for (i in 0...p_element.g2d_numChildren) {
             var child:GUIElement = p_element.g2d_children[i];
-
-            child.g2d_worldTop = p_element.g2d_worldTop;
-            child.g2d_worldBottom = child.g2d_worldTop + p_element.g2d_finalHeight;
-            child.g2d_finalHeight = p_element.g2d_finalHeight;
-
             child.invalidateHeight();
         }
     }

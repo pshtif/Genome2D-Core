@@ -28,6 +28,14 @@ class GUILayout implements IGPrototypable {
     private function invalidateHeight(p_element:GUIElement):Void {
     }
 	
+	public function isHorizontalLayout():Bool {
+		return false;
+	}
+	
+	public function isVerticalLayout():Bool {
+		return false;
+	}
+	
 	public function toReference():String {
 		return null;
 	}
