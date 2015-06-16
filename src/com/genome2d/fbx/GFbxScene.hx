@@ -19,7 +19,15 @@ class GFbxScene {
     public var ambientColor:GFloat4;
     public var lightColor:GFloat4;
     public var tintColor:GFloat4;
-    private var g2d_renderers:Array<GFbxRenderer>;
+	
+    private var g2d_models:Array<GFbxModel>;
+	public function getModelByName(p_name:String):GFbxModel {
+		for (model in g2d_models) {
+			if (model.name == p_name) return model;
+		}
+		return null;
+	}
+	
     private var g2d_fbxData:GFbxParserNode;
     private var g2d_nodes:Map<String,GFbxNode>;
 	
@@ -110,7 +118,7 @@ class GFbxScene {
 
     private function create():Void {
         g2d_modelMatrix = new GMatrix3D();
-        g2d_renderers = new Array<GFbxRenderer>();
+        g2d_models = new Array<GFbxModel>();
 
         for (node in g2d_nodes) {
             var model:GFbxModel = (Std.is(node,GFbxModel)) ? cast node : null;
@@ -124,20 +132,25 @@ class GFbxScene {
 				if (fbxTexture == null) throw "Invalid texture.";
 
 				fbxRenderer.texture = GTextureManager.getTexture(fbxTexture.relativePath.substring(0, fbxTexture.relativePath.lastIndexOf(".")));
-				g2d_renderers.push(fbxRenderer);
+				model.renderer = fbxRenderer;
+				g2d_models.push(model);
             }
         }
     }
 
     public function render(p_cameraMatrix:GMatrix3D, p_type:Int = 1):Void {
-        for (renderer in g2d_renderers) {
-            renderer.ambientColor = ambientColor;
-            renderer.lightColor = lightColor;
-            renderer.tintColor = tintColor;
-			renderer.modelMatrix = g2d_modelMatrix;
-			renderer.cameraMatrix = p_cameraMatrix;
-			renderer.projectionMatrix = g2d_projectionMatrix;
-        }
+		var renderer:GFbxRenderer;
+        for (model in g2d_models) {
+			if (model.visible) {
+				renderer = model.renderer;
+				renderer.ambientColor = ambientColor;
+				renderer.lightColor = lightColor;
+				renderer.tintColor = tintColor;
+				renderer.modelMatrix = g2d_modelMatrix;
+				renderer.cameraMatrix = p_cameraMatrix;
+				renderer.projectionMatrix = g2d_projectionMatrix;
+			}
+        }		
 		
 		var context:GStage3DContext = cast Genome2D.getInstance().getContext();
         context.setBlendMode(GBlendMode.NORMAL, true);
@@ -145,29 +158,41 @@ class GFbxScene {
         switch (p_type) {
             // Normal
             case 1:
-                for (renderer in g2d_renderers) {
-					context.bindRenderer(renderer);
-                    renderer.draw(2, 1);
+                for (model in g2d_models) {
+					if (model.visible) {
+						renderer = model.renderer;
+						context.bindRenderer(renderer);
+						renderer.draw(2, 1);
+					}
                 }
             // Reflection
             case 2:
-                for (renderer in g2d_renderers) {
-					context.bindRenderer(renderer);
-                    renderer.draw(1, 1);
+                for (model in g2d_models) {
+					if (model.visible) {
+						renderer = model.renderer;
+						context.bindRenderer(renderer);
+						renderer.draw(1, 1);
+					}
                 }
             // Shadow
             case 3:
-                for (renderer in g2d_renderers) {
-					context.bindRenderer(renderer);
-                    renderer.draw(1, 2);
+                for (model in g2d_models) {
+					if (model.visible) {
+						renderer = model.renderer;
+						context.bindRenderer(renderer);
+						renderer.draw(1, 2);
+					}
                 }
             // Invisible
             case 4:
-                for (renderer in g2d_renderers) {
-					context.bindRenderer(renderer);
-                    renderer.tintColor.w = 0;
-                    renderer.draw(2, 1);
-                    renderer.tintColor.w = 0;
+                for (model in g2d_models) {
+					if (model.visible) {
+						renderer = model.renderer;
+						context.bindRenderer(renderer);
+						renderer.tintColor.w = 0;
+						renderer.draw(2, 1);
+						renderer.tintColor.w = 0;
+					}
                 }
 
         }
