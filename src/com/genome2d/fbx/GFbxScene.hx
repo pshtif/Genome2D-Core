@@ -156,6 +156,15 @@ class GFbxScene {
         context.setBlendMode(GBlendMode.NORMAL, true);
 		
         switch (p_type) {
+			// Unlit
+			case 0:
+                for (model in g2d_models) {
+					if (model.visible) {
+						renderer = model.renderer;
+						context.bindRenderer(renderer);
+						renderer.draw(2, 0);
+					}
+                }
             // Normal
             case 1:
                 for (model in g2d_models) {
