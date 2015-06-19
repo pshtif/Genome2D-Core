@@ -42,6 +42,9 @@ class GUITextureSkin extends GUISkin {
 	public var scale:Float = 1;
 	
 	@prototype
+	public var rotation:Float = 0;
+	
+	@prototype
 	public var bindTextureToModel:Bool = false;
 
     override public function getMinWidth():Float {
@@ -84,7 +87,7 @@ class GUITextureSkin extends GUISkin {
             var ry:Float = texture.v * texture.gpuHeight;// (texture.region != null) ? texture.region.y : 0;
 
             if (sw == 0 || sh == 0) {
-                context.draw(texture, x, y, scaleX, scaleY, 0, red, green, blue, alpha, 1, null);
+                context.draw(texture, x, y, scaleX, scaleY, rotation, red, green, blue, alpha, 1, null);
             } else {
                 var scaleX:Float = (width - texture.width) / (sw * texture.scaleFactor) + 1;
                 var scaleY:Float = (height - texture.height) / (sh * texture.scaleFactor) +1;
@@ -206,6 +209,7 @@ class GUITextureSkin extends GUISkin {
 		clone.blue = blue;
 		clone.alpha = alpha;
 		clone.scale = scale;
+		clone.rotation = rotation;
         return clone;
     }
 	
