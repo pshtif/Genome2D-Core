@@ -59,6 +59,8 @@ class GTextureTextRenderer extends GTextRenderer {
 	public function new():Void {
 		super();
 		
+		g2d_chars = new Array<GTextureCharRenderable>();
+		
 		if (g2d_helperTexture == null) {
 			g2d_helperTexture = GTextureManager.createTexture("g2d_GTextureTextRenderer_helper", new BitmapData(4, 4, false, 0xFFFFFF));
 			g2d_helperTexture.pivotX = g2d_helperTexture.pivotY = -2;
@@ -136,7 +138,6 @@ class GTextureTextRenderer extends GTextRenderer {
 	}
 
     override public function invalidate():Void {
-        if (g2d_chars == null) g2d_chars = new Array<GTextureCharRenderable>();
         if (g2d_textureFont == null) return;
 
         if (g2d_autoSize) {
@@ -310,16 +311,18 @@ class GTextureTextRenderer extends GTextRenderer {
 	}
 	
 	public function captureMouseInput(p_input:GMouseInput):Void {
-		var index:Int = getCharAt(p_input.localX, p_input.localY);
-		if (p_input.type == GMouseInputType.MOUSE_DOWN) {
-			g2d_cursorCurrentIndex = cursorEndIndex = cursorStartIndex = index;
-		} else if (p_input.type == GMouseInputType.MOUSE_MOVE && p_input.buttonDown) {
-			if (index < g2d_cursorCurrentIndex) {
-				cursorStartIndex = index;
-				cursorEndIndex = g2d_cursorCurrentIndex;
-			} else {
-				cursorStartIndex = g2d_cursorCurrentIndex;
-				cursorEndIndex = index;
+		if (enableCursor) {
+			var index:Int = getCharAt(p_input.localX, p_input.localY);
+			if (p_input.type == GMouseInputType.MOUSE_DOWN) {
+				g2d_cursorCurrentIndex = cursorEndIndex = cursorStartIndex = index;
+			} else if (p_input.type == GMouseInputType.MOUSE_MOVE && p_input.buttonDown) {
+				if (index < g2d_cursorCurrentIndex) {
+					cursorStartIndex = index;
+					cursorEndIndex = g2d_cursorCurrentIndex;
+				} else {
+					cursorStartIndex = g2d_cursorCurrentIndex;
+					cursorEndIndex = index;
+				}
 			}
 		}
 	}

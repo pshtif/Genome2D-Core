@@ -11,6 +11,52 @@ import com.genome2d.textures.GTextureManager;
 
 @prototypeName("fontSkin")
 class GUIFontSkin extends GUISkin {
+	
+	#if swc @:extern #end
+    @prototype
+	public var vAlign(get, set):Int;
+    #if swc @:getter(vAlign) #end
+    inline private function get_vAlign():Int {
+        return g2d_textRenderer.vAlign;
+    }
+    #if swc @:setter(vAlign) #end
+    inline private function set_vAlign(p_value:Int):Int {
+        g2d_textRenderer.vAlign = p_value;
+        return p_value;
+    }
+	
+	#if swc @:extern #end
+    @prototype
+	public var hAlign(get, set):Int;
+    #if swc @:getter(hAlign) #end
+    inline private function get_hAlign():Int {
+        return g2d_textRenderer.hAlign;
+    }
+    #if swc @:setter(hAlign) #end
+    inline private function set_hAlign(p_value:Int):Int {
+        g2d_textRenderer.hAlign = p_value;
+        return p_value;
+    }
+	
+	#if swc @:extern #end
+    @prototype
+	public var color(get, set):Int;
+	#if swc @:getter(color) #end
+    inline private function get_color():Int {
+        var color:Int = 0;
+		color += Std.int(g2d_textRenderer.red * 0xFF) << 16;
+		color += Std.int(g2d_textRenderer.green * 0xFF) << 8;
+		color += Std.int(g2d_textRenderer.blue * 0xFF);
+		return color;
+    }
+	#if swc @:setter(color) #end
+	inline public function set_color(p_value:Int):Int {
+		red = Std.int(p_value >> 16 & 0xFF) / 0xFF;
+        green = Std.int(p_value >> 8 & 0xFF) / 0xFF;
+        blue = Std.int(p_value & 0xFF) / 0xFF;
+		return p_value;
+	}
+	
 	#if swc @:extern #end
     @prototype
 	public var red(get, set):Float;
@@ -192,6 +238,9 @@ class GUIFontSkin extends GUISkin {
 		clone.green = green;
 		clone.blue = blue;
 		clone.alpha = alpha;
+		clone.color = color;
+		clone.vAlign = vAlign;
+		clone.hAlign = hAlign;
         return clone;
     }
 	
