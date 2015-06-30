@@ -69,6 +69,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
     override public function render(p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_rotation:Float):Void {
         if (g2d_textureFont == null) return;
+		
         if (g2d_dirty) invalidate();
 		
 		if (enableCursor) renderSelection(p_x, p_y, p_scaleX, p_scaleY, 0);
@@ -259,7 +260,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
         for (i in 0...lines.length) {
             var currentLine:Array<GTextureCharRenderable> = lines[i];
-
+			
             charCount = currentLine.length;
             if (charCount == 0) continue;
             var offsetX:Float = 0;
@@ -267,9 +268,9 @@ class GTextureTextRenderer extends GTextRenderer {
             var right:Float = last.x - last.xoffset + last.xadvance;
 
             if (g2d_hAlign == GHAlignType.CENTER) {
-                offsetX = (g2d_width - right) * .5;
-           } else if (g2d_hAlign == GHAlignType.RIGHT) {
-                offsetX = g2d_width - right;
+                offsetX = (g2d_width/g2d_fontScale - right) * .5;
+            } else if (g2d_hAlign == GHAlignType.RIGHT) {
+                offsetX = g2d_width/g2d_fontScale - right;
             }
 
             for (j in 0...charCount) {

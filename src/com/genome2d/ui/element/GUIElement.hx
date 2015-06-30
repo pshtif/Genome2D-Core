@@ -899,6 +899,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         if (p_prototypeXml.exists("visible")) visible = (p_prototypeXml.get("visible") != "false" && p_prototypeXml.get("visible") != "0");
         if (p_prototypeXml.exists("flushBatch")) flushBatch = (p_prototypeXml.get("flushBatch") != "false" && p_prototypeXml.get("flushBatch") != "0");
 		if (p_prototypeXml.exists("scrollable")) scrollable = (p_prototypeXml.get("scrollable") != "false" && p_prototypeXml.get("scrollable") != "0");
+		
+		if (p_prototypeXml.exists("model")) setModel(p_prototypeXml.get("model"));
 
         if (p_prototypeXml.exists("mouseDown")) mouseDown = p_prototypeXml.get("mouseDown");
         if (p_prototypeXml.exists("mouseUp")) mouseUp = p_prototypeXml.get("mouseUp");
