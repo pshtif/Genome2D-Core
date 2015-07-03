@@ -44,9 +44,9 @@ class GUIFontSkin extends GUISkin {
 	#if swc @:getter(color) #end
     inline private function get_color():Int {
         var color:Int = 0;
-		color += Std.int(g2d_textRenderer.red * 0xFF) << 16;
-		color += Std.int(g2d_textRenderer.green * 0xFF) << 8;
-		color += Std.int(g2d_textRenderer.blue * 0xFF);
+		color += Std.int(red * 0xFF) << 16;
+		color += Std.int(green * 0xFF) << 8;
+		color += Std.int(blue * 0xFF);
 		return color;
     }
 	#if swc @:setter(color) #end
@@ -57,57 +57,17 @@ class GUIFontSkin extends GUISkin {
 		return p_value;
 	}
 	
-	#if swc @:extern #end
-    @prototype
-	public var red(get, set):Float;
-    #if swc @:getter(red) #end
-    inline private function get_red():Float {
-        return g2d_textRenderer.red;
-    }
-    #if swc @:setter(red) #end
-    inline private function set_red(p_value:Float):Float {
-        g2d_textRenderer.red = p_value;
-        return p_value;
-    }
+	@prototype
+	public var red:Float = 1;
 	
-	#if swc @:extern #end
-    @prototype
-	public var green(get, set):Float;
-    #if swc @:getter(green) #end
-    inline private function get_green():Float {
-        return g2d_textRenderer.green;
-    }
-    #if swc @:setter(green) #end
-    inline private function set_green(p_value:Float):Float {
-        g2d_textRenderer.green = p_value;
-        return p_value;
-    }
+	@prototype
+	public var green:Float = 1;
 	
-	#if swc @:extern #end
-    @prototype
-	public var blue(get, set):Float;
-    #if swc @:getter(blue) #end
-    inline private function get_blue():Float {
-        return g2d_textRenderer.blue;
-    }
-    #if swc @:setter(blue) #end
-    inline private function set_blue(p_value:Float):Float {
-        g2d_textRenderer.blue = p_value;
-        return p_value;
-    }
+	@prototype
+	public var blue:Float = 1;
 	
-	#if swc @:extern #end
-    @prototype
-	public var alpha(get, set):Float;
-    #if swc @:getter(alpha) #end
-    inline private function get_alpha():Float {
-        return g2d_textRenderer.alpha;
-    }
-    #if swc @:setter(alpha) #end
-    inline private function set_alpha(p_value:Float):Float {
-        g2d_textRenderer.alpha = p_value;
-        return p_value;
-    }
+	@prototype
+	public var alpha:Float = 1;
 	
     #if swc @:extern #end
 	public var text(get, set):String;
@@ -217,9 +177,14 @@ class GUIFontSkin extends GUISkin {
         autoSize = p_autoSize;
     }
 
-    override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Bool {
+    override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Bool {
         var rendered:Bool = false;
-        if (super.render(p_left, p_top, p_right, p_bottom)) {
+        if (super.render(p_left, p_top, p_right, p_bottom, p_red, p_green, p_blue, p_alpha)) {
+			g2d_textRenderer.red = red * p_red;
+			g2d_textRenderer.green = green * p_green;
+			g2d_textRenderer.blue = blue * p_blue;
+			g2d_textRenderer.alpha = alpha * p_alpha;
+			
             g2d_textRenderer.width = p_right - p_left;
             g2d_textRenderer.height = p_bottom - p_top;
             g2d_textRenderer.render(p_left, p_top, 1, 1, 0);

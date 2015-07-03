@@ -65,10 +65,10 @@ class GUITextureSkin extends GUISkin {
 		autoSize = p_autoSize;
     }
 
-    override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Bool {
+    override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Bool {
         var rendered:Bool = false;
 		
-        if (texture != null && super.render(p_left, p_top, p_right, p_bottom)) {
+        if (texture != null && super.render(p_left, p_top, p_right, p_bottom, p_red, p_green, p_blue, p_alpha)) {
             var context:IGContext = Genome2D.getInstance().getContext();
 
             var width:Float = p_right - p_left;
@@ -90,7 +90,7 @@ class GUITextureSkin extends GUISkin {
             var ry:Float = texture.v * texture.gpuHeight;// (texture.region != null) ? texture.region.y : 0;
 
             if (sw == 0 || sh == 0) {
-                context.draw(texture, x, y, finalScaleX, finalScaleY, rotation, red, green, blue, alpha, 1, null);
+                context.draw(texture, x, y, finalScaleX, finalScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, 1, null);
             } else {
                 var finalScaleX:Float = (width - texture.width) / (sw * texture.scaleFactor) + 1;
                 var finalScaleY:Float = (height - texture.height) / (sh * texture.scaleFactor) +1;
@@ -102,7 +102,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left, p_top, 1, 1, 0,
-                                       red, green, blue, alpha,
+                                       red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        1, null);
                 }
 
@@ -112,7 +112,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+sl*texture.scaleFactor, p_top, finalScaleX, 1, 0,
-                                       red, green, blue, alpha,
+                                       red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        1, null);
                 }
                 /**/
@@ -122,7 +122,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+(sl+sw*finalScaleX)*texture.scaleFactor, p_top, 1, 1, 0,
-                                       red, green, blue, alpha,
+                                       red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        1, null);
                 }
 
@@ -134,7 +134,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left, p_top+st*texture.scaleFactor, 1, finalScaleY, 0,
-                                       red, green, blue, alpha,
+                                       red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        1, null);
                 }
                 /**/
@@ -144,7 +144,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+sl*texture.scaleFactor, p_top+st*texture.scaleFactor, finalScaleX, finalScaleY, 0,
-                                       red, green, blue, alpha,
+                                       red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        1, null);
                 }
                 /**/
@@ -154,7 +154,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+(sl+sw*finalScaleX)*texture.scaleFactor, p_top+st*texture.scaleFactor, 1, finalScaleY, 0,
-                                       red, green, blue, alpha,
+                                       red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        1, null);
                 }
                 /**/
@@ -166,7 +166,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left, p_top+(st+sh*finalScaleY)*texture.scaleFactor, 1, 1, 0,
-                                       red, green, blue, alpha,
+                                       red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        1, null);
                 }
                 /**/
@@ -176,7 +176,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+sl*texture.scaleFactor, p_top+(st+sh*finalScaleY)*texture.scaleFactor, finalScaleX, 1, 0,
-                                       red, green, blue, alpha,
+                                       red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        1, null);
                 }
                 /**/
@@ -186,7 +186,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+(sl+sw*finalScaleX)*texture.scaleFactor, p_top+(st+sh*finalScaleY)*texture.scaleFactor, 1, 1, 0,
-                                       red, green, blue, alpha,
+                                       red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        1, null);
                 }
                 /**/

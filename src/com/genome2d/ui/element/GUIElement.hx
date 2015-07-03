@@ -35,6 +35,11 @@ import com.genome2d.ui.skin.GUISkin;
 @:access(com.genome2d.ui.skin.GUISkin)
 @prototypeName("element")
 class GUIElement implements IGPrototypable implements IGInteractive {
+	public var red:Float = 1;
+	public var green:Float = 1;
+	public var blue:Float = 1;
+	public var alpha:Float = 1;
+	
     @prototype 
 	public var mouseEnabled:Bool = true;
     @prototype 
@@ -808,8 +813,13 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         }
     }
 
-    public function render():Void {
+    public function render(p_red:Float = 1, p_green:Float = 1, p_blue:Float = 1, p_alpha:Float = 1):Void {
         if (visible) {
+			var worldRed:Float = p_red * red;
+			var worldGreen:Float = p_green * green;
+			var worldBlue:Float = p_blue * blue;
+			var worldAlpha:Float = p_alpha * alpha;
+			
 			var context:IGContext = Genome2D.getInstance().getContext();
 			var previousMask:GRectangle = context.getMaskRect();
 			var camera:GCamera = context.getActiveCamera();
@@ -819,10 +829,10 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 				context.setMaskRect(new GRectangle(g2d_worldLeft*camera.scaleX, g2d_worldTop*camera.scaleY, (g2d_worldRight - g2d_worldLeft)*camera.scaleX, (g2d_worldBottom - g2d_worldTop)*camera.scaleY));
 			}
 			
-            if (g2d_activeSkin != null) g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom);
+            if (g2d_activeSkin != null) g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom, worldRed, worldGreen, worldBlue, worldAlpha);
 
             for (i in 0...g2d_numChildren) {
-                g2d_children[i].render();
+                g2d_children[i].render(worldRed, worldGreen, worldBlue, worldAlpha);
             }
 			
 			if (!expand) context.setMaskRect(previousMask);

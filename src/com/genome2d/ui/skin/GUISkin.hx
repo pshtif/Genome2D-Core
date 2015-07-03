@@ -78,17 +78,25 @@ class GUISkin implements IGPrototypable {
     private var g2d_renderTop:Float;
     private var g2d_renderRight:Float;
     private var g2d_renderBottom:Float;
-    public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Bool {
+	private var g2d_renderRed:Float;
+	private var g2d_renderGreen:Float;
+	private var g2d_renderBlue:Float;
+	private var g2d_renderAlpha:Float;
+    public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Bool {
         g2d_renderLeft = p_left;
         g2d_renderTop = p_top;
         g2d_renderRight = p_right;
         g2d_renderBottom = p_bottom;
+		g2d_renderRed = p_red;
+		g2d_renderGreen = p_green;
+		g2d_renderBlue = p_blue;
+		g2d_renderAlpha = p_alpha;
 
         return !batchRender(this);
     }
 
     inline private function flushRender():Void {
-        render(g2d_renderLeft, g2d_renderTop, g2d_renderRight, g2d_renderBottom);
+        render(g2d_renderLeft, g2d_renderTop, g2d_renderRight, g2d_renderBottom, g2d_renderRed, g2d_renderGreen, g2d_renderBlue, g2d_renderAlpha);
     }
 
     public function getTexture():GTexture {

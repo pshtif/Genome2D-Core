@@ -47,23 +47,28 @@ class GUIElementList extends GUIElement
         onModelChanged.dispatch(this);
     }
 	
-	override public function render():Void {
+	override public function render(p_red:Float = 1, p_green:Float = 1, p_blue:Float = 1, p_alpha:Float = 1):Void {
         if (visible) {
 			var context:IGContext = Genome2D.getInstance().getContext();
 			var previousMask:GRectangle = context.getMaskRect();
 			var camera:GCamera = context.getActiveCamera();
+			
+			var worldRed:Float = p_red * red;
+			var worldGreen:Float = p_green * green;
+			var worldBlue:Float = p_blue * blue;
+			var worldAlpha:Float = p_alpha * alpha;
 			
             if (flushBatch || !expand) GUISkin.flushBatch();
 			if (!expand) {
 				context.setMaskRect(new GRectangle(g2d_worldLeft*camera.scaleX, g2d_worldTop*camera.scaleY, (g2d_worldRight - g2d_worldLeft)*camera.scaleX, (g2d_worldBottom - g2d_worldTop)*camera.scaleY));
 			}
 			
-            if (g2d_activeSkin != null) g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom);
+            if (g2d_activeSkin != null) g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom, worldRed, worldGreen, worldBlue, worldAlpha);
 
             for (i in 0...g2d_numChildren) {
 				var child:GUIElement = g2d_children[i];
 				if (child.g2d_worldLeft<parent.g2d_worldRight && child.g2d_worldRight>parent.g2d_worldLeft) {// && child.g2d_worldTop<g2d_worldBottom && child.g2d_worldBottom>g2d_worldTop) {
-					child.render();
+					child.render(worldRed, worldGreen, worldBlue, worldAlpha);
 				}
             }
 			
