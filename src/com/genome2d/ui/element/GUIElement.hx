@@ -40,6 +40,25 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	public var blue:Float = 1;
 	public var alpha:Float = 1;
 	
+	#if swc @:extern #end
+    @prototype
+	public var color(get, set):Int;
+	#if swc @:getter(color) #end
+    inline private function get_color():Int {
+        var color:Int = 0;
+		color += Std.int(red * 0xFF) << 16;
+		color += Std.int(green * 0xFF) << 8;
+		color += Std.int(blue * 0xFF);
+		return color;
+    }
+	#if swc @:setter(color) #end
+	inline public function set_color(p_value:Int):Int {
+		red = Std.int(p_value >> 16 & 0xFF) / 0xFF;
+        green = Std.int(p_value >> 8 & 0xFF) / 0xFF;
+        blue = Std.int(p_value & 0xFF) / 0xFF;
+		return p_value;
+	}
+	
     @prototype 
 	public var mouseEnabled:Bool = true;
     @prototype 
@@ -888,6 +907,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     public function bindPrototype(p_prototypeXml:Xml):Void {
 		if (p_prototypeXml.exists("expand")) expand = (p_prototypeXml.get("expand") != "false" && p_prototypeXml.get("expand") != "0");
         if (p_prototypeXml.exists("align")) setAlign(Std.parseInt(p_prototypeXml.get("align")));
+		if (p_prototypeXml.exists("color")) color = Std.parseInt(p_prototypeXml.get("color"));
         if (p_prototypeXml.exists("anchorX")) anchorX = Std.parseFloat(p_prototypeXml.get("anchorX"));
         if (p_prototypeXml.exists("anchorY")) anchorY = Std.parseFloat(p_prototypeXml.get("anchorY"));
         if (p_prototypeXml.exists("anchorLeft")) anchorLeft = Std.parseFloat(p_prototypeXml.get("anchorLeft"));
