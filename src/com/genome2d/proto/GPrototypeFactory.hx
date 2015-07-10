@@ -212,4 +212,33 @@ class GPrototypeFactory {
         }
         /**/
     }
+	
+	static public function g2d_bindPrototype2(p_instance:IGPrototypable, p_prototype:Xml, p_propertyNames:Array<String>, p_propertyTypes:Array<String>):Void {
+        if (p_prototype == null) GDebug.error("Null prototype");
+		
+		var attributes:Iterator<String> = p_prototype.attributes();
+		
+		while (attributes.hasNext()) {
+			var attribute:String = attributes.next();
+			var split:Array<String> = attribute.split(".");
+			var propertyIndex:Int = p_propertyNames.indexOf(split[0]);
+			if (propertyIndex > -1) {
+				var type:String = p_propertyTypes[propertyIndex];
+				var attributeValue:String = p_prototype.get(attribute);
+				var realValue:Dynamic = null;
+				
+				switch (type) {
+					case "Bool":
+						realValue = (value != "false" && value != "0");
+					case "Int":
+						realValue = Std.parseInt(value);
+					case "Float":
+						realValue = Std.parseFloat(value);
+					case "String":
+						realValue = value;
+					case _:
+				}
+			}
+		}
+    }
 }

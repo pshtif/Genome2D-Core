@@ -8,6 +8,7 @@
  */
 package com.genome2d.macros;
 
+import com.genome2d.proto.GPrototypeProperty;
 import haxe.macro.Type.ClassType;
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -24,7 +25,7 @@ import haxe.macro.Compiler;
 **/
 class MGPrototypeProcessor {
     #if macro
-
+	
 	static public var helperIndex:Int = 0;
     static public var prototypes = [];
     static public var previous:String = "com.genome2d.proto.GPrototypeHelper";
@@ -196,6 +197,8 @@ class MGPrototypeProcessor {
             declPropertyTypes.push( { expr:EConst(CString(i)), pos:pos } );
         }
 
+		var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"GPrototypeProperty", pack:["com","genome2d","proto"], params:[TPType(TPath( { name:"Dynamic", pack:[], params:[] } ))] } ))] } );
+		fields.push( { name : "PROTOTYPE_PROPERTIES", doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl([]), pos:pos } ), pos : pos } );		
         var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"Dynamic", pack:[], params:[] } ))] } );
 		fields.push( { name : "PROTOTYPE_PROPERTY_DEFAULTS", doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(prototypePropertyDefaults), pos:pos } ), pos : pos } );
 		var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"String", pack:[], params:[] } ))] } );

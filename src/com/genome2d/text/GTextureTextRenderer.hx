@@ -246,7 +246,7 @@ class GTextureTextRenderer extends GTextRenderer {
         }
 
         if (g2d_autoSize) {
-            g2d_width = (offsetX>g2d_width) ? offsetX : g2d_width;
+            g2d_width = (offsetX > g2d_width) ? offsetX : g2d_width;
             g2d_height = offsetY + g2d_textureFont.lineHeight;
         }
 
@@ -268,9 +268,9 @@ class GTextureTextRenderer extends GTextRenderer {
             var right:Float = last.x - last.xoffset + last.xadvance;
 
             if (g2d_hAlign == GHAlignType.CENTER) {
-                offsetX = (g2d_width/g2d_fontScale - right) * .5;
+                offsetX = (g2d_width - right) * .5;
             } else if (g2d_hAlign == GHAlignType.RIGHT) {
-                offsetX = g2d_width/g2d_fontScale - right;
+                offsetX = g2d_width - right;
             }
 
             for (j in 0...charCount) {
