@@ -29,11 +29,11 @@ class GUILayout implements IGPrototypable {
     }
 	
 	public function isHorizontalLayout():Bool {
-		return false;
+		return type == GUILayoutType.HORIZONTAL;
 	}
 	
 	public function isVerticalLayout():Bool {
-		return false;
+		return type == GUILayoutType.VERTICAL;
 	}
 	
 	public function toReference():String {

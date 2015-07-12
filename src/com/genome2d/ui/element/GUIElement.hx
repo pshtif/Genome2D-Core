@@ -380,7 +380,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
     private var g2d_skin:GUISkin;
     #if swc @:extern #end
-    public var skin(get, set):GUISkin;
+    @prototype public var skin(get, set):GUISkin;
     #if swc @:getter(skin) #end
     inline private function get_skin():GUISkin {
         return g2d_skin;
@@ -806,7 +806,6 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                     var worldAnchorTop:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorTop;
                     var worldAnchorBottom:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorBottom;
                     var h:Float = (g2d_preferredHeight > g2d_minHeight || !expand) ? g2d_preferredHeight : g2d_minHeight;
-					
                     if (g2d_anchorTop != g2d_anchorBottom) {
                         g2d_worldTop = worldAnchorTop + g2d_top;
                         g2d_worldBottom = worldAnchorBottom - g2d_bottom;
@@ -905,6 +904,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
 
     public function bindPrototype(p_prototypeXml:Xml):Void {
+		/*
 		if (p_prototypeXml.exists("expand")) expand = (p_prototypeXml.get("expand") != "false" && p_prototypeXml.get("expand") != "0");
         if (p_prototypeXml.exists("align")) setAlign(Std.parseInt(p_prototypeXml.get("align")));
 		if (p_prototypeXml.exists("color")) color = Std.parseInt(p_prototypeXml.get("color"));
@@ -938,22 +938,23 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         if (p_prototypeXml.exists("mouseOver")) mouseOver = p_prototypeXml.get("mouseOver");
         if (p_prototypeXml.exists("mouseOut")) mouseOut = p_prototypeXml.get("mouseOut");
         if (p_prototypeXml.exists("mouseMove")) mouseMove = p_prototypeXml.get("mouseMove");
-		
-        var it:Iterator<Xml> = p_prototypeXml.iterator();
+		/**/
+		bindPrototypeDefault(p_prototypeXml);
+
+        var it:Iterator<Xml> = p_prototypeXml.elements();
         while (it.hasNext()) {
             var xml:Xml = it.next();
-            if (xml.nodeType == Xml.Element) {
-				// Should not be defined within prototype as such nodes are reserved for prototype reference
-				if (xml.nodeName != "prototype") {
-					var prototype:IGPrototypable = GPrototypeFactory.createPrototype(xml);
-					if (Std.is(prototype, GUIElement)) {
-						addChild(cast prototype);
-					} else if (Std.is(prototype, GUILayout)) {
-						layout = cast prototype;
-					}
+			// Should not be defined within prototype as such nodes are reserved for prototype reference
+			if (xml.nodeName.indexOf("p:") != 0) {// != "prototype") {
+				var prototype:IGPrototypable = GPrototypeFactory.createPrototype(xml);
+				if (Std.is(prototype, GUIElement)) {
+					addChild(cast prototype);
+				} else if (Std.is(prototype, GUILayout)) {
+					layout = cast prototype;
 				}
-            }
+			}
         }
+		/**/
     }
 
     public function disposeChildren():Void {
@@ -1117,4 +1118,13 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
         if (parent != null) parent.g2d_dispatchMouseCallback(p_type, p_element, p_input);
     }
+	
+	public function setState(p_stateName:String):Void {
+		setPrototypeState(p_stateName);
+		if (g2d_children != null) {
+			for (child in g2d_children) {
+				child.setState(p_stateName);
+			}
+		}
+	}
 }

@@ -17,6 +17,10 @@ class GUIVerticalLayout extends GUILayout {
 
     @prototype 
 	public var gap:Float = 0;
+	
+	public function new() {
+		type = GUILayoutType.VERTICAL;
+	}
 
     override private function calculateWidth(p_element:GUIElement):Void {
         p_element.g2d_preferredWidth = p_element.g2d_minWidth = 0;
@@ -66,7 +70,11 @@ class GUIVerticalLayout extends GUILayout {
             var child:GUIElement = p_element.g2d_children[i];
 
             child.g2d_worldTop = p_element.g2d_worldTop + offsetY;
-            child.g2d_worldBottom = child.g2d_worldTop + child.g2d_minHeight + rest/p_element.g2d_numChildren;
+			// Top priority rest space distribution
+			var childDif:Float = (child.g2d_preferredHeight > child.g2d_minHeight)?child.g2d_preferredHeight - child.g2d_minHeight:0;
+			childDif = rest < childDif?rest:childDif;
+			rest -= childDif;
+            child.g2d_worldBottom = child.g2d_worldTop + child.g2d_minHeight + childDif;
             child.g2d_finalHeight = child.g2d_worldBottom - child.g2d_worldTop;
             offsetY += child.g2d_finalHeight + gap;
 

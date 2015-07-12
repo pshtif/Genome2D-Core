@@ -8,7 +8,7 @@
  */
 package com.genome2d.macros;
 
-import com.genome2d.proto.GPrototypeProperty;
+import com.genome2d.proto.GPrototypeStates;
 import haxe.macro.Type.ClassType;
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -58,6 +58,7 @@ class MGPrototypeProcessor {
         var hasBindPrototypeDefault = false;
 		
 		var hasToReference = false;
+		var hasPrototypeStates = false;
 
         while (superClass != null) {
             var c = superClass.t.get();
@@ -66,6 +67,7 @@ class MGPrototypeProcessor {
 				if (i.name == "getPrototypeDefault") hasGetPrototypeDefault = true;
 				if (i.name == "bindPrototypeDefault") hasBindPrototypeDefault = true;
 				if (i.name == "toReference") hasToReference = true;
+				if (i.name == "g2d_prototypeStates") hasPrototypeStates = true;
 			}
 			/*
             if (prototypeNameOverride) {
@@ -85,6 +87,7 @@ class MGPrototypeProcessor {
             if (i.name == "getPrototype") hasGetPrototype = true;
             if (i.name == "bindPrototype") hasBindPrototype = true;
 			if (i.name == "toReference") hasToReference = true;
+			if (i.name == "g2d_prototypeStates") hasPrototypeStates = true;
 
             if (i.meta.length == 0 || i.access.indexOf(APublic) == -1) continue;
 
@@ -123,61 +126,57 @@ class MGPrototypeProcessor {
             }
         }
 
-        if (true) {//!superPrototype || prototypeNameOverride) {
-            var getPrototype = generateGetPrototype();
-            switch (getPrototype) {
-                case TAnonymous(f):
-                    if (superPrototype) {
-                        switch (f[0].kind) {
-                            case FFun(a):
-                                switch (a.expr.expr) {
-                                    case EBlock(b):
-                                        b[b.length-1] = macro return super.getPrototype(p_prototypeXml);
-                                    default:
-                                }
-                            default:
-                        }
-                    }
-                    if (superPrototype && !hasGetPrototype) {
-                        f[0].access.push(AOverride);
-                    }
-                    if (hasGetPrototype) {
-                        f[0].name = "getPrototypeDefault";
-						if (hasGetPrototypeDefault) f[0].access.push(AOverride);
-                    }
-                    fields = fields.concat(f);
-                default:
-                    throw "Prototype error!";
-            }
-        }
+		var getPrototype = generateGetPrototype();
+		switch (getPrototype) {
+			case TAnonymous(f):
+				if (superPrototype) {
+					switch (f[0].kind) {
+						case FFun(a):
+							switch (a.expr.expr) {
+								case EBlock(b):
+									b[b.length-1] = macro return super.getPrototype(p_prototypeXml);
+								default:
+							}
+						default:
+					}
+				}
+				if (superPrototype && !hasGetPrototype) {
+					f[0].access.push(AOverride);
+				}
+				if (hasGetPrototype) {
+					f[0].name = "getPrototypeDefault";
+					if (hasGetPrototypeDefault) f[0].access.push(AOverride);
+				}
+				fields = fields.concat(f);
+			default:
+				throw "Prototype error!";
+		}
 
-        if (true) {//!superPrototype || prototypeNameOverride) {
-            var bindPrototype = generateBindPrototype();
-            switch (bindPrototype) {
-                case TAnonymous(f):
-                    if (superPrototype) {
-                        switch (f[0].kind) {
-                            case FFun(a):
-                                switch (a.expr.expr) {
-                                    case EBlock(b):
-                                        b.unshift(macro super.bindPrototype(p_prototypeXml));
-                                    default:
-                                }
-                            default:
-                        }
-                    }
-                    if (superPrototype && !hasBindPrototype) {
-                        f[0].access.push(AOverride);
-                    }
-                    if (hasBindPrototype) {
-                        f[0].name = "bindPrototypeDefault";
-						if (hasBindPrototypeDefault) f[0].access.push(AOverride);
-                    }
-                    fields = fields.concat(f);
-                default:
-                    throw "Prototype error!";
-            }
-        }
+		var bindPrototype = generateBindPrototype();
+		switch (bindPrototype) {
+			case TAnonymous(f):
+				if (superPrototype) {
+					switch (f[0].kind) {
+						case FFun(a):
+							switch (a.expr.expr) {
+								case EBlock(b):
+									b.unshift(macro super.bindPrototype(p_prototypeXml));
+								default:
+							}
+						default:
+					}
+				}
+				if (superPrototype && !hasBindPrototype) {
+					f[0].access.push(AOverride);
+				}
+				if (hasBindPrototype) {
+					f[0].name = "bindPrototypeDefault";
+					if (hasBindPrototypeDefault) f[0].access.push(AOverride);
+				}
+				fields = fields.concat(f);
+			default:
+				throw "Prototype error!";
+		}
 		
 		if (!hasToReference) {
 			var toReference = generateToReference();
@@ -197,8 +196,19 @@ class MGPrototypeProcessor {
             declPropertyTypes.push( { expr:EConst(CString(i)), pos:pos } );
         }
 
-		var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"GPrototypeProperty", pack:["com","genome2d","proto"], params:[TPType(TPath( { name:"Dynamic", pack:[], params:[] } ))] } ))] } );
-		fields.push( { name : "PROTOTYPE_PROPERTIES", doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl([]), pos:pos } ), pos : pos } );		
+		if (!hasPrototypeStates) {
+			var kind = TPath( { pack : ["com","genome2d","proto"], name : "GPrototypeStates", params : [] } );
+			fields.push( { name : "g2d_prototypeStates", doc : null, meta : [], access : [APublic], kind : FVar(kind, null), pos : pos } );		
+			
+			var setPrototypeState = generateSetPrototypeState();
+			switch (setPrototypeState) {
+				case TAnonymous(f):
+					fields = fields.concat(f);
+				default:
+					throw "Prototype error!";
+			}
+		}
+		
         var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"Dynamic", pack:[], params:[] } ))] } );
 		fields.push( { name : "PROTOTYPE_PROPERTY_DEFAULTS", doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(prototypePropertyDefaults), pos:pos } ), pos : pos } );
 		var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"String", pack:[], params:[] } ))] } );
@@ -268,8 +278,6 @@ class MGPrototypeProcessor {
 				case _:
 			}
 		}
-		//else if (typeName != "Int" && typeName != "Bool" && typeName != "Float" && typeName != "String") {
-        //}
 
         return typeName;
     }
@@ -295,6 +303,22 @@ class MGPrototypeProcessor {
         return macro : {
             public function toReference():String {
                 return "";
+            }
+        }
+    }
+	
+	inline static private function generateSetPrototypeState() {
+        return macro : {
+            public function setPrototypeState(p_stateName:String):Void {
+                var state:Map<String,Dynamic> = g2d_prototypeStates.getState(p_stateName);
+				if (state != null) {
+					for (propertyName in state.keys()) {
+						try {
+							Reflect.setProperty(this, propertyName, state.get(propertyName));
+						} catch (e:Dynamic) {
+						}
+					}
+				}
             }
         }
     }
