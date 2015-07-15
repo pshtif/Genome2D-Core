@@ -18,7 +18,6 @@ import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.textures.GTexture;
-import com.genome2d.context.stage3d.GStage3DContext;
 import com.genome2d.node.GNode;
 import com.genome2d.components.GComponent;
 import com.genome2d.context.GContextFeature;

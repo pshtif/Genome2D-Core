@@ -14,7 +14,7 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 
 class GTextureFont implements IGPrototypable {
-	@reference
+	@prototype
 	public var texture:GTexture;
 	
 	@prototype

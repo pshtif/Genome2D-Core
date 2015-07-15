@@ -43,7 +43,7 @@ class GTexturedQuad extends GComponent implements IGRenderable
     /**
         Texture used for rendering
     **/
-	@reference
+	@prototype
 	public var texture:GTexture;
 
     /**

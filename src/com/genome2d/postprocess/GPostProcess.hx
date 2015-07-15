@@ -9,7 +9,6 @@
 package com.genome2d.postprocess;
 
 import com.genome2d.textures.GTextureManager;
-import com.genome2d.context.stage3d.GStage3DContext;
 import com.genome2d.utils.GRenderTargetStack;
 import com.genome2d.debug.GDebug;
 import com.genome2d.geom.GMatrix3D;
@@ -113,7 +112,7 @@ class GPostProcess {
 		
         updatePassTextures(bounds);
 
-        var context:GStage3DContext = cast Genome2D.getInstance().getContext();
+        var context:IGContext = Genome2D.getInstance().getContext();
 
         GRenderTargetStack.pushRenderTarget(context.getRenderTarget(),context.getRenderTargetMatrix());
         if (p_source == null) {

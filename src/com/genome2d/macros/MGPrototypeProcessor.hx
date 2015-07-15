@@ -8,6 +8,7 @@
  */
 package com.genome2d.macros;
 
+import com.genome2d.proto.GPrototypeExtras;
 import com.genome2d.proto.GPrototypeStates;
 import haxe.macro.Type.ClassType;
 import haxe.macro.Context;
@@ -36,6 +37,7 @@ class MGPrototypeProcessor {
 
         var prototypePropertyNames:Array<String> = [];
         var prototypePropertyTypes:Array<String> = [];
+		var prototypePropertyExtras:Array<String> = [];
 		var prototypePropertyDefaults:Array<Expr> = [];
 
         var localClass = Context.getLocalClass().get();
@@ -92,20 +94,29 @@ class MGPrototypeProcessor {
             if (i.meta.length == 0 || i.access.indexOf(APublic) == -1) continue;
 
             for (meta in i.meta) {
-                if (meta.name == "prototype" || meta.name == "reference") {
+                if (meta.name == "prototype") {
 					//var param:String = (meta.params.length > 0) ? ExprTools.getValue(meta.params[0]) : "";
                     switch (i.kind) {
+						case FFun(f):
+							if (i.name.indexOf("set") != 0) throw "Error invalid prototypable function (needs to start with set*).";
+							if (f.args.length != 1) throw "Error invalid prototypable function (needs to have single parameter).";
+							switch (f.args[0].type) {
+								case TPath(p):
+									prototypePropertyDefaults.push(extractDefault("setter", null, pos));
+                                    prototypePropertyNames.push(i.name);
+									
+									prototypePropertyTypes.push(extractType(p));
+									prototypePropertyExtras.push(GPrototypeExtras.SETTER);
+                                case _:
+							}
                         case FVar(t, e):							
                             switch (t) {
                                 case TPath(p):
 									prototypePropertyDefaults.push(extractDefault(p.name, e, pos));
                                     prototypePropertyNames.push(i.name);
 									
-									if (meta.name == "prototype") {
-										prototypePropertyTypes.push(extractType(p));
-									} else {
-										prototypePropertyTypes.push("R:"+extractType(p));
-									}
+									prototypePropertyTypes.push(extractType(p));
+									prototypePropertyExtras.push(GPrototypeExtras.DEFAULT);
                                 case _:
                             }
                         case FProp(get,set,t,e):
@@ -113,11 +124,9 @@ class MGPrototypeProcessor {
                                 case TPath(p):
 									prototypePropertyDefaults.push(extractDefault(p.name, e, pos));
                                     prototypePropertyNames.push(i.name);
-                                    if (meta.name == "prototype") {
-										prototypePropertyTypes.push(extractType(p));
-									} else {
-										prototypePropertyTypes.push("R:"+extractType(p));
-									}
+
+									prototypePropertyTypes.push(extractType(p));
+									prototypePropertyExtras.push(GPrototypeExtras.DEFAULT);
                                 case _:
                             }
                         case _:
@@ -195,8 +204,13 @@ class MGPrototypeProcessor {
         for (i in prototypePropertyTypes) {
             declPropertyTypes.push( { expr:EConst(CString(i)), pos:pos } );
         }
+		var declPropertyExtras:Array<Expr> = [];
+        for (i in prototypePropertyExtras) {
+			declPropertyExtras.push( { expr:EConst(CString(i)), pos:pos } );
+        }
 
 		if (!hasPrototypeStates) {
+			fields.push( { name : "g2d_currentState", doc : null, meta : [], access : [APublic], kind : FVar(macro : String, macro $v { "default" } )              , pos : pos } );
 			var kind = TPath( { pack : ["com","genome2d","proto"], name : "GPrototypeStates", params : [] } );
 			fields.push( { name : "g2d_prototypeStates", doc : null, meta : [], access : [APublic], kind : FVar(kind, null), pos : pos } );		
 			
@@ -214,6 +228,7 @@ class MGPrototypeProcessor {
 		var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"String", pack:[], params:[] } ))] } );
         fields.push( { name : "PROTOTYPE_PROPERTY_NAMES",    doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyNames), pos:pos } )   , pos : pos } );
         fields.push( { name : "PROTOTYPE_PROPERTY_TYPES",    doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyTypes), pos:pos } )   , pos : pos } );
+		fields.push( { name : "PROTOTYPE_PROPERTY_EXTRAS",   doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyExtras), pos:pos } )  , pos : pos } );
         fields.push( { name : "PROTOTYPE_NAME",              doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { prototypeName } )              , pos : pos } );
 
 		// Prototype class name lookup
@@ -285,7 +300,7 @@ class MGPrototypeProcessor {
     inline static private function generateGetPrototype() {
         return macro : {
              public function getPrototype(p_prototypeXml:Xml = null):Xml {
-                p_prototypeXml = com.genome2d.proto.GPrototypeFactory.g2d_getPrototype(this, p_prototypeXml, PROTOTYPE_NAME, PROTOTYPE_PROPERTY_NAMES, PROTOTYPE_PROPERTY_TYPES, PROTOTYPE_PROPERTY_DEFAULTS);
+                p_prototypeXml = com.genome2d.proto.GPrototypeFactory.g2d_getPrototype(this, p_prototypeXml, PROTOTYPE_NAME, PROTOTYPE_PROPERTY_NAMES, PROTOTYPE_PROPERTY_TYPES, PROTOTYPE_PROPERTY_DEFAULTS, PROTOTYPE_PROPERTY_EXTRAS);
                 return p_prototypeXml;
             }
         }
@@ -294,7 +309,7 @@ class MGPrototypeProcessor {
     inline static private function generateBindPrototype() {
         return macro : {
             public function bindPrototype(p_prototypeXml:Xml):Void {
-                com.genome2d.proto.GPrototypeFactory.g2d_bindPrototype(this, p_prototypeXml, PROTOTYPE_PROPERTY_NAMES, PROTOTYPE_PROPERTY_TYPES);
+                com.genome2d.proto.GPrototypeFactory.g2d_bindPrototype(this, p_prototypeXml, PROTOTYPE_PROPERTY_NAMES, PROTOTYPE_PROPERTY_TYPES, PROTOTYPE_PROPERTY_EXTRAS);
             }
         }
     }
@@ -310,12 +325,15 @@ class MGPrototypeProcessor {
 	inline static private function generateSetPrototypeState() {
         return macro : {
             public function setPrototypeState(p_stateName:String):Void {
-                var state:Map<String,Dynamic> = g2d_prototypeStates.getState(p_stateName);
-				if (state != null) {
-					for (propertyName in state.keys()) {
-						try {
-							Reflect.setProperty(this, propertyName, state.get(propertyName));
-						} catch (e:Dynamic) {
+				if (g2d_currentState != p_stateName) {
+					g2d_currentState = p_stateName;
+					var state:Map<String,Dynamic> = g2d_prototypeStates.getState(p_stateName);
+					if (state != null) {
+						for (propertyName in state.keys()) {
+							try {
+								Reflect.setProperty(this, propertyName, state.get(propertyName));
+							} catch (e:Dynamic) {
+							}
 						}
 					}
 				}

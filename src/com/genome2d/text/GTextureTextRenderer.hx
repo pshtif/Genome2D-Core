@@ -9,7 +9,6 @@ import com.genome2d.utils.GHAlignType;
 import com.genome2d.utils.GVAlignType;
 import com.genome2d.context.IGContext;
 import com.genome2d.context.GCamera;
-import flash.display.BitmapData;
 class GTextureTextRenderer extends GTextRenderer {
 	
 	public var red:Float = 1;
@@ -61,10 +60,12 @@ class GTextureTextRenderer extends GTextRenderer {
 		
 		g2d_chars = new Array<GTextureCharRenderable>();
 		
+		#if flash
 		if (g2d_helperTexture == null) {
-			g2d_helperTexture = GTextureManager.createTexture("g2d_GTextureTextRenderer_helper", new BitmapData(4, 4, false, 0xFFFFFF));
-			g2d_helperTexture.pivotX = g2d_helperTexture.pivotY = -2;
+			//g2d_helperTexture = GTextureManager.createTexture("g2d_GTextureTextRenderer_helper", new BitmapData(4, 4, false, 0xFFFFFF));
+			//g2d_helperTexture.pivotX = g2d_helperTexture.pivotY = -2;
 		}
+		#end
 	}
 
     override public function render(p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_rotation:Float):Void {

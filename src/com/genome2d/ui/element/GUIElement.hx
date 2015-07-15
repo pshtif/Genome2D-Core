@@ -11,17 +11,17 @@ package com.genome2d.ui.element;
 import com.genome2d.callbacks.GCallback;
 import com.genome2d.context.GCamera;
 import com.genome2d.context.IGContext;
-import com.genome2d.focus.GFocusManager;
+import com.genome2d.input.GFocusManager;
 import com.genome2d.Genome2D;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.input.GKeyboardInput;
 import com.genome2d.input.IGInteractive;
 import com.genome2d.node.GNode;
+import com.genome2d.proto.GPrototypeExtras;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.ui.layout.GUIHorizontalLayout;
 import com.genome2d.ui.layout.GUILayoutType;
 import com.genome2d.ui.layout.GUIVerticalLayout;
-import flash.utils.Object;
 import com.genome2d.ui.skin.GUISkinManager;
 import com.genome2d.ui.layout.GUILayout;
 import Xml.XmlType;
@@ -64,6 +64,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     @prototype 
 	public var mouseChildren:Bool = true;
 
+	@prototype
     public var visible:Bool = true;
 
     @prototype 
@@ -139,54 +140,26 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         }
     }
 
+	@prototype
     public function setAlign(p_align:Int):Void {
-        switch (p_align) {
-            case 1:
-                g2d_anchorTop = g2d_anchorBottom = 0;
-                g2d_anchorLeft = g2d_anchorRight = 0;
-                g2d_pivotX = 0;
-                g2d_pivotY = 0;
-            case 2:
-                g2d_anchorTop = g2d_anchorBottom = 0;
-                g2d_anchorLeft = g2d_anchorRight = 0.5;
-                g2d_pivotX = .5;
-                g2d_pivotY = 0;
-            case 3:
-                g2d_anchorTop = g2d_anchorBottom = 0;
-                g2d_anchorLeft = g2d_anchorRight = 1;
-                g2d_pivotX = 1;
-                g2d_pivotY = 0;
-            case 4:
-                g2d_anchorTop = g2d_anchorBottom = 0.5;
-                g2d_anchorLeft = g2d_anchorRight = 0;
-                g2d_pivotX = 0;
-                g2d_pivotY = 0.5;
-            case 5:
-                g2d_anchorTop = g2d_anchorBottom = 0.5;
-                g2d_anchorLeft = g2d_anchorRight = 0.5;
-                g2d_pivotX = 0.5;
-                g2d_pivotY = 0.5;
-            case 6:
-                g2d_anchorTop = g2d_anchorBottom = 0.5;
-                g2d_anchorLeft = g2d_anchorRight = 1;
-                g2d_pivotX = 1;
-                g2d_pivotY = 0.5;
-            case 7:
-                g2d_anchorTop = g2d_anchorBottom = 1;
-                g2d_anchorLeft = g2d_anchorRight = 0;
-                g2d_pivotX = 0;
-                g2d_pivotY = 1;
-            case 8:
-                g2d_anchorTop = g2d_anchorBottom = 1;
-                g2d_anchorLeft = g2d_anchorRight = 0.5;
-                g2d_pivotX = .5;
-                g2d_pivotY = 1;
-            case 9:
-                g2d_anchorTop = g2d_anchorBottom = 1;
-                g2d_anchorLeft = g2d_anchorRight = 1;
-                g2d_pivotX = 1;
-                g2d_pivotY = 1;
-        }
+		g2d_anchorLeft = g2d_anchorRight = ((p_align - 1) % 3) * 0.5;
+		g2d_anchorTop = g2d_anchorBottom = Std.int((p_align - 1) / 3) * 0.5;
+		g2d_pivotX = ((p_align - 1) % 3) * 0.5;		
+		g2d_pivotY = Std.int((p_align - 1) / 3) * 0.5;		
+        setDirty();
+    }
+	
+	@prototype
+    public function setAnchorAlign(p_align:Int):Void {
+		g2d_anchorLeft = g2d_anchorRight = ((p_align - 1) % 3) * 0.5;
+		g2d_anchorTop = g2d_anchorBottom = Std.int((p_align - 1) / 3) * 0.5;
+        setDirty();
+    }
+	
+	@prototype
+    public function setPivotAlign(p_align:Int):Void {
+		g2d_pivotX = ((p_align - 1) % 3) * 0.5;		
+		g2d_pivotY = Std.int((p_align - 1) / 3) * 0.5;
         setDirty();
     }
 
@@ -321,6 +294,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     public function getModel():String {
         return g2d_model;
     }
+	@prototype
     public function setModel(p_value:Dynamic):Void {
 		// Xml assignment
         if (Std.is(p_value, Xml)) {
@@ -387,11 +361,13 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
     #if swc @:setter(skin) #end
     inline private function set_skin(p_value:GUISkin):GUISkin {
-		if (g2d_skin != null) g2d_skin.remove(true);
-        g2d_skin = (p_value != null) ? p_value.attach(this) : p_value;
-        g2d_activeSkin = g2d_skin;
+		if (p_value == null || g2d_skin == null || p_value.id != g2d_skin.id) {
+			if (g2d_skin != null) g2d_skin.remove(true);
+			g2d_skin = (p_value != null) ? p_value.attach(this) : p_value;
+			g2d_activeSkin = g2d_skin;
 
-        setDirty();
+			setDirty();
+		}
         return g2d_skin;
     }
 
@@ -904,6 +880,19 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
 
     public function bindPrototype(p_prototypeXml:Xml):Void {
+		var it:Iterator<Xml> = p_prototypeXml.elements();
+        while (it.hasNext()) {
+            var xml:Xml = it.next();
+			// Should not be defined within prototype as such nodes are reserved for prototype reference
+			if (xml.nodeName.indexOf("p:") != 0) {// != "prototype") {
+				var prototype:IGPrototypable = GPrototypeFactory.createPrototype(xml);
+				if (Std.is(prototype, GUIElement)) {
+					addChild(cast prototype);
+				} else if (Std.is(prototype, GUILayout)) {
+					layout = cast prototype;
+				}
+			}
+        }
 		/*
 		if (p_prototypeXml.exists("expand")) expand = (p_prototypeXml.get("expand") != "false" && p_prototypeXml.get("expand") != "0");
         if (p_prototypeXml.exists("align")) setAlign(Std.parseInt(p_prototypeXml.get("align")));
@@ -940,20 +929,6 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         if (p_prototypeXml.exists("mouseMove")) mouseMove = p_prototypeXml.get("mouseMove");
 		/**/
 		bindPrototypeDefault(p_prototypeXml);
-
-        var it:Iterator<Xml> = p_prototypeXml.elements();
-        while (it.hasNext()) {
-            var xml:Xml = it.next();
-			// Should not be defined within prototype as such nodes are reserved for prototype reference
-			if (xml.nodeName.indexOf("p:") != 0) {// != "prototype") {
-				var prototype:IGPrototypable = GPrototypeFactory.createPrototype(xml);
-				if (Std.is(prototype, GUIElement)) {
-					addChild(cast prototype);
-				} else if (Std.is(prototype, GUILayout)) {
-					layout = cast prototype;
-				}
-			}
-        }
 		/**/
     }
 

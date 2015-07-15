@@ -7,7 +7,7 @@
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
 package com.genome2d.ui.element;
-import com.genome2d.focus.GFocusManager;
+import com.genome2d.input.GFocusManager;
 import com.genome2d.input.GKeyboardInput;
 import com.genome2d.input.GKeyboardInputType;
 import com.genome2d.ui.skin.GUIFontSkin;
