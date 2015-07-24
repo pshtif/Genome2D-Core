@@ -15,20 +15,6 @@ class GTextureTextRenderer extends GTextRenderer {
 	public var green:Float = 1;
 	public var blue:Float = 1;
 	public var alpha:Float = 1;
-	
-    private var g2d_fontScale:Float = 1;
-    #if swc @:extern #end
-    public var fontScale(get, set):Float;
-    #if swc @:getter(fontScale) #end
-    inline private function get_fontScale():Float {
-        return g2d_fontScale;
-    }
-    #if swc @:setter(fontScale) #end
-    inline private function set_fontScale(p_value:Float):Float {
-        g2d_fontScale = p_value;
-        g2d_dirty = true;
-        return g2d_fontScale;
-    }
 
     private var g2d_textureFont:GTextureFont;
     #if swc @:extern #end
@@ -70,7 +56,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
     override public function render(p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_rotation:Float):Void {
         if (g2d_textureFont == null) return;
-		
+
         if (g2d_dirty) invalidate();
 		
 		if (enableCursor) renderSelection(p_x, p_y, p_scaleX, p_scaleY, 0);
@@ -91,15 +77,15 @@ class GTextureTextRenderer extends GTextRenderer {
             if (!renderable.visible) break;
 			if (renderable.whiteSpace) continue;
 			
-			var cx:Float = renderable.x + renderable.xoffset;
-			var cy:Float = renderable.y + renderable.yoffset;
+			var cx:Float = renderable.x + renderable.xoffset*fontScale;
+			var cy:Float = renderable.y + renderable.yoffset*fontScale;
 
             if (p_rotation != 0) {
-                tx = (cx * cos - cy * sin) * p_scaleX * g2d_fontScale + p_x;
-                ty = (cy * cos + cx * sin) * p_scaleY * g2d_fontScale + p_y;
+                tx = (cx * cos - cy * sin) * p_scaleX + p_x;
+                ty = (cy * cos + cx * sin) * p_scaleY + p_y;
             } else {
-				tx = cx * p_scaleX * g2d_fontScale + p_x;
-				ty = cy * p_scaleY * g2d_fontScale + p_y;
+				tx = cx * p_scaleX + p_x;
+				ty = cy * p_scaleY + p_y;
 			}
 			
 			g2d_context.draw(renderable.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red, green, blue, alpha, 1, null);
@@ -141,7 +127,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
     override public function invalidate():Void {
         if (g2d_textureFont == null) return;
-
+		
         if (g2d_autoSize) {
             g2d_width = 0;
         }
@@ -176,16 +162,16 @@ class GTextureTextRenderer extends GTextRenderer {
                 previousCharCode = -1;
                 lines.push(currentLine);
                 currentLine = new Array<GTextureCharRenderable>();
-                if (!g2d_autoSize && offsetY + 2*(g2d_textureFont.lineHeight + g2d_lineSpace) > g2d_height/g2d_fontScale) break;
+                if (!g2d_autoSize && offsetY + 2*(g2d_textureFont.lineHeight + g2d_lineSpace) > g2d_height) break;
                 offsetX = 0;
-                offsetY += g2d_textureFont.lineHeight + g2d_lineSpace;
+                offsetY += (g2d_textureFont.lineHeight + g2d_lineSpace)*g2d_fontScale;
 				
 				renderable.x = offsetX;
 				renderable.y = offsetY;
 				renderable.whiteSpace = true;
 				charIndex++;
             } else {
-                if (!g2d_autoSize && offsetY + g2d_textureFont.lineHeight + g2d_lineSpace > g2d_height / g2d_fontScale) break;
+                if (!g2d_autoSize && offsetY + (g2d_textureFont.lineHeight + g2d_lineSpace)*g2d_fontScale > g2d_height) break;
 
                 currentCharCode = g2d_text.charCodeAt(i);
                 char = g2d_textureFont.getChar(Std.string(currentCharCode));
@@ -197,12 +183,12 @@ class GTextureTextRenderer extends GTextRenderer {
                 }
 
                 if (previousCharCode != -1) {
-                    offsetX += g2d_textureFont.getKerning(previousCharCode,currentCharCode);
+                    offsetX += g2d_textureFont.getKerning(previousCharCode,currentCharCode)*g2d_fontScale;
                 }
 
 				renderable.setCharCode(currentCharCode);
 
-				if (!g2d_autoSize && offsetX + char.texture.width > g2d_width / g2d_fontScale) {
+				if (!g2d_autoSize && offsetX + char.texture.width*g2d_fontScale > g2d_width) {
 					lines.push(currentLine);
 					var backtrack:Int = i - whiteSpaceIndex - 1;
 					var currentCount:Int = currentLine.length;
@@ -211,11 +197,11 @@ class GTextureTextRenderer extends GTextRenderer {
 					charIndex -= backtrack;
 
 					if (backtrack >= currentCount) break;
-					if (!g2d_autoSize && offsetY + 2 * (g2d_textureFont.lineHeight + g2d_lineSpace) > g2d_height / g2d_fontScale) break;
+					if (!g2d_autoSize && offsetY + 2 * (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale > g2d_height) break;
 
 					i = whiteSpaceIndex+1;
 					offsetX = 0;
-					offsetY += g2d_textureFont.lineHeight + g2d_lineSpace;
+					offsetY += (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale;
 					continue;
 				}
 
@@ -231,7 +217,7 @@ class GTextureTextRenderer extends GTextRenderer {
 					renderable.whiteSpace = false;
 				}
 
-                offsetX += char.xadvance + g2d_tracking;
+                offsetX += (char.xadvance + g2d_tracking) * g2d_fontScale;
 
                 previousCharCode = currentCharCode;
             }
@@ -248,10 +234,10 @@ class GTextureTextRenderer extends GTextRenderer {
 
         if (g2d_autoSize) {
             g2d_width = (offsetX > g2d_width) ? offsetX : g2d_width;
-            g2d_height = offsetY + g2d_textureFont.lineHeight;
+            g2d_height = offsetY + g2d_textureFont.lineHeight * g2d_fontScale;
         }
 
-        var bottom:Float = offsetY + g2d_textureFont.lineHeight;
+        var bottom:Float = offsetY + g2d_textureFont.lineHeight * g2d_fontScale;
         var offsetY:Float = 0;
         if (g2d_vAlign == GVAlignType.MIDDLE) {
             offsetY = (g2d_height - bottom) * .5;
@@ -266,7 +252,7 @@ class GTextureTextRenderer extends GTextRenderer {
             if (charCount == 0) continue;
             var offsetX:Float = 0;
             var last:GTextureCharRenderable = currentLine[charCount-1];
-            var right:Float = last.x - last.xoffset + last.xadvance;
+            var right:Float = last.x - last.xoffset * g2d_fontScale + last.xadvance * fontScale;
 
             if (g2d_hAlign == GHAlignType.CENTER) {
                 offsetX = (g2d_width - right) * .5;

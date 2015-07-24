@@ -299,7 +299,7 @@ class GPrototypeFactory {
 	
 	inline static private function g2d_convertStringValue(p_value:String, p_type:String):Dynamic {
 		var realValue:Dynamic = null;
-		trace(p_type);
+
 		switch (p_type) {
 			case "Bool":
 				realValue = (p_value != "false" && p_value != "0");

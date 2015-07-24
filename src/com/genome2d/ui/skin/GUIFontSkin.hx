@@ -159,11 +159,11 @@ class GUIFontSkin extends GUISkin {
     }
 
     override public function getMinWidth():Float {
-        return autoSize ? g2d_textRenderer.width*fontScale : 0;
+        return autoSize ? g2d_textRenderer.width : 0;
     }
 
     override public function getMinHeight():Float {
-        return autoSize ? g2d_textRenderer.height*fontScale : 0;
+        return autoSize ? g2d_textRenderer.height : 0;
     }
 
     public function new(p_id:String = "", p_font:GTextureFont = null, p_fontScale:Float = 1, p_autoSize:Bool = true, p_origin:GUIFontSkin = null) {
