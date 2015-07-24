@@ -14,7 +14,7 @@ import com.genome2d.macros.MGPrototypeProcessor;
     Prototypable interface
 **/
 @:autoBuild(com.genome2d.macros.MGPrototypeProcessor.build())
-interface IGPrototypable {
+interface IGPrototypable {	
 	public var g2d_prototypeStates:GPrototypeStates;
 	public var g2d_currentState:String;
 	

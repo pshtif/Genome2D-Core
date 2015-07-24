@@ -9,6 +9,7 @@
 package com.genome2d.macros;
 
 import com.genome2d.proto.GPrototypeExtras;
+import com.genome2d.proto.GPrototypeSpecfi;
 import com.genome2d.proto.GPrototypeStates;
 import haxe.macro.Type.ClassType;
 import haxe.macro.Context;
@@ -37,7 +38,7 @@ class MGPrototypeProcessor {
 
         var prototypePropertyNames:Array<String> = [];
         var prototypePropertyTypes:Array<String> = [];
-		var prototypePropertyExtras:Array<String> = [];
+		var prototypePropertyExtras:Array<Int> = [];
 		var prototypePropertyDefaults:Array<Expr> = [];
 
         var localClass = Context.getLocalClass().get();
@@ -206,7 +207,7 @@ class MGPrototypeProcessor {
         }
 		var declPropertyExtras:Array<Expr> = [];
         for (i in prototypePropertyExtras) {
-			declPropertyExtras.push( { expr:EConst(CString(i)), pos:pos } );
+			declPropertyExtras.push( { expr:EConst(CInt(Std.string(i))), pos:pos } );
         }
 
 		if (!hasPrototypeStates) {
@@ -228,8 +229,9 @@ class MGPrototypeProcessor {
 		var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"String", pack:[], params:[] } ))] } );
         fields.push( { name : "PROTOTYPE_PROPERTY_NAMES",    doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyNames), pos:pos } )   , pos : pos } );
         fields.push( { name : "PROTOTYPE_PROPERTY_TYPES",    doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyTypes), pos:pos } )   , pos : pos } );
+		var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"Int", pack:[], params:[] } ))] } );
 		fields.push( { name : "PROTOTYPE_PROPERTY_EXTRAS",   doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyExtras), pos:pos } )  , pos : pos } );
-        fields.push( { name : "PROTOTYPE_NAME",              doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { prototypeName } )              , pos : pos } );
+        fields.push( { name : GPrototypeSpecfi.PROTOTYPE_NAME,              doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { prototypeName } )              , pos : pos } );
 
 		// Prototype class name lookup
 		//var kind = TPath( { pack : [], name : "Class", params : [TPType(TPath( { name : localClass.name, pack : localClass.pack, params : [] } ))] } );

@@ -6,6 +6,6 @@ package com.genome2d.proto;
  */
 class GPrototypeExtras
 {
-	inline static public var DEFAULT:String = "default";
-	inline static public var SETTER:String = "setter";
+	inline static public var DEFAULT:Int = 0;
+	inline static public var SETTER:Int = 1;
 }

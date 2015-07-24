@@ -68,9 +68,9 @@ class GPrototypeFactory {
         return proto;
     }
 
-    static public function g2d_getPrototype(p_instance:IGPrototypable, p_prototypeXml:Xml, p_prototypeName:String, p_propertyNames:Array<String>, p_propertyTypes:Array<String>, p_propertyDefaults:Array<Dynamic>, p_propertyExtras:Array<String>):Xml {
+    static public function g2d_getPrototype(p_instance:IGPrototypable, p_prototypeXml:Xml, p_prototypeName:String, p_propertyNames:Array<String>, p_propertyTypes:Array<String>, p_propertyDefaults:Array<Dynamic>, p_propertyExtras:Array<Int>):Xml {
         if (p_prototypeXml == null) p_prototypeXml = Xml.createElement(p_prototypeName);
-
+		GPrototypeParser.parseTo(null, p_instance);
         if (p_propertyNames != null) {
             for (i in 0...p_propertyNames.length) {
                 var name:String = p_propertyNames[i];
@@ -215,7 +215,7 @@ class GPrototypeFactory {
         /**/
     }
 	
-	static public function g2d_bindPrototype(p_instance:IGPrototypable, p_prototype:Xml, p_propertyNames:Array<String>, p_propertyTypes:Array<String>, p_propertyExtras:Array<String>):Void {
+	static public function g2d_bindPrototype(p_instance:IGPrototypable, p_prototype:Xml, p_propertyNames:Array<String>, p_propertyTypes:Array<String>, p_propertyExtras:Array<Int>):Void {
         if (p_prototype == null) GDebug.error("Null prototype");
 		if (p_instance.g2d_prototypeStates == null) p_instance.g2d_prototypeStates = new GPrototypeStates();
 		
@@ -237,13 +237,13 @@ class GPrototypeFactory {
 		/**/
     }
 	
-	static private function g2d_bindProperty(p_propertyName:String, p_propertyValue:Dynamic, p_instance:IGPrototypable, p_prototype:Xml, p_propertyNames:Array<String>, p_propertyTypes:Array<String>, p_propertyExtras:Array<String>):Void {
+	static private function g2d_bindProperty(p_propertyName:String, p_propertyValue:Dynamic, p_instance:IGPrototypable, p_prototype:Xml, p_propertyNames:Array<String>, p_propertyTypes:Array<String>, p_propertyExtras:Array<Int>):Void {
 		var split:Array<String> = p_propertyName.split(".");
 		var propertyIndex:Int = p_propertyNames.indexOf(split[0]);
 		
 		if (propertyIndex > -1) {
 			var propertyType:String = p_propertyTypes[propertyIndex];
-			var propertyExtras:String = p_propertyExtras[propertyIndex];
+			var propertyExtras:Int = p_propertyExtras[propertyIndex];
 			var realValue:Dynamic;
 			if (Std.is(p_propertyValue, Xml)) {
 				realValue = g2d_convertXmlValue(p_propertyValue, propertyType);
