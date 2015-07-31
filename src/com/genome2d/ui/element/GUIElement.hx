@@ -17,6 +17,7 @@ import com.genome2d.geom.GRectangle;
 import com.genome2d.input.GKeyboardInput;
 import com.genome2d.input.IGInteractive;
 import com.genome2d.node.GNode;
+import com.genome2d.proto.GPrototype;
 import com.genome2d.proto.GPrototypeExtras;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.ui.layout.GUIHorizontalLayout;
@@ -34,6 +35,7 @@ import com.genome2d.ui.skin.GUISkin;
 @:access(com.genome2d.ui.layout.GUILayout)
 @:access(com.genome2d.ui.skin.GUISkin)
 @prototypeName("element")
+@prototypeDefaultChildGroup("element")
 class GUIElement implements IGPrototypable implements IGInteractive {
 	public var red:Float = 1;
 	public var green:Float = 1;
@@ -833,59 +835,58 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         }
     }
 
-    public function getPrototype(p_prototypeXml:Xml = null):Xml {
-        if (p_prototypeXml == null) p_prototypeXml = Xml.createElement(PROTOTYPE_NAME);
+    public function getPrototype(p_prototype:GPrototype = null):GPrototype {		
+		p_prototype = getPrototypeDefault(p_prototype);
+		/*
+        if (anchorX != 0) p_prototype.set("anchorX", Std.string(anchorX));
+        if (anchorY != 0) p_prototype.set("anchorY", Std.string(anchorY));
+        if (anchorLeft != 0) p_prototype.set("anchorLeft", Std.string(anchorLeft));
+        if (anchorRight != 0) p_prototype.set("anchorRight", Std.string(anchorRight));
+        if (anchorTop != 0) p_prototype.set("anchorTop", Std.string(anchorTop));
+        if (anchorBottom != 0) p_prototype.set("anchorBottom", Std.string(anchorBottom));
+        if (pivotX != 0) p_prototype.set("pivotX", Std.string(pivotX));
+        if (pivotY != 0) p_prototype.set("pivotY", Std.string(pivotY));
+        if (left != 0) p_prototype.set("left", Std.string(left));
+        if (right != 0) p_prototype.set("right", Std.string(right));
+        if (top != 0) p_prototype.set("top", Std.string(top));
+        if (bottom != 0) p_prototype.set("bottom", Std.string(bottom));
+        if (preferredWidth != 0) p_prototype.set("preferredWidth", Std.string(preferredWidth));
+        if (preferredHeight != 0) p_prototype.set("preferredHeight", Std.string(preferredHeight));
+        if (name != "") p_prototype.set("name", name);
+        if (skin != null) p_prototype.set("skin", skin.id);
+        if (mouseEnabled != true) p_prototype.set("mouseEnabled", Std.string(mouseEnabled));
+        if (mouseChildren != true) p_prototype.set("mouseChildren", Std.string(mouseChildren));
+        if (visible != true) p_prototype.set("visible", Std.string(visible));
+        if (flushBatch != false) p_prototype.set("flushBatch", Std.string(flushBatch));
+		if (scrollable != false) p_prototype.set("scrollable", Std.string(scrollable));
 
-		if (expand != true) p_prototypeXml.set("expand", Std.string(anchorX));
-        if (anchorX != 0) p_prototypeXml.set("anchorX", Std.string(anchorX));
-        if (anchorY != 0) p_prototypeXml.set("anchorY", Std.string(anchorY));
-        if (anchorLeft != 0) p_prototypeXml.set("anchorLeft", Std.string(anchorLeft));
-        if (anchorRight != 0) p_prototypeXml.set("anchorRight", Std.string(anchorRight));
-        if (anchorTop != 0) p_prototypeXml.set("anchorTop", Std.string(anchorTop));
-        if (anchorBottom != 0) p_prototypeXml.set("anchorBottom", Std.string(anchorBottom));
-        if (pivotX != 0) p_prototypeXml.set("pivotX", Std.string(pivotX));
-        if (pivotY != 0) p_prototypeXml.set("pivotY", Std.string(pivotY));
-        if (left != 0) p_prototypeXml.set("left", Std.string(left));
-        if (right != 0) p_prototypeXml.set("right", Std.string(right));
-        if (top != 0) p_prototypeXml.set("top", Std.string(top));
-        if (bottom != 0) p_prototypeXml.set("bottom", Std.string(bottom));
-        if (preferredWidth != 0) p_prototypeXml.set("preferredWidth", Std.string(preferredWidth));
-        if (preferredHeight != 0) p_prototypeXml.set("preferredHeight", Std.string(preferredHeight));
-        if (name != "") p_prototypeXml.set("name", name);
-        if (skin != null) p_prototypeXml.set("skin", skin.id);
-        if (mouseEnabled != true) p_prototypeXml.set("mouseEnabled", Std.string(mouseEnabled));
-        if (mouseChildren != true) p_prototypeXml.set("mouseChildren", Std.string(mouseChildren));
-        if (visible != true) p_prototypeXml.set("visible", Std.string(visible));
-        if (flushBatch != false) p_prototypeXml.set("flushBatch", Std.string(flushBatch));
-		if (scrollable != false) p_prototypeXml.set("scrollable", Std.string(scrollable));
-
-        if (mouseDown != "") p_prototypeXml.set("mouseDown", mouseDown);
-        if (mouseUp != "") p_prototypeXml.set("mouseUp", mouseUp);
-        if (mouseClick != "") p_prototypeXml.set("mouseClick", mouseClick);
-        if (mouseOver != "") p_prototypeXml.set("mouseOver", mouseOver);
-        if (mouseOut != "") p_prototypeXml.set("mouseOut", mouseOut);
-        if (mouseMove != "") p_prototypeXml.set("mouseMove", mouseMove);
-
-        if (g2d_model != "") {
-            var valueXml:Xml = Xml.createPCData(g2d_model);
-            p_prototypeXml.addChild(valueXml);
-        }
-
-        if (layout != null) p_prototypeXml.addChild(layout.getPrototype());
+        if (mouseDown != "") p_prototype.set("mouseDown", mouseDown);
+        if (mouseUp != "") p_prototype.set("mouseUp", mouseUp);
+        if (mouseClick != "") p_prototype.set("mouseClick", mouseClick);
+        if (mouseOver != "") p_prototype.set("mouseOver", mouseOver);
+        if (mouseOut != "") p_prototype.set("mouseOut", mouseOut);
+        if (mouseMove != "") p_prototype.set("mouseMove", mouseMove);
+		/**/
         for (i in 0...g2d_numChildren) {
-            p_prototypeXml.addChild(g2d_children[i].getPrototype());
+            p_prototype.addChild(g2d_children[i].getPrototype(), PROTOTYPE_DEFAULT_CHILD_GROUP);
         }
 
-        return p_prototypeXml;
+        return p_prototype;
     }
-
-    public function bindPrototype(p_prototypeXml:Xml):Void {
-		var it:Iterator<Xml> = p_prototypeXml.elements();
+/**/
+    public function bindPrototype(p_prototype:GPrototype):Void {
+		var group:Array<GPrototype> = p_prototype.getGroup(PROTOTYPE_DEFAULT_CHILD_GROUP);
+		if (group != null) {
+			for (prototype in group) {
+				addChild(cast GPrototypeFactory.createPrototype(prototype));
+			}
+		}
+		/*
         while (it.hasNext()) {
             var xml:Xml = it.next();
 			// Should not be defined within prototype as such nodes are reserved for prototype reference
 			if (xml.nodeName.indexOf("p:") != 0) {// != "prototype") {
-				var prototype:IGPrototypable = GPrototypeFactory.createPrototype(xml);
+				var prototype:IGPrototypable = GPrototypeFactory.createPrototype(p_prototype);
 				if (Std.is(prototype, GUIElement)) {
 					addChild(cast prototype);
 				} else if (Std.is(prototype, GUILayout)) {
@@ -928,7 +929,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         if (p_prototypeXml.exists("mouseOut")) mouseOut = p_prototypeXml.get("mouseOut");
         if (p_prototypeXml.exists("mouseMove")) mouseMove = p_prototypeXml.get("mouseMove");
 		/**/
-		bindPrototypeDefault(p_prototypeXml);
+		bindPrototypeDefault(p_prototype);
 		/**/
     }
 

@@ -16,6 +16,7 @@ import com.genome2d.input.GMouseInputType;
 import com.genome2d.node.GNode;
 import com.genome2d.components.GComponent;
 import com.genome2d.input.GMouseInput;
+import com.genome2d.proto.GPrototypeExtras;
 import com.genome2d.textures.GTexture;
 
 /**
@@ -43,7 +44,7 @@ class GTexturedQuad extends GComponent implements IGRenderable
     /**
         Texture used for rendering
     **/
-	@prototype
+	@prototype("getReference")
 	public var texture:GTexture;
 
     /**

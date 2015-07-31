@@ -15,6 +15,10 @@ import com.genome2d.ui.element.GUIElement;
 class GUIHorizontalLayout extends GUILayout {
     @prototype 
 	public var gap:Float = 0;
+	
+	public function new() {
+		
+	}
 
     override private function calculateWidth(p_element:GUIElement):Void {
         p_element.g2d_preferredWidth = p_element.g2d_minWidth = 0;

@@ -6,6 +6,6 @@ package com.genome2d.proto;
  */
 class GPrototypeExtras
 {
-	inline static public var DEFAULT:Int = 0;
 	inline static public var SETTER:Int = 1;
+	inline static public var REFERENCE_GETTER:Int = 2;
 }

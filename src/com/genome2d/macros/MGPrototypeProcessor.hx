@@ -9,8 +9,9 @@
 package com.genome2d.macros;
 
 import com.genome2d.proto.GPrototypeExtras;
-import com.genome2d.proto.GPrototypeSpecfi;
+import com.genome2d.proto.GPrototypeSpecs;
 import com.genome2d.proto.GPrototypeStates;
+import com.genome2d.proto.IGPrototypable;
 import haxe.macro.Type.ClassType;
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -27,7 +28,7 @@ import haxe.macro.Compiler;
 **/
 class MGPrototypeProcessor {
     #if macro
-	
+		
 	static public var helperIndex:Int = 0;
     static public var prototypes = [];
     static public var previous:String = "com.genome2d.proto.GPrototypeHelper";
@@ -45,13 +46,17 @@ class MGPrototypeProcessor {
 
         var prototypeName:String = localClass.name;
         var prototypeNameOverride:Bool = false;
+		var prototypeDefaultChildGroup:String = "default";
 
         for (meta in localClass.meta.get()) {
             // Check for prototypeName within this class
-            if (meta.name == 'prototypeName' && meta.params != null) {
+            if (meta.name == "prototypeName" && meta.params != null) {
                 prototypeName = ExprTools.getValue(meta.params[0]);
                 prototypeNameOverride = true;
             }
+			if (meta.name == "prototypeDefaultChildGroup" && meta.params != null) {
+				prototypeDefaultChildGroup = ExprTools.getValue(meta.params[0]);
+			}
         }
 
         var superClass = localClass.superClass;
@@ -93,10 +98,13 @@ class MGPrototypeProcessor {
 			if (i.name == "g2d_prototypeStates") hasPrototypeStates = true;
 
             if (i.meta.length == 0 || i.access.indexOf(APublic) == -1) continue;
+			
+			var extras:Int = 0;
 
             for (meta in i.meta) {
                 if (meta.name == "prototype") {
-					//var param:String = (meta.params.length > 0) ? ExprTools.getValue(meta.params[0]) : "";
+					var param:String = (meta.params.length > 0) ? ExprTools.getValue(meta.params[0]) : "";
+					if (param == "getReference") extras += GPrototypeExtras.REFERENCE_GETTER;
                     switch (i.kind) {
 						case FFun(f):
 							if (i.name.indexOf("set") != 0) throw "Error invalid prototypable function (needs to start with set*).";
@@ -107,6 +115,7 @@ class MGPrototypeProcessor {
                                     prototypePropertyNames.push(i.name);
 									
 									prototypePropertyTypes.push(extractType(p));
+									extras += GPrototypeExtras.SETTER;
 									prototypePropertyExtras.push(GPrototypeExtras.SETTER);
                                 case _:
 							}
@@ -117,7 +126,7 @@ class MGPrototypeProcessor {
                                     prototypePropertyNames.push(i.name);
 									
 									prototypePropertyTypes.push(extractType(p));
-									prototypePropertyExtras.push(GPrototypeExtras.DEFAULT);
+									prototypePropertyExtras.push(extras);
                                 case _:
                             }
                         case FProp(get,set,t,e):
@@ -127,7 +136,7 @@ class MGPrototypeProcessor {
                                     prototypePropertyNames.push(i.name);
 
 									prototypePropertyTypes.push(extractType(p));
-									prototypePropertyExtras.push(GPrototypeExtras.DEFAULT);
+									prototypePropertyExtras.push(extras);
                                 case _:
                             }
                         case _:
@@ -135,8 +144,8 @@ class MGPrototypeProcessor {
                 }
             }
         }
-
-		var getPrototype = generateGetPrototype();
+		//trace(Type.resolveClass(localClass.module));
+		var getPrototype = generateGetPrototype(macro $v { prototypeName });
 		switch (getPrototype) {
 			case TAnonymous(f):
 				if (superPrototype) {
@@ -144,7 +153,7 @@ class MGPrototypeProcessor {
 						case FFun(a):
 							switch (a.expr.expr) {
 								case EBlock(b):
-									b[b.length-1] = macro return super.getPrototype(p_prototypeXml);
+									b[b.length-1] = macro return super.getPrototype(p_prototype);
 								default:
 							}
 						default:
@@ -170,7 +179,7 @@ class MGPrototypeProcessor {
 						case FFun(a):
 							switch (a.expr.expr) {
 								case EBlock(b):
-									b.unshift(macro super.bindPrototype(p_prototypeXml));
+									b.unshift(macro super.bindPrototype(p_prototype));
 								default:
 							}
 						default:
@@ -225,13 +234,14 @@ class MGPrototypeProcessor {
 		}
 		
         var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"Dynamic", pack:[], params:[] } ))] } );
-		fields.push( { name : "PROTOTYPE_PROPERTY_DEFAULTS", doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(prototypePropertyDefaults), pos:pos } ), pos : pos } );
+		fields.push( { name : GPrototypeSpecs.PROTOTYPE_PROPERTY_DEFAULTS, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(prototypePropertyDefaults), pos:pos } ), pos : pos } );
 		var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"String", pack:[], params:[] } ))] } );
-        fields.push( { name : "PROTOTYPE_PROPERTY_NAMES",    doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyNames), pos:pos } )   , pos : pos } );
-        fields.push( { name : "PROTOTYPE_PROPERTY_TYPES",    doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyTypes), pos:pos } )   , pos : pos } );
+        fields.push( { name : GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES,    doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyNames), pos:pos } )   , pos : pos } );
+        fields.push( { name : GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES,    doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyTypes), pos:pos } )   , pos : pos } );
 		var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"Int", pack:[], params:[] } ))] } );
-		fields.push( { name : "PROTOTYPE_PROPERTY_EXTRAS",   doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyExtras), pos:pos } )  , pos : pos } );
-        fields.push( { name : GPrototypeSpecfi.PROTOTYPE_NAME,              doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { prototypeName } )              , pos : pos } );
+		fields.push( { name : GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS,   doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyExtras), pos:pos } )  , pos : pos } );
+        fields.push( { name : GPrototypeSpecs.PROTOTYPE_NAME, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { prototypeName } )              , pos : pos } );
+		fields.push( { name : GPrototypeSpecs.PROTOTYPE_DEFAULT_CHILD_GROUP, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { prototypeDefaultChildGroup } ), pos : pos } );
 
 		// Prototype class name lookup
 		//var kind = TPath( { pack : [], name : "Class", params : [TPType(TPath( { name : localClass.name, pack : localClass.pack, params : [] } ))] } );
@@ -299,19 +309,19 @@ class MGPrototypeProcessor {
         return typeName;
     }
 
-    inline static private function generateGetPrototype() {
+    inline static private function generateGetPrototype(p_prototypeName) {
         return macro : {
-             public function getPrototype(p_prototypeXml:Xml = null):Xml {
-                p_prototypeXml = com.genome2d.proto.GPrototypeFactory.g2d_getPrototype(this, p_prototypeXml, PROTOTYPE_NAME, PROTOTYPE_PROPERTY_NAMES, PROTOTYPE_PROPERTY_TYPES, PROTOTYPE_PROPERTY_DEFAULTS, PROTOTYPE_PROPERTY_EXTRAS);
-                return p_prototypeXml;
+             public function getPrototype(p_prototype:com.genome2d.proto.GPrototype = null):com.genome2d.proto.GPrototype {
+				p_prototype = com.genome2d.proto.GPrototypeFactory.g2d_getPrototype(p_prototype, this, $p_prototypeName);
+                return p_prototype;
             }
         }
     }
 
     inline static private function generateBindPrototype() {
         return macro : {
-            public function bindPrototype(p_prototypeXml:Xml):Void {
-                com.genome2d.proto.GPrototypeFactory.g2d_bindPrototype(this, p_prototypeXml, PROTOTYPE_PROPERTY_NAMES, PROTOTYPE_PROPERTY_TYPES, PROTOTYPE_PROPERTY_EXTRAS);
+            public function bindPrototype(p_prototype:com.genome2d.proto.GPrototype):Void {
+                com.genome2d.proto.GPrototypeFactory.g2d_bindPrototype(this, p_prototype);
             }
         }
     }

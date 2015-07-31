@@ -7,6 +7,7 @@
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
 package com.genome2d.node;
+import com.genome2d.proto.GPrototype;
 
 /**
     Node pool based on proto
@@ -17,7 +18,7 @@ class GNodePool
 	private var g2d_first:GNode;
 	private var g2d_last:GNode;
 	
-	private var g2d_prototype:Xml;
+	private var g2d_prototype:GPrototype;
 	
 	private var g2d_maxCount:Int;
 	
@@ -26,7 +27,7 @@ class GNodePool
         return g2d_cachedCount;
     }
 
-	public function new(p_prototype:Xml, p_maxCount:Int = 0, p_precacheCount:Int = 0) {
+	public function new(p_prototype:GPrototype, p_maxCount:Int = 0, p_precacheCount:Int = 0) {
 		g2d_prototype = p_prototype;
 		g2d_maxCount = p_maxCount;
 		

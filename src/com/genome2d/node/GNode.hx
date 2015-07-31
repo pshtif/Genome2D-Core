@@ -14,6 +14,7 @@ import com.genome2d.geom.GPoint;
 import com.genome2d.context.filters.GFilter;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.input.IGInteractive;
+import com.genome2d.proto.GPrototype;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.textures.GTextureManager;
@@ -77,19 +78,22 @@ class GNode implements IGInteractive implements IGPrototypable
 	 *
 	 *	@param p_prototype prototype definition
 	 */
-    static public function createFromPrototype(p_prototype:Xml):GNode {
+    static public function createFromPrototype(p_prototype:GPrototype):GNode {
         if (p_prototype == null) GDebug.error("Null proto");
 
-        if (p_prototype.nodeType == Xml.Document) {
-            p_prototype = p_prototype.firstChild();
-        }
-
-        if (p_prototype.nodeName != PROTOTYPE_NAME) GDebug.error("Incorrect GNode proto XML", p_prototype.nodeName);
+        if (p_prototype.prototypeName != PROTOTYPE_NAME) GDebug.error("Incorrect GNode prototype", p_prototype.prototypeName);
 
         var node:GNode = new GNode();
-        node.mouseEnabled = (p_prototype.get("mouseEnabled") == "true") ? true : false;
-        node.mouseChildren = (p_prototype.get("mouseChildren") == "true") ? true : false;
+        //node.mouseEnabled = (p_prototype.get("mouseEnabled") == "true") ? true : false;
+        //node.mouseChildren = (p_prototype.get("mouseChildren") == "true") ? true : false;
 
+		var components:Array<GPrototype> = p_prototype.getGroup("components");
+		if (components != null) {
+			for (prototype in components) {
+				node.addComponentPrototype(prototype);
+			}
+		}
+		/*
         var it:Iterator<Xml> = p_prototype.elements();
 
         while (it.hasNext()) {
@@ -110,7 +114,7 @@ class GNode implements IGInteractive implements IGPrototypable
                 }
             }
         }
-
+		/**/
         return node;
     }
 
@@ -366,17 +370,20 @@ class GNode implements IGInteractive implements IGPrototypable
 	/****************************************************************************************************
 	 * 	PROTOTYPE CODE
 	 ****************************************************************************************************/
-
-	public function getPrototype(p_xml:Xml = null):Xml {
-		p_xml = getPrototypeDefault(p_xml);
-		
+	
+	public function getPrototype(p_prototype:GPrototype = null):GPrototype {
+		p_prototype = getPrototypeDefault(p_prototype);
+		for (i in 0...g2d_componentCount) {
+			p_prototype.addChild(g2d_components[i].getPrototype(), "components");
+		}
+		/*		
 		var componentsXml:Xml = Xml.parse("<components/>").firstElement();
 
 		for (i in 0...g2d_componentCount) {
 			componentsXml.addChild(g2d_components[i].getPrototype());
 		}
-		p_xml.addChild(componentsXml);
-		
+		p_prototype.addChild(componentsXml);
+
 		var childrenXml:Xml = Xml.createElement("children");
 
         var child:GNode = g2d_firstChild;
@@ -386,14 +393,17 @@ class GNode implements IGInteractive implements IGPrototypable
             child = next;
 		}
 		
-		p_xml.addChild(childrenXml);
+		p_prototype.addChild(childrenXml);
 		
-		return p_xml;
+		return p_prototype;
+		/**/
+		return p_prototype;
 	}
 	
-	public function bindPrototype(p_xml:Xml):Void {
-		bindPrototypeDefault(p_xml);
-		
+	public function bindPrototype(p_prototype:GPrototype):Void {
+		bindPrototypeDefault(p_prototype);
+
+		/*
 		var it:Iterator<Xml> = p_xml.elements();
 
         while (it.hasNext()) {
@@ -413,6 +423,7 @@ class GNode implements IGInteractive implements IGPrototypable
                 }
             }
         }
+		/**/
 	}
 
 	/****************************************************************************************************
@@ -654,14 +665,10 @@ class GNode implements IGInteractive implements IGPrototypable
 		return component;
 	}
 
-    public function addComponentPrototype<T:GComponent>(p_prototype:Xml):T {
+    public function addComponentPrototype<T:GComponent>(p_prototype:GPrototype):T {
         if (g2d_disposed) GDebug.error("Node already disposed.");
 
-        var componentClass:Class<GComponent> = cast GPrototypeFactory.getPrototypeClass(p_prototype.nodeName);
-        if (componentClass == null) {
-            GDebug.error("Non existing componentClass "+p_prototype.get("class"));
-        }
-        var component:T = addComponent(componentClass);
+        var component:T = addComponent(cast p_prototype.prototypeClass);
 
         component.bindPrototype(p_prototype);
 

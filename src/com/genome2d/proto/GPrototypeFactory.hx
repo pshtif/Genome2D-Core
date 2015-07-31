@@ -1,6 +1,5 @@
 package com.genome2d.proto;
-import com.genome2d.ui.skin.GUISkin;
-import com.genome2d.ui.element.GUIElement;
+
 import Reflect;
 import com.genome2d.debug.GDebug;
 import haxe.rtti.Meta;
@@ -29,29 +28,20 @@ class GPrototypeFactory {
     static public function getPrototypeClass(p_prototypeName:String):Class<IGPrototypable> {
         return g2d_lookups.get(p_prototypeName);
     }
-	
+	/*
 	static public function getPrototype(p_instance:IGPrototypable):Xml {
 		return p_instance.getPrototype();
 	}
-
-    static public function createPrototype(p_prototype:Dynamic):IGPrototypable {
-        var prototypeXml:Xml;
-        if (Std.is(p_prototype,Xml)) {
-            prototypeXml = (p_prototype.nodeType == Xml.Document) ? p_prototype.firstChild() : p_prototype;
-        } else {
-            prototypeXml = Xml.parse(p_prototype).firstElement();
-        }
-        var prototypeName:String = prototypeXml.nodeName;
-        var prototypeClass:Class<IGPrototypable> = g2d_lookups.get(prototypeName);
-
-        if (prototypeClass == null) {
-            GDebug.error("Non existing prototype class "+prototypeName);
+	/**/
+    static public function createPrototype(p_prototype:GPrototype):IGPrototypable {
+        if (p_prototype.prototypeClass == null) {
+            GDebug.error("Non existing prototype class "+p_prototype.prototypeName);
         }
 
-        var proto:IGPrototypable = Type.createInstance(prototypeClass,[]);
-        if (proto == null) GDebug.error("Invalid prototype class "+prototypeName);
+        var proto:IGPrototypable = Type.createInstance(p_prototype.prototypeClass,[]);
+        if (proto == null) GDebug.error("Invalid prototype class "+p_prototype.prototypeName);
 
-        proto.bindPrototype(prototypeXml);
+        proto.bindPrototype(p_prototype);
 
         return proto;
     }
@@ -67,14 +57,49 @@ class GPrototypeFactory {
 
         return proto;
     }
+	
+	static public function g2d_getPrototype(p_prototype:GPrototype, p_instance:IGPrototypable, p_prototypeName:String):GPrototype {
+		if (p_prototype == null) p_prototype = new GPrototype();
+		p_prototype.process(p_instance, p_prototypeName);
 
-    static public function g2d_getPrototype(p_instance:IGPrototypable, p_prototypeXml:Xml, p_prototypeName:String, p_propertyNames:Array<String>, p_propertyTypes:Array<String>, p_propertyDefaults:Array<Dynamic>, p_propertyExtras:Array<Int>):Xml {
+		return p_prototype;
+	}
+	
+	static public function g2d_bindPrototype(p_instance:IGPrototypable, p_prototype:GPrototype):Void {
+        if (p_prototype == null) GDebug.error("Null prototype");
+		if (p_instance.g2d_prototypeStates == null) p_instance.g2d_prototypeStates = new GPrototypeStates();
+		
+		p_prototype.bind(p_instance);
+		/*
+		var attributes:Iterator<String> = p_prototype.attributes();
+		
+		while (attributes.hasNext()) {
+			var attributeName:String = attributes.next();
+			var attributeValue:String = p_prototype.get(attributeName);				
+			g2d_bindProperty(attributeName, attributeValue, p_instance, p_prototype, p_propertyNames, p_propertyTypes, p_propertyExtras);
+		}
+		
+		var it:Iterator<Xml> = p_prototype.elements();
+        while (it.hasNext()) {
+			var xmlNode:Xml = it.next();
+			if (xmlNode.nodeName.indexOf("p:") == 0) {
+				g2d_bindProperty(xmlNode.nodeName.substr(2), xmlNode, p_instance, p_prototype, p_propertyNames, p_propertyTypes, p_propertyExtras);
+			}
+		}
+		/**/
+    }
+	
+	/*
+    static public function g2d_getPrototype2(p_instance:IGPrototypable, p_prototypeXml:Xml, p_prototypeName:String, p_propertyNames:Array<String>, p_propertyTypes:Array<String>, p_propertyDefaults:Array<Dynamic>, p_propertyExtras:Array<Int>):Xml {
         if (p_prototypeXml == null) p_prototypeXml = Xml.createElement(p_prototypeName);
-		GPrototypeParser.parseTo(null, p_instance);
+		trace(p_instance, p_prototypeName);
+		//trace(GPrototypeParser.parseTo(null, p_instance, p_prototypeClass));
+		
         if (p_propertyNames != null) {
             for (i in 0...p_propertyNames.length) {
                 var name:String = p_propertyNames[i];
 				var type:String = p_propertyTypes[i];
+				trace(name);
 					
 				// Array
                 if (type.indexOf("Array") == 0) {
@@ -98,11 +123,6 @@ class GPrototypeFactory {
 						var value:String = Std.string(Reflect.getProperty(p_instance, name));
 						p_prototypeXml.set(name, value.substr(1,value.length-2));
 					}
-					
-				// Reference
-				} else if (type.indexOf("R:") == 0) {
-					var field:Dynamic = Reflect.field(p_instance, name);
-					p_prototypeXml.set(name, (field == null)?"":field.toReference());
 				
 				// Prototypable needs an own Xml node
 				} else if (type != "Int" && type != "Bool" && type != "Float" && type != "String") {
@@ -119,10 +139,10 @@ class GPrototypeFactory {
                 }
             }
         }
-
+		
         return p_prototypeXml;
     }
-
+	/*
     static public function g2d_bindPrototype2(p_instance:IGPrototypable, p_prototype:Xml, p_propertyNames:Array<String>, p_propertyTypes:Array<String>):Void {
         if (p_prototype == null) GDebug.error("Null prototype");
 
@@ -212,10 +232,9 @@ class GPrototypeFactory {
                 }
             }
         }
-        /**/
     }
-	
-	static public function g2d_bindPrototype(p_instance:IGPrototypable, p_prototype:Xml, p_propertyNames:Array<String>, p_propertyTypes:Array<String>, p_propertyExtras:Array<Int>):Void {
+	/*
+	static public function g2d_bindPrototype3(p_instance:IGPrototypable, p_prototype:Xml, p_propertyNames:Array<String>, p_propertyTypes:Array<String>, p_propertyExtras:Array<Int>):Void {
         if (p_prototype == null) GDebug.error("Null prototype");
 		if (p_instance.g2d_prototypeStates == null) p_instance.g2d_prototypeStates = new GPrototypeStates();
 		
@@ -234,9 +253,8 @@ class GPrototypeFactory {
 				g2d_bindProperty(xmlNode.nodeName.substr(2), xmlNode, p_instance, p_prototype, p_propertyNames, p_propertyTypes, p_propertyExtras);
 			}
 		}
-		/**/
     }
-	
+	/*
 	static private function g2d_bindProperty(p_propertyName:String, p_propertyValue:Dynamic, p_instance:IGPrototypable, p_prototype:Xml, p_propertyNames:Array<String>, p_propertyTypes:Array<String>, p_propertyExtras:Array<Int>):Void {
 		var split:Array<String> = p_propertyName.split(".");
 		var propertyIndex:Int = p_propertyNames.indexOf(split[0]);
@@ -314,4 +332,5 @@ class GPrototypeFactory {
 		}
 		return realValue;
 	}
+	/**/
 }
