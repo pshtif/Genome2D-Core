@@ -24,43 +24,71 @@ import com.genome2d.context.GCamera;
  **/
 class GSimpleParticleSystem extends GComponent implements IGRenderable
 {
+	@prototype
     public var blendMode:Int = 1;
 
+	@prototype
 	public var emit:Bool = false;
 
+	@prototype
     public var useWorldSpace:Bool = false;
 
+	@prototype
 	public var initialScale:Float = 1;
+	@prototype
 	public var initialScaleVariance:Float = 0;
+	@prototype
 	public var endScale:Float = 1;
+	@prototype
 	public var endScaleVariance:Float = 0;
 
+	@prototype
 	public var energy:Float = 0;
+	@prototype
 	public var energyVariance:Float = 0;
 
+	@prototype
 	public var emission:Int = 1;
+	@prototype
 	public var emissionVariance:Int = 0;
+	@prototype
 	public var emissionTime:Float = 1;
+	@prototype
 	public var emissionDelay:Float = 0;
 
+	@prototype
 	public var initialVelocity:Float = 0;
+	@prototype
 	public var initialVelocityVariance:Float = 0;
+	@prototype
 	public var initialAcceleration:Float = 0;
+	@prototype
 	public var initialAccelerationVariance:Float = 0;
 
+	@prototype
 	public var initialAngularVelocity:Float = 0;
+	@prototype
 	public var initialAngularVelocityVariance:Float = 0;
 
+	@prototype
 	public var initialRed:Float = 1;
+	@prototype
 	public var initialRedVariance:Float = 0;
+	@prototype
 	public var initialGreen:Float = 1;
+	@prototype
 	public var initialGreenVariance:Float = 0;
+	@prototype
 	public var initialBlue:Float = 1;
+	@prototype
 	public var initialBlueVariance:Float = 0;
+	@prototype
 	public var initialAlpha:Float = 1;
+	@prototype
 	public var initialAlphaVariance:Float = 0;
 
     #if swc @:extern #end
+	@prototype
 	public var initialColor(get, set):Int;
     #if swc @:getter(initialColor) #end
 	inline private function get_initialColor():Int {
@@ -77,16 +105,25 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 		return p_value;
 	}
 
+	@prototype
 	public var endRed:Float = 1;
+	@prototype
 	public var endRedVariance:Float = 0;
+	@prototype
 	public var endGreen:Float = 1;
+	@prototype
 	public var endGreenVariance:Float = 0;
+	@prototype
 	public var endBlue:Float = 1;
+	@prototype
 	public var endBlueVariance:Float = 0;
+	@prototype
 	public var endAlpha:Float = 1;
+	@prototype
 	public var endAlphaVariance:Float = 0;
 	
 	#if swc @:extern #end
+	@prototype
 	public var endColor(get, set):Int;
 	#if swc @:getter(endColor) #end
 	inline private function get_endColor():Int {
@@ -103,14 +140,21 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 		return p_value;
 	}
 
+	@prototype
 	public var dispersionXVariance:Float = 0;
+	@prototype
 	public var dispersionYVariance:Float = 0;
+	@prototype
 	public var dispersionAngle:Float = 0;
+	@prototype
 	public var dispersionAngleVariance:Float = 0;
 
+	@prototype
 	public var initialAngle:Float = 0;
+	@prototype
 	public var initialAngleVariance:Float = 0;
 
+	@prototype
 	public var burst:Bool = false;
 
 	private var g2d_accumulatedTime:Float = 0;
@@ -124,7 +168,8 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 	private var g2d_lastUpdateTime:Float;
 
     #if swc @:extern #end
-    @prototype public var settings(get,set):String;
+	//@prototype
+    public var settings(get,set):String;
     #if swc @:getter(settings) #end
     inline private function get_settings():String {
         return blendMode+"|"+emit+"|"+useWorldSpace+"|"+initialScale+"|"+initialScaleVariance+"|"+endScale+"|"+endScaleVariance+"|"+energy+"|"+energyVariance+"|"+emission+"|"+emissionVariance+"|"+emissionTime+"|"+emissionDelay+"|"+initialVelocity+"|"+initialVelocityVariance+"|"+initialAcceleration+"|"+initialAccelerationVariance+"|"+initialAngularVelocity+"|"+initialAngularVelocityVariance+"|"+
@@ -188,6 +233,7 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
         return p_value;
     }
 	
+	@prototype("getReference")
 	public var texture:GTexture;
 
 	private function setInitialParticlePosition(p_particle:GSimpleParticle):Void {

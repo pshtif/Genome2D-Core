@@ -356,7 +356,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
     private var g2d_skin:GUISkin;
     #if swc @:extern #end
-    @prototype public var skin(get, set):GUISkin;
+    @prototype("getReference") public var skin(get, set):GUISkin;
     #if swc @:getter(skin) #end
     inline private function get_skin():GUISkin {
         return g2d_skin;

@@ -84,6 +84,7 @@ class GNode implements IGInteractive implements IGPrototypable
         if (p_prototype.prototypeName != PROTOTYPE_NAME) GDebug.error("Incorrect GNode prototype", p_prototype.prototypeName);
 
         var node:GNode = new GNode();
+		node.bindPrototype(p_prototype);
         //node.mouseEnabled = (p_prototype.get("mouseEnabled") == "true") ? true : false;
         //node.mouseChildren = (p_prototype.get("mouseChildren") == "true") ? true : false;
 

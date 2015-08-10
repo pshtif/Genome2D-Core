@@ -8,7 +8,7 @@ import com.genome2d.ui.element.GUIElement;
 
 @prototypeName("textureSkin")
 class GUITextureSkin extends GUISkin {
-	@prototype
+	@prototype("getReference")
     public var texture:GTexture = null;
 
     @prototype 

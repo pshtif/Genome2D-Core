@@ -38,9 +38,8 @@ class GPrototype
 			if (extras & GPrototypeExtras.SETTER == 0) {
 				var value = Reflect.getProperty(p_instance, name);
 				if (value != propertyDefaults[i]) {
-					var property:GPrototypeProperty = new GPrototypeProperty(name, propertyTypes[i], extras);
+					var property:GPrototypeProperty = createPrototypeProperty(name, propertyTypes[i], extras);
 					property.setDynamicValue(Reflect.getProperty(p_instance, name));
-					properties.set(name, property);
 				}
 			}
 		}
@@ -62,10 +61,14 @@ class GPrototype
 		return children.get(p_groupName);
 	}
 	
+	public function getProperty(p_propertyName:String):GPrototypeProperty {
+		return properties.get(p_propertyName);
+	}
+	
 	public function toXml():Xml {
 		var xml:Xml = Xml.createElement(prototypeName);
 		for (property in properties) {
-			if (property.isBasicType()) {
+			if (property.isBasicType() || property.isReference()) {
 				xml.set(property.name, property.value);
 			} else {
 				if (property.isPrototype()) {
@@ -73,7 +76,7 @@ class GPrototype
 					propertyXml.addChild(property.value.toXml());
 					xml.addChild(propertyXml);
 				} else {
-					GDebug.error("Error during prototype parsing unknown property type.");
+					GDebug.error("Error during prototype parsing unknown property type", property.type);
 				}
 			}
 		}
@@ -145,10 +148,16 @@ class GPrototype
 			var propertyExtras:Array<Int> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
 			var propertyIndex:Int = propertyNames.indexOf(split[0]);
 			
-			var property:GPrototypeProperty = new GPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex]);
-			property.setDirectValue(p_value);
-			properties.set(p_name, property);
+			createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex], p_value);
 		}
+	}
+	
+	public function createPrototypeProperty(p_name:String, p_type:String, p_extras:Int, p_value:Dynamic = null):GPrototypeProperty {
+		var property:GPrototypeProperty = new GPrototypeProperty(p_name, p_type, p_extras);
+		properties.set(p_name, property);
+		if (property != null) property.setDirectValue(p_value);
+		
+		return property;
 	}
 	
 	public function setPropertyFromXml(p_name:String, p_value:Xml):Void {
@@ -165,9 +174,7 @@ class GPrototype
 			var propertyExtras:Array<Int> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
 			var propertyIndex:Int = propertyNames.indexOf(split[0]);
 			
-			var property:GPrototypeProperty = new GPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex]);
-			property.setDirectValue(GPrototype.fromXml(p_value));
-			properties.set(p_name, property);
+			createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex], GPrototype.fromXml(p_value));
 		}
 	}
 }
