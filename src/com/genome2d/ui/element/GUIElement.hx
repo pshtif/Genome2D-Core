@@ -175,15 +175,17 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
     #if swc @:setter(mouseDown) #end
     inline private function set_mouseDown(p_value:String):String {
-        if (g2d_mouseDown != "" && g2d_currentController != null) {
-            var mdf:GMouseInput->Void = Reflect.field(g2d_currentController,g2d_mouseDown);
-            if (mdf != null) onMouseDown.remove(mdf);
-        }
-        g2d_mouseDown = p_value;
-        if (g2d_mouseDown != "" && g2d_currentController != null) {
-            var mdf:GMouseInput->Void = Reflect.field(g2d_currentController,g2d_mouseDown);
-            if (mdf != null) onMouseDown.add(mdf);
-        }
+		if (g2d_mouseDown != p_value) {
+			if (g2d_mouseDown != "" && g2d_currentController != null) {
+				var mdf:GMouseInput->Void = Reflect.field(g2d_currentController,g2d_mouseDown);
+				if (mdf != null) onMouseDown.remove(mdf);
+			}
+			g2d_mouseDown = p_value;
+			if (g2d_mouseDown != "" && g2d_currentController != null) {
+				var mdf:GMouseInput->Void = Reflect.field(g2d_currentController,g2d_mouseDown);
+				if (mdf != null) onMouseDown.add(mdf);
+			}
+		}
         return g2d_mouseDown;
     }
 
@@ -196,15 +198,17 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
     #if swc @:setter(mouseUp) #end
     inline private function set_mouseUp(p_value:String):String {
-        if (g2d_mouseUp != "" && g2d_currentController != null) {
-            var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseUp);
-            if (mdf != null) onMouseUp.remove(mdf);
-        }
-        g2d_mouseUp = p_value;
-        if (g2d_mouseUp != "" && g2d_currentController != null) {
-            var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseUp);
-            if (mdf != null) onMouseUp.add(mdf);
-        }
+		if (g2d_mouseUp != p_value) {
+			if (g2d_mouseUp != "" && g2d_currentController != null) {
+				var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseUp);
+				if (mdf != null) onMouseUp.remove(mdf);
+			}
+			g2d_mouseUp = p_value;
+			if (g2d_mouseUp != "" && g2d_currentController != null) {
+				var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseUp);
+				if (mdf != null) onMouseUp.add(mdf);
+			}
+		}
         return g2d_mouseUp;
     }
 
@@ -217,15 +221,17 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
     #if swc @:setter(mouseClick) #end
     inline private function set_mouseClick(p_value:String):String {
-        if (g2d_mouseClick != "" && g2d_currentController != null) {
-            var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseClick);
-            if (mdf != null) onMouseClick.remove(mdf);
-        }
-        g2d_mouseClick = p_value;
-        if (g2d_mouseClick != "" && g2d_currentController != null) {
-            var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseClick);
-            if (mdf != null) onMouseClick.add(mdf);
-        }
+		if (g2d_mouseClick != p_value) {
+			if (g2d_mouseClick != "" && g2d_currentController != null) {
+				var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseClick);
+				if (mdf != null) onMouseClick.remove(mdf);
+			}
+			g2d_mouseClick = p_value;
+			if (g2d_mouseClick != "" && g2d_currentController != null) {
+				var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseClick);
+				if (mdf != null) onMouseClick.add(mdf);
+			}
+		}
         return g2d_mouseClick;
     }
 
@@ -238,15 +244,17 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
     #if swc @:setter(mouseOver) #end
     inline private function set_mouseOver(p_value:String):String {
-        if (g2d_mouseOver != "" && g2d_currentController != null) {
-            var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseOver);
-            if (mdf != null) onMouseOver.remove(mdf);
-        }
-        g2d_mouseOver = p_value;
-        if (g2d_mouseOver != "" && g2d_currentController != null) {
-            var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseOver);
-            if (mdf != null) onMouseOver.add(mdf);
-        }
+		if (g2d_mouseOver != p_value) {
+			if (g2d_mouseOver != "" && g2d_currentController != null) {
+				var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseOver);
+				if (mdf != null) onMouseOver.remove(mdf);
+			}
+			g2d_mouseOver = p_value;
+			if (g2d_mouseOver != "" && g2d_currentController != null) {
+				var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseOver);
+				if (mdf != null) onMouseOver.add(mdf);
+			}
+		}
         return g2d_mouseOver;
     }
 
@@ -259,15 +267,17 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
     #if swc @:setter(mouseOut) #end
     inline private function set_mouseOut(p_value:String):String {
-        if (g2d_mouseOut != "" && g2d_currentController != null) {
-            var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseOut);
-            if (mdf != null) onMouseOut.remove(mdf);
-        }
-        g2d_mouseOut = p_value;
-        if (g2d_mouseOut != "" && g2d_currentController != null) {
-            var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseOut);
-            if (mdf != null) onMouseOut.add(mdf);
-        }
+		if (g2d_mouseOut != p_value) {
+			if (g2d_mouseOut != "" && g2d_currentController != null) {
+				var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseOut);
+				if (mdf != null) onMouseOut.remove(mdf);
+			}
+			g2d_mouseOut = p_value;
+			if (g2d_mouseOut != "" && g2d_currentController != null) {
+				var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseOut);
+				if (mdf != null) onMouseOut.add(mdf);
+			}
+		}
         return g2d_mouseOut;
     }
 
@@ -280,15 +290,17 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
     #if swc @:setter(mouseMove) #end
     inline private function set_mouseMove(p_value:String):String {
-        if (g2d_mouseMove != "" && g2d_currentController != null) {
-            var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseMove);
-            if (mdf != null) onMouseMove.remove(mdf);
-        }
-        g2d_mouseMove = p_value;
-        if (g2d_mouseMove != "" && g2d_currentController != null) {
-            var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseMove);
-            if (mdf != null) onMouseMove.add(mdf);
-        }
+		if (g2d_mouseMove != p_value) {
+			if (g2d_mouseMove != "" && g2d_currentController != null) {
+				var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseMove);
+				if (mdf != null) onMouseMove.remove(mdf);
+			}
+			g2d_mouseMove = p_value;
+			if (g2d_mouseMove != "" && g2d_currentController != null) {
+				var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseMove);
+				if (mdf != null) onMouseMove.add(mdf);
+			}
+		}
         return g2d_mouseMove;
     }
 

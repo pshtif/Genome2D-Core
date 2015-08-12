@@ -47,7 +47,7 @@ class GPrototype
 	
 	public function bind(p_instance:IGPrototypable):Void {
 		for (property in properties) {
-			property.bind(p_instance);
+			if (property.extras & GPrototypeExtras.IGNORE_AUTO_BIND == 0) property.bind(p_instance);
 		}
 	}
 	
@@ -229,7 +229,7 @@ class GPrototypeProperty {
 						Reflect.setProperty(p_instance, split[0], realValue);
 					}
 				} catch (e:Dynamic) {
-					GDebug.error("Error during prototype binding: ",e);
+					GDebug.error("Error during prototype binding: ", e);
 				}
 				p_instance.g2d_prototypeStates.setProperty(split[0], realValue);
 			} else {

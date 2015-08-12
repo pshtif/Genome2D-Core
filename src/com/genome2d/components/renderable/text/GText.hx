@@ -9,6 +9,7 @@
 package com.genome2d.components.renderable.text;
 
 import com.genome2d.proto.GPrototype;
+import com.genome2d.proto.GPrototypeExtras;
 import com.genome2d.text.GFontManager;
 import com.genome2d.text.GTextRenderer;
 import com.genome2d.geom.GRectangle;
@@ -212,7 +213,7 @@ class GText extends GComponent implements IGRenderable
 	
 	override public function getPrototype(p_prototype:GPrototype = null):GPrototype {
 		p_prototype = getPrototypeDefault(p_prototype);
-		p_prototype.createPrototypeProperty("font", "String", 0, renderer.textureFont.id);
+		p_prototype.createPrototypeProperty("font", "String", GPrototypeExtras.IGNORE_AUTO_BIND, renderer.textureFont.id);
 		
 		return p_prototype;
 	}
