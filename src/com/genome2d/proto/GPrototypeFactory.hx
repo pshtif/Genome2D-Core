@@ -92,14 +92,12 @@ class GPrototypeFactory {
 	/*
     static public function g2d_getPrototype2(p_instance:IGPrototypable, p_prototypeXml:Xml, p_prototypeName:String, p_propertyNames:Array<String>, p_propertyTypes:Array<String>, p_propertyDefaults:Array<Dynamic>, p_propertyExtras:Array<Int>):Xml {
         if (p_prototypeXml == null) p_prototypeXml = Xml.createElement(p_prototypeName);
-		trace(p_instance, p_prototypeName);
 		//trace(GPrototypeParser.parseTo(null, p_instance, p_prototypeClass));
 		
         if (p_propertyNames != null) {
             for (i in 0...p_propertyNames.length) {
                 var name:String = p_propertyNames[i];
 				var type:String = p_propertyTypes[i];
-				trace(name);
 					
 				// Array
                 if (type.indexOf("Array") == 0) {
