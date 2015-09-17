@@ -8,8 +8,25 @@ import com.genome2d.ui.element.GUIElement;
 
 @prototypeName("textureSkin")
 class GUITextureSkin extends GUISkin {
-	@prototype("getReference")
-    public var texture:GTexture = null;
+	private var g2d_textureOverride:Bool = false;
+	private var g2d_texture:GTexture;
+    #if swc @:extern #end
+    @prototype("getReference")
+	public var texture(get, set):GTexture;
+    #if swc @:getter(texture) #end
+    inline private function get_texture():GTexture {
+        return g2d_texture;
+    }
+    #if swc @:setter(texture) #end
+    inline private function set_texture(p_value:GTexture):GTexture {
+		g2d_texture = p_value;
+		if (g2d_origin == null) {
+			invalidateClones();
+		} else {
+			g2d_textureOverride = g2d_texture != cast (g2d_origin, GUITextureSkin).g2d_texture;
+		}
+        return g2d_texture;
+    }
 
     @prototype 
 	public var sliceLeft:Int = 0;
@@ -61,7 +78,7 @@ class GUITextureSkin extends GUISkin {
     public function new(p_id:String = "", p_texture:GTexture = null, p_autoSize:Bool = true, p_origin:GUITextureSkin = null) {
         super(p_id, p_origin);
 
-        texture = p_texture;
+        g2d_texture = p_texture;
 		autoSize = p_autoSize;
     }
 
@@ -199,6 +216,13 @@ class GUITextureSkin extends GUISkin {
     override public function getTexture():GTexture {
         return texture;
     }
+	
+	override private function invalidateClones():Void {
+		for (clone in g2d_clones) {
+			var textureSkinClone:GUITextureSkin = cast clone;
+			if (!textureSkinClone.g2d_textureOverride) textureSkinClone.g2d_texture = g2d_texture;
+		}
+	}
 
     override public function clone():GUISkin {
         var clone:GUITextureSkin = new GUITextureSkin("", texture, autoSize, (g2d_origin == null)?this:cast g2d_origin);

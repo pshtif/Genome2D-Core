@@ -43,7 +43,7 @@ class GUISkin implements IGPrototypable {
     #if swc @:setter(id) #end
     inline private function set_id(p_value:String):String {
         if (p_value != g2d_id && p_value.length>0) {
-            if (GUISkinManager.getSkin(p_value) != null) GDebug.error("Duplicate style id: "+p_value);
+            if (GUISkinManager.getSkin(p_value) != null) GDebug.error("Duplicate skin id: "+p_value);
             GUISkinManager.g2d_references.set(p_value,this);
 
             if (GUISkinManager.getSkin(g2d_id) != null) GUISkinManager.g2d_references.remove(g2d_id);
@@ -126,13 +126,15 @@ class GUISkin implements IGPrototypable {
 			}
         }
     }
+	
+	private function invalidateClones():Void {	
+	}
+	
+	public function captureMouseInput(p_input:GMouseInput):Void {
+	}
 
     private function elementModelChanged_handler(p_element:GUIElement):Void {
     }
-	
-	public function captureMouseInput(p_input:GMouseInput):Void {
-				
-	}
 
     private function clone():GUISkin {
         return null;
