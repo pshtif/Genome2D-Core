@@ -162,7 +162,7 @@ class GFbxScene {
                 for (model in g2d_models) {
 					if (model.visible) {
 						renderer = model.renderer;
-						context.bindRenderer(renderer);
+						context.setRenderer(renderer);
 						renderer.draw(2, 0);
 					}
                 }
@@ -171,7 +171,7 @@ class GFbxScene {
                 for (model in g2d_models) {
 					if (model.visible) {
 						renderer = model.renderer;
-						context.bindRenderer(renderer);
+						context.setRenderer(renderer);
 						renderer.draw(2, 1);
 					}
                 }
@@ -180,7 +180,7 @@ class GFbxScene {
                 for (model in g2d_models) {
 					if (model.visible) {
 						renderer = model.renderer;
-						context.bindRenderer(renderer);
+						context.setRenderer(renderer);
 						renderer.draw(1, 1);
 					}
                 }
@@ -189,7 +189,7 @@ class GFbxScene {
                 for (model in g2d_models) {
 					if (model.visible) {
 						renderer = model.renderer;
-						context.bindRenderer(renderer);
+						context.setRenderer(renderer);
 						renderer.draw(1, 2);
 					}
                 }
@@ -198,7 +198,7 @@ class GFbxScene {
                 for (model in g2d_models) {
 					if (model.visible) {
 						renderer = model.renderer;
-						context.bindRenderer(renderer);
+						context.setRenderer(renderer);
 						renderer.tintColor.w = 0;
 						renderer.draw(2, 1);
 						renderer.tintColor.w = 0;

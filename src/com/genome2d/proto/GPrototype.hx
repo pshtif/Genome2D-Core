@@ -138,6 +138,7 @@ class GPrototype
 		var split:Array<String> = p_name.split(".");
 		var lookupClass:Class<IGPrototypable> = prototypeClass;
 		var propertyNames:Array<String> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
+		
 		while (propertyNames.indexOf(split[0]) == -1 && lookupClass != null) {
 			lookupClass = cast Type.getSuperClass(lookupClass);
 			if (lookupClass != null) propertyNames = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
