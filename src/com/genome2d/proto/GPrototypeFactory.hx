@@ -17,7 +17,6 @@ class GPrototypeFactory {
 		#if flash
 		var fields:Array<String> = Type.getClassFields(GPrototypeHelper);
 		for (i in fields) {
-			trace(i);
 			if (i.indexOf("g2d_") == 0) continue;
 			var cls:Class<IGPrototypable> = cast Type.resolveClass(Reflect.field(GPrototypeHelper, i));
             if (cls != null) g2d_lookups.set(i, cls);
