@@ -40,6 +40,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	public var red:Float = 1;
 	public var green:Float = 1;
 	public var blue:Float = 1;
+	@prototype
 	public var alpha:Float = 1;
 	
 	#if swc @:extern #end
@@ -740,22 +741,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
             }
         }
     }
-
-    private function calculateHeight():Void {
-        if (g2d_dirty) {
-            if (g2d_layout != null) {
-                g2d_layout.calculateHeight(this);
-            } else {
-                g2d_minHeight = g2d_activeSkin != null ? g2d_activeSkin.getMinHeight() : 0;
-
-                for (i in 0...g2d_numChildren) {
-                    g2d_children[i].calculateHeight();
-                }
-            }
-        }
-    }
-
-    private function invalidateWidth():Void {
+	
+	private function invalidateWidth():Void {
         if (g2d_dirty) {
             if (g2d_parent != null) {
                 if (g2d_parent.g2d_layout == null) {
@@ -784,6 +771,20 @@ class GUIElement implements IGPrototypable implements IGInteractive {
             } else {
                 for (i in 0...g2d_numChildren) {
                     g2d_children[i].invalidateWidth();
+                }
+            }
+        }
+    }
+
+    private function calculateHeight():Void {
+        if (g2d_dirty) {
+            if (g2d_layout != null) {
+                g2d_layout.calculateHeight(this);
+            } else {
+                g2d_minHeight = g2d_activeSkin != null ? g2d_activeSkin.getMinHeight() : 0;
+
+                for (i in 0...g2d_numChildren) {
+                    g2d_children[i].calculateHeight();
                 }
             }
         }
@@ -890,7 +891,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 		var group:Array<GPrototype> = p_prototype.getGroup(PROTOTYPE_DEFAULT_CHILD_GROUP);
 		if (group != null) {
 			for (prototype in group) {
-				addChild(cast GPrototypeFactory.createPrototype(prototype));
+				var prototype:IGPrototypable = GPrototypeFactory.createPrototype(prototype);
+				if (Std.is(prototype,GUIElement)) addChild(cast prototype);
 			}
 		}
 		/*
@@ -1114,5 +1116,9 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 				child.setState(p_stateName);
 			}
 		}
+	}
+	
+	public function getState():String {
+		return g2d_currentState;
 	}
 }

@@ -6,23 +6,24 @@ package com.genome2d.proto;
  */
 class GPrototypeStates
 {
-	private var g2d_states:Map<String,Map<String,Dynamic>>;
+	private var g2d_states:Map<String,Map<String,GPropertyState>>;
 
 	inline public function new() {
-		g2d_states = new Map<String,Map<String,Dynamic>>();
+		g2d_states = new Map<String,Map<String,GPropertyState>>();
 	}
 	
-	inline public function setProperty(p_property:String, p_value:Dynamic, p_stateName:String = "default"):Void {
-		//trace(p_property, p_value, p_stateName);
-		var state:Map<String,Dynamic> = g2d_states.get(p_stateName);
+	inline public function setProperty(p_property:String, p_value:Dynamic, p_stateName:String, p_transition:String):Void {
+		if (p_stateName == null) p_stateName = "default";
+		trace(p_property, p_value, p_stateName);
+		var state:Map<String,GPropertyState> = g2d_states.get(p_stateName);
 		if (state == null) {
-			state = new Map<String,Dynamic>();
+			state = new Map<String,GPropertyState>();
 			g2d_states.set(p_stateName, state);
 		}
-		state.set(p_property, p_value);
+		state.set(p_property, new GPropertyState(p_property,p_value,p_transition));
 	}	
 	
-	inline public function getState(p_stateName:String = "default"):Map<String,Dynamic> {
+	inline public function getState(p_stateName:String = "default"):Map<String,GPropertyState> {
 		return g2d_states.get(p_stateName);
 	}
 }

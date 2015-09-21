@@ -44,6 +44,10 @@ class GPrototypeFactory {
 
         return proto;
     }
+	
+	static public function createPrototypeFromXmlString(p_xmlString:String):IGPrototypable {
+		return createPrototype(GPrototype.fromXml(Xml.parse(p_xmlString).firstElement()));
+	}
 
     static public function createEmptyPrototype(p_prototypeName:String):IGPrototypable {
         var prototypeClass:Class<IGPrototypable> = g2d_lookups[p_prototypeName];

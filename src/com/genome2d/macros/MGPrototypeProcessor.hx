@@ -8,6 +8,7 @@
  */
 package com.genome2d.macros;
 
+import com.genome2d.proto.GPropertyState;
 import com.genome2d.proto.GPrototypeExtras;
 import com.genome2d.proto.GPrototypeSpecs;
 import com.genome2d.proto.GPrototypeStates;
@@ -339,13 +340,10 @@ class MGPrototypeProcessor {
             public function setPrototypeState(p_stateName:String):Void {
 				if (g2d_currentState != p_stateName) {
 					g2d_currentState = p_stateName;
-					var state:Map<String,Dynamic> = g2d_prototypeStates.getState(p_stateName);
+					var state:Map<String,com.genome2d.proto.GPropertyState> = g2d_prototypeStates.getState(p_stateName);
 					if (state != null) {
 						for (propertyName in state.keys()) {
-							try {
-								Reflect.setProperty(this, propertyName, state.get(propertyName));
-							} catch (e:Dynamic) {
-							}
+							state.get(propertyName).bind(this);
 						}
 					}
 				}

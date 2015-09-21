@@ -1,14 +1,17 @@
 package com.genome2d.transitions;
 import com.genome2d.debug.GDebug;
 import com.genome2d.proto.IGPrototypable;
+import motion.Actuate;
+import motion.easing.IEasing;
+import motion.easing.Linear;
 
 @:access(com.genome2d.transitions.GTransitionManager)
 @:allow(com.genome2d.transitions.GTransitionManager)
-class GTransition implements IGPrototypable {
-	
+@prototypeName("transition")
+class GTransition implements IGPrototypable implements IGTransition {	
 	private var g2d_id:String;
     #if swc @:extern #end
-    @prototype
+	@prototype
 	public var id(get, set):String;
     #if swc @:getter(id) #end
     inline private function get_id():String {
@@ -26,11 +29,28 @@ class GTransition implements IGPrototypable {
 
         return g2d_id;
     }
+
+	@prototype
+	public var time:Float = 0;
+	@prototype
+	public var delay:Float = 0;
+	
+	private var ease:IEasing;
 	
 	static private var g2d_instanceCount:Int = 0;
-	public function new(p_id:String = "") {
+	public function new(p_id:String = "", p_time:Float, p_ease:IEasing = null, p_delay:Float = 0) {		
         g2d_instanceCount++;
 
 		id = (p_id != "") ? p_id : "GTransition" + g2d_instanceCount;
+		time = p_time;
+		ease = (p_ease == null) ? Linear.easeNone : p_ease;
+		delay = p_delay;
     }	
+	
+	public function apply(p_instance:Dynamic, p_property:String, p_value:Dynamic):Void {
+		var prop:Dynamic = { };
+		Reflect.setField(prop, p_property, p_value);
+		Actuate.tween(p_instance, time, prop).delay(delay);
+	}
+	/**/
 }

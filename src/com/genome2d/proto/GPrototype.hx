@@ -222,7 +222,7 @@ class GPrototypeProperty {
 
 		var split:Array<String> = name.split(".");
 		if (realValue != null) {
-			if (split.length == 1) {
+			if (split.length == 1 || split[1] == "default") {
 				try {
 					if ((extras & GPrototypeExtras.SETTER) != 0) {
 						Reflect.callMethod(p_instance, Reflect.field(p_instance, split[0]), [realValue]);
@@ -232,10 +232,8 @@ class GPrototypeProperty {
 				} catch (e:Dynamic) {
 					GDebug.error("Error during prototype binding: ", e);
 				}
-				p_instance.g2d_prototypeStates.setProperty(split[0], realValue);
-			} else {
-				p_instance.g2d_prototypeStates.setProperty(split[0], realValue, split[1]);
-			}
+			} 
+			p_instance.g2d_prototypeStates.setProperty(split[0], realValue, split[1], split[2]);
 		}
 	}
 	

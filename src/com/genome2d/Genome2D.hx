@@ -13,6 +13,7 @@ import com.genome2d.debug.IGDebuggableInternal;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.macros.MGBuildID;
 import com.genome2d.text.GFontManager;
+import com.genome2d.transitions.GTransitionManager;
 import com.genome2d.ui.skin.GUISkinManager;
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.proto.GPrototypeFactory;
@@ -240,6 +241,7 @@ class Genome2D implements IGDebuggableInternal
 		GFontManager.init();
 		GTextureManager.init(g2d_context);
         GUISkinManager.init();
+		GTransitionManager.init();
 		
 		g2d_context.init();
 	}
