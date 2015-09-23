@@ -14,7 +14,7 @@ class GPrototypeStates
 	
 	inline public function setProperty(p_property:String, p_value:Dynamic, p_stateName:String, p_transition:String):Void {
 		if (p_stateName == null) p_stateName = "default";
-		trace(p_property, p_value, p_stateName);
+
 		var state:Map<String,GPropertyState> = g2d_states.get(p_stateName);
 		if (state == null) {
 			state = new Map<String,GPropertyState>();

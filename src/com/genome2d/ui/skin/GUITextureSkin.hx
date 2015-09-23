@@ -65,6 +65,9 @@ class GUITextureSkin extends GUISkin {
 	public var rotation:Float = 0;
 	
 	@prototype
+	public var tiled:Bool = false;
+	
+	@prototype
 	public var bindTextureToModel:Bool = false;
 
     override public function getMinWidth():Float {
@@ -92,8 +95,6 @@ class GUITextureSkin extends GUISkin {
             var height:Float = p_bottom - p_top;
             var finalScaleX:Float = width / texture.width;
             var finalScaleY:Float = height / texture.height;
-            var x:Float = p_left + (.5 * texture.width + texture.pivotX) * finalScaleX;
-            var y:Float = p_top + (.5 * texture.height + texture.pivotY) * finalScaleY;
             var sl:Float = sliceLeft > texture.nativeWidth ? texture.nativeWidth : sliceLeft < 0 ? 0 :sliceLeft;
             var st:Float = sliceTop > texture.nativeHeight ? texture.nativeHeight : sliceTop < 0 ? 0 :sliceTop;
             var sr:Float = sliceRight > texture.nativeWidth ? texture.nativeWidth : sliceRight<sliceLeft ? sliceRight>=0 ? sliceLeft : texture.nativeWidth+sliceRight : sliceRight;
@@ -103,12 +104,30 @@ class GUITextureSkin extends GUISkin {
 			if (sw == 0 && sh != 0) sr = sw = texture.nativeWidth;
 			if (sh == 0 && sw != 0) sb = sh = texture.nativeHeight;
 
-            var rx:Float = texture.u * texture.gpuWidth;// (texture.region != null) ? texture.region.x : 0;
-            var ry:Float = texture.v * texture.gpuHeight;// (texture.region != null) ? texture.region.y : 0;
-
             if (sw == 0 || sh == 0) {
-                context.draw(texture, x, y, finalScaleX, finalScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, 1, null);
+				if (tiled) {
+					var rx:Float = texture.u * texture.gpuWidth;// (texture.region != null) ? texture.region.x : 0;
+					var ry:Float = texture.v * texture.gpuHeight;// (texture.region != null) ? texture.region.y : 0;
+					var x:Float = p_left + (.5 * texture.width + texture.pivotX);
+					var y:Float = p_top + (.5 * texture.height + texture.pivotY);
+					for (i in 0...Math.ceil(finalScaleX)) {
+						for (j in 0...Math.ceil(finalScaleY)) {
+							var sx:Float = (finalScaleX - i > 1)?1:(finalScaleX - i);
+							var sy:Float = (finalScaleY - j > 1)?1:(finalScaleY - j);
+							var px:Float = (texture.nativeWidth / 2 + texture.pivotX) - sx * texture.nativeWidth / 2;
+							var py:Float = (texture.nativeHeight / 2 + texture.pivotY) - sy * texture.nativeHeight / 2;
+							context.drawSource(texture, rx, ry, sx*texture.nativeWidth, sy*texture.nativeHeight, 0, 0, x+i*texture.width-px, y+j*texture.height-py, 1, 1, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, 1, null);
+						}
+					}
+				} else {
+					var x:Float = p_left + (.5 * texture.width + texture.pivotX) * finalScaleX;
+					var y:Float = p_top + (.5 * texture.height + texture.pivotY) * finalScaleY;
+					context.draw(texture, x, y, finalScaleX, finalScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, 1, null);
+				}
             } else {
+				var rx:Float = texture.u * texture.gpuWidth;// (texture.region != null) ? texture.region.x : 0;
+				var ry:Float = texture.v * texture.gpuHeight;// (texture.region != null) ? texture.region.y : 0;
+				
                 var finalScaleX:Float = (width - texture.width) / (sw * texture.scaleFactor) + 1;
                 var finalScaleY:Float = (height - texture.height) / (sh * texture.scaleFactor) +1;
                 var tx:Float = 0;
@@ -238,6 +257,7 @@ class GUITextureSkin extends GUISkin {
 		clone.scaleX = scaleX;
 		clone.scaleY = scaleY;
 		clone.rotation = rotation;
+		clone.tiled = tiled;
         return clone;
     }
 	
