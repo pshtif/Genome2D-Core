@@ -233,7 +233,7 @@ class GPrototypeProperty {
 					GDebug.error("Error during prototype binding: ", e);
 				}
 			} 
-			p_instance.g2d_prototypeStates.setProperty(split[0], realValue, split[1], split[2]);
+			p_instance.g2d_prototypeStates.setProperty(split[0], realValue, extras, split[1], split[2]);
 		}
 	}
 	

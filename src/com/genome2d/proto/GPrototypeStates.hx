@@ -12,7 +12,7 @@ class GPrototypeStates
 		g2d_states = new Map<String,Map<String,GPropertyState>>();
 	}
 	
-	inline public function setProperty(p_property:String, p_value:Dynamic, p_stateName:String, p_transition:String):Void {
+	inline public function setProperty(p_property:String, p_value:Dynamic, p_extras:Int, p_stateName:String, p_transition:String):Void {
 		if (p_stateName == null) p_stateName = "default";
 
 		var state:Map<String,GPropertyState> = g2d_states.get(p_stateName);
@@ -20,7 +20,7 @@ class GPrototypeStates
 			state = new Map<String,GPropertyState>();
 			g2d_states.set(p_stateName, state);
 		}
-		state.set(p_property, new GPropertyState(p_property,p_value,p_transition));
+		state.set(p_property, new GPropertyState(p_property,p_value, p_extras, p_transition));
 	}	
 	
 	inline public function getState(p_stateName:String = "default"):Map<String,GPropertyState> {
