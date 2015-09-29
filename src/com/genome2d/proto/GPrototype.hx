@@ -148,15 +148,16 @@ class GPrototype
 			var propertyTypes:Array<String> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES);
 			var propertyExtras:Array<Int> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
 			var propertyIndex:Int = propertyNames.indexOf(split[0]);
-			
+
 			createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex], p_value);
 		}
 	}
 	
 	public function createPrototypeProperty(p_name:String, p_type:String, p_extras:Int, p_value:Dynamic = null):GPrototypeProperty {
 		var property:GPrototypeProperty = new GPrototypeProperty(p_name, p_type, p_extras);
+		
 		properties.set(p_name, property);
-		if (property != null) property.setDirectValue(p_value);
+		property.setDirectValue(p_value);
 		
 		return property;
 	}
@@ -221,20 +222,20 @@ class GPrototypeProperty {
 		}
 
 		var split:Array<String> = name.split(".");
-		if (realValue != null) {
-			if (split.length == 1 || split[1] == "default") {
-				try {
-					if ((extras & GPrototypeExtras.SETTER) != 0) {
-						Reflect.callMethod(p_instance, Reflect.field(p_instance, split[0]), [realValue]);
-					} else {
-						Reflect.setProperty(p_instance, split[0], realValue);
-					}
-				} catch (e:Dynamic) {
-					GDebug.error("Error during prototype binding: ", e);
+		
+		if (split.length == 1 || split[1] == "default") {
+			try {
+				if ((extras & GPrototypeExtras.SETTER) != 0) {
+					Reflect.callMethod(p_instance, Reflect.field(p_instance, split[0]), [realValue]);
+				} else {
+					Reflect.setProperty(p_instance, split[0], realValue);
 				}
-			} 
-			p_instance.g2d_prototypeStates.setProperty(split[0], realValue, extras, split[1], split[2]);
-		}
+			} catch (e:Dynamic) {
+				GDebug.error("Error during prototype binding: ", e);
+			}
+		} 
+			
+		p_instance.g2d_prototypeStates.setProperty(split[0], realValue, extras, split[1], split[2]);
 	}
 	
 	inline private function g2d_getRealValue():Dynamic {

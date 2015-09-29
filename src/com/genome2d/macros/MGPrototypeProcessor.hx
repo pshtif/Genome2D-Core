@@ -341,6 +341,7 @@ class MGPrototypeProcessor {
 				if (g2d_currentState != p_stateName) {
 					g2d_currentState = p_stateName;
 					var state:Map<String,com.genome2d.proto.GPropertyState> = g2d_prototypeStates.getState(p_stateName);
+					
 					if (state != null) {
 						for (propertyName in state.keys()) {
 							state.get(propertyName).bind(this);
