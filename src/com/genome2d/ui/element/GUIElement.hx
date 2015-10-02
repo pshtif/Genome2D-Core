@@ -409,7 +409,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     #if swc @:setter(skin) #end
     inline private function set_skin(p_value:GUISkin):GUISkin {
 		if (p_value == null || g2d_skin == null || p_value.id != g2d_skin.id) {
-			if (g2d_skin != null) g2d_skin.remove(true);
+			if (g2d_skin != null) g2d_skin.remove();
 			g2d_skin = (p_value != null) ? p_value.attach(this) : p_value;
 			g2d_activeSkin = g2d_skin;
 

@@ -114,12 +114,9 @@ class GUISkin implements IGPrototypable {
         return clone;
     }
 
-    private function remove(p_removedByElement:Bool):Void {
+    private function remove():Void {
         if (g2d_origin != null) {
-			if (!p_removedByElement) {
-				g2d_element.skin = null;
-				g2d_origin.g2d_clones.remove(this);
-			}
+			g2d_origin.g2d_clones.remove(this);
 			if (g2d_element != null) {
 				g2d_element.onModelChanged.remove(elementModelChanged_handler);
 				g2d_element = null;
@@ -143,7 +140,7 @@ class GUISkin implements IGPrototypable {
     public function dispose():Void {
 		if (g2d_origin == null) {
 			while (g2d_clones.length > 0) {
-				g2d_clones[0].remove(false);
+				g2d_clones[0].remove();
 			}
 			if (GUISkinManager.getSkin(id) != null) GUISkinManager.g2d_removeSkin(id);
 		} else {

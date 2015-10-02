@@ -153,6 +153,9 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 	public var initialAngle:Float = 0;
 	@prototype
 	public var initialAngleVariance:Float = 0;
+	
+	@prototype
+	public var paused:Bool = false;
 
 	@prototype
 	public var burst:Bool = false;
@@ -260,20 +263,6 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 		g2d_accumulatedEmission = 0;
 	}
 
-	private function g2d_createParticle():GSimpleParticle {
-		var particle:GSimpleParticle = GSimpleParticle.g2d_get();
-		if (g2d_firstParticle != null) {
-			particle.g2d_next = g2d_firstParticle;
-			g2d_firstParticle.g2d_previous = particle;
-			g2d_firstParticle = particle;
-		} else {
-			g2d_firstParticle = particle;
-			g2d_lastParticle = particle;
-		}
-
-		return particle;
-	}
-
 	public function forceBurst():Void {
 		var currentEmission:Int = Std.int(emission + emissionVariance * Math.random());
 
@@ -285,34 +274,35 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 
 	public function update(p_deltaTime:Float):Void {
 		g2d_lastUpdateTime = p_deltaTime;
+		if (!paused) {
+			if (emit) {
+				if (burst) {
+					forceBurst();
+				} else {
+					g2d_accumulatedTime += p_deltaTime * .001;
+					var time:Float = g2d_accumulatedTime%(emissionTime+emissionDelay);
 
-		if (emit) {
-			if (burst) {
-				forceBurst();
-			} else {
-				g2d_accumulatedTime += p_deltaTime * .001;
-				var time:Float = g2d_accumulatedTime%(emissionTime+emissionDelay);
+					if (time <= emissionTime) {
+						var updateEmission:Float = emission;
+						if (emissionVariance>0) updateEmission += emissionVariance * Math.random(); 
+						g2d_accumulatedEmission += updateEmission * p_deltaTime * .001;
 
-				if (time <= emissionTime) {
-					var updateEmission:Float = emission;
-					if (emissionVariance>0) updateEmission += emissionVariance * Math.random(); 
-					g2d_accumulatedEmission += updateEmission * p_deltaTime * .001;
-
-					while (g2d_accumulatedEmission > 0) {
-						g2d_activateParticle();
-						g2d_accumulatedEmission--;
+						while (g2d_accumulatedEmission > 0) {
+							g2d_activateParticle();
+							g2d_accumulatedEmission--;
+						}
 					}
 				}
 			}
-		}
-		
-		var particle:GSimpleParticle = g2d_firstParticle;
-		while (particle != null) {
-			var next:GSimpleParticle = particle.g2d_next;
+			
+			var particle:GSimpleParticle = g2d_firstParticle;
+			while (particle != null) {
+				var next:GSimpleParticle = particle.g2d_next;
 
-			particle.g2d_update(this, g2d_lastUpdateTime);
-			particle = next;
-		}	
+				particle.g2d_update(this, g2d_lastUpdateTime);
+				particle = next;
+			}	
+		}
 	}
 
 	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
@@ -346,6 +336,20 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 		
 		particle.g2d_init(this);
 	}
+	
+	private function g2d_createParticle():GSimpleParticle {
+		var particle:GSimpleParticle = GSimpleParticle.g2d_get();
+		if (g2d_firstParticle != null) {
+			particle.g2d_next = g2d_firstParticle;
+			g2d_firstParticle.g2d_previous = particle;
+			g2d_firstParticle = particle;
+		} else {
+			g2d_firstParticle = particle;
+			g2d_lastParticle = particle;
+		}
+
+		return particle;
+	}
 
 	public function deactivateParticle(p_particle:GSimpleParticle):Void {
 		if (p_particle == g2d_lastParticle) g2d_lastParticle = g2d_lastParticle.g2d_previous;
@@ -360,8 +364,10 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 		super.dispose();
 	}
 
-	public function clear(p_disposeCachedParticles:Bool = false):Void {
-		// TODO
+	public function clear():Void {
+		while (g2d_firstParticle != null) {
+			deactivateParticle(g2d_firstParticle);
+		}
 	}
 
     public function getBounds(p_target:GRectangle = null):GRectangle {
