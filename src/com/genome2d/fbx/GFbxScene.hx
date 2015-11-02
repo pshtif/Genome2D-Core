@@ -5,6 +5,7 @@ import com.genome2d.context.GBlendMode;
 import com.genome2d.context.stage3d.GProjectionMatrix;
 import com.genome2d.context.stage3d.GStage3DContext;
 import com.genome2d.context.stage3d.renderers.GFbxRenderer;
+import com.genome2d.debug.GDebug;
 import com.genome2d.fbx.GFbxParserNode;
 import com.genome2d.fbx.GFbxTools;
 
@@ -124,12 +125,12 @@ class GFbxScene {
             var model:GFbxModel = (Std.is(node,GFbxModel)) ? cast node : null;
             if (model != null) {
 				var fbxGeometry:GFbxGeometry = model.getGeometry();
-				if (fbxGeometry == null) throw "Invalid model.";
+				if (fbxGeometry == null) GDebug.error("Model has no geometry.");
 				
 				var fbxRenderer:GFbxRenderer = new GFbxRenderer(fbxGeometry.vertices, fbxGeometry.uvs, fbxGeometry.indices, fbxGeometry.vertexNormals, false);
 
 				var fbxTexture:GFbxTexture = model.getMaterial().getTexture();
-				if (fbxTexture == null) throw "Invalid texture.";
+				if (fbxTexture == null) GDebug.error("Model material has no texture.");
 
 				fbxRenderer.texture = GTextureManager.getTexture(fbxTexture.relativePath.substring(0, fbxTexture.relativePath.lastIndexOf(".")));
 				model.renderer = fbxRenderer;
