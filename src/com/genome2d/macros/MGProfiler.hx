@@ -8,10 +8,10 @@ import haxe.macro.Context;
 class MGProfiler {
     macro static public function PROFILE(expr) {
         return macro {
-            var __profileTime:Int = untyped __global__["flash.utils.getTimer"]();
+            var g2d_profileTime:Int = untyped __global__["flash.utils.getTimer"]();
             ${expr};
-            __profileTime = untyped __global__["flash.utils.getTimer"]() - __profileTime;
-            @:pos(expr.pos) MGProfiler.PROFILE_INTERNAL(__profileTime);
+            g2d_profileTime = untyped __global__["flash.utils.getTimer"]() - g2d_profileTime;
+            @:pos(expr.pos) MGProfiler.PROFILE_INTERNAL(g2d_profileTime);
         }
     }
 
