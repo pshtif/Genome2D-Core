@@ -43,6 +43,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	@prototype
 	public var alpha:Float = 1;
 	
+	static public var setModelHook:Dynamic->Dynamic;
+	
 	#if swc @:extern #end
     @prototype
 	public var color(get, set):Int;
@@ -343,6 +345,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
 	@prototype
     public function setModel(p_value:Dynamic):Void {
+		if (setModelHook != null) p_value = setModelHook(p_value);
+		
 		// Xml assignment
         if (Std.is(p_value, Xml)) {
             var xml:Xml = cast (p_value, Xml);

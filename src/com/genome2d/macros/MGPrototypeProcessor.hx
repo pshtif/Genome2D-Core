@@ -339,12 +339,20 @@ class MGPrototypeProcessor {
         return macro : {
             public function setPrototypeState(p_stateName:String):Void {
 				if (g2d_currentState != p_stateName) {
-					g2d_currentState = p_stateName;
 					var state:Map<String,com.genome2d.proto.GPropertyState> = g2d_prototypeStates.getState(p_stateName);
 					
 					if (state != null) {
+						g2d_currentState = p_stateName;
 						for (propertyName in state.keys()) {
 							state.get(propertyName).bind(this);
+						}
+					} else {
+						state = g2d_prototypeStates.getState("na");
+						if (state != null) {
+							g2d_currentState = p_stateName;
+							for (propertyName in state.keys()) {
+								state.get(propertyName).bind(this);
+							}
 						}
 					}
 				}

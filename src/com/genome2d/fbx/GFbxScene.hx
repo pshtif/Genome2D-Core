@@ -205,6 +205,15 @@ class GFbxScene {
 						renderer.tintColor.w = 0;
 					}
                 }
+			// Depth reflection
+            case 5:
+                for (model in g2d_models) {
+					if (model.visible) {
+						renderer = model.renderer;
+						context.setRenderer(renderer);
+						renderer.draw(1, 3);
+					}
+                }
 
         }
     }
