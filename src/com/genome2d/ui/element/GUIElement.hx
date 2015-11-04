@@ -749,11 +749,28 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
 
     public function getChildByName(p_name:String, p_recursive:Bool = false):GUIElement {
+		var split:Array<String> = null;
+		if (p_name.indexOf("->") != -1) split = p_name.split("->");
+		
         for (i in 0...g2d_numChildren) {
-			if (g2d_children[i].name == p_name) return g2d_children[i];
+			if (g2d_children[i].name == (split == null?p_name:split[0])) {
+				if (split == null) {
+					return g2d_children[i];
+				} else {
+					split.shift();
+					return g2d_children[i].getChildByName(split.join("->"), p_recursive);
+				}
+			}
 			if (p_recursive) {
 				var childByName:GUIElement = g2d_children[i].getChildByName(p_name, true);
-				if (childByName != null) return childByName;
+				if (childByName != null) {
+					if (split == null) {
+						return childByName;
+					} else {
+						split.shift();
+						return childByName.getChildByName(split.join("->"), true);
+					}
+				}
 			}
 		}
         return null;
