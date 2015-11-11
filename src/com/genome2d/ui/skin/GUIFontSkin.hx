@@ -187,7 +187,7 @@ class GUIFontSkin extends GUISkin {
 			
             g2d_textRenderer.width = p_right - p_left;
             g2d_textRenderer.height = p_bottom - p_top;
-            g2d_textRenderer.render(p_left, p_top, 1, 1, 0);
+            g2d_textRenderer.render(p_left, p_top, 1, 1, 0, 1, 1, 1, 1);
             rendered = true;
         }
         return rendered;

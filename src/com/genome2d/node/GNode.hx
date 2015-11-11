@@ -85,8 +85,6 @@ class GNode implements IGInteractive implements IGPrototypable
 
         var node:GNode = new GNode();
 		node.bindPrototype(p_prototype);
-        //node.mouseEnabled = (p_prototype.get("mouseEnabled") == "true") ? true : false;
-        //node.mouseChildren = (p_prototype.get("mouseChildren") == "true") ? true : false;
 
 		var components:Array<GPrototype> = p_prototype.getGroup("components");
 		if (components != null) {
@@ -94,28 +92,14 @@ class GNode implements IGInteractive implements IGPrototypable
 				node.addComponentPrototype(prototype);
 			}
 		}
-		/*
-        var it:Iterator<Xml> = p_prototype.elements();
+		
+		var children:Array<GPrototype> = p_prototype.getGroup("children");
+		if (children != null) {
+			for (prototype in children) {
+				node.addChild(createFromPrototype(prototype));
+			}
+		}
 
-        while (it.hasNext()) {
-            var xml:Xml = it.next();
-            if (xml.nodeName == "components") {
-                var componentsIt:Iterator<Xml> = xml.elements();
-                while (componentsIt.hasNext()) {
-                    var componentXml:Xml = componentsIt.next();
-
-                    node.addComponentPrototype(componentXml);
-                }
-            }
-
-            if (xml.nodeName == "children") {
-                var childIt:Iterator<Xml> = xml.elements();
-                while (childIt.hasNext()) {
-                    node.addChild(GNode.createFromPrototype(childIt.next()));
-                }
-            }
-        }
-		/**/
         return node;
     }
 
@@ -377,27 +361,14 @@ class GNode implements IGInteractive implements IGPrototypable
 		for (i in 0...g2d_componentCount) {
 			p_prototype.addChild(g2d_components[i].getPrototype(), "components");
 		}
-		/*		
-		var componentsXml:Xml = Xml.parse("<components/>").firstElement();
-
-		for (i in 0...g2d_componentCount) {
-			componentsXml.addChild(g2d_components[i].getPrototype());
-		}
-		p_prototype.addChild(componentsXml);
-
-		var childrenXml:Xml = Xml.createElement("children");
-
-        var child:GNode = g2d_firstChild;
+		
+		var child:GNode = g2d_firstChild;
         while (child != null) {
             var next:GNode = child.g2d_next;
-			childrenXml.addChild(child.getPrototype());
+			p_prototype.addChild(child.getPrototype(), "children");
             child = next;
 		}
 		
-		p_prototype.addChild(childrenXml);
-		
-		return p_prototype;
-		/**/
 		return p_prototype;
 	}
 	

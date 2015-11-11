@@ -154,7 +154,7 @@ class GText extends GComponent implements IGRenderable
 	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
 		if (renderer.isDirty()) renderer.invalidate();
 
-        if (renderer != null) renderer.render(node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation);
+        if (renderer != null) renderer.render(node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha);
 	}
 	
     public function captureMouseInput(p_input:GMouseInput):Void {

@@ -54,7 +54,7 @@ class GTextureTextRenderer extends GTextRenderer {
 		#end
 	}
 
-    override public function render(p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_rotation:Float):Void {
+    override public function render(p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_rotation:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Void {
         if (g2d_textureFont == null) return;
 
         if (g2d_dirty) invalidate();
@@ -88,7 +88,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				ty = cy * p_scaleY + p_y;
 			}
 			
-			g2d_context.draw(renderable.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red, green, blue, alpha, 1, null);
+			g2d_context.draw(renderable.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red*p_red, green*p_green, blue*p_blue, alpha*p_alpha, 1, null);
         }
 	}
 	
