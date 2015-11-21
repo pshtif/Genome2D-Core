@@ -129,7 +129,10 @@ class GUITextureSkin extends GUISkin {
 				var ry:Float = texture.v * texture.gpuHeight;// (texture.region != null) ? texture.region.y : 0;
 				
                 var finalScaleX:Float = (width - texture.width) / (sw * texture.scaleFactor) + 1;
-                var finalScaleY:Float = (height - texture.height) / (sh * texture.scaleFactor) +1;
+                var finalScaleY:Float = (height - texture.height) / (sh * texture.scaleFactor) + 1;
+				
+				trace(sl, sr, sw, finalScaleX, finalScaleY);
+				
                 var tx:Float = 0;
                 var ty:Float = 0;
                 var tw:Float = sl;

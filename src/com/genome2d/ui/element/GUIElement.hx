@@ -903,36 +903,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
     public function getPrototype(p_prototype:GPrototype = null):GPrototype {		
 		p_prototype = getPrototypeDefault(p_prototype);
-		/*
-        if (anchorX != 0) p_prototype.set("anchorX", Std.string(anchorX));
-        if (anchorY != 0) p_prototype.set("anchorY", Std.string(anchorY));
-        if (anchorLeft != 0) p_prototype.set("anchorLeft", Std.string(anchorLeft));
-        if (anchorRight != 0) p_prototype.set("anchorRight", Std.string(anchorRight));
-        if (anchorTop != 0) p_prototype.set("anchorTop", Std.string(anchorTop));
-        if (anchorBottom != 0) p_prototype.set("anchorBottom", Std.string(anchorBottom));
-        if (pivotX != 0) p_prototype.set("pivotX", Std.string(pivotX));
-        if (pivotY != 0) p_prototype.set("pivotY", Std.string(pivotY));
-        if (left != 0) p_prototype.set("left", Std.string(left));
-        if (right != 0) p_prototype.set("right", Std.string(right));
-        if (top != 0) p_prototype.set("top", Std.string(top));
-        if (bottom != 0) p_prototype.set("bottom", Std.string(bottom));
-        if (preferredWidth != 0) p_prototype.set("preferredWidth", Std.string(preferredWidth));
-        if (preferredHeight != 0) p_prototype.set("preferredHeight", Std.string(preferredHeight));
-        if (name != "") p_prototype.set("name", name);
-        if (skin != null) p_prototype.set("skin", skin.id);
-        if (mouseEnabled != true) p_prototype.set("mouseEnabled", Std.string(mouseEnabled));
-        if (mouseChildren != true) p_prototype.set("mouseChildren", Std.string(mouseChildren));
-        if (visible != true) p_prototype.set("visible", Std.string(visible));
-        if (flushBatch != false) p_prototype.set("flushBatch", Std.string(flushBatch));
-		if (scrollable != false) p_prototype.set("scrollable", Std.string(scrollable));
-
-        if (mouseDown != "") p_prototype.set("mouseDown", mouseDown);
-        if (mouseUp != "") p_prototype.set("mouseUp", mouseUp);
-        if (mouseClick != "") p_prototype.set("mouseClick", mouseClick);
-        if (mouseOver != "") p_prototype.set("mouseOver", mouseOver);
-        if (mouseOut != "") p_prototype.set("mouseOut", mouseOut);
-        if (mouseMove != "") p_prototype.set("mouseMove", mouseMove);
-		/**/
+		
         for (i in 0...g2d_numChildren) {
             p_prototype.addChild(g2d_children[i].getPrototype(), PROTOTYPE_DEFAULT_CHILD_GROUP);
         }
@@ -948,56 +919,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 				if (Std.is(prototype,GUIElement)) addChild(cast prototype);
 			}
 		}
-		/*
-        while (it.hasNext()) {
-            var xml:Xml = it.next();
-			// Should not be defined within prototype as such nodes are reserved for prototype reference
-			if (xml.nodeName.indexOf("p:") != 0) {// != "prototype") {
-				var prototype:IGPrototypable = GPrototypeFactory.createPrototype(p_prototype);
-				if (Std.is(prototype, GUIElement)) {
-					addChild(cast prototype);
-				} else if (Std.is(prototype, GUILayout)) {
-					layout = cast prototype;
-				}
-			}
-        }
-		/*
-		if (p_prototypeXml.exists("expand")) expand = (p_prototypeXml.get("expand") != "false" && p_prototypeXml.get("expand") != "0");
-        if (p_prototypeXml.exists("align")) setAlign(Std.parseInt(p_prototypeXml.get("align")));
-		if (p_prototypeXml.exists("color")) color = Std.parseInt(p_prototypeXml.get("color"));
-        if (p_prototypeXml.exists("anchorX")) anchorX = Std.parseFloat(p_prototypeXml.get("anchorX"));
-        if (p_prototypeXml.exists("anchorY")) anchorY = Std.parseFloat(p_prototypeXml.get("anchorY"));
-        if (p_prototypeXml.exists("anchorLeft")) anchorLeft = Std.parseFloat(p_prototypeXml.get("anchorLeft"));
-        if (p_prototypeXml.exists("anchorRight")) anchorRight = Std.parseFloat(p_prototypeXml.get("anchorRight"));
-        if (p_prototypeXml.exists("anchorTop")) anchorTop = Std.parseFloat(p_prototypeXml.get("anchorTop"));
-        if (p_prototypeXml.exists("anchorBottom")) anchorBottom = Std.parseFloat(p_prototypeXml.get("anchorBottom"));
-        if (p_prototypeXml.exists("pivotX")) pivotX = Std.parseFloat(p_prototypeXml.get("pivotX"));
-        if (p_prototypeXml.exists("pivotY")) pivotY = Std.parseFloat(p_prototypeXml.get("pivotY"));
-        if (p_prototypeXml.exists("left")) left = Std.parseFloat(p_prototypeXml.get("left"));
-        if (p_prototypeXml.exists("right")) right = Std.parseFloat(p_prototypeXml.get("right"));
-        if (p_prototypeXml.exists("top")) top = Std.parseFloat(p_prototypeXml.get("top"));
-        if (p_prototypeXml.exists("bottom")) bottom = Std.parseFloat(p_prototypeXml.get("bottom"));
-        if (p_prototypeXml.exists("preferredWidth")) preferredWidth = Std.parseFloat(p_prototypeXml.get("preferredWidth"));
-        if (p_prototypeXml.exists("preferredHeight")) preferredHeight = Std.parseFloat(p_prototypeXml.get("preferredHeight"));
-        if (p_prototypeXml.exists("name")) name = p_prototypeXml.get("name");
-        if (p_prototypeXml.exists("skin")) skin = GUISkinManager.getSkin(p_prototypeXml.get("skin"));
-        if (p_prototypeXml.exists("mouseEnabled")) mouseEnabled = (p_prototypeXml.get("mouseEnabled") != "false" && p_prototypeXml.get("mouseEnabled") != "0");
-        if (p_prototypeXml.exists("mouseChildren")) mouseChildren = (p_prototypeXml.get("mouseChildren") != "false" && p_prototypeXml.get("mouseChildren") != "0");
-        if (p_prototypeXml.exists("visible")) visible = (p_prototypeXml.get("visible") != "false" && p_prototypeXml.get("visible") != "0");
-        if (p_prototypeXml.exists("flushBatch")) flushBatch = (p_prototypeXml.get("flushBatch") != "false" && p_prototypeXml.get("flushBatch") != "0");
-		if (p_prototypeXml.exists("scrollable")) scrollable = (p_prototypeXml.get("scrollable") != "false" && p_prototypeXml.get("scrollable") != "0");
-		
-		if (p_prototypeXml.exists("model")) setModel(p_prototypeXml.get("model"));
 
-        if (p_prototypeXml.exists("mouseDown")) mouseDown = p_prototypeXml.get("mouseDown");
-        if (p_prototypeXml.exists("mouseUp")) mouseUp = p_prototypeXml.get("mouseUp");
-        if (p_prototypeXml.exists("mouseClick")) mouseClick = p_prototypeXml.get("mouseClick");
-        if (p_prototypeXml.exists("mouseOver")) mouseOver = p_prototypeXml.get("mouseOver");
-        if (p_prototypeXml.exists("mouseOut")) mouseOut = p_prototypeXml.get("mouseOut");
-        if (p_prototypeXml.exists("mouseMove")) mouseMove = p_prototypeXml.get("mouseMove");
-		/**/
 		bindPrototypeDefault(p_prototype);
-		/**/
     }
 
     public function disposeChildren():Void {

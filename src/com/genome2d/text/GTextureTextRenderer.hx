@@ -11,6 +11,8 @@ import com.genome2d.context.IGContext;
 import com.genome2d.context.GCamera;
 class GTextureTextRenderer extends GTextRenderer {
 	
+	static public var warnMissingCharTextures:Bool = false;
+	
 	public var red:Float = 1;
 	public var green:Float = 1;
 	public var blue:Float = 1;
@@ -177,7 +179,7 @@ class GTextureTextRenderer extends GTextRenderer {
                 char = g2d_textureFont.getChar(Std.string(currentCharCode));
 
                 if (char == null) {
-                    GDebug.warning("Texture for character " + g2d_text.charAt(i) + " with code " + g2d_text.charCodeAt(i) + " not found!");
+                    if (warnMissingCharTextures) GDebug.warning("Texture for character " + g2d_text.charAt(i) + " with code " + g2d_text.charCodeAt(i) + " not found!");
 					i++;
                     continue;
                 }

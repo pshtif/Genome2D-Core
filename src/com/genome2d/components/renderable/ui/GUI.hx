@@ -12,21 +12,23 @@ import com.genome2d.components.renderable.IGRenderable;
 class GUI extends GComponent implements IGRenderable {
 
     public var root:GUIElement;
+	public var useNodePosition:Bool = false;
+	private var g2d_bounds:GRectangle;
 
     override public function init():Void {
         root = new GUIElement();
-		var rect:GRectangle = node.core.getContext().getStageViewRect();
-        root.g2d_worldLeft = 0;
-        root.g2d_worldRight = rect.width;
-        root.g2d_worldTop = 0;
-        root.g2d_worldBottom = rect.height;
-        root.g2d_finalWidth = rect.width;
-        root.g2d_finalHeight = rect.height;
-        root.name = "root";
+		root.name = "root";
         root.mouseEnabled = false;
+		
+		setBounds(new GRectangle(0, 0, node.core.getContext().getStageViewRect().width, node.core.getContext().getStageViewRect().height));
     }
 
     public function invalidate():Void {
+		root.g2d_worldLeft = g2d_bounds.left + (useNodePosition ? node.g2d_worldX : 0);
+		root.g2d_worldRight = g2d_bounds.right + (useNodePosition ? node.g2d_worldX : 0);
+		root.g2d_worldTop = g2d_bounds.top + (useNodePosition ? node.g2d_worldY : 0);
+		root.g2d_worldBottom = g2d_bounds.bottom + (useNodePosition ? node.g2d_worldY : 0);
+
         root.calculateWidth();
         root.invalidateWidth();
         root.calculateHeight();
@@ -41,12 +43,8 @@ class GUI extends GComponent implements IGRenderable {
     }
 	
 	public function setBounds(p_bounds:GRectangle):Void {
-		root.g2d_worldLeft = p_bounds.left;
-		root.g2d_worldRight = p_bounds.right;
-		root.g2d_worldTop = p_bounds.top;
-		root.g2d_worldBottom = p_bounds.bottom;
-		root.g2d_finalWidth = p_bounds.width;
-		root.g2d_finalHeight = p_bounds.height;
+		g2d_bounds = p_bounds;
+		invalidate();
 	}
 
     public function getBounds(p_target:GRectangle = null):GRectangle {
