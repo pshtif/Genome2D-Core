@@ -23,4 +23,10 @@ class GUISkinManager {
     static public function getAllSkins():Map<String,GUISkin> {
         return g2d_references;
     }
+	
+	static public function disposeAll():Void {
+		for (skin in g2d_references) {
+			if (skin.id.indexOf("g2d_") != 0) skin.dispose();
+        }
+	}
 }
