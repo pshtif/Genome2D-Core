@@ -94,9 +94,8 @@ class GUITextureSkin extends GUISkin {
             var width:Float = p_right - p_left;
             var height:Float = p_bottom - p_top;
             var finalScaleX:Float = width / texture.width;
-			trace(finalScaleX);
             var finalScaleY:Float = height / texture.height;
-			trace(finalScaleY);
+
             var sl:Float = sliceLeft > texture.nativeWidth ? texture.nativeWidth : sliceLeft < 0 ? 0 : sliceLeft;
             var st:Float = sliceTop > texture.nativeHeight ? texture.nativeHeight : sliceTop < 0 ? 0 : sliceTop;
             var sr:Float = sliceRight > texture.nativeWidth ? texture.nativeWidth : sliceRight<sliceLeft ? sliceRight>=0 ? sliceLeft : texture.nativeWidth + sliceRight : sliceRight;
@@ -139,7 +138,6 @@ class GUITextureSkin extends GUISkin {
                 var ty:Float = 0;
                 var tw:Float = sl;
                 var th:Float = st;
-				//trace("SLICE1", tx, ty, tw, th);
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left, p_top, scaleX, scaleY, 0,
@@ -149,7 +147,6 @@ class GUITextureSkin extends GUISkin {
 				/**/
                 tx = sl;
                 tw = sw;
-                //trace("SLICE2", tx, ty, tw, th);
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+sl*texture.scaleFactor*scaleX, p_top, finalScaleX, scaleY, 0,
@@ -159,7 +156,6 @@ class GUITextureSkin extends GUISkin {
                 /**/
                 tx = sr;
                 tw = texture.width / texture.scaleFactor - sr;
-				//trace("SLICE3", tx, ty, tw, th);
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+(sl*scaleX+sw*finalScaleX)*texture.scaleFactor, p_top, scaleX, scaleY, 0,
@@ -167,11 +163,10 @@ class GUITextureSkin extends GUISkin {
                                        1, null);
                 }
 				/**/
-                var tx:Float = 0;
-                var ty:Float = st;
-                var tw:Float = sl;
-                var th:Float = sh;
-                //trace("SLICE4", tx, ty, tw, th);
+                tx = 0;
+                ty = st;
+                tw = sl;
+                th = sh;
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left, p_top+st*texture.scaleFactor*scaleY, scaleX, finalScaleY, 0,
@@ -181,7 +176,6 @@ class GUITextureSkin extends GUISkin {
                 /**/
                 tx = sl;
                 tw = sw;
-                //trace("SLICE5", tx, ty, tw, th);
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+sl*texture.scaleFactor*scaleX, p_top+st*texture.scaleFactor*scaleY, finalScaleX, finalScaleY, 0,
@@ -191,7 +185,7 @@ class GUITextureSkin extends GUISkin {
                 /**/
                 tx = sr;
                 tw = texture.width/texture.scaleFactor-sr;
-                //trace("SLICE6", tx, ty, tw, th);
+
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+(sl*scaleX+sw*finalScaleX)*texture.scaleFactor, p_top+st*texture.scaleFactor*scaleY, scaleX, finalScaleY, 0,
@@ -199,11 +193,10 @@ class GUITextureSkin extends GUISkin {
                                        1, null);
                 }
                 /**/
-                var tx:Float = 0;
-                var ty:Float = sb;
-                var tw:Float = sl;
-                var th:Float = texture.nativeHeight-sb;
-                //trace("SLICE7", tx, ty, tw, th);
+                tx = 0;
+                ty = sb;
+                tw = sl;
+                th = texture.nativeHeight-sb;
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left, p_top+(st*scaleY+sh*finalScaleY)*texture.scaleFactor, scaleX, scaleY, 0,
@@ -213,7 +206,6 @@ class GUITextureSkin extends GUISkin {
                 /**/
                 tx = sl;
                 tw = sw;
-                //trace("SLICE8", tx, ty, tw, th);
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+sl*texture.scaleFactor*scaleX, p_top+(st*scaleY+sh*finalScaleY)*texture.scaleFactor, finalScaleX, scaleY, 0,
@@ -223,7 +215,6 @@ class GUITextureSkin extends GUISkin {
                 /**/
                 tx = sr;
                 tw = texture.width/texture.scaleFactor-sr;
-                //trace("SLICE9", tx, ty, tw, th);
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+(sl*scaleX+sw*finalScaleX)*texture.scaleFactor, p_top+(st*scaleY+sh*finalScaleY)*texture.scaleFactor, scaleX, scaleY, 0,
