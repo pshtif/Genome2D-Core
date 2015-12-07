@@ -33,6 +33,7 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 	@prototype
     public var useWorldSpace:Bool = false;
 
+	@range(0, 10)
 	@prototype
 	public var initialScale:Float = 1;
 	@prototype

@@ -30,7 +30,7 @@ class GUIVerticalLayout extends GUILayout {
             child.calculateWidth();
 
             p_element.g2d_minWidth = p_element.g2d_minWidth < child.g2d_minWidth ? child.g2d_minWidth : p_element.g2d_minWidth;
-            //p_element.g2d_preferredWidth = p_element.g2d_preferredWidth < child.g2d_preferredWidth ? child.g2d_preferredWidth : p_element.g2d_preferredWidth;
+            p_element.g2d_preferredWidth = p_element.g2d_preferredWidth < child.g2d_preferredWidth ? child.g2d_preferredWidth : p_element.g2d_preferredWidth;
         }
     }
 
