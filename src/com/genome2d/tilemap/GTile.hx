@@ -15,6 +15,7 @@ class GTile
     public var alpha:Float = 1;
     public var visible:Bool = true;
     public var repeatable:Bool = true;
+	public var yoyo:Bool = false;
     public var reversed:Bool = false;
 
     public var red:Float = 1;
@@ -138,10 +139,12 @@ class GTile
 
                 if (g2d_accumulatedTime >= g2d_speed) {
                     g2d_currentFrame += (reversed) ? -Std.int(g2d_accumulatedTime / g2d_speed) : Std.int(g2d_accumulatedTime / g2d_speed);
-                    if (reversed && g2d_currentFrame<0) {
-                        g2d_currentFrame = (repeatable) ? (g2d_frameTexturesCount+g2d_currentFrame%g2d_frameTexturesCount)%g2d_frameTexturesCount : 0;
+                    if (reversed && g2d_currentFrame < 0) {
+                        g2d_currentFrame = (repeatable && !yoyo) ? (g2d_frameTexturesCount + g2d_currentFrame % g2d_frameTexturesCount) % g2d_frameTexturesCount : 0;
+						if (yoyo) reversed = !reversed;
                     } else if (!reversed && g2d_currentFrame>=g2d_frameTexturesCount) {
-                        g2d_currentFrame = (repeatable) ? g2d_currentFrame%g2d_frameTexturesCount : g2d_frameTexturesCount-1;
+                        g2d_currentFrame = (repeatable && !yoyo) ? g2d_currentFrame % g2d_frameTexturesCount : g2d_frameTexturesCount - 1;
+						if (yoyo) reversed = !reversed;
                     }
                     texture = g2d_frameTextures[g2d_currentFrame];
                 }
