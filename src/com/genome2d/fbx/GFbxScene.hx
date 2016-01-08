@@ -132,7 +132,9 @@ class GFbxScene {
 				var fbxTexture:GFbxTexture = model.getMaterial().getTexture();
 				if (fbxTexture == null) GDebug.error("Model material has no texture.");
 
-				fbxRenderer.texture = GTextureManager.getTexture(fbxTexture.relativePath.substring(0, fbxTexture.relativePath.lastIndexOf(".")));
+				//fbxRenderer.texture = GTextureManager.getTexture(fbxTexture.relativePath.substring(0, fbxTexture.relativePath.lastIndexOf(".")).toLowerCase());
+				fbxRenderer.texture = GTextureManager.getTexture(fbxTexture.relativePath.substring(fbxTexture.relativePath.lastIndexOf("\\") + 1, fbxTexture.relativePath.lastIndexOf(".")).toLowerCase());
+				trace(fbxRenderer.texture, fbxTexture.relativePath);
 				model.renderer = fbxRenderer;
 				g2d_models.push(model);
             }
