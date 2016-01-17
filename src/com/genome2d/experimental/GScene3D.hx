@@ -3,7 +3,7 @@ import com.genome2d.context.stage3d.renderers.GBufferRenderer;
 
 /**
  * ...
- * @author 
+ * @author Peter @sHTiF Stefcek
  */
 class GScene3D
 {
@@ -11,7 +11,6 @@ class GScene3D
 	
 	public function new() 
 	{
-		g2d_renderer = new GBufferRenderer(
 	}
 	
 }
