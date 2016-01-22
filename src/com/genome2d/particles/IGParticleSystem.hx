@@ -9,4 +9,5 @@ interface IGParticleSystem
 {
 	function update(p_deltaTime:Float):Void;
 	function render(p_context:IGContext):Void;
+	function dispose():Void;
 }
