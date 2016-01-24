@@ -175,7 +175,7 @@ class GParticleSystem extends GComponent implements IGRenderable
             g2d_lastParticle = particle;
         }
 
-        particle.init(this);
+        particle.spawn(this);
 
         for (i in 0...g2d_initializersCount) {
             g2d_initializers[i].initialize(this, particle);
@@ -193,7 +193,7 @@ class GParticleSystem extends GComponent implements IGRenderable
             g2d_lastParticle = particle;
         }
 
-        particle.init(this);
+        particle.spawn(this);
 
         for (i in 0...g2d_initializersCount) {
             g2d_initializers[i].initialize(this, particle);

@@ -6,10 +6,10 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderable.particles;
+package com.genome2d.particles;
 
+import com.genome2d.context.IGContext;
 import com.genome2d.input.GMouseInput;
-import com.genome2d.particles.IGParticleSystem;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.particles.GParticlePool;
 import com.genome2d.particles.IGInitializer;
@@ -22,79 +22,47 @@ import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.GCamera;
 
-/**
-    Component handling advanced particles systems with unlimited extendibility using custom particles instances and user defined affectors and initializers
- **/
-@:access(com.genome2d.particles.GParticle)
-class GParticleSystem extends IGParticleSystem
+class GParticleSystem
 {
     public var timeDilation:Float = 1;
 
-    /**
-     *  Loop particles emission
-     */
-    public var loop:Bool = true;
-
-    public var emission:GCurve;
-    public var emissionPerDuration:Bool = true;
-
-    public var particlePool:GParticlePool;
-
-    public var texture:GTexture;
-
-    override public function init():Void {
-        particlePool = GParticlePool.g2d_defaultPool;
-
-        g2d_initializers = new Array<IGInitializer>();
-        g2d_affectors = new Array<IGAffector>();
-
-        node.core.onUpdate.add(update);
+	private var g2d_emitters:Array<GEmitter>;
+	private var g2d_emitterCount:Int = 0;
+	
+    public function new() {
+        g2d_emitters = new Array<GEmitter>();
     }
-
-    public function reset():Void {
-        g2d_accumulatedTime = 0;
-        g2d_accumulatedSecond = 0;
-        g2d_accumulatedEmission = 0;
-    }
-
-    public function burst(p_emission:Int):Void {
-        for (i in 0...p_emission) {
-            createParticle();
-        }
-    }
+	
+	public function addEmitter(p_emitter:GEmitter):Void {
+		p_emitter.g2d_particleSystem = this;
+		g2d_emitterCount = g2d_emitters.push(p_emitter);
+	}
+	
+	public function removeEmitter(p_emitter:GEmitter):Void {
+		if (g2d_emitters.remove(p_emitter)) {
+			p_emitter.g2d_particleSystem = null;
+			g2d_emitterCount--;
+		}
+	}
+	
+	public function getEmitter(p_emitterIndex:Int):GEmitter {
+		return (p_emitterIndex < g2d_emitterCount) ? g2d_emitters[p_emitterIndex] : null;
+	}
 
     public function update(p_deltaTime:Float):Void {
         p_deltaTime *= timeDilation;
         
-        var particle:GParticle = g2d_firstParticle;
-        while (particle!=null) {
-            var next:GParticle = particle.g2d_next;
-
-            if (particle.die) disposeParticle(particle);
-            particle = next;
-        }
+		for (emitter in g2d_emitters) {
+			emitter.update(p_deltaTime);
+		}
     }
-
-    public function render(p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Void {
-        // TODO add matrix transformations
-        var particle:GParticle = g2d_firstParticle;
-        while (particle!=null) {
-            var next:GParticle = particle.g2d_next;
-
-            if (particle.overrideRender) {
-                particle.render(p_x, p_y, p_scaleX, p_scaleY, p_red, p_green, p_blue, p_alpha, this);
-            } else {
-                node.core.getContext().draw(particle.texture, p_x + particle.x * p_scaleX, p_y + particle.y * p_scaleY, p_scaleX + particle.scaleX, particle.scaleY * p_scaleY, particle.rotation, p_red * particle.red, p_green * particle.green, p_blue * particle.blue, p_alpha * particle.alpha, blendMode);
-            }
-
-            particle = next;
-        }
-    }
-
+	
+	public function render(p_context:IGContext, p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Void {
+		for (emitter in g2d_emitters) {
+			emitter.render(p_context, p_x, p_y, p_scaleX, p_scaleY, p_red, p_green, p_blue, p_alpha);
+		}
+	}
+    
     public function dispose():Void {
-        while (g2d_firstParticle != null) disposeParticle(g2d_firstParticle);
-        node.core.onUpdate.remove(update);
-
-        super.dispose();
     }
 }
