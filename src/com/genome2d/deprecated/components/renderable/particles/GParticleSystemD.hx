@@ -6,14 +6,15 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderable.particles;
+package com.genome2d.deprecated.components.renderable.particles;
 
+import com.genome2d.components.renderable.IGRenderable;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.textures.GTextureManager;
-import com.genome2d.particles.GParticlePool;
-import com.genome2d.particles.IGInitializer;
-import com.genome2d.particles.IGAffector;
-import com.genome2d.particles.GParticle;
+import com.genome2d.deprecated.particles.GParticlePoolD;
+import com.genome2d.deprecated.particles.IGInitializerD;
+import com.genome2d.deprecated.particles.IGAffectorD;
+import com.genome2d.deprecated.particles.GParticleD;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GCurve;
 import com.genome2d.components.GComponent;
@@ -24,8 +25,8 @@ import com.genome2d.context.GCamera;
 /**
     Component handling advanced particles systems with unlimited extendibility using custom particles instances and user defined affectors and initializers
  **/
-@:access(com.genome2d.particles.GParticle)
-class GParticleSystem extends GComponent implements IGRenderable
+@:access(com.genome2d.deprecated.particles.GParticleD)
+class GParticleSystemD extends GComponent implements IGRenderable
 {
     public var blendMode:Int = 1;
 
@@ -33,16 +34,16 @@ class GParticleSystem extends GComponent implements IGRenderable
 
     public var emit:Bool = true;
 
-    private var g2d_initializers:Array<IGInitializer>;
+    private var g2d_initializers:Array<IGInitializerD>;
     private var g2d_initializersCount:Int = 0;
-    public function addInitializer(p_initializer:IGInitializer):Void {
+    public function addInitializer(p_initializer:IGInitializerD):Void {
         g2d_initializers.push(p_initializer);
         g2d_initializersCount++;
     }
 
-    private var g2d_affectors:Array<IGAffector>;
+    private var g2d_affectors:Array<IGAffectorD>;
     private var g2d_affectorsCount:Int = 0;
-    public function addAffector(p_affector:IGAffector):Void {
+    public function addAffector(p_affector:IGAffectorD):Void {
         g2d_affectors.push(p_affector);
         g2d_affectorsCount++;
     }
@@ -59,22 +60,22 @@ class GParticleSystem extends GComponent implements IGRenderable
     public var emission:GCurve;
     public var emissionPerDuration:Bool = true;
 
-    public var particlePool:GParticlePool;
+    public var particlePool:GParticlePoolD;
 
     private var g2d_accumulatedTime:Float = 0;
     private var g2d_accumulatedSecond:Float = 0;
     private var g2d_accumulatedEmission:Float = 0;
 
-    private var g2d_firstParticle:GParticle;
-    private var g2d_lastParticle:GParticle;
+    private var g2d_firstParticle:GParticleD;
+    private var g2d_lastParticle:GParticleD;
 
     public var texture:GTexture;
 
     override public function init():Void {
-        particlePool = GParticlePool.g2d_defaultPool;
+        particlePool = GParticlePoolD.g2d_defaultPool;
 
-        g2d_initializers = new Array<IGInitializer>();
-        g2d_affectors = new Array<IGAffector>();
+        g2d_initializers = new Array<IGInitializerD>();
+        g2d_affectors = new Array<IGAffectorD>();
 
         node.core.onUpdate.add(update);
     }
@@ -115,9 +116,9 @@ class GParticleSystem extends GComponent implements IGRenderable
                 }
             }
         }
-        var particle:GParticle = g2d_firstParticle;
+        var particle:GParticleD = g2d_firstParticle;
         while (particle!=null) {
-            var next:GParticle = particle.g2d_next;
+            var next:GParticleD = particle.g2d_next;
             for (i in 0...g2d_affectorsCount) {
                 g2d_affectors[i].update(this, particle, p_deltaTime);
             }
@@ -129,9 +130,9 @@ class GParticleSystem extends GComponent implements IGRenderable
 
     public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         // TODO add matrix transformations
-        var particle:GParticle = g2d_firstParticle;
+        var particle:GParticleD = g2d_firstParticle;
         while (particle!=null) {
-            var next:GParticle = particle.g2d_next;
+            var next:GParticleD = particle.g2d_next;
 
             if (particle.overrideRender) {
                 particle.render(p_camera, this);
@@ -165,7 +166,7 @@ class GParticleSystem extends GComponent implements IGRenderable
     }
 
     private function activateParticle():Void {
-        var particle:GParticle = particlePool.g2d_get();
+        var particle:GParticleD = particlePool.g2d_get();
         if (g2d_lastParticle != null) {
             particle.g2d_previous = g2d_lastParticle;
             g2d_lastParticle.g2d_next = particle;
@@ -183,7 +184,7 @@ class GParticleSystem extends GComponent implements IGRenderable
     }
 
     private function activateParticle2():Void {
-        var particle:GParticle = particlePool.g2d_get();
+        var particle:GParticleD = particlePool.g2d_get();
         if (g2d_firstParticle != null) {
             particle.g2d_next = g2d_firstParticle;
             g2d_firstParticle.g2d_previous = particle;
@@ -200,7 +201,7 @@ class GParticleSystem extends GComponent implements IGRenderable
         }
     }
 
-    public function deactivateParticle(p_particle:GParticle):Void {
+    public function deactivateParticle(p_particle:GParticleD):Void {
         if (p_particle == g2d_lastParticle) g2d_lastParticle = g2d_lastParticle.g2d_previous;
         if (p_particle == g2d_firstParticle) g2d_firstParticle = g2d_firstParticle.g2d_next;
         p_particle.dispose();

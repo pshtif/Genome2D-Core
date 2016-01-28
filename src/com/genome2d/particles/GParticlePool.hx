@@ -9,11 +9,11 @@
 package com.genome2d.particles;
 
 /**
-    Particle pool management class, used for pooling `GParticle` instances for `GParticleSystem` components instances
+    Particle pool management class, used for pooling `GNewParticle` instances for `GParticleSystem` components instances
 **/
 import com.genome2d.particles.GParticle;
 @:allow(com.genome2d.particles.GParticle)
-@:allow(com.genome2d.components.renderable.particles.GParticleSystem)
+@:allow(com.genome2d.particles.GParticleEmitter)
 class GParticlePool
 {
     static public var g2d_defaultPool:GParticlePool = new GParticlePool();
@@ -47,7 +47,7 @@ class GParticlePool
         while (precached != null) {
             var d:GParticle = precached;
             precached = d.g2d_previous;
-            d.dispose();
+            d.g2d_dispose();
         }
     }
 

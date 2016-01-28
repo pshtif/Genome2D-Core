@@ -6,18 +6,18 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.particles;
+package com.genome2d.deprecated.particles;
 
 /**
     Simple particles element used by `GSimpleParticleSystem`
 **/
 import com.genome2d.textures.GTexture;
-import com.genome2d.components.renderable.particles.GSimpleParticleSystem;
-@:allow(com.genome2d.components.renderable.particles.GSimpleParticleSystem)
-class GSimpleParticle
+import com.genome2d.deprecated.components.renderable.particles.GSimpleParticleSystemDP;
+@:allow(com.genome2d.deprecated.components.renderable.particles.GSimpleParticleSystemDP)
+class GSimpleParticleD
 {
-	private var g2d_next:GSimpleParticle;
-	private var g2d_previous:GSimpleParticle;
+	private var g2d_next:GSimpleParticleD;
+	private var g2d_previous:GSimpleParticleD;
 
 	private var g2d_x:Float;
 	private var g2d_y:Float;
@@ -66,12 +66,12 @@ class GSimpleParticle
 	
 	private var g2d_accumulatedEnergy:Float = 0;
 	
-	private var g2d_nextInstance:GSimpleParticle;
+	private var g2d_nextInstance:GSimpleParticleD;
 	private var g2d_id:Int = 0;
 
     private var g2d_texture:GTexture;
 
-    static private var g2d_availableInstance:GSimpleParticle;
+    static private var g2d_availableInstance:GSimpleParticleD;
     static private var g2d_instanceCount:Int = 0;
 
     @:dox(hide)
@@ -83,33 +83,33 @@ class GSimpleParticle
 	static public function precache(p_precacheCount:Int):Void {
 		if (p_precacheCount < g2d_instanceCount) return;
 		
-		var precached:GSimpleParticle = g2d_get();
+		var precached:GSimpleParticleD = g2d_get();
 		while (g2d_instanceCount<p_precacheCount) {
-			var n:GSimpleParticle = g2d_get();
+			var n:GSimpleParticleD = g2d_get();
 			n.g2d_previous = precached;
 			precached = n;
 		}
 		
 		while (precached != null) {
-			var d:GSimpleParticle = precached;
+			var d:GSimpleParticleD = precached;
 			precached = d.g2d_previous;
 			d.g2d_dispose();
 		}
 	}
 
-	static private function g2d_get():GSimpleParticle {
-		var instance:GSimpleParticle = g2d_availableInstance;
+	static private function g2d_get():GSimpleParticleD {
+		var instance:GSimpleParticleD = g2d_availableInstance;
 		if (instance != null) {
 			g2d_availableInstance = instance.g2d_nextInstance;
 			instance.g2d_nextInstance = null;
 		} else {
-			instance = new GSimpleParticle();
+			instance = new GSimpleParticleD();
 		}
 
 		return instance;
 	}
 
-	private function g2d_init(p_emitter:GSimpleParticleSystem, p_invalidate:Bool = true):Void {
+	private function g2d_init(p_emitter:GSimpleParticleSystemDP, p_invalidate:Bool = true):Void {
 		g2d_accumulatedEnergy = 0;
 
         g2d_texture = p_emitter.texture;
@@ -194,7 +194,7 @@ class GSimpleParticle
 		g2d_scaleDif = g2d_endScale - g2d_initialScale;
 	}
 
-	private function g2d_update(p_emitter:GSimpleParticleSystem, p_deltaTime:Float):Void {
+	private function g2d_update(p_emitter:GSimpleParticleSystemDP, p_deltaTime:Float):Void {
 		g2d_accumulatedEnergy += p_deltaTime;
 	
 		if (g2d_accumulatedEnergy >= g2d_energy) {

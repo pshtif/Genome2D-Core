@@ -6,29 +6,31 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.particles;
+package com.genome2d.deprecated.particles;
 
 /**
-    Particle pool management class, used for pooling `GNewParticle` instances for `GParticleSystem` components instances
+    Particle pool management class, used for pooling `GParticle` instances for `GParticleSystem` components instances
 **/
-import com.genome2d.particles.GNewParticle;
-@:allow(com.genome2d.particles.GNewParticle)
-@:allow(com.genome2d.particles.GEmitter)
-class GNewParticlePool
-{
-    static public var g2d_defaultPool:GNewParticlePool = new GNewParticlePool();
+import com.genome2d.deprecated.particles.GParticleD;
+import com.genome2d.deprecated.components.renderable.particles.GParticleSystemD;
 
-    public var g2d_availableInstance:GNewParticle;
+@:allow(com.genome2d.deprecated.particles.GParticleD)
+@:allow(com.genome2d.deprecated.components.renderable.particles.GParticleSystemD)
+class GParticlePoolD
+{
+    static public var g2d_defaultPool:GParticlePoolD = new GParticlePoolD();
+
+    public var g2d_availableInstance:GParticleD;
     private var g2d_count:Int = 0;
 
-    private var g2d_particleClass:Class<GNewParticle>;
+    private var g2d_particleClass:Class<GParticleD>;
 
     /**
         Create new particles pool, only if you want to implement pooling of custom particles otherwise let Genome2D
         use the default precreated pool shared by all `GParticleSystem` instances to save memory
     **/
-    public function new(p_particleClass:Class<GNewParticle> = null):Void {
-        g2d_particleClass = (p_particleClass==null) ? GNewParticle : p_particleClass;
+    public function new(p_particleClass:Class<GParticleD> = null):Void {
+        g2d_particleClass = (p_particleClass==null) ? GParticleD : p_particleClass;
     }
 
     /**
@@ -37,22 +39,22 @@ class GNewParticlePool
     public function precache(p_precacheCount:Int):Void {
         if (p_precacheCount < g2d_count) return;
 
-        var precached:GNewParticle = g2d_get();
+        var precached:GParticleD = g2d_get();
         while (g2d_count<p_precacheCount) {
-            var n:GNewParticle = g2d_get();
+            var n:GParticleD = g2d_get();
             n.g2d_previous = precached;
             precached = n;
         }
 
         while (precached != null) {
-            var d:GNewParticle = precached;
+            var d:GParticleD = precached;
             precached = d.g2d_previous;
-            d.g2d_dispose();
+            d.dispose();
         }
     }
 
-    private function g2d_get():GNewParticle {
-        var instance:GNewParticle = g2d_availableInstance;
+    private function g2d_get():GParticleD {
+        var instance:GParticleD = g2d_availableInstance;
         if (instance != null) {
             g2d_availableInstance = instance.g2d_nextAvailableInstance;
             instance.g2d_nextAvailableInstance = null;

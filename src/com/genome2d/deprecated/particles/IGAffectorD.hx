@@ -6,17 +6,18 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.particles;
+package com.genome2d.deprecated.particles;
 
-import com.genome2d.components.renderable.particles.GParticleSystem;
+import com.genome2d.deprecated.components.renderable.particles.GParticleSystemD;
+import com.genome2d.deprecated.particles.GParticleD;
 
 /**
     Interface providing method for `GParticleSystem` particles update
 **/
-interface IGAffector {
+interface IGAffectorD {
 
     /**
         Update `p_particle` inside `p_system` by `p_deltaTime`
     **/
-    function update(p_system:GParticleSystem, p_particle:GParticle, p_deltaTime:Float):Void;
+    function update(p_system:GParticleSystemD, p_particle:GParticleD, p_deltaTime:Float):Void;
 }

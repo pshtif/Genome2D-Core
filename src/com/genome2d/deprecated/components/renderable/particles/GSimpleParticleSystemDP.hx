@@ -6,11 +6,11 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.components.renderable.particles;
+package com.genome2d.deprecated.components.renderable.particles;
 
 import com.genome2d.input.GMouseInput;
 import com.genome2d.textures.GTextureManager;
-import com.genome2d.particles.GSimpleParticle;
+import com.genome2d.deprecated.particles.GSimpleParticleD;
 import com.genome2d.debug.GDebug;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.components.GComponent;
@@ -22,7 +22,7 @@ import com.genome2d.context.GCamera;
 /**
     Component handling simple particles systems used for best performance
  **/
-class GSimpleParticleSystem extends GComponent implements IGRenderable
+class GSimpleParticleSystemDP extends GComponent implements IGRenderable
 {
 	@prototype
     public var blendMode:Int = 1;
@@ -164,8 +164,8 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 	private var g2d_accumulatedTime:Float = 0;
 	private var g2d_accumulatedEmission:Float = 0;
 
-	private var g2d_firstParticle:GSimpleParticle;
-	private var g2d_lastParticle:GSimpleParticle;
+	private var g2d_firstParticle:GSimpleParticleD;
+	private var g2d_lastParticle:GSimpleParticleD;
 
 	private var g2d_activeParticles:Int = 0;
 
@@ -240,7 +240,7 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 	@prototype("getReference")
 	public var texture:GTexture;
 
-	private function setInitialParticlePosition(p_particle:GSimpleParticle):Void {
+	private function setInitialParticlePosition(p_particle:GSimpleParticleD):Void {
         p_particle.g2d_x = (useWorldSpace) ? node.g2d_worldX : 0;
         if (dispersionXVariance>0) p_particle.g2d_x += dispersionXVariance*Math.random() - dispersionXVariance*.5;
         p_particle.g2d_y = (useWorldSpace) ? node.g2d_worldY : 0;
@@ -296,9 +296,9 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 				}
 			}
 			
-			var particle:GSimpleParticle = g2d_firstParticle;
+			var particle:GSimpleParticleD = g2d_firstParticle;
 			while (particle != null) {
-				var next:GSimpleParticle = particle.g2d_next;
+				var next:GSimpleParticleD = particle.g2d_next;
 
 				particle.g2d_update(this, g2d_lastUpdateTime);
 				particle = next;
@@ -310,10 +310,10 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
         // TODO add matrix transformations
 		if (texture == null) return;
 		
-		var particle:GSimpleParticle = g2d_firstParticle;
+		var particle:GSimpleParticleD = g2d_firstParticle;
 
 		while (particle != null) {
-			var next:GSimpleParticle = particle.g2d_next;
+			var next:GSimpleParticleD = particle.g2d_next;
 
             var tx:Float;
             var ty:Float;
@@ -332,14 +332,14 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 	}
 
 	private function g2d_activateParticle():Void {
-		var particle:GSimpleParticle = g2d_createParticle();
+		var particle:GSimpleParticleD = g2d_createParticle();
 		setInitialParticlePosition(particle);
 		
 		particle.g2d_init(this);
 	}
 	
-	private function g2d_createParticle():GSimpleParticle {
-		var particle:GSimpleParticle = GSimpleParticle.g2d_get();
+	private function g2d_createParticle():GSimpleParticleD {
+		var particle:GSimpleParticleD = GSimpleParticleD.g2d_get();
 		if (g2d_firstParticle != null) {
 			particle.g2d_next = g2d_firstParticle;
 			g2d_firstParticle.g2d_previous = particle;
@@ -352,7 +352,7 @@ class GSimpleParticleSystem extends GComponent implements IGRenderable
 		return particle;
 	}
 
-	public function deactivateParticle(p_particle:GSimpleParticle):Void {
+	public function deactivateParticle(p_particle:GSimpleParticleD):Void {
 		if (p_particle == g2d_lastParticle) g2d_lastParticle = g2d_lastParticle.g2d_previous;
 		if (p_particle == g2d_firstParticle) g2d_firstParticle = g2d_firstParticle.g2d_next;
 		p_particle.g2d_dispose();
