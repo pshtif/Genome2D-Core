@@ -139,25 +139,32 @@ class GParticleEmitter
 		}
 	}
 	
-	public function render(p_context:IGContext, p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Void {
+	public function render(p_context:IGContext, p_x:Float, p_y:Float, p_rotation:Float, p_scaleX:Float, p_scaleY:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Void {
         // TODO add matrix transformations
         var particle:GParticle = g2d_firstParticle;
 		var tx:Float = (useWorldSpace) ? 0 : p_x + (x * p_scaleX);
 		var ty:Float = (useWorldSpace) ? 0 : p_y + (y * p_scaleY);
+		var sx:Float = (useWorldSpace) ? 1 : p_scaleX;
+		var sy:Float = (useWorldSpace) ? 1 : p_scaleY;
 
         while (particle!=null) {
             var next:GParticle = particle.g2d_next;
             if (particle.implementRender) {
-                particle.g2d_render(p_context, this, tx, ty, p_scaleX, p_scaleY, p_red, p_green, p_blue, p_alpha);
+                particle.g2d_render(p_context, this, tx, ty, p_rotation, sx, sy, p_red, p_green, p_blue, p_alpha);
             } else {
-                //p_context.draw(particle.texture, tx + particle.x * p_scaleX, ty + particle.y * p_scaleY, p_scaleX * particle.scaleX, particle.scaleY * p_scaleY, particle.rotation, p_red * particle.red, p_green * particle.green, p_blue * particle.blue, p_alpha * particle.alpha, blendMode);
-				p_context.draw(particle.texture, particle.x, particle.y, particle.scaleX, particle.scaleY, particle.rotation, particle.red, particle.green, particle.blue, particle.alpha, blendMode);
+                p_context.draw(particle.texture, tx + particle.x * sx, ty + particle.y * sy, sx * particle.scaleX, sy * particle.scaleY, particle.rotation, p_red * particle.red, p_green * particle.green, p_blue * particle.blue, p_alpha * particle.alpha, particle.blendMode);
             }
             particle = next;
         }
     }
 	
-	inline private function spawnParticle():Void {
+	public function burst(p_emission:Int):Void {
+		for (i in 0...p_emission) {
+			spawnParticle();
+		}
+	}
+	
+	inline inline function spawnParticle() {
         var particle:GParticle = g2d_particlePool.g2d_get();
         if (g2d_lastParticle != null) {
             particle.g2d_previous = g2d_lastParticle;

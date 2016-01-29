@@ -185,7 +185,7 @@ class GSPHNeighbor
     inline public function calculateForce():Void {
         var p:Float;
 
-        if(particle1.type != particle2.type) {
+        if(particle1.type != particle2.type || particle1.fixed != particle2.fixed) {
             p = (particle1.density + particle2.density - density * 1.5) * PRESSURE;
         } else {
             p = (particle1.density + particle2.density - density * 2) * PRESSURE;

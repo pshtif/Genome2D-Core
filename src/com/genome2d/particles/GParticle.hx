@@ -8,6 +8,7 @@
  */
 package com.genome2d.particles;
 
+import com.genome2d.context.GBlendMode;
 import com.genome2d.deprecated.components.renderable.particles.GParticleSystemD;
 import com.genome2d.context.GCamera;
 import com.genome2d.context.IGContext;
@@ -29,9 +30,10 @@ class GParticle
 	public var gy:Int = 0;
 	public var density:Float = 0;
 	public var densityNear:Float = 0;
-	public var type:Int = 0;
 	public var vx:Float = 0;
 	public var vy:Float = 0;
+	public var fixed:Bool = false;
+	public var type:Int = 0;
 	
 	public var implementUpdate:Bool = false;
     public var implementRender:Bool = false;
@@ -48,6 +50,7 @@ class GParticle
     public var blue:Float = 1;
     public var alpha:Float = 1;
 	public var texture:GTexture;
+	public var blendMode:Int = GBlendMode.NORMAL;
 	
 	// Dynamics
     public var velocityX:Float = 0;
@@ -86,6 +89,7 @@ class GParticle
 
     private function g2d_spawn(p_emitter:GParticleEmitter):Void {
 		fx = fy = vx = vy = 0;
+		fixed = false;
 		
 		
         texture = p_emitter.texture;
@@ -108,7 +112,7 @@ class GParticle
 	
 	private function g2d_update(p_emitter:GParticleEmitter, p_deltaTime:Float):Void {}
 
-    private function g2d_render(p_context:IGContext, p_emitter:GParticleEmitter, p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Void { }
+    private function g2d_render(p_context:IGContext, p_emitter:GParticleEmitter, p_x:Float, p_y:Float, p_rotation:Float, p_scaleX:Float, p_scaleY:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Void { }
 
 	private function g2d_dispose():Void {
         die = false;

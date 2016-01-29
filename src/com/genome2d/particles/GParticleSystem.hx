@@ -46,9 +46,9 @@ class GParticleSystem
 		}
     }
 	
-	public function render(p_context:IGContext, p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Void {
+	public function render(p_context:IGContext, p_x:Float, p_y:Float, p_rotation:Float, p_scaleX:Float, p_scaleY:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Void {
 		for (emitter in g2d_emitters) {
-			emitter.render(p_context, p_x, p_y, p_scaleX, p_scaleY, p_red, p_green, p_blue, p_alpha);
+			emitter.render(p_context, p_x, p_y, p_rotation, p_scaleX, p_scaleY, p_red, p_green, p_blue, p_alpha);
 		}
 	}
     

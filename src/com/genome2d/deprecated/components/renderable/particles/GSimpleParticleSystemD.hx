@@ -22,7 +22,7 @@ import com.genome2d.context.GCamera;
 /**
     Component handling simple particles systems used for best performance
  **/
-class GSimpleParticleSystemDP extends GComponent implements IGRenderable
+class GSimpleParticleSystemD extends GComponent implements IGRenderable
 {
 	@prototype
     public var blendMode:Int = 1;

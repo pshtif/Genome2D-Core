@@ -12,8 +12,8 @@ package com.genome2d.deprecated.particles;
     Simple particles element used by `GSimpleParticleSystem`
 **/
 import com.genome2d.textures.GTexture;
-import com.genome2d.deprecated.components.renderable.particles.GSimpleParticleSystemDP;
-@:allow(com.genome2d.deprecated.components.renderable.particles.GSimpleParticleSystemDP)
+import com.genome2d.deprecated.components.renderable.particles.GSimpleParticleSystemD;
+@:allow(com.genome2d.deprecated.components.renderable.particles.GSimpleParticleSystemD)
 class GSimpleParticleD
 {
 	private var g2d_next:GSimpleParticleD;
@@ -109,7 +109,7 @@ class GSimpleParticleD
 		return instance;
 	}
 
-	private function g2d_init(p_emitter:GSimpleParticleSystemDP, p_invalidate:Bool = true):Void {
+	private function g2d_init(p_emitter:GSimpleParticleSystemD, p_invalidate:Bool = true):Void {
 		g2d_accumulatedEnergy = 0;
 
         g2d_texture = p_emitter.texture;
@@ -194,7 +194,7 @@ class GSimpleParticleD
 		g2d_scaleDif = g2d_endScale - g2d_initialScale;
 	}
 
-	private function g2d_update(p_emitter:GSimpleParticleSystemDP, p_deltaTime:Float):Void {
+	private function g2d_update(p_emitter:GSimpleParticleSystemD, p_deltaTime:Float):Void {
 		g2d_accumulatedEnergy += p_deltaTime;
 	
 		if (g2d_accumulatedEnergy >= g2d_energy) {
