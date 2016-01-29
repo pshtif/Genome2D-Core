@@ -29,7 +29,7 @@ function spawn(p_emitter, p_particle) {
 	p_particle.y += -10 + (Math.floor(count / 5) % 10) * 6;
 	p_particle.vy += gravity * 10;
 		
-	p_particle.totalEnergy = 1000000;
+	p_particle.totalEnergy = 1000;
 
 }
 

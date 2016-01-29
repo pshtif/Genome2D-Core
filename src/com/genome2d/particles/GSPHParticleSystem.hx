@@ -197,6 +197,8 @@ class GSPHNeighbor
         var fy:Float = ny * pressureWeight;
 		var fax:Float = (particle2.vx - particle1.vx) * weight;
         var fay:Float = (particle2.vy - particle1.vy) * weight;
+		if (fx == 0) fx += .0000001;
+		if (fy == 0) fy += .0000001;
         particle1.fx += fx + fax * particle2.viscosity;
         particle1.fy += fy + fay * particle2.viscosity;
         particle2.fx -= fx + fax * particle1.viscosity;
