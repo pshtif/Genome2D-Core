@@ -2,6 +2,7 @@ package com.genome2d.particles.modules;
 import com.genome2d.particles.GParticleEmitter;
 import com.genome2d.particles.GParticle;
 import com.genome2d.particles.GParticleEmitterModule;
+import com.genome2d.particles.GParticleSystem;
 
 /**
  * ...
@@ -19,24 +20,8 @@ class ScriptModule extends GParticleEmitterModule
 		super();
 		
 		g2d_script = p_script;
-		if (g2d_script == null) {
-			g2d_script = "
-var count = 0;
-var gravity = .1;
-function spawn(p_emitter, p_particle) {
-	count = (++count) % 25;
-	p_particle.x += -10 + ((count % 5) % 10) * 6;
-	p_particle.y += -10 + (Math.floor(count / 5) % 10) * 6;
-	p_particle.vy += gravity * 10;
-		
-	p_particle.totalEnergy = 1000;
-
-}
-
-//function update(p_emitter, p_particle, p_deltaTime) {}
-			";
-		}
 		g2d_parser = new hscript.Parser();
+		g2d_parser.allowTypes = true;
 		
 		setScript(g2d_script);
 	}
@@ -55,14 +40,12 @@ function spawn(p_emitter, p_particle) {
 			g2d_program = g2d_parser.parseString(g2d_script);
 			interp.execute(g2d_program);
 		} catch (e:Dynamic) {
-			trace(e);
 			compiled = false;
 		}
 		
 		if (compiled) {
 			g2d_executeSpawn = interp.variables.get("spawn");
 			g2d_executeUpdate = interp.variables.get("update"); 
-			trace(g2d_executeUpdate);
 			spawnModule = g2d_executeSpawn != null;
 			updateModule = g2d_executeUpdate != null;
 		}

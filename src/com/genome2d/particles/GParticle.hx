@@ -23,19 +23,16 @@ import com.genome2d.textures.GTexture;
 class GParticle
 {
 	// SPH Properties
-	public var fx:Float = 0;
-	public var fy:Float = 0;
+	public var fluidX:Float = 0;
+	public var fluidY:Float = 0;
 	public var viscosity:Float = .1;
-	public var gx:Int = 0;
-	public var gy:Int = 0;
+	public var gridX:Int = 0;
+	public var gridY:Int = 0;
 	public var density:Float = 0;
 	public var densityNear:Float = 0;
-	public var vx:Float = 0;
-	public var vy:Float = 0;
 	public var fixed:Bool = false;
 	public var type:Int = 0;
 	
-	public var implementUpdate:Bool = false;
     public var implementRender:Bool = false;
     
 	// Transform
@@ -88,17 +85,19 @@ class GParticle
     }
 
     private function g2d_spawn(p_emitter:GParticleEmitter):Void {
-		fx = fy = vx = vy = 0;
+		fluidX = fluidY = velocityX = velocityY = 0;
 		fixed = false;
 		
-		
         texture = p_emitter.texture;
-        x = p_emitter.x;
-        y = p_emitter.y;
+		if (p_emitter.useWorldSpace) {
+			x = p_emitter.getParticleSystem().x + p_emitter.x * p_emitter.getParticleSystem().scaleY;
+			y = p_emitter.getParticleSystem().y + p_emitter.y * p_emitter.getParticleSystem().scaleX;
+		} else {
+			x = 0;
+			y = 0;
+		}
         scaleX = scaleY = 1;
         rotation = 0;
-        velocityX = 0;
-        velocityY = 0;
         totalEnergy = 0;
         accumulatedEnergy = 0;
         red = 1;
@@ -109,10 +108,8 @@ class GParticle
         accumulatedTime = 0;
         currentFrame = 0;
     }
-	
-	private function g2d_update(p_emitter:GParticleEmitter, p_deltaTime:Float):Void {}
 
-    private function g2d_render(p_context:IGContext, p_emitter:GParticleEmitter, p_x:Float, p_y:Float, p_rotation:Float, p_scaleX:Float, p_scaleY:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Void { }
+    private function g2d_render(p_context:IGContext, p_emitter:GParticleEmitter):Void { }
 
 	private function g2d_dispose():Void {
         die = false;

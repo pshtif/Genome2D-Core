@@ -19,15 +19,15 @@ import com.genome2d.textures.GTexture;
  */
 class GParticleEmitter
 {
-	public var useWorldSpace:Bool = true;
-	
-	public var texture:GTexture;
-	public var blendMode:Int;
+	public var useWorldSpace:Bool = true;	
+	public var enableSph:Bool = false;
 	
 	public var x:Float = 0;
 	public var y:Float = 0;
+	public var rotation:Float = 0;
 	
 	public var emit:Bool = true;	
+	public var texture:GTexture;
 	
 	public var duration:Float = 0;
 	public var durationVariance:Float = 0;
@@ -43,8 +43,9 @@ class GParticleEmitter
 	
 	private var g2d_accumulatedTime:Float = 0;
     private var g2d_accumulatedSecond:Float = 0;
-    private var g2d_accumulatedEmission:Float = 0;
 	
+	private var g2d_accumulatedEmission:Float = 0;
+
 	private var g2d_firstParticle:GParticle;
     private var g2d_lastParticle:GParticle;
 	
@@ -57,7 +58,8 @@ class GParticleEmitter
 	}
 	
 	private var g2d_modules:Array<GParticleEmitterModule>;
-	private var g2d_moduleCount:Int = 0;
+	private var g2d_updateModules:Array<GParticleEmitterModule>;
+	private var g2d_spawnModules:Array<GParticleEmitterModule>;
 	
 	public function new(p_particlePool:GParticlePool = null) {
 		g2d_particlePool = (p_particlePool == null) ? GParticlePool.g2d_defaultPool : p_particlePool;
@@ -65,14 +67,25 @@ class GParticleEmitter
 	}	
 	
 	public function addModule(p_module:GParticleEmitterModule):Void {
-		g2d_moduleCount = g2d_modules.push(p_module);
+		g2d_modules.push(p_module);
 	}
 	
 	public function removeModule(p_module:GParticleEmitterModule):Void {
-		if (g2d_modules.remove(p_module)) g2d_moduleCount--;
+		g2d_modules.remove(p_module);
+	}
+	
+	private function invalidateModules():Void {
+		g2d_spawnModules = new Array<GParticleEmitterModule>();
+		g2d_updateModules = new Array<GParticleEmitterModule>();
+		for (module in g2d_modules) {
+			if (module.spawnModule) g2d_spawnModules.push(module);
+			if (module.updateModule) g2d_updateModules.push(module);
+		}
 	}
 	
 	public function update(p_deltaTime:Float):Void {
+		invalidateModules();
+		
 		// If the current duration isn't calculated do it
 		if (g2d_currentDuration == -1) g2d_currentDuration = duration + Math.random() * durationVariance;
 		// Accumulate time
@@ -85,17 +98,11 @@ class GParticleEmitter
 		
 		g2d_doEmission(p_deltaTime);
 
-		var updateModules:Array<GParticleEmitterModule> = new Array<GParticleEmitterModule>();
-		for (module in g2d_modules) {
-			if (module.updateModule) updateModules.push(module);
-		}
-		
 		var particle:GParticle = g2d_firstParticle;
-		if (particle != null && (particle.implementUpdate || updateModules.length>0)) {
+		if (particle != null && g2d_updateModules.length>0) {
 			while (particle != null) {
 				var next:GParticle = particle.g2d_next;
-				if (particle.implementUpdate) particle.g2d_update(this, p_deltaTime);
-				for (module in updateModules) {
+				for (module in g2d_updateModules) {
 					if (module.updateModule) module.update(this, particle, p_deltaTime);
 				}
 				particle = next;
@@ -131,7 +138,7 @@ class GParticleEmitter
 				}
 			}
         }
-
+		
 		// Create emitted particles
 		while (g2d_accumulatedEmission >= 1) {
 			spawnParticle();
@@ -139,20 +146,20 @@ class GParticleEmitter
 		}
 	}
 	
-	public function render(p_context:IGContext, p_x:Float, p_y:Float, p_rotation:Float, p_scaleX:Float, p_scaleY:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Void {
+	public function render(p_context:IGContext):Void {
         // TODO add matrix transformations
         var particle:GParticle = g2d_firstParticle;
-		var tx:Float = (useWorldSpace) ? 0 : p_x + (x * p_scaleX);
-		var ty:Float = (useWorldSpace) ? 0 : p_y + (y * p_scaleY);
-		var sx:Float = (useWorldSpace) ? 1 : p_scaleX;
-		var sy:Float = (useWorldSpace) ? 1 : p_scaleY;
+		var tx:Float = (useWorldSpace) ? 0 : g2d_particleSystem.x + (x * g2d_particleSystem.scaleX);
+		var ty:Float = (useWorldSpace) ? 0 : g2d_particleSystem.y + (y * g2d_particleSystem.scaleY);
+		var sx:Float = (useWorldSpace) ? 1 : g2d_particleSystem.scaleX;
+		var sy:Float = (useWorldSpace) ? 1 : g2d_particleSystem.scaleY;
 
         while (particle!=null) {
             var next:GParticle = particle.g2d_next;
             if (particle.implementRender) {
-                particle.g2d_render(p_context, this, tx, ty, p_rotation, sx, sy, p_red, p_green, p_blue, p_alpha);
+                particle.g2d_render(p_context, this);
             } else {
-                p_context.draw(particle.texture, tx + particle.x * sx, ty + particle.y * sy, sx * particle.scaleX, sy * particle.scaleY, particle.rotation, p_red * particle.red, p_green * particle.green, p_blue * particle.blue, p_alpha * particle.alpha, particle.blendMode);
+				if (particle.texture != null) p_context.draw(particle.texture, tx + particle.x * sx, ty + particle.y * sy, sx * particle.scaleX, sy * particle.scaleY, particle.rotation, particle.red, particle.green, particle.blue, particle.alpha, particle.blendMode);
             }
             particle = next;
         }
@@ -177,7 +184,7 @@ class GParticleEmitter
 
         particle.g2d_spawn(this);
 		
-		for (module in g2d_modules) {
+		for (module in g2d_spawnModules) {
 			if (module.spawnModule) module.spawn(this, particle);
 		}
     }
