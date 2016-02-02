@@ -29,6 +29,7 @@ class GParticleSystem
 	public var green:Float = 1;
 	public var blue:Float = 1;
 	public var alpha:Float = 1;
+	public var enabled:Bool = true;
 	
 	/**
 	 * 	Smoothed Particle Hydrodynamics properties
@@ -96,25 +97,27 @@ class GParticleSystem
 	}
 
     public function update(p_deltaTime:Float):Void {
-        p_deltaTime *= timeDilation;
-		
-		if (enableSph && g2d_neighbors != null) {
-			g2d_updateGrids();
-			g2d_findNeighbors();
+		if (enabled) {
+			p_deltaTime *= timeDilation;
 			
-			// Iterating only used neighbors the actual array can be precached for more neighbors
-			for (i in 0...g2d_neighborCount) {
-				g2d_neighbors[i].calculateForce();
+			if (enableSph && g2d_neighbors != null) {
+				g2d_updateGrids();
+				g2d_findNeighbors();
+				
+				// Iterating only used neighbors the actual array can be precached for more neighbors
+				for (i in 0...g2d_neighborCount) {
+					g2d_neighbors[i].calculateForce();
+				}
+				
+				for (body in g2d_bodies) {
+					body.calculateForce();
+				}
+				/**/
 			}
 			
-			for (body in g2d_bodies) {
-				body.calculateForce();
+			for (emitter in g2d_emitters) {
+				emitter.update(p_deltaTime);
 			}
-			/**/
-		}
-        
-		for (emitter in g2d_emitters) {
-			emitter.update(p_deltaTime);
 		}
     }
 	
@@ -331,26 +334,32 @@ class GSPHBody
 			var fx:Float = particle.fluidX / (particle.density * 0.9 + 0.1);
 			var fy:Float = particle.fluidY / (particle.density * 0.9 + 0.1);
 			t += crossProduct(massX-particle.x, massY-particle.y, fx, fy);
-			particle.fixed = true;
 			ax += fx;
 			ay += fy;
 		}
 		torque += t / particleCount;
+		//torque *= .99;
 		vx += ax / (particleCount);
 		vy += ay / (particleCount);
+		vy += .1;
 		
-			var sin:Float = Math.sin(torque/100);
-			var cos:Float = Math.cos(torque/100);
+			var sin:Float = Math.sin(-torque/1000);
+			var cos:Float = Math.cos(-torque/1000);
 			for (particle in particles) {
-				var tx:Float = particle.x - massX;
-				var ty:Float = particle.y - massY;
-				var nx = tx * cos - ty * sin;
-				var ny = tx * sin + ty * cos;
-					particle.ax = (tx-nx);
-					particle.ay = (ty-ny);
-					//trace(particle.ax, particle.ay);
-				//particle.velocityX = vx;
-				//particle.velocityY = vy;
+				if (!particle.fixed) {
+					var tx:Float = particle.x - massX;
+					var ty:Float = particle.y - massY;
+					var nx = tx * cos - ty * sin;
+					var ny = tx * sin + ty * cos;
+					particle.x = massX + nx;
+					particle.y = massY + ny;
+					/*
+						particle.ax = (tx-nx);
+						particle.ay = (ty-ny);
+					*/
+					particle.velocityX = vx;
+					particle.velocityY = vy;
+				}
 			}
 	}
 	

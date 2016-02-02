@@ -33,8 +33,6 @@ class GParticle
 	public var fixed:Bool = false;
 	public var type:Int = 0;
 	public var body:Int = 0;
-	public var ax:Float = 0;
-	public var ay:Float = 0;
 	
     public var implementRender:Bool = false;
     
