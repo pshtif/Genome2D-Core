@@ -59,7 +59,6 @@ class GParticleEmitter
 	
 	private var g2d_modules:Array<GParticleEmitterModule>;
 	private var g2d_updateModules:Array<GParticleEmitterModule>;
-	private var g2d_spawnModules:Array<GParticleEmitterModule>;
 	
 	public function new(p_particlePool:GParticlePool = null) {
 		g2d_particlePool = (p_particlePool == null) ? GParticlePool.g2d_defaultPool : p_particlePool;
@@ -74,17 +73,15 @@ class GParticleEmitter
 		g2d_modules.remove(p_module);
 	}
 	
-	private function invalidateModules():Void {
-		g2d_spawnModules = new Array<GParticleEmitterModule>();
+	private function invalidateUpdateModules():Void {
 		g2d_updateModules = new Array<GParticleEmitterModule>();
 		for (module in g2d_modules) {
-			if (module.spawnModule) g2d_spawnModules.push(module);
 			if (module.updateModule) g2d_updateModules.push(module);
 		}
 	}
 	
 	public function update(p_deltaTime:Float):Void {
-		invalidateModules();
+		invalidateUpdateModules();
 		
 		// If the current duration isn't calculated do it
 		if (g2d_currentDuration == -1) g2d_currentDuration = duration + Math.random() * durationVariance;
@@ -184,7 +181,7 @@ class GParticleEmitter
 
         particle.g2d_spawn(this);
 		
-		for (module in g2d_spawnModules) {
+		for (module in g2d_modules) {
 			if (module.spawnModule) module.spawn(this, particle);
 		}
     }

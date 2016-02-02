@@ -32,6 +32,9 @@ class GParticle
 	public var densityNear:Float = 0;
 	public var fixed:Bool = false;
 	public var type:Int = 0;
+	public var body:Int = 0;
+	public var ax:Float = 0;
+	public var ay:Float = 0;
 	
     public var implementRender:Bool = false;
     
@@ -86,6 +89,7 @@ class GParticle
 
     private function g2d_spawn(p_emitter:GParticleEmitter):Void {
 		fluidX = fluidY = velocityX = velocityY = 0;
+		body = 0;
 		fixed = false;
 		
         texture = p_emitter.texture;
