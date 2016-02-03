@@ -50,17 +50,19 @@ class GParticleGroup
 			var sin:Float = Math.sin(-torque/1000);
 			var cos:Float = Math.cos(-torque/1000);
 			for (particle in particles) {
-				if (rigidAllowRotation) {
-					var tx:Float = particle.x - massX;
-					var ty:Float = particle.y - massY;
-					var nx = tx * cos - ty * sin;
-					var ny = tx * sin + ty * cos;
-					particle.x = massX + nx;
-					particle.y = massY + ny;
-				}
-				if (rigidAllowTranslation) {
-					particle.velocityX = vx;
-					particle.velocityY = vy;
+				if (!particle.fixed) {
+					if (rigidAllowRotation) {
+						var tx:Float = particle.x - massX;
+						var ty:Float = particle.y - massY;
+						var nx = tx * cos - ty * sin;
+						var ny = tx * sin + ty * cos;
+						particle.x = massX + nx;
+						particle.y = massY + ny;
+					}
+					if (rigidAllowTranslation) {
+						particle.velocityX = vx;
+						particle.velocityY = vy;
+					}
 				}
 			}
 		} else {
