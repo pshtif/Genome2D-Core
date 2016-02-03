@@ -17,7 +17,10 @@ class GParticleGroup
 	public var rigidAllowTranslation:Bool = true;
 	public var rigidAllowRotation:Bool = true;
 	
+	static private var g2d_id:Int = 0;
+	public var id:Int = 0;
 	public function new() {
+		id = g2d_id++;
         particles = new Array<GParticle>();
     }
 	
@@ -30,7 +33,7 @@ class GParticleGroup
 	inline public function calculateForce():Void {		
 		massX /= particleCount;
 		massY /= particleCount;
-		
+
 		if (rigid) {
 			var t:Float = 0;
 			var ax:Float = 0;
@@ -45,8 +48,9 @@ class GParticleGroup
 				}
 			}
 			torque += t / particleCount;
-			vx += ax / (particleCount);
-			vy += ay / (particleCount);
+			vx += ax / particleCount;
+			vy += ay / particleCount;
+	
 			var sin:Float = Math.sin(-torque/1000);
 			var cos:Float = Math.cos(-torque/1000);
 			for (particle in particles) {
