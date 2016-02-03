@@ -18,7 +18,7 @@ class SPHVelocityModule extends GParticleEmitterModule
 	}
 	
 	override public function update(p_emitter:GParticleEmitter, p_particle:GParticle, p_deltaTime:Float):Void {
-		if (p_particle.density > 0 && !p_particle.fixed && p_particle.body == 0) {
+		if (p_particle.density > 0 && !p_particle.fixed && p_particle.group == null) {
 			p_particle.velocityX += p_particle.fluidX / (p_particle.density * 0.9 + 0.1);
 			p_particle.velocityY += p_particle.fluidY / (p_particle.density * 0.9 + 0.1);
 		}

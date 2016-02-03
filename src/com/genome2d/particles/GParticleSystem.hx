@@ -49,10 +49,13 @@ class GParticleSystem
 	private var g2d_neighborCount:Int;
 	private var g2d_neighbors:Array<GSPHNeighbor>;
 	private var g2d_neighborPrecacheCount:Int;
-	private var g2d_bodies:Map<Int,GSPHBody>;
+	private var g2d_groups:Map<GParticleGroup,Bool>;
+	private var g2d_defaultGroup:GParticleGroup;
 	
     public function new() {
         g2d_emitters = new Array<GParticleEmitter>();
+		g2d_groups = new Map<GParticleGroup,Bool>();
+		g2d_defaultGroup = new GParticleGroup();
     }
 	
 	public function setupGrid(p_region:GRectangle, p_cellSize:Int, p_precacheNeighbors:Int = 0):Void {
@@ -60,8 +63,6 @@ class GParticleSystem
 		g2d_neighborPrecacheCount = p_precacheNeighbors;
 		for (i in 0...g2d_neighborPrecacheCount) g2d_neighbors.push(new GSPHNeighbor());
         g2d_neighborCount = 0;
-		
-		g2d_bodies = new Map<Int,GSPHBody>();
 		
 		g2d_width = p_region.width;
 		g2d_height = p_region.height;
@@ -108,11 +109,11 @@ class GParticleSystem
 				for (i in 0...g2d_neighborCount) {
 					g2d_neighbors[i].calculateForce();
 				}
-				
-				for (body in g2d_bodies) {
-					body.calculateForce();
-				}
 				/**/
+				g2d_defaultGroup.calculateForce();
+				for (group in g2d_groups.keys()) {
+					group.calculateForce();
+				}
 			}
 			
 			for (emitter in g2d_emitters) {
@@ -141,10 +142,13 @@ class GParticleSystem
 			}
 		}
 		
-		for (body in g2d_bodies) {
-			body.particleCount = 0;
-			body.massX = 0;
-			body.massY = 0;
+		g2d_defaultGroup.particleCount = 0;
+		g2d_defaultGroup.massX = 0;
+		g2d_defaultGroup.massY = 0;
+		for (group in g2d_groups.keys()) {
+			group.particleCount = 0;
+			group.massX = 0;
+			group.massY = 0;
 		}
 		
         for (emitter in g2d_emitters) {
@@ -152,13 +156,11 @@ class GParticleSystem
 				var particle:GParticle = emitter.g2d_firstParticle;
 				while (particle != null) {
 					var next:GParticle = particle.g2d_next;
-					if (particle.body != 0) {
-						var body:GSPHBody = g2d_bodies.get(particle.body);
-						if (body == null) {
-							body = new GSPHBody();
-							g2d_bodies.set(particle.body,body);
-						}
-						body.addParticle(particle);
+					if (particle.group != null) {
+						particle.group.addParticle(particle);
+						g2d_groups.set(particle.group, true);
+					} else {
+						g2d_defaultGroup.addParticle(particle);
 					}
 					
 					particle.fluidX = particle.fluidY = particle.density = particle.densityNear = 0;
@@ -239,6 +241,7 @@ class GSPHNeighbor
     public var ny:Float;
     public var weight:Float;
     public var density:Float = 2;
+	public var distance:Float;
 	
     inline public function new() {
     }
@@ -249,7 +252,7 @@ class GSPHNeighbor
 
         nx = particle1.x - particle2.x;
         ny = particle1.y - particle2.y;
-        var distance:Float = Math.sqrt(nx * nx + ny * ny);
+        distance = Math.sqrt(nx * nx + ny * ny);
         nx /= distance;
         ny /= distance;
 		
@@ -264,8 +267,8 @@ class GSPHNeighbor
 
     inline public function calculateForce():Void {
         var p:Float;
-		if (particle1.body != particle2.body) {
-			if(particle1.type != particle2.type || particle1.fixed != particle2.fixed || particle1.body != particle2.body) {
+		if (particle1.group != particle2.group || particle1.group == null) {
+			if(particle1.type != particle2.type || particle1.fixed != particle2.fixed || particle1.group != particle2.group) {
 				p = (particle1.density + particle2.density - density * 1.5) * PRESSURE;
 			} else {
 				p = (particle1.density + particle2.density - density * 2) * PRESSURE;
@@ -300,70 +303,4 @@ class GSPHGrid {
     inline public function addParticle(p_particle:GParticle):Void {
         particles[particleCount++] = p_particle;
     }
-}
-
-class GSPHBody 
-{
-	public var particles:Array<GParticle>;
-	public var particleCount:UInt = 0;
-	public var massX:Float = 0;
-	public var massY:Float = 0;
-	public var vx:Float = 0;
-	public var vy:Float = 0;
-	public var torque:Float = 0;
-	
-	public function new() {
-        particles = new Array<GParticle>();
-    }
-	
-	inline public function addParticle(p_particle:GParticle):Void {
-        particles[particleCount++] = p_particle;
-		massX += p_particle.x;
-		massY += p_particle.y;
-	}
-	
-	inline public function calculateForce():Void {		
-		massX /= particleCount;
-		massY /= particleCount;
-		
-		//if (torque != 0) return;
-		var t:Float = 0;
-		var ax:Float = 0;
-		var ay:Float = 0;
-		for (particle in particles) {
-			var fx:Float = particle.fluidX / (particle.density * 0.9 + 0.1);
-			var fy:Float = particle.fluidY / (particle.density * 0.9 + 0.1);
-			t += crossProduct(massX-particle.x, massY-particle.y, fx, fy);
-			ax += fx;
-			ay += fy;
-		}
-		torque += t / particleCount;
-		//torque *= .99;
-		vx += ax / (particleCount);
-		vy += ay / (particleCount);
-		vy += .1;
-		
-			var sin:Float = Math.sin(-torque/1000);
-			var cos:Float = Math.cos(-torque/1000);
-			for (particle in particles) {
-				if (!particle.fixed) {
-					var tx:Float = particle.x - massX;
-					var ty:Float = particle.y - massY;
-					var nx = tx * cos - ty * sin;
-					var ny = tx * sin + ty * cos;
-					particle.x = massX + nx;
-					particle.y = massY + ny;
-					/*
-						particle.ax = (tx-nx);
-						particle.ay = (ty-ny);
-					*/
-					particle.velocityX = vx;
-					particle.velocityY = vy;
-				}
-			}
-	}
-	
-	inline private function crossProduct(p_v1x:Float, p_v1y:Float, p_v2x:Float, p_v2y:Float):Float {
-		return (p_v1x*p_v2y) - (p_v1y*p_v2x);
-	}
 }
