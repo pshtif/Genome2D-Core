@@ -38,7 +38,8 @@ class GParticleGroup
 			var t:Float = 0;
 			var ax:Float = 0;
 			var ay:Float = 0;
-			for (particle in particles) {
+			for (i in 0...particleCount) {
+				var particle:GParticle = particles[i];
 				var fx:Float = particle.fluidX / (particle.density * 0.9 + 0.1);
 				var fy:Float = particle.fluidY / (particle.density * 0.9 + 0.1);
 				if (rigidAllowRotation) t += crossProduct(massX - particle.x, massY - particle.y, fx, fy);
@@ -50,10 +51,11 @@ class GParticleGroup
 			torque += t / particleCount;
 			vx += ax / particleCount;
 			vy += ay / particleCount;
-	
+
 			var sin:Float = Math.sin(-torque/1000);
 			var cos:Float = Math.cos(-torque/1000);
-			for (particle in particles) {
+			for (i in 0...particleCount) {
+				var particle:GParticle = particles[i];
 				if (!particle.fixed) {
 					if (rigidAllowRotation) {
 						var tx:Float = particle.x - massX;
@@ -70,7 +72,8 @@ class GParticleGroup
 				}
 			}
 		} else {
-			for (particle in particles) {
+			for (i in 0...particleCount) {
+				var particle:GParticle = particles[i];
 				if (particle.density > 0 && !particle.fixed) {
 					particle.velocityY += .1;
 					particle.velocityX += particle.fluidX / (particle.density * 0.9 + 0.1);

@@ -268,7 +268,7 @@ class GSPHNeighbor
     inline public function calculateForce():Void {
         var p:Float;
 		if (particle1.group != particle2.group || particle1.group == null) {
-			if(particle1.type != particle2.type || particle1.fixed != particle2.fixed || particle1.group != particle2.group) {
+			if (particle1.type != particle2.type || particle1.fixed != particle2.fixed || particle1.group != particle2.group) {
 				p = (particle1.density + particle2.density - density * 1.5) * PRESSURE;
 			} else {
 				p = (particle1.density + particle2.density - density * 2) * PRESSURE;
@@ -288,6 +288,7 @@ class GSPHNeighbor
 			particle1.fluidY += fy + fay * particle2.viscosity;
 			particle2.fluidX -= fx + fax * particle1.viscosity;
 			particle2.fluidY -= fy + fay * particle1.viscosity;
+			/**/
 		}
     }
 }
