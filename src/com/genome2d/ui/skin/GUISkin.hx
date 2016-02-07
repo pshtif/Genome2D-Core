@@ -151,8 +151,10 @@ class GUISkin implements IGPrototypable {
 	/*
 	 * 	Get an instance from reference
 	 */
-	static public function fromReference(p_reference:String) {
-		return GUISkinManager.getSkin(p_reference.substr(1));
+	static public function fromReference(p_reference:String):GUISkin {
+		var skin:GUISkin = GUISkinManager.getSkin(p_reference.substr(1));
+		if (skin == null) GDebug.warning("Invalid skin reference", p_reference);
+		return skin;
 	}
 	
 	public function toReference():String {

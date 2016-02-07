@@ -1,5 +1,8 @@
 package com.genome2d.ui.skin;
+import com.genome2d.proto.GPrototype;
+import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.ui.skin.GUISkin;
+
 class GUISkinManager {
     static public function init():Void {
         GUISkin.g2d_batchQueue = new Array<GUISkin>();
@@ -28,5 +31,12 @@ class GUISkinManager {
 		for (skin in g2d_skins) {
 			if (skin.id.indexOf("g2d_") != 0) skin.dispose();
         }
+	}
+	
+	static public function createSkins(p_xml:Xml):Void {
+		var iterator:Iterator<Xml> = p_xml.elements();
+		while (iterator.hasNext()) {
+			GPrototypeFactory.createPrototype(GPrototype.fromXml(iterator.next()));
+		}
 	}
 }

@@ -810,7 +810,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                         g2d_worldLeft = worldAnchorLeft + g2d_anchorX - w * g2d_pivotX;
                         g2d_worldRight = worldAnchorLeft + g2d_anchorX + w * (1 - g2d_pivotX);
                     }
-					
+
                     g2d_finalWidth = g2d_worldRight - g2d_worldLeft;
                 }
 
@@ -890,7 +890,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 			if (!expand) {
 				context.setMaskRect(new GRectangle(g2d_worldLeft*camera.scaleX, g2d_worldTop*camera.scaleY, (g2d_worldRight - g2d_worldLeft)*camera.scaleX, (g2d_worldBottom - g2d_worldTop)*camera.scaleY));
 			}
-			
+
             if (g2d_activeSkin != null) g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom, worldRed, worldGreen, worldBlue, worldAlpha);
 
             for (i in 0...g2d_numChildren) {
