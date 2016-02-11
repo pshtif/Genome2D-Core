@@ -30,7 +30,7 @@ class GPrototype
 		var propertyDefaults:Array<Dynamic> = Reflect.field(currentPrototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_DEFAULTS);
 		var propertyTypes:Array<String> = Reflect.field(currentPrototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES);
 		var propertyExtras:Array<Int> = Reflect.field(currentPrototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
-		
+
 		for (i in 0...propertyNames.length) {
 			var name:String = propertyNames[i];
 			var extras:Int = propertyExtras[i];

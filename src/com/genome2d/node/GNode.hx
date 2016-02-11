@@ -352,6 +352,39 @@ class GNode implements IGInteractive implements IGPrototypable
 		return false;
 	}
 	
+	public function getNodesUnderPoint(p_x:Float, p_y:Float):Array<GNode> {
+		var found:Array<GNode> = new Array<GNode>();
+		if (isActive() && visible) {
+			var child:GNode = g2d_lastChild;
+			while (child != null) {
+				var previous:GNode = child.g2d_previous;
+				found = found.concat(child.getNodesUnderPoint(p_x, p_y));
+				child = previous;
+			}
+			
+			if (g2d_renderable != null || g2d_defaultRenderable != null) {
+				var tx:Float = p_x - g2d_worldX;
+				var ty:Float = p_y - g2d_worldY;
+
+				if (g2d_worldRotation != 0) {
+					var cos:Float = Math.cos(-g2d_worldRotation);
+					var sin:Float = Math.sin(-g2d_worldRotation);
+
+					var ox:Float = tx;
+					tx = (tx*cos - ty*sin);
+					ty = (ty*cos + ox*sin);
+				}
+
+				tx /= g2d_worldScaleX;
+				ty /= g2d_worldScaleY;
+				
+				if ((g2d_defaultRenderable != null) ? g2d_defaultRenderable.hitTest(tx, ty) : g2d_renderable.hitTest(tx, ty)) found.push(this);
+			}
+		}
+		
+		return found;
+	}
+	
 	/****************************************************************************************************
 	 * 	PROTOTYPE CODE
 	 ****************************************************************************************************/
@@ -1314,7 +1347,7 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldScaleX:Float = 1;
     private var g2d_localScaleX:Float = 1;
     #if swc @:extern #end
-    @prototype
+    @prototype @default(1)
 	public var scaleX(get, set):Float;
     #if swc @:getter(scaleX) #end
     inline private function get_scaleX():Float {
@@ -1333,7 +1366,7 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldScaleY:Float = 1;
     private var g2d_localScaleY:Float = 1;
     #if swc @:extern #end
-    @prototype
+    @prototype @default(1)
 	public var scaleY(get, set):Float;
     #if swc @:getter(scaleY) #end
     inline private function get_scaleY():Float {
@@ -1371,7 +1404,7 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldRed:Float = 1;
     private var g2d_localRed:Float = 1;
     #if swc @:extern #end
-    @prototype
+    @prototype @default(1)
 	public var red(get, set):Float;
     #if swc @:getter(red) #end
     inline private function get_red():Float {
@@ -1387,7 +1420,7 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldGreen:Float = 1;
     private var g2d_localGreen:Float = 1;
     #if swc @:extern #end
-    @prototype
+    @prototype @default(1)
 	public var green(get, set):Float;
     #if swc @:getter(green) #end
     inline private function get_green():Float {
@@ -1403,7 +1436,7 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldBlue:Float = 1;
     private var g2d_localBlue:Float = 1;
     #if swc @:extern #end
-    @prototype
+	@prototype @default(1)
 	public var blue(get, set):Float;
     #if swc @:getter(blue) #end
     inline private function get_blue():Float {
@@ -1419,7 +1452,7 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldAlpha:Float = 1;
     private var g2d_localAlpha:Float = 1;
     #if swc @:extern #end
-    @prototype
+    @prototype @default(1)
 	public var alpha(get, set):Float;
     #if swc @:getter(alpha) #end
     inline private function get_alpha():Float {

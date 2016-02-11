@@ -101,6 +101,12 @@ class MGPrototypeProcessor {
             if (i.meta.length == 0 || i.access.indexOf(APublic) == -1) continue;
 			
 			var extras:Int = 0;
+			var defaultValue:Dynamic = null;
+			for (meta in i.meta) {
+				if (meta.name == "default") {
+					defaultValue = meta.params[0];
+				}
+			}
 
             for (meta in i.meta) {
                 if (meta.name == "prototype") {
@@ -112,7 +118,7 @@ class MGPrototypeProcessor {
 							if (f.args.length != 1) throw "Error invalid prototypable function (needs to have single parameter).";
 							switch (f.args[0].type) {
 								case TPath(p):
-									prototypePropertyDefaults.push(extractDefault("setter", null, pos));
+									prototypePropertyDefaults.push(defaultValue == null?extractDefault("setter", null, pos):defaultValue);
                                     prototypePropertyNames.push(i.name);
 									
 									prototypePropertyTypes.push(extractType(p));
@@ -123,7 +129,7 @@ class MGPrototypeProcessor {
                         case FVar(t, e):							
                             switch (t) {
                                 case TPath(p):
-									prototypePropertyDefaults.push(extractDefault(p.name, e, pos));
+									prototypePropertyDefaults.push(defaultValue == null?extractDefault(p.name, e, pos):defaultValue);
                                     prototypePropertyNames.push(i.name);
 									
 									prototypePropertyTypes.push(extractType(p));
@@ -133,7 +139,7 @@ class MGPrototypeProcessor {
                         case FProp(get,set,t,e):
                             switch (t) {
                                 case TPath(p):
-									prototypePropertyDefaults.push(extractDefault(p.name, e, pos));
+									prototypePropertyDefaults.push(defaultValue == null?extractDefault(p.name, e, pos):defaultValue);
                                     prototypePropertyNames.push(i.name);
 
 									prototypePropertyTypes.push(extractType(p));

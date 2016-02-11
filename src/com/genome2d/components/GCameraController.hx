@@ -8,6 +8,7 @@
  */
 package com.genome2d.components;
 
+import com.genome2d.callbacks.GCallback.GCallback1;
 import com.genome2d.context.GViewport;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.IGContext;
@@ -24,6 +25,15 @@ class GCameraController extends GComponent
     private var g2d_viewRectangle:GRectangle;
     private var g2d_capturedThisFrame:Bool = false;
     private var g2d_renderedNodesCount:Int;
+	
+	private var g2d_onMouseInput:GCallback1<GMouseInput>;
+    #if swc @:extern #end
+	public var onMouseInput(get, never):GCallback1<GMouseInput>;
+    #if swc @:getter(onMouseInput) #end
+	private function get_onMouseInput():GCallback1<GMouseInput> {
+		if (g2d_onMouseInput == null) g2d_onMouseInput = new GCallback1(GMouseInput);
+		return g2d_onMouseInput;
+	}
 
 	/**
 	    Red components of viewport background color
@@ -143,6 +153,8 @@ class GCameraController extends GComponent
 		p_input.worldY = ry + node.g2d_worldY;
 		p_input.camera = g2d_contextCamera;
 
+		if (g2d_onMouseInput != null) g2d_onMouseInput.dispatch(p_input);
+		
 		node.core.root.captureMouseInput(p_input);
 	}
 
