@@ -32,11 +32,4 @@ class GUISkinManager {
 			if (skin.id.indexOf("g2d_") != 0) skin.dispose();
         }
 	}
-	
-	static public function createSkins(p_xml:Xml):Void {
-		var iterator:Iterator<Xml> = p_xml.elements();
-		while (iterator.hasNext()) {
-			GPrototypeFactory.createPrototype(GPrototype.fromXml(iterator.next()));
-		}
-	}
 }
