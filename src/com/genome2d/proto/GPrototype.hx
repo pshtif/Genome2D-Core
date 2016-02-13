@@ -64,7 +64,7 @@ class GPrototype
 	public function getProperty(p_propertyName:String):GPrototypeProperty {
 		return properties.get(p_propertyName);
 	}
-	
+	/*
 	public function toXml():Xml {
 		var xml:Xml = Xml.createElement(prototypeName);
 		for (property in properties) {
@@ -102,7 +102,7 @@ class GPrototype
 		
 		prototype.prototypeName = p_xml.nodeName;
 		prototype.prototypeClass = GPrototypeFactory.getPrototypeClass(prototype.prototypeName);
-		
+
 		var propertyNames:Array<String> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
 		var propertyDefaults:Array<Dynamic> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_DEFAULTS);
 		var propertyTypes:Array<String> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES);
@@ -133,7 +133,7 @@ class GPrototype
 		
 		return prototype;
 	}
-	
+	/**/
 	public function setPropertyFromString(p_name:String, p_value:String):Void {
 		var split:Array<String> = p_name.split(".");
 		var lookupClass:Class<IGPrototypable> = prototypeClass;
@@ -160,24 +160,6 @@ class GPrototype
 		property.setDirectValue(p_value);
 		
 		return property;
-	}
-	
-	public function setPropertyFromXml(p_name:String, p_value:Xml):Void {
-		var split:Array<String> = p_name.split(".");
-		var lookupClass:Class<IGPrototypable> = prototypeClass;
-		var propertyNames:Array<String> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
-		while (propertyNames.indexOf(split[0]) == -1 && lookupClass != null) {
-			lookupClass = cast Type.getSuperClass(lookupClass);
-			if (lookupClass != null) propertyNames = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
-		}
-		
-		if (lookupClass != null) {
-			var propertyTypes:Array<String> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES);
-			var propertyExtras:Array<Int> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
-			var propertyIndex:Int = propertyNames.indexOf(split[0]);
-			
-			createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex], GPrototype.fromXml(p_value));
-		}
 	}
 }
 
@@ -213,7 +195,6 @@ class GPrototypeProperty {
 	
 	public function bind(p_instance:IGPrototypable):Void {
 		var realValue:Dynamic;
-		
 		if (isReference()) {
 			var c:Class<IGPrototypable> = GPrototypeFactory.getPrototypeClass(type);
 			realValue = Reflect.callMethod(c, Reflect.field(c,"fromReference"), [value]);
