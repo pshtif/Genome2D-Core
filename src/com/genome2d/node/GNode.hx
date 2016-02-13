@@ -408,27 +408,19 @@ class GNode implements IGInteractive implements IGPrototypable
 	public function bindPrototype(p_prototype:GPrototype):Void {
 		bindPrototypeDefault(p_prototype);
 
-		/*
-		var it:Iterator<Xml> = p_xml.elements();
-
-        while (it.hasNext()) {
-            var xml:Xml = it.next();
-            if (xml.nodeName == "components") {
-                var componentsIt:Iterator<Xml> = xml.elements();
-                while (componentsIt.hasNext()) {
-                    var componentXml:Xml = componentsIt.next();
-                    addComponentPrototype(componentXml);
-                }
-            }
-
-            if (xml.nodeName == "children") {
-                var childIt:Iterator<Xml> = xml.elements();
-                while (childIt.hasNext()) {
-                    addChild(GNode.createFromPrototype(childIt.next()));
-                }
-            }
-        }
-		/**/
+		var components:Array<GPrototype> = p_prototype.getGroup("components");
+		if (components != null) {
+			for (component in components) {
+				addComponentPrototype(component);
+			}
+		}
+		
+		var children:Array<GPrototype> = p_prototype.getGroup("children");
+		if (children != null) {
+			for (child in children) {
+				addChild(cast GPrototypeFactory.createPrototype(child));
+			}
+		}
 	}
 
 	/****************************************************************************************************
@@ -994,6 +986,15 @@ class GNode implements IGInteractive implements IGPrototypable
             g2d_firstChild.dispose();
         }
     }
+	
+	public function callOnChild(p_function:GNode->Void):Void {
+		var child:GNode = g2d_firstChild;
+        while (child != null) {
+            var next:GNode = child.g2d_next;
+			p_function(child);
+            child = next;
+		}
+	}
 
 	inline private function g2d_addedToStage():Void {
 		if (g2d_onAddedToStage != null) g2d_onAddedToStage.dispatch();
