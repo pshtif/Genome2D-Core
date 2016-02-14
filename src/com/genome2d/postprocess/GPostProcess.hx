@@ -26,6 +26,8 @@ class GPostProcess {
     public function getPassCount():Int {
         return g2d_passes;
     }
+	
+	public var renderOut:Bool = true;
 
     private var g2d_passFilters:Array<GFilter>;
     private var g2d_passTextures:Array<GTexture>;
@@ -95,7 +97,7 @@ class GPostProcess {
 
         if (p_target == null) {
             GRenderTargetStack.popRenderTarget(context);
-            context.draw(g2d_passTextures[g2d_passes-1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
+            if (renderOut) context.draw(g2d_passTextures[g2d_passes-1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
         } else {
             context.setRenderTarget(p_target);
             context.draw(g2d_passTextures[g2d_passes-1], 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
@@ -132,8 +134,8 @@ class GPostProcess {
 
         if (p_target == null) {
             GRenderTargetStack.popRenderTarget(context);
-            if (context.getRenderTarget()==null) context.setActiveCamera(p_camera);
-            context.draw(g2d_passTextures[g2d_passes-1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
+            if (context.getRenderTarget() == null) context.setActiveCamera(p_camera);
+			if (renderOut) context.draw(g2d_passTextures[g2d_passes-1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
         } else {
             context.setRenderTarget(p_target);
             context.draw(g2d_passTextures[g2d_passes-1], 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
