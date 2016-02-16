@@ -64,76 +64,7 @@ class GPrototype
 	public function getProperty(p_propertyName:String):GPrototypeProperty {
 		return properties.get(p_propertyName);
 	}
-	/*
-	public function toXml():Xml {
-		var xml:Xml = Xml.createElement(prototypeName);
-		for (property in properties) {
-			if (property.isBasicType() || property.isReference()) {
-				xml.set(property.name, property.value);
-			} else {
-				if (property.isPrototype()) {
-					var propertyXml:Xml = Xml.createElement("p:" + property.name);
-					propertyXml.addChild(property.value.toXml());
-					xml.addChild(propertyXml);
-				} else {
-					GDebug.error("Error during prototype parsing unknown property type", property.type);
-				}
-			}
-		}
-		
-		for (groupName in children.keys()) {
-			var isDefaultChildGroup:Bool = (groupName == Reflect.field(prototypeClass, GPrototypeSpecs.PROTOTYPE_DEFAULT_CHILD_GROUP));
-			var groupXml:Xml = (isDefaultChildGroup) ? null : Xml.createElement(groupName);
-			var group:Array<GPrototype> = children.get(groupName);
-			for (prototype in group) {
-				if (!isDefaultChildGroup) groupXml.addChild(prototype.toXml());
-				else xml.addChild(prototype.toXml());
-			}
-			if (!isDefaultChildGroup) xml.addChild(groupXml);
-		}
-		
-		return xml;
-	}
 	
-	static public function fromXml(p_xml:Xml):GPrototype {
-		if (p_xml.nodeType == Xml.Document) p_xml = p_xml.firstElement();
-		
-		var prototype:GPrototype = new GPrototype();
-		
-		prototype.prototypeName = p_xml.nodeName;
-		prototype.prototypeClass = GPrototypeFactory.getPrototypeClass(prototype.prototypeName);
-
-		var propertyNames:Array<String> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
-		var propertyDefaults:Array<Dynamic> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_DEFAULTS);
-		var propertyTypes:Array<String> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES);
-		var propertyExtras:Array<Int> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
-		var defaultChildGroup:String = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_DEFAULT_CHILD_GROUP);
-		
-		// We are adding properties on attributes
-		for (attribute in p_xml.attributes()) {
-			prototype.setPropertyFromString(attribute, p_xml.get(attribute));
-		}
-		
-		for (element in p_xml.elements()) {
-			// We are adding a node refering to property
-			if (element.nodeName.indexOf("p:") == 0) {
-				prototype.setPropertyFromXml(element.nodeName.substr(2), element.firstElement());
-				
-			// We are adding a default group node
-			} else if (element.nodeName == defaultChildGroup) {
-				prototype.addChild(fromXml(element), defaultChildGroup);
-				
-			// Other group nodes
-			} else {
-				for (child in element.elements()) {
-					prototype.addChild(fromXml(child), element.nodeName);
-				}
-			}
-        }
-		
-		return prototype;
-	}
-	/**/
 	public function setPropertyFromString(p_name:String, p_value:String):Void {
 		var split:Array<String> = p_name.split(".");
 		var lookupClass:Class<IGPrototypable> = prototypeClass;
@@ -157,7 +88,7 @@ class GPrototype
 		var property:GPrototypeProperty = new GPrototypeProperty(p_name, p_type, p_extras);
 		
 		properties.set(p_name, property);
-		property.setDirectValue(p_value);
+		property.value = p_value;
 		
 		return property;
 	}
@@ -187,10 +118,6 @@ class GPrototypeProperty {
 				value = cast(p_value, IGPrototypable).getPrototype();
 			}
 		}
-	}
-	
-	public function setDirectValue(p_value:Dynamic):Void {
-		value = p_value;
 	}
 	
 	public function bind(p_instance:IGPrototypable):Void {

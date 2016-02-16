@@ -168,7 +168,7 @@ class GParticleEmitter
 		}
 	}
 	
-	inline inline function spawnParticle() {
+	inline public function spawnParticle(p_applySpawnModules:Bool = true):GParticle {
         var particle:GParticle = g2d_particlePool.g2d_get();
         if (g2d_lastParticle != null) {
             particle.g2d_previous = g2d_lastParticle;
@@ -184,6 +184,8 @@ class GParticleEmitter
 		for (module in g2d_modules) {
 			if (module.spawnModule) module.spawn(this, particle);
 		}
+		
+		return particle;
     }
 
     inline private function disposeParticle(p_particle:GParticle):Void {
