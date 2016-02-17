@@ -391,8 +391,9 @@ class GNode implements IGInteractive implements IGPrototypable
 	
 	public function getPrototype(p_prototype:GPrototype = null):GPrototype {
 		p_prototype = getPrototypeDefault(p_prototype);
-		for (i in 0...g2d_componentCount) {
-			p_prototype.addChild(g2d_components[i].getPrototype(), "components");
+		
+		for (component in g2d_components) {
+			if (component.prototypable) p_prototype.addChild(component.getPrototype(), "components");
 		}
 		
 		var child:GNode = g2d_firstChild;

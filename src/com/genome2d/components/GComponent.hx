@@ -19,6 +19,8 @@ import com.genome2d.input.GMouseInput;
 @:allow(com.genome2d.node.GNode)
 class GComponent implements IGPrototypable
 {
+	public var prototypable:Bool = true;
+	
 	private var g2d_active:Bool = true;
 
     /**
