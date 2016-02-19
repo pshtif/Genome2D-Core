@@ -81,6 +81,8 @@ class GPrototype
 			var propertyIndex:Int = propertyNames.indexOf(split[0]);
 
 			createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex], p_value);
+		} else {
+			createPrototypeProperty(p_name, "String", 0, p_value);
 		}
 	}
 	
@@ -139,7 +141,7 @@ class GPrototypeProperty {
 					Reflect.setProperty(p_instance, split[0], realValue);
 				}
 			} catch (e:Dynamic) {
-				GDebug.error("Error during prototype binding: ", e);
+				//GDebug.error("Error during prototype binding: ", e);
 			}
 		}
 			
