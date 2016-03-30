@@ -42,11 +42,11 @@ class GUISkin implements IGPrototypable {
     }
     #if swc @:setter(id) #end
     inline private function set_id(p_value:String):String {
+		trace("set", p_value);
         if (p_value != g2d_id && p_value.length>0) {
-            if (GUISkinManager.getSkin(p_value) != null) GDebug.error("Duplicate skin id: "+p_value);
-            GUISkinManager.g2d_skins.set(p_value,this);
+            GUISkinManager.g2d_addSkin(p_value, this);
 
-            if (GUISkinManager.getSkin(g2d_id) != null) GUISkinManager.g2d_skins.remove(g2d_id);
+            if (GUISkinManager.getSkin(g2d_id) != null) GUISkinManager.g2d_removeSkin(g2d_id);
             g2d_id = p_value;
         }
 

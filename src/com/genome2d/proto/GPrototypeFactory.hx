@@ -39,9 +39,13 @@ class GPrototypeFactory {
 
         return proto;
     }
+	
+	static public function isValidProtototypeName(p_prototypeName:String):Bool {
+		return g2d_lookups.exists(p_prototypeName);
+	}
 
     static public function createEmptyPrototype(p_prototypeName:String):IGPrototypable {
-        var prototypeClass:Class<IGPrototypable> = g2d_lookups[p_prototypeName];
+        var prototypeClass:Class<IGPrototypable> = g2d_lookups.get(p_prototypeName);
         if (prototypeClass == null) {
             GDebug.error("Non existing prototype class "+p_prototypeName);
         }

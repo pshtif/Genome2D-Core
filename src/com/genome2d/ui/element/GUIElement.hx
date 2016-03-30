@@ -412,7 +412,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
     #if swc @:setter(skin) #end
     inline private function set_skin(p_value:GUISkin):GUISkin {
-		if (p_value == null || g2d_skin == null || p_value.id != g2d_skin.id) {
+		if (p_value == null || g2d_skin == null || p_value != g2d_skin) {
 			if (g2d_skin != null) g2d_skin.remove();
 			g2d_skin = (p_value != null) ? p_value.attach(this) : p_value;
 			g2d_activeSkin = g2d_skin;
@@ -665,6 +665,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
 
     public function new(p_skin:GUISkin = null) {
+		GUISkinManager.onSkinChanged.add(skinChanged_handler);
         g2d_onModelChanged = new GCallback1<GUIElement>();
 
         if (p_skin != null) skin = p_skin;
@@ -1098,5 +1099,12 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	
 	public function getState():String {
 		return g2d_currentState;
+	}
+	
+	private function skinChanged_handler(p_skinId:String):Void {
+		trace(g2d_skin.id, p_skinId);
+		if (p_skinId == g2d_skin.id) {
+			skin = GUISkinManager.getSkin(p_skinId);
+		}
 	}
 }

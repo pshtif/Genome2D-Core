@@ -87,7 +87,7 @@ class GXmlPrototypeParser
 				setPropertyFromXml(prototype, element.nodeName.substr(2), element.firstElement());
 				
 			// We are adding a default group node
-			} else if (element.nodeName == defaultChildGroup) {
+			} else if (element.nodeName == defaultChildGroup || defaultChildGroup == "*") {
 				prototype.addChild(fromXml(element), defaultChildGroup);
 				
 			// Other group nodes

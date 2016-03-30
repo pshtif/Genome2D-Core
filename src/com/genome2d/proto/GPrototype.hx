@@ -51,8 +51,7 @@ class GPrototype
 		}
 	}
 	
-	public function addChild(p_prototype:GPrototype, p_groupName:String = ""):Void {
-		if (p_groupName == "") p_groupName = "default";
+	public function addChild(p_prototype:GPrototype, p_groupName:String):Void {
 		if (!children.exists(p_groupName)) children.set(p_groupName, new Array<GPrototype>());
 		children.get(p_groupName).push(p_prototype);
 	}
