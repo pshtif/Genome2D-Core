@@ -1,5 +1,6 @@
 package com.genome2d.ui.skin;
 import com.genome2d.geom.GRectangle;
+import com.genome2d.proto.GPrototype;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.IGContext;
@@ -98,8 +99,8 @@ class GUITextureSkin extends GUISkin {
 
             var sl:Float = sliceLeft > texture.nativeWidth ? texture.nativeWidth : sliceLeft < 0 ? 0 : sliceLeft;
             var st:Float = sliceTop > texture.nativeHeight ? texture.nativeHeight : sliceTop < 0 ? 0 : sliceTop;
-            var sr:Float = sliceRight > texture.nativeWidth ? texture.nativeWidth : sliceRight<sliceLeft ? sliceRight>=0 ? sliceLeft : texture.nativeWidth + sliceRight : sliceRight;
-            var sb:Float = sliceBottom > texture.nativeHeight ? texture.nativeHeight : sliceBottom<sliceTop ? sliceBottom>=0 ? sliceTop : texture.nativeHeight + sliceBottom : sliceBottom;
+            var sr:Float = sliceRight > texture.nativeWidth ? texture.nativeWidth : sliceRight < sliceLeft ? sliceRight>=0 ? sliceLeft : texture.nativeWidth + sliceRight : sliceRight;
+            var sb:Float = sliceBottom > texture.nativeHeight ? texture.nativeHeight : sliceBottom < sliceTop ? sliceBottom>=0 ? sliceTop : texture.nativeHeight + sliceBottom : sliceBottom;
             var sw:Float = sr - sl;
             var sh:Float = sb - st;
 			if (sw == 0 && sh != 0) sr = sw = texture.nativeWidth;
@@ -262,4 +263,15 @@ class GUITextureSkin extends GUISkin {
 			texture =  (p_element.getModel() != null) ? GTextureManager.getTexture(p_element.getModel().toString()) : null;
 		}
     }
+	
+	override public function bindPrototype(p_prototype:GPrototype):Void {
+		bindPrototypeDefault(p_prototype);
+		
+		if (g2d_origin == null) {
+			if (p_prototype.getProperty("id").value != "") {
+				g2d_id = p_prototype.getProperty("id").value;
+				GUISkinManager.g2d_addSkin(g2d_id, this);
+			}
+		}
+	}
 }

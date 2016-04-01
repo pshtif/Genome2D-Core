@@ -13,6 +13,7 @@ import com.genome2d.proto.GPrototypeExtras;
 import com.genome2d.proto.GPrototypeSpecs;
 import com.genome2d.proto.GPrototypeStates;
 import com.genome2d.proto.IGPrototypable;
+import haxe.macro.PositionTools;
 import haxe.macro.Type.ClassType;
 import haxe.macro.Context;
 import haxe.macro.Expr;
@@ -120,7 +121,6 @@ class MGPrototypeProcessor {
 								case TPath(p):
 									prototypePropertyDefaults.push(defaultValue == null?extractDefault("setter", null, pos):defaultValue);
                                     prototypePropertyNames.push(i.name);
-									
 									prototypePropertyTypes.push(extractType(p));
 									extras += GPrototypeExtras.SETTER;
 									prototypePropertyExtras.push(GPrototypeExtras.SETTER);
@@ -141,7 +141,8 @@ class MGPrototypeProcessor {
                                 case TPath(p):
 									prototypePropertyDefaults.push(defaultValue == null?extractDefault(p.name, e, pos):defaultValue);
                                     prototypePropertyNames.push(i.name);
-
+									//var fileName:String = PositionTools.getInfos(i.pos).file;
+									//trace(localClass.name, fileName.substring(fileName.lastIndexOf("/")+1, fileName.lastIndexOf(".hx")), i.name);
 									prototypePropertyTypes.push(extractType(p));
 									prototypePropertyExtras.push(extras);
                                 case _:
@@ -178,7 +179,7 @@ class MGPrototypeProcessor {
 				throw "Prototype error!";
 		}
 
-		var bindPrototype = generateBindPrototype();
+		var bindPrototype = generateBindPrototype(macro $v { prototypeName });
 		switch (bindPrototype) {
 			case TAnonymous(f):
 				if (superPrototype) {
@@ -239,7 +240,7 @@ class MGPrototypeProcessor {
 					throw "Prototype error!";
 			}
 		}
-		
+
         var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"Dynamic", pack:[], params:[] } ))] } );
 		fields.push( { name : GPrototypeSpecs.PROTOTYPE_PROPERTY_DEFAULTS, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(prototypePropertyDefaults), pos:pos } ), pos : pos } );
 		var kind = TPath( { pack : [], name : "Array", params : [TPType(TPath( { name:"String", pack:[], params:[] } ))] } );
@@ -325,10 +326,10 @@ class MGPrototypeProcessor {
         }
     }
 
-    inline static private function generateBindPrototype() {
+    inline static private function generateBindPrototype(p_prototypeName) {
         return macro : {
             public function bindPrototype(p_prototype:com.genome2d.proto.GPrototype):Void {
-                com.genome2d.proto.GPrototypeFactory.g2d_bindPrototype(this, p_prototype);
+                com.genome2d.proto.GPrototypeFactory.g2d_bindPrototype(this, p_prototype, $p_prototypeName);
             }
         }
     }

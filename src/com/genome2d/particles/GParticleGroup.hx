@@ -65,6 +65,7 @@ class GParticleGroup
 						particle.x = massX + nx;
 						particle.y = massY + ny;
 					}
+
 					if (rigidAllowTranslation) {
 						particle.velocityX = vx;
 						particle.velocityY = vy;

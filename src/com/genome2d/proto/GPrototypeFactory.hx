@@ -33,8 +33,8 @@ class GPrototypeFactory {
         }
 
         var proto:IGPrototypable = Type.createInstance(p_prototype.prototypeClass,[]);
-        if (proto == null) GDebug.error("Invalid prototype class "+p_prototype.prototypeName);
-
+        if (proto == null) GDebug.error("Invalid prototype class " + p_prototype.prototypeName);
+		
         proto.bindPrototype(p_prototype);
 
         return proto;
@@ -63,10 +63,10 @@ class GPrototypeFactory {
 		return p_prototype;
 	}
 	
-	static public function g2d_bindPrototype(p_instance:IGPrototypable, p_prototype:GPrototype):Void {
+	static public function g2d_bindPrototype(p_instance:IGPrototypable, p_prototype:GPrototype, p_prototypeName:String):Void {
         if (p_prototype == null) GDebug.error("Null prototype");
 		if (p_instance.g2d_prototypeStates == null) p_instance.g2d_prototypeStates = new GPrototypeStates();
-
-		p_prototype.bind(p_instance);
+		
+		p_prototype.bind(p_instance, p_prototypeName);
     }
 }

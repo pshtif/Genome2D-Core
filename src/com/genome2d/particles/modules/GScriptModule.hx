@@ -8,7 +8,7 @@ import com.genome2d.particles.GParticleSystem;
  * ...
  * @author Peter @sHTiF Stefcek
  */
-class ScriptModule extends GParticleEmitterModule
+class GScriptModule extends GParticleEmitterModule
 {
 	private var g2d_script:String;
 	private var g2d_parser:hscript.Parser;

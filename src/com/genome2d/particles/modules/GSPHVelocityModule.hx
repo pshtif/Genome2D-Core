@@ -9,7 +9,7 @@ import com.genome2d.particles.GParticleSystem;
  *
  * @author Peter @sHTiF Stefcek
  */
-class SPHVelocityModule extends GParticleEmitterModule
+class GSPHVelocityModule extends GParticleEmitterModule
 {
 	public function new() {
 		super();		

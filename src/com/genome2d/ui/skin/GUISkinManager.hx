@@ -30,7 +30,7 @@ class GUISkinManager {
         g2d_skins.set(p_id, p_value);
 		if (oldSkin != null) {
 			g2d_onSkinChanged.dispatch(p_id);
-			oldSkin.dispose();
+			oldSkin.g2d_internalDispose();
 		}
     }
 

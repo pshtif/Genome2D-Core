@@ -1,5 +1,6 @@
 package com.genome2d.ui.skin;
 import com.genome2d.input.GMouseInput;
+import com.genome2d.proto.GPrototype;
 import com.genome2d.text.GFontManager;
 import com.genome2d.text.GTextFormat;
 import com.genome2d.text.GTextureFont;
@@ -182,7 +183,7 @@ class GUIFontSkin extends GUISkin {
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Bool {
 		g2d_textRenderer.format = format;
-		
+
         var rendered:Bool = false;
         if (super.render(p_left, p_top, p_right, p_bottom, p_red, p_green, p_blue, p_alpha)) {
 			g2d_textRenderer.red = red * p_red;
@@ -216,5 +217,16 @@ class GUIFontSkin extends GUISkin {
 	
 	override public function captureMouseInput(p_input:GMouseInput):Void {
 		g2d_textRenderer.captureMouseInput(p_input);
+	}
+	
+	override public function bindPrototype(p_prototype:GPrototype):Void {
+		bindPrototypeDefault(p_prototype);
+		
+		if (g2d_origin == null) {
+			if (p_prototype.getProperty("id").value != "") {
+				g2d_id = p_prototype.getProperty("id").value;
+				GUISkinManager.g2d_addSkin(g2d_id, this);
+			}
+		}
 	}
 }

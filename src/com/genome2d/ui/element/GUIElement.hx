@@ -23,6 +23,7 @@ import com.genome2d.textures.GTextureManager;
 import com.genome2d.ui.layout.GUIHorizontalLayout;
 import com.genome2d.ui.layout.GUILayoutType;
 import com.genome2d.ui.layout.GUIVerticalLayout;
+import com.genome2d.ui.skin.GUIFontSkin;
 import com.genome2d.ui.skin.GUISkinManager;
 import com.genome2d.ui.layout.GUILayout;
 import Xml.XmlType;
@@ -31,6 +32,7 @@ import com.genome2d.input.GMouseInput;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.ui.skin.GUISkin;
+import com.genome2d.ui.skin.GUITextureSkin;
 
 @:access(com.genome2d.ui.layout.GUILayout)
 @:access(com.genome2d.ui.skin.GUISkin)
@@ -419,6 +421,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
 			setDirty();
 		}
+
         return g2d_skin;
     }
 
@@ -1102,8 +1105,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	}
 	
 	private function skinChanged_handler(p_skinId:String):Void {
-		trace(g2d_skin.id, p_skinId);
-		if (p_skinId == g2d_skin.id) {
+		if (g2d_skin != null && g2d_skin.id == p_skinId) {
 			skin = GUISkinManager.getSkin(p_skinId);
 		}
 	}

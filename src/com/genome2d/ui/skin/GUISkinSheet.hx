@@ -21,7 +21,6 @@ class GUISkinSheet implements IGPrototypable
 		
 		for (skinPrototype in skinPrototypes) {
 			var skin:GUISkin = cast GPrototypeFactory.createPrototype(skinPrototype);
-			trace(skin.id);
 		}
 	}
 }
