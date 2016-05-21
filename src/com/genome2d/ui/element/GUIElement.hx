@@ -806,7 +806,6 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                     var worldAnchorLeft:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorLeft;
                     var worldAnchorRight:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorRight;
                     var w:Float = (g2d_preferredWidth > g2d_minWidth || !expand) ? g2d_preferredWidth : g2d_minWidth;
-
                     if (g2d_anchorLeft != g2d_anchorRight) {
                         g2d_worldLeft = worldAnchorLeft + g2d_left;
                         g2d_worldRight = worldAnchorRight - g2d_right;
@@ -826,6 +825,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                     }
                 }
             } else {
+				g2d_finalWidth = g2d_worldRight - g2d_worldLeft;
+				
                 for (i in 0...g2d_numChildren) {
                     g2d_children[i].invalidateWidth();
                 }
