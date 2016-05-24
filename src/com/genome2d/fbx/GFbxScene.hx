@@ -31,6 +31,14 @@ class GFbxScene {
 	
     private var g2d_fbxData:GFbxParserNode;
     private var g2d_nodes:Map<String,GFbxNode>;
+	public function getNode(p_id:String):GFbxNode {
+		return g2d_nodes.get(p_id);
+	}
+	
+	private var g2d_sceneMatrix:GMatrix3D;
+	public function getSceneMatrix():GMatrix3D {
+		return g2d_sceneMatrix;
+	}
 	
 	private var g2d_projectionMatrix:GProjectionMatrix;
 	public function getProjectionMatrix():GProjectionMatrix {
@@ -39,11 +47,6 @@ class GFbxScene {
 	public function setProjectionMatrix(p_value:GProjectionMatrix):Void {
 		g2d_projectionMatrix = p_value;
 	}
-
-    private var g2d_modelMatrix:GMatrix3D;
-    public function getModelMatrix():GMatrix3D {
-        return g2d_modelMatrix;
-    }
 
     public function new() {
         g2d_nodes = new Map<String,GFbxNode>();
@@ -118,7 +121,7 @@ class GFbxScene {
     }
 
     private function create():Void {
-        g2d_modelMatrix = new GMatrix3D();
+		g2d_sceneMatrix = new GMatrix3D();
         g2d_models = new Array<GFbxModel>();
 
         for (node in g2d_nodes) {
@@ -128,6 +131,7 @@ class GFbxScene {
 				if (fbxGeometry == null) GDebug.error("Model has no geometry.");
 				
 				var fbxRenderer:GFbxRenderer = new GFbxRenderer(fbxGeometry.vertices, fbxGeometry.uvs, fbxGeometry.indices, fbxGeometry.vertexNormals, false);
+				fbxRenderer.modelMatrix = new GMatrix3D();
 
 				var fbxTexture:GFbxTexture = model.getMaterial().getTexture();
 				if (fbxTexture == null) GDebug.error("Model material has no texture.");
@@ -148,7 +152,9 @@ class GFbxScene {
 				renderer.ambientColor = ambientColor;
 				renderer.lightColor = lightColor;
 				renderer.tintColor = tintColor;
-				renderer.modelMatrix = g2d_modelMatrix;
+				if (renderer.useSceneMatrix) {
+					renderer.modelMatrix = g2d_sceneMatrix;
+				}
 				renderer.cameraMatrix = p_cameraMatrix;
 				renderer.projectionMatrix = g2d_projectionMatrix;
 			}
