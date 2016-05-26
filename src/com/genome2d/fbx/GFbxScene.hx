@@ -4,10 +4,11 @@ import com.genome2d.assets.GAssetManager;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.context.stage3d.GProjectionMatrix;
 import com.genome2d.context.stage3d.GStage3DContext;
-import com.genome2d.context.stage3d.renderers.GFbxRenderer;
+import com.genome2d.context.stage3d.renderers.G3DRenderer;
 import com.genome2d.debug.GDebug;
 import com.genome2d.fbx.GFbxParserNode;
 import com.genome2d.fbx.GFbxTools;
+import com.genome2d.macros.MGDebug;
 
 import com.genome2d.geom.GFloat4;
 import com.genome2d.geom.GMatrix3D;
@@ -130,8 +131,7 @@ class GFbxScene {
 				var fbxGeometry:GFbxGeometry = model.getGeometry();
 				if (fbxGeometry == null) GDebug.error("Model has no geometry.");
 				
-				var fbxRenderer:GFbxRenderer = new GFbxRenderer(fbxGeometry.vertices, fbxGeometry.uvs, fbxGeometry.indices, fbxGeometry.vertexNormals, false);
-				fbxRenderer.modelMatrix = new GMatrix3D();
+				var fbxRenderer:G3DRenderer = new G3DRenderer(fbxGeometry.vertices, fbxGeometry.uvs, fbxGeometry.indices, fbxGeometry.vertexNormals, false);
 
 				var fbxTexture:GFbxTexture = model.getMaterial().getTexture();
 				if (fbxTexture == null) GDebug.error("Model material has no texture.");
@@ -144,7 +144,7 @@ class GFbxScene {
     }
 
     public function render(p_cameraMatrix:GMatrix3D, p_type:Int = 1):Void {
-		var renderer:GFbxRenderer;
+		var renderer:G3DRenderer;
         for (model in g2d_models) {
 			if (model.visible) {
 				renderer = model.renderer;
@@ -152,8 +152,14 @@ class GFbxScene {
 				renderer.ambientColor = ambientColor;
 				renderer.lightColor = lightColor;
 				renderer.tintColor = tintColor;
-				if (renderer.useSceneMatrix) {
-					renderer.modelMatrix = g2d_sceneMatrix;
+				switch (model.inheritSceneMatrixMode) {
+					case GFbxMatrixInheritMode.REPLACE:
+						renderer.renderMatrix = g2d_sceneMatrix;
+					case GFbxMatrixInheritMode.IGNORE:
+						renderer.renderMatrix = model.modelMatrix;
+					case GFbxMatrixInheritMode.APPEND:
+						renderer.renderMatrix = model.modelMatrix.clone();
+						renderer.renderMatrix.append(g2d_sceneMatrix);
 				}
 				renderer.cameraMatrix = p_cameraMatrix;
 				renderer.projectionMatrix = g2d_projectionMatrix;
