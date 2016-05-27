@@ -26,8 +26,6 @@ class G3DSceneFbxImporter
 		
 		g2d_initConnections(scene, fbxData);
 		
-		scene.create();
-		
 		return scene;
 	}
 	

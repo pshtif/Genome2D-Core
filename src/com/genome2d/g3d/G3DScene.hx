@@ -128,7 +128,6 @@ class G3DScene {
 			p_byteArray.writeUTF(connection.destinationId);
 			c++;
 		}
-		trace(c);
 	}
 	
 	public function importBinary(p_byteArray:ByteArray):Void {
@@ -183,20 +182,15 @@ class G3DScene {
 					c++;
 			}
 		}
-		
-		trace(c);
-		
-		create();
 	}
 
-    private function create():Void {
+    public function invalidate():Void {
 		g2d_sceneMatrix = new GMatrix3D();
         g2d_models = new Array<G3DModel>();
 
         for (node in g2d_nodes) {
             var model:G3DModel = (Std.is(node,G3DModel)) ? cast node : null;
             if (model != null) {
-				trace("here");
 				var geometry:G3DGeometry = model.getGeometry();
 				if (geometry == null) MGDebug.G2D_ERROR("Model has no geometry.");
 				
