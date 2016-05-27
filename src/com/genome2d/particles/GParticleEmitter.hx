@@ -87,10 +87,11 @@ class GParticleEmitter
 		if (g2d_currentDuration == -1) g2d_currentDuration = duration + Math.random() * durationVariance;
 		// Accumulate time
 		g2d_accumulatedTime += p_deltaTime * .001;
+		
 		// If we passed current duration substract it
 		if (g2d_accumulatedTime > g2d_currentDuration && loop) {
 			//g2d_currentDuration = duration + Math.random() * durationVariance;
-			g2d_accumulatedTime-=g2d_currentDuration;
+			g2d_accumulatedTime%=g2d_currentDuration;
 		}
 		
 		g2d_doEmission(p_deltaTime);
