@@ -3,7 +3,7 @@ package com.genome2d.g3d;
 class G3DGeometry extends G3DNode {
 
 	public var importedUvs:Array<Float>;
-	public var importedIndices:Array<Int>;
+	public var importedIndices:Array<UInt>;
 	public var importedUvIndices:Array<Int>;
 	//public var importedNormals:Array<Float>;
 	
@@ -13,9 +13,18 @@ class G3DGeometry extends G3DNode {
     public var vertexNormals:Array<Float>;
     public var faceNormals:Array<Float>;
 
-    public function new(p_id:String, p_vertices:Array<Float>, p_normals:Array<Float>, p_uvs:Array<Float>, p_indices:Array<Int>, p_uvIndices:Array<Int>) {
+    public function new(p_id:String) {
         super(p_id);
-
+	}
+	
+	public function initProcessed(p_vertices:Array<Float>, p_uvs:Array<Float>, p_indices:Array<UInt>, p_normals:Array<Float>) {
+        vertices = p_vertices;
+		uvs = p_uvs;
+		indices = p_indices;
+		vertexNormals = p_normals;
+    }
+	
+	public function initImported(p_vertices:Array<Float>, p_uvs:Array<Float>, p_indices:Array<UInt>, p_uvIndices:Array<Int>) {
         vertices = p_vertices;
         //importedNormals = p_normals;
 		importedUvs = p_uvs;

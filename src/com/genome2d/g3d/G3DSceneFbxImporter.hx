@@ -80,11 +80,12 @@ class G3DSceneFbxImporter
 			var vertices:Array<Float> = GFbxTools.getFloats(vertexNode);
 			var normals:Array<Float> = GFbxTools.getFloats(normalsNode);
 			
-			var indices:Array<Int> = cast GFbxTools.getInts(vertexIndexNode);
+			var indices:Array<UInt> = cast GFbxTools.getInts(vertexIndexNode);
 			var uvs:Array<Float> = GFbxTools.getFloats(uvNode);
 			var uvIndices:Array<Int> = GFbxTools.getInts(uvIndexNode);
 			
-            var geometry:G3DGeometry = new G3DGeometry(id, vertices, normals, uvs, indices, uvIndices);
+            var geometry:G3DGeometry = new G3DGeometry(id);
+			geometry.initImported(vertices, uvs, indices, uvIndices);
             p_scene.addNode(geometry.id, geometry);
         }
     }

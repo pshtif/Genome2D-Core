@@ -75,7 +75,7 @@ class G3DScene {
         lightColor = new GFloat4(1,1,1,1);
     }
 	
-	public function exportBinary(p_byteArray:ByteArray):Void {
+	public function exportBinary(p_byteArray:ByteArray, p_processed:Bool = false):Void {
 		for (node in g2d_nodes) {
 			if (Std.is(node, G3DTexture)) {
 				p_byteArray.writeByte(1);
@@ -104,19 +104,40 @@ class G3DScene {
 					p_byteArray.writeFloat(geometry.vertices[i]);
 				}
 				
-				p_byteArray.writeInt(geometry.importedUvs.length);
-				for (i in 0...geometry.importedUvs.length) {
-					p_byteArray.writeFloat(geometry.importedUvs[i]);
+				if (p_processed) {
+					p_byteArray.writeInt(geometry.uvs.length);
+					for (i in 0...geometry.uvs.length) {
+						p_byteArray.writeFloat(geometry.uvs[i]);
+					}
+				} else {
+					p_byteArray.writeInt(geometry.importedUvs.length);
+					for (i in 0...geometry.importedUvs.length) {
+						p_byteArray.writeFloat(geometry.importedUvs[i]);
+					}
 				}
 				
-				p_byteArray.writeInt(geometry.importedIndices.length);
-				for (i in 0...geometry.importedIndices.length) {
-					p_byteArray.writeInt(geometry.importedIndices[i]);
+				if (p_processed) {
+					p_byteArray.writeInt(geometry.indices.length);
+					for (i in 0...geometry.indices.length) {
+						p_byteArray.writeInt(geometry.indices[i]);
+					}
+				} else {
+					p_byteArray.writeInt(geometry.importedIndices.length);
+					for (i in 0...geometry.importedIndices.length) {
+						p_byteArray.writeInt(geometry.importedIndices[i]);
+					}
 				}
 				
-				p_byteArray.writeInt(geometry.importedUvIndices.length);
-				for (i in 0...geometry.importedUvIndices.length) {
-					p_byteArray.writeInt(geometry.importedUvIndices[i]);
+				if (p_processed) {
+					p_byteArray.writeInt(geometry.vertexNormals.length);
+					for (i in 0...geometry.vertexNormals.length) {
+						p_byteArray.writeFloat(geometry.vertexNormals[i]);
+					}
+				} else {
+					p_byteArray.writeInt(geometry.importedUvIndices.length);
+					for (i in 0...geometry.importedUvIndices.length) {
+						p_byteArray.writeInt(geometry.importedUvIndices[i]);
+					}
 				}
 			}
 		}
@@ -130,7 +151,7 @@ class G3DScene {
 		}
 	}
 	
-	public function importBinary(p_byteArray:ByteArray):Void {
+	public function importBinary(p_byteArray:ByteArray, p_processed:Bool = false):Void {
 		p_byteArray.position = 0;
 		var c:Int = 0;
 		while (p_byteArray.bytesAvailable > 0) {
@@ -163,17 +184,29 @@ class G3DScene {
 					}
 					
 					var count:Int = p_byteArray.readInt();
-					var indices:Array<Int> = new Array<Int>();
+					var indices:Array<UInt> = new Array<UInt>();
 					for (i in 0...count) {
 						indices.push(p_byteArray.readInt());
 					}
 					
 					var count:Int = p_byteArray.readInt();
+					var normals:Array<Float> = new Array<Float>();
 					var uvIndices:Array<Int> = new Array<Int>();
-					for (i in 0...count) {
-						uvIndices.push(p_byteArray.readInt());
+					if (p_processed) {
+						for (i in 0...count) {
+							normals.push(p_byteArray.readFloat());
+						}
+					} else {
+						for (i in 0...count) {
+							uvIndices.push(p_byteArray.readInt());
+						}
 					}
-					var geometry:G3DGeometry = new G3DGeometry(id, vertices, null, uvs, indices, uvIndices);
+					var geometry:G3DGeometry = new G3DGeometry(id);
+					if (p_processed) {
+						geometry.initProcessed(vertices, uvs, indices, normals);
+					} else {
+						geometry.initImported(vertices, uvs, indices, uvIndices);
+					}
 					addNode(geometry.id, geometry);
 				case 5:
 					var sourceId:String = p_byteArray.readUTF();
