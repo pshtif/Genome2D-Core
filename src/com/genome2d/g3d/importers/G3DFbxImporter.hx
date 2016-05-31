@@ -1,4 +1,4 @@
-package com.genome2d.g3d;
+package com.genome2d.g3d.importers;
 import com.genome2d.fbx.GFbxParser;
 import com.genome2d.fbx.GFbxParserNode;
 import com.genome2d.fbx.GFbxScene;
@@ -6,18 +6,17 @@ import com.genome2d.fbx.GFbxTools;
 import com.genome2d.g3d.G3DScene;
 import com.genome2d.g3d.G3DTexture;
 import com.genome2d.macros.MGDebug;
+import haxe.io.BytesData;
 
 /**
- * ...
- * @author 
+ * @author Peter @sHTiF Stefcek
  */
-class G3DSceneFbxImporter
+class G3DFbxImporter extends G3DAbstractImporter
 {
-	@:access(com.genome2d.g3d.G3DScene)
-	static public function importFbx(p_data:String):G3DScene {
+	override public function importScene(p_data:BytesData):G3DScene {
 		var scene:G3DScene = new G3DScene();
 
-		var fbxData:GFbxParserNode = GFbxParser.parse(p_data);
+		var fbxData:GFbxParserNode = GFbxParser.parse(p_data.readUTF());
 		
 		g2d_initTextures(scene, fbxData);
 		g2d_initModels(scene, fbxData);
@@ -29,7 +28,7 @@ class G3DSceneFbxImporter
 		return scene;
 	}
 	
-	static private function g2d_initTextures(p_scene:G3DScene, p_fbxData:GFbxParserNode):Void {
+	private function g2d_initTextures(p_scene:G3DScene, p_fbxData:GFbxParserNode):Void {
         var textureNodes:Array<GFbxParserNode> = GFbxTools.getAll(p_fbxData, "Objects.Texture");
         for (node in textureNodes) {
 			var id:String = Std.string(GFbxTools.toFloat(node.props[0]));
@@ -41,7 +40,7 @@ class G3DSceneFbxImporter
         }
     }
 	
-	static private function g2d_initModels(p_scene:G3DScene, p_fbxData:GFbxParserNode):Void {
+	private function g2d_initModels(p_scene:G3DScene, p_fbxData:GFbxParserNode):Void {
         var modelNodes:Array<GFbxParserNode> = GFbxTools.getAll(p_fbxData, "Objects.Model");
 
         for (node in modelNodes) {
@@ -52,7 +51,7 @@ class G3DSceneFbxImporter
         }
     }
 	
-	static private function g2d_initMaterials(p_scene:G3DScene, p_fbxData:GFbxParserNode):Void {
+	private function g2d_initMaterials(p_scene:G3DScene, p_fbxData:GFbxParserNode):Void {
         var materialNodes:Array<GFbxParserNode> = GFbxTools.getAll(p_fbxData, "Objects.Material");
 
         for (node in materialNodes) {
@@ -63,7 +62,7 @@ class G3DSceneFbxImporter
         }
     }
 	
-	static private function g2d_initGeometry(p_scene:G3DScene, p_fbxData:GFbxParserNode):Void {
+	private function g2d_initGeometry(p_scene:G3DScene, p_fbxData:GFbxParserNode):Void {
         var geometryNodes:Array<GFbxParserNode> = GFbxTools.getAll(p_fbxData,"Objects.Geometry");
 
         for (node in geometryNodes) {
@@ -90,7 +89,7 @@ class G3DSceneFbxImporter
         }
     }
 	
-	static private function g2d_initConnections(p_scene:G3DScene, p_fbxData:GFbxParserNode):Void {
+	private function g2d_initConnections(p_scene:G3DScene, p_fbxData:GFbxParserNode):Void {
         var connectionNodes:Array<GFbxParserNode> = GFbxTools.getAll(p_fbxData, "Connections.C");
 
         for (node in connectionNodes) {
