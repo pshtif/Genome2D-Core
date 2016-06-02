@@ -16,7 +16,7 @@ class G3DFbxImporter extends G3DAbstractImporter
 	override public function importScene(p_data:BytesData):G3DScene {
 		var scene:G3DScene = new G3DScene();
 
-		var fbxData:GFbxParserNode = GFbxParser.parse(p_data.readUTF());
+		var fbxData:GFbxParserNode = GFbxParser.parse(p_data.readUTFBytes(p_data.length));
 		
 		g2d_initTextures(scene, fbxData);
 		g2d_initModels(scene, fbxData);
@@ -47,6 +47,7 @@ class G3DFbxImporter extends G3DAbstractImporter
 			var id:String = Std.string(GFbxTools.toFloat(node.props[0]));
 			
             var model:G3DModel = new G3DModel(id);
+			model.name = GFbxTools.toString(node.props[1]);
 			p_scene.addNode(model.id, model);
         }
     }
