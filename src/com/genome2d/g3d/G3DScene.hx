@@ -1,4 +1,4 @@
-package com.genome2d.fbx;
+package com.genome2d.g3d;
 
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.context.GBlendMode;
@@ -9,6 +9,7 @@ import com.genome2d.debug.GDebug;
 import com.genome2d.fbx.GFbxParserNode;
 import com.genome2d.fbx.GFbxTools;
 import com.genome2d.macros.MGDebug;
+import flash.utils.ByteArray;
 
 import com.genome2d.geom.GFloat4;
 import com.genome2d.geom.GMatrix3D;
@@ -16,23 +17,25 @@ import com.genome2d.Genome2D;
 import com.genome2d.context.IGContext;
 import com.genome2d.textures.GTextureManager;
 
-class GFbxScene {
+class G3DScene {
     public var lightDirection:GFloat4;
     public var ambientColor:GFloat4;
     public var lightColor:GFloat4;
     public var tintColor:GFloat4;
 	
-    private var g2d_models:Array<GFbxModel>;
-	public function getModelByName(p_name:String):GFbxModel {
+    private var g2d_models:Array<G3DModel>;
+	public function getModelByName(p_name:String):G3DModel {
 		for (model in g2d_models) {
 			if (model.name == p_name) return model;
 		}
 		return null;
 	}
 	
-    private var g2d_fbxData:GFbxParserNode;
-    private var g2d_nodes:Map<String,GFbxNode>;
-	public function getNode(p_id:String):GFbxNode {
+    private var g2d_nodes:Map<String,G3DNode>;
+	public function addNode(p_id:String, p_node:G3DNode):Void {
+		g2d_nodes.set(p_id, p_node);
+	}
+	public function getNode(p_id:String):G3DNode {
 		return g2d_nodes.get(p_id);
 	}
 	
@@ -48,9 +51,23 @@ class GFbxScene {
 	public function setProjectionMatrix(p_value:GProjectionMatrix):Void {
 		g2d_projectionMatrix = p_value;
 	}
+	
+	private var g2d_connections:Array<G3DConnection>;
+	public function addConnection(p_sourceId:String, p_destinationId:String):Void {
+		if (p_sourceId == "0" || p_destinationId == "0") return;
+		var source:G3DNode = g2d_nodes.get(p_sourceId);
+        var destination:G3DNode = g2d_nodes.get(p_destinationId);
+		if (destination != null && source != null) {
+			destination.connections.set(source.id, source);
+			g2d_connections.push(new G3DConnection(p_sourceId, p_destinationId));
+		} else {
+			MGDebug.WARNING("Invalid connection", p_sourceId, p_destinationId, source, destination);
+		}
+	}
 
     public function new() {
-        g2d_nodes = new Map<String,GFbxNode>();
+        g2d_nodes = new Map<String,G3DNode>();
+		g2d_connections = new Array<G3DConnection>();
 
         lightDirection = new GFloat4(1,1,1,1);
         ambientColor = new GFloat4(1,1,1,1);
@@ -58,86 +75,27 @@ class GFbxScene {
         lightColor = new GFloat4(1,1,1,1);
     }
 
-    public function init(p_fbxData:GFbxParserNode):Void {
-        g2d_fbxData = p_fbxData;
-
-        initTextures();
-        initMaterials();
-        initModels();
-        initGeometry();
-
-        initConnections();
-
-        create();
-    }
-
-    private function initTextures():Void {
-        var textureNodes:Array<GFbxParserNode> = GFbxTools.getAll(g2d_fbxData, "Objects.Texture");
-        for (node in textureNodes) {
-            var texture:GFbxTexture = new GFbxTexture(node);
-            g2d_nodes.set(texture.id, texture);
-        }
-    }
-
-    private function initModels():Void {
-        var modelNodes:Array<GFbxParserNode> = GFbxTools.getAll(g2d_fbxData, "Objects.Model");
-
-        for (node in modelNodes) {
-            var model:GFbxModel = new GFbxModel(node);
-            g2d_nodes.set(model.id, model);
-        }
-    }
-
-    private function initMaterials():Void {
-        var materialNodes:Array<GFbxParserNode> = GFbxTools.getAll(g2d_fbxData, "Objects.Material");
-
-        for (node in materialNodes) {
-            var material:GFbxMaterial = new GFbxMaterial(node);
-            g2d_nodes.set(material.id, material);
-        }
-    }
-
-    private function initGeometry():Void {
-        var geometryNodes:Array<GFbxParserNode> = GFbxTools.getAll(g2d_fbxData,"Objects.Geometry");
-
-        for (node in geometryNodes) {
-            var geometry:GFbxGeometry = new GFbxGeometry(node);
-
-            g2d_nodes.set(geometry.id, geometry);
-        }
-    }
-
-    private function initConnections():Void {
-        var connectionNodes:Array<GFbxParserNode> = GFbxTools.getAll(g2d_fbxData, "Connections.C");
-
-        for (node in connectionNodes) {
-            var sourceId:String = Std.string(GFbxTools.toFloat(node.props[1]));
-            var source:GFbxNode = g2d_nodes.get(sourceId);
-            var destinationId:String = Std.string(GFbxTools.toFloat(node.props[2]));
-            var destination:GFbxNode = g2d_nodes.get(destinationId);
-            if (destination != null && source != null) {
-                destination.connections.set(source.id, source);
-            }
-        }
-    }
-
-    private function create():Void {
+    public function invalidate():Void {
 		g2d_sceneMatrix = new GMatrix3D();
-        g2d_models = new Array<GFbxModel>();
+        g2d_models = new Array<G3DModel>();
 
         for (node in g2d_nodes) {
-            var model:GFbxModel = (Std.is(node,GFbxModel)) ? cast node : null;
+            var model:G3DModel = (Std.is(node,G3DModel)) ? cast node : null;
             if (model != null) {
-				var fbxGeometry:GFbxGeometry = model.getGeometry();
-				if (fbxGeometry == null) GDebug.error("Model has no geometry.");
+				var geometry:G3DGeometry = model.getGeometry();
+				if (geometry == null) MGDebug.G2D_ERROR("Model has no geometry.");
 				
-				var fbxRenderer:G3DRenderer = new G3DRenderer(fbxGeometry.vertices, fbxGeometry.uvs, fbxGeometry.indices, fbxGeometry.vertexNormals, false);
-
-				var fbxTexture:GFbxTexture = model.getMaterial().getTexture();
-				if (fbxTexture == null) GDebug.error("Model material has no texture.");
-				fbxRenderer.texture = GTextureManager.getTexture(fbxTexture.relativePath.substring(fbxTexture.relativePath.lastIndexOf("\\") + 1, fbxTexture.relativePath.lastIndexOf(".")));
-				if (fbxRenderer.texture == null) GDebug.error("Couldn't find FBX texture ", fbxTexture.relativePath.substring(fbxTexture.relativePath.lastIndexOf("\\") + 1, fbxTexture.relativePath.lastIndexOf(".")));
-				model.renderer = fbxRenderer;
+				var renderer:G3DRenderer = new G3DRenderer(geometry.vertices, geometry.uvs, geometry.indices, geometry.vertexNormals, false);
+				var material:G3DMaterial = model.getMaterial();
+				if (material == null) MGDebug.G2D_ERROR("Model has no material.");
+				
+				var texture:G3DTexture = model.getMaterial().getTexture();
+				if (texture == null) MGDebug.G2D_ERROR("Model material has no texture.");
+				
+				renderer.texture = GTextureManager.getTexture(texture.relativePath.substring(texture.relativePath.lastIndexOf("\\") + 1, texture.relativePath.lastIndexOf(".")));
+				if (renderer.texture == null) MGDebug.G2D_ERROR("Couldn't find FBX texture ", texture.relativePath.substring(texture.relativePath.lastIndexOf("\\") + 1, texture.relativePath.lastIndexOf(".")));
+				
+				model.renderer = renderer;
 				g2d_models.push(model);
             }
         }
@@ -153,11 +111,11 @@ class GFbxScene {
 				renderer.lightColor = lightColor;
 				renderer.tintColor = tintColor;
 				switch (model.inheritSceneMatrixMode) {
-					case GFbxMatrixInheritMode.REPLACE:
+					case G3DMatrixInheritMode.REPLACE:
 						renderer.renderMatrix = g2d_sceneMatrix;
-					case GFbxMatrixInheritMode.IGNORE:
+					case G3DMatrixInheritMode.IGNORE:
 						renderer.renderMatrix = model.modelMatrix;
-					case GFbxMatrixInheritMode.APPEND:
+					case G3DMatrixInheritMode.APPEND:
 						renderer.renderMatrix = model.modelMatrix.clone();
 						renderer.renderMatrix.append(g2d_sceneMatrix);
 				}
@@ -229,4 +187,14 @@ class GFbxScene {
 
         }
     }
+}
+
+class G3DConnection {
+    public var sourceId:String;
+    public var destinationId:String;
+	
+	public function new(p_sourceId:String, p_destinationId:String) {
+		sourceId = p_sourceId;
+		destinationId = p_destinationId;
+	}
 }

@@ -8,6 +8,7 @@ class GFbxMaterial extends GFbxNode {
         for (connection in connections) {
             if (Std.is(connection, GFbxTexture)) return cast connection;
         }
+		
         return null;
     }
 

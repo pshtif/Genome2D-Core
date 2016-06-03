@@ -1,12 +1,22 @@
 package com.genome2d.fbx;
 
-import com.genome2d.context.stage3d.renderers.GFbxRenderer;
+import com.genome2d.context.stage3d.renderers.G3DRenderer;
 import com.genome2d.fbx.GFbxTools;
+import com.genome2d.geom.GMatrix3D;
 
 class GFbxModel extends GFbxNode {
 	public var visible:Bool = true;
 	
-	public var renderer:GFbxRenderer;
+	public var renderer:G3DRenderer;
+	
+	public var inheritSceneMatrixMode:Int = GFbxMatrixInheritMode.REPLACE;
+	public var modelMatrix:GMatrix3D;
+	
+	public function new(p_fbxNode:GFbxParserNode):Void {
+		super(p_fbxNode);
+		
+		modelMatrix = new GMatrix3D();
+	}
 	
     public function getGeometry():GFbxGeometry {
         for (connection in connections) {
