@@ -2,9 +2,9 @@ package com.genome2d.g3d;
 
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.context.GBlendMode;
-import com.genome2d.context.stage3d.GProjectionMatrix;
-import com.genome2d.context.stage3d.GStage3DContext;
-import com.genome2d.context.stage3d.renderers.G3DRenderer;
+import com.genome2d.context.GProjectionMatrix;
+import com.genome2d.context.GStage3DContext;
+import com.genome2d.context.renderers.G3DRenderer;
 import com.genome2d.debug.GDebug;
 import com.genome2d.fbx.GFbxParserNode;
 import com.genome2d.fbx.GFbxTools;

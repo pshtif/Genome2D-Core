@@ -8,7 +8,6 @@
  */
 package com.genome2d.postprocess;
 
-import com.genome2d.context.stage3d.GStage3DContext;
 import com.genome2d.utils.GRenderTargetStack;
 import com.genome2d.context.IGContext;
 import com.genome2d.node.GNode;

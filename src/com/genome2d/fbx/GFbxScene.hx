@@ -2,9 +2,8 @@ package com.genome2d.fbx;
 
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.context.GBlendMode;
-import com.genome2d.context.stage3d.GProjectionMatrix;
-import com.genome2d.context.stage3d.GStage3DContext;
-import com.genome2d.context.stage3d.renderers.G3DRenderer;
+import com.genome2d.context.GProjectionMatrix;
+import com.genome2d.context.renderers.G3DRenderer;
 import com.genome2d.debug.GDebug;
 import com.genome2d.fbx.GFbxParserNode;
 import com.genome2d.fbx.GFbxTools;
@@ -148,25 +147,25 @@ class GFbxScene {
         for (model in g2d_models) {
 			if (model.visible) {
 				renderer = model.renderer;
-				renderer.lightDirection = lightDirection;
-				renderer.ambientColor = ambientColor;
-				renderer.lightColor = lightColor;
-				renderer.tintColor = tintColor;
+				//renderer.lightDirection = lightDirection;
+				//renderer.ambientColor = ambientColor;
+				//renderer.lightColor = lightColor;
+				//renderer.tintColor = tintColor;
 				switch (model.inheritSceneMatrixMode) {
 					case GFbxMatrixInheritMode.REPLACE:
-						renderer.renderMatrix = g2d_sceneMatrix;
+						renderer.modelMatrix = g2d_sceneMatrix;
 					case GFbxMatrixInheritMode.IGNORE:
-						renderer.renderMatrix = model.modelMatrix;
+						renderer.modelMatrix = model.modelMatrix;
 					case GFbxMatrixInheritMode.APPEND:
-						renderer.renderMatrix = model.modelMatrix.clone();
-						renderer.renderMatrix.append(g2d_sceneMatrix);
+						renderer.modelMatrix = model.modelMatrix.clone();
+						renderer.modelMatrix.append(g2d_sceneMatrix);
 				}
 				renderer.cameraMatrix = p_cameraMatrix;
 				renderer.projectionMatrix = g2d_projectionMatrix;
 			}
         }		
 		
-		var context:GStage3DContext = cast Genome2D.getInstance().getContext();
+		var context:IGContext = Genome2D.getInstance().getContext();
         context.setBlendMode(GBlendMode.NORMAL, true);
 		
         switch (p_type) {
@@ -212,9 +211,9 @@ class GFbxScene {
 					if (model.visible) {
 						renderer = model.renderer;
 						context.setRenderer(renderer);
-						renderer.tintColor.w = 0;
+						//renderer.tintColor.w = 0;
 						renderer.draw(2, 1);
-						renderer.tintColor.w = 0;
+						//renderer.tintColor.w = 0;
 					}
                 }
 			// Depth reflection

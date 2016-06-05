@@ -1,5 +1,5 @@
 package com.genome2d.experimental;
-import com.genome2d.context.stage3d.renderers.GBufferRenderer;
+import com.genome2d.context.renderers.GBufferRenderer;
 
 /**
  * ...

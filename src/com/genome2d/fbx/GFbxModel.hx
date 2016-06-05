@@ -1,6 +1,6 @@
 package com.genome2d.fbx;
 
-import com.genome2d.context.stage3d.renderers.G3DRenderer;
+import com.genome2d.context.renderers.G3DRenderer;
 import com.genome2d.fbx.GFbxTools;
 import com.genome2d.geom.GMatrix3D;
 

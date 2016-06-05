@@ -1,6 +1,6 @@
 package com.genome2d.g3d;
 
-import com.genome2d.context.stage3d.renderers.G3DRenderer;
+import com.genome2d.context.renderers.G3DRenderer;
 import com.genome2d.geom.GMatrix3D;
 
 class G3DModel extends G3DNode {
