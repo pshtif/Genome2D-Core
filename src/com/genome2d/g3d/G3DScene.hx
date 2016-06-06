@@ -9,7 +9,7 @@ import com.genome2d.debug.GDebug;
 import com.genome2d.fbx.GFbxParserNode;
 import com.genome2d.fbx.GFbxTools;
 import com.genome2d.macros.MGDebug;
-import flash.utils.ByteArray;
+import com.genome2d.textures.GTexture;
 
 import com.genome2d.geom.GFloat4;
 import com.genome2d.geom.GMatrix3D;
@@ -92,8 +92,9 @@ class G3DScene {
 				var texture:G3DTexture = model.getMaterial().getTexture();
 				if (texture == null) MGDebug.G2D_ERROR("Model material has no texture.");
 				
-				renderer.texture = GTextureManager.getTexture(texture.relativePath.substring(texture.relativePath.lastIndexOf("\\") + 1, texture.relativePath.lastIndexOf(".")));
-				if (renderer.texture == null) MGDebug.G2D_ERROR("Couldn't find FBX texture ", texture.relativePath.substring(texture.relativePath.lastIndexOf("\\") + 1, texture.relativePath.lastIndexOf(".")));
+				var textureId:String = (texture.relativePath.lastIndexOf(".") != -1) ? texture.relativePath.substring(texture.relativePath.lastIndexOf("\\") + 1, texture.relativePath.lastIndexOf(".")) : texture.relativePath;
+				renderer.texture = GTextureManager.getTexture(textureId);
+				if (renderer.texture == null) MGDebug.G2D_ERROR("Couldn't find texture", textureId);
 				
 				model.renderer = renderer;
 				g2d_models.push(model);
@@ -112,12 +113,12 @@ class G3DScene {
 				renderer.tintColor = tintColor;
 				switch (model.inheritSceneMatrixMode) {
 					case G3DMatrixInheritMode.REPLACE:
-						renderer.renderMatrix = g2d_sceneMatrix;
+						renderer.modelMatrix = g2d_sceneMatrix;
 					case G3DMatrixInheritMode.IGNORE:
-						renderer.renderMatrix = model.modelMatrix;
+						renderer.modelMatrix = model.modelMatrix;
 					case G3DMatrixInheritMode.APPEND:
-						renderer.renderMatrix = model.modelMatrix.clone();
-						renderer.renderMatrix.append(g2d_sceneMatrix);
+						renderer.modelMatrix = model.modelMatrix.clone();
+						renderer.modelMatrix.append(g2d_sceneMatrix);
 				}
 				renderer.cameraMatrix = p_cameraMatrix;
 				renderer.projectionMatrix = g2d_projectionMatrix;
