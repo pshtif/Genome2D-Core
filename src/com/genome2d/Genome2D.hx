@@ -311,7 +311,7 @@ class Genome2D implements IGDebuggableInternal
         g2d_onInvalidated.removeAll();
         g2d_onKeyboardInput.removeAll();
 
-        g2d_context.dispose();
+        if (g2d_context != null) g2d_context.dispose();
         g2d_context = null;
     }
 
