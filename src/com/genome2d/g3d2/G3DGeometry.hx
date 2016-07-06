@@ -1,5 +1,5 @@
 package com.genome2d.g3d2;
-import src.com.genome2d.g3d2.G3DBase;
+import com.genome2d.g3d2.G3DBase;
 
 /**
  * @author Peter @sHTiF Stefcek

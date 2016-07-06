@@ -1,4 +1,4 @@
-package src.com.genome2d.g3d2;
+package com.genome2d.g3d2;
 
 /**
 
