@@ -28,8 +28,8 @@ class GUI extends GComponent implements IGRenderable {
 		root.g2d_worldRight = g2d_bounds.right + (useNodePosition ? node.g2d_worldX : 0);
 		root.g2d_worldTop = g2d_bounds.top + (useNodePosition ? node.g2d_worldY : 0);
 		root.g2d_worldBottom = g2d_bounds.bottom + (useNodePosition ? node.g2d_worldY : 0);
-		//root.g2d_finalWidth = root.g2d_worldRight - root.g2d_worldLeft;
-		//root.g2d_finalHeight = root.g2d_worldBottom - root.g2d_worldTop;
+		root.g2d_finalWidth = root.g2d_worldRight - root.g2d_worldLeft;
+		root.g2d_finalHeight = root.g2d_worldBottom - root.g2d_worldTop;
 		
         root.calculateWidth();
         root.invalidateWidth();
