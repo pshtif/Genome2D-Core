@@ -3,7 +3,6 @@ package com.genome2d.g3d;
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.context.GProjectionMatrix;
-import com.genome2d.context.GStage3DContext;
 import com.genome2d.context.renderers.G3DRenderer;
 import com.genome2d.debug.GDebug;
 import com.genome2d.fbx.GFbxParserNode;
@@ -125,7 +124,7 @@ class G3DScene {
 			}
         }		
 		
-		var context:GStage3DContext = cast Genome2D.getInstance().getContext();
+		var context:IGContext = Genome2D.getInstance().getContext();
         context.setBlendMode(GBlendMode.NORMAL, true);
 		
         switch (p_type) {
