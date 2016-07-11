@@ -4,16 +4,18 @@
 -cp Genome2D-ContextCommon/src
 
 # Include libraries
--lib msignal
 -swf-lib Genome2D-ContextFlash/lib/AGAL.swc
+-lib Actuate
+-lib hscript
 
 # Haxe flags
 -dce no
+--macro include('com')
 
 # Genome2D flags
 -D genome_stage3donly
+#-D genome_debug
 
 # Flash Swc flags
 -swf-version 12
---macro include('com')
 -swf bin/Genome2D.swc
