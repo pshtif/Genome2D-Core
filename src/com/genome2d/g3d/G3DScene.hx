@@ -101,11 +101,12 @@ class G3DScene {
         }
     }
 
-    public function render(p_cameraMatrix:GMatrix3D, p_type:Int = 1):Void {
+    public function render(p_cameraMatrix:GMatrix3D, p_type:Int = 1, p_textureOverride:GTexture = null):Void {
 		var renderer:G3DRenderer;
         for (model in g2d_models) {
 			if (model.visible) {
 				renderer = model.renderer;
+				if (p_textureOverride != null) renderer.texture = p_textureOverride;
 				renderer.lightDirection = lightDirection;
 				renderer.ambientColor = ambientColor;
 				renderer.lightColor = lightColor;
