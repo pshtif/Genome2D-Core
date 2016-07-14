@@ -24,9 +24,12 @@ import com.genome2d.textures.GTexture;
 **/
 class GSprite extends GTexturedQuad
 {
-	static public function create(p_node:GNode, p_texture:GTexture):GSprite {
+	static public function create(p_node:GNode, p_texture:GTexture, p_x:Float = 0, p_y:Float = 0, p_rotation:Float = 0, p_scaleX:Float = 1, p_scaleY:Float = 1):GSprite {
 		var sprite:GSprite = p_node == null ? GNode.createWithComponent(GSprite) : p_node.addComponent(GSprite);
 		sprite.texture = p_texture;
+		sprite.node.setPosition(p_x, p_y);
+		sprite.node.rotation = p_rotation;
+		sprite.node.setScale(p_scaleX, p_scaleY);
 		
 		return sprite;
 	}
