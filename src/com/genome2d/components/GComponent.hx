@@ -63,7 +63,6 @@ class GComponent implements IGPrototypable
     }
 
     public function dispose():Void {
-
     }
 	
 	/**

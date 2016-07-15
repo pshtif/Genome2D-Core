@@ -39,14 +39,18 @@ class GParticleSystemComponent extends GComponent implements IGRenderable
 	
 	override public function init():Void {
 		g2d_particleSystem = new GParticleSystem();
+		
+		node.core.onUpdate.add(update);
 	}
 	
-	private function update():Void {
+	private function update(p_deltaTime:Float):Void {
+		g2d_particleSystem.update(p_deltaTime);
+	}
+
+	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
 		g2d_particleSystem.x = node.x;
 		g2d_particleSystem.y = node.y;
-	}
-	
-	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
+		
 		g2d_particleSystem.render(node.core.getContext());
 	}
 
@@ -60,6 +64,10 @@ class GParticleSystemComponent extends GComponent implements IGRenderable
 	
 	public function hitTest(p_x:Float, p_y:Float):Bool {
 		return false;
+	}
+	
+	override public function dispose():Void {
+		node.core.onUpdate.remove(update);
 	}
 	
 }
