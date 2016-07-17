@@ -44,6 +44,9 @@ class GParticleSystemComponent extends GComponent implements IGRenderable
 	}
 	
 	private function update(p_deltaTime:Float):Void {
+		g2d_particleSystem.x = node.x;
+		g2d_particleSystem.y = node.y;
+		
 		g2d_particleSystem.update(p_deltaTime);
 	}
 
