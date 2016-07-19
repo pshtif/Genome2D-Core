@@ -60,6 +60,11 @@ class Genome2D implements IGDebuggableInternal
     **/
     public var autoUpdateAndRender:Bool = true;
 
+	private var g2d_initialized:Bool = false;
+	public function isInitialized():Bool {
+		return g2d_initialized;
+	}
+	
     /*
      *  CALLBACKS
      */
@@ -313,6 +318,7 @@ class Genome2D implements IGDebuggableInternal
 
         if (g2d_context != null) g2d_context.dispose();
         g2d_context = null;
+		g2d_initialized = false;
     }
 
     private function g2d_contextInitialized_handler():Void {
@@ -320,6 +326,7 @@ class Genome2D implements IGDebuggableInternal
         g2d_context.g2d_onMouseInputInternal = g2d_contextMouseInput_handler;
         g2d_context.onKeyboardInput.add(g2d_contextKeyboardInput_handler);
 
+		g2d_initialized = true;
         onInitialized.dispatch();
     }
 

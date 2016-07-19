@@ -20,6 +20,7 @@ class GPrototype
 	
 	public function process(p_instance:IGPrototypable, p_prototypeName:String):Void {
 		var currentPrototypeClass:Class<IGPrototypable> = GPrototypeFactory.getPrototypeClass(p_prototypeName);
+
 		if (prototypeClass == null) {
 			prototypeName = p_prototypeName;
 			prototypeClass = currentPrototypeClass;
@@ -46,6 +47,7 @@ class GPrototype
 	
 	public function bind(p_instance:IGPrototypable, p_prototypeName:String):Void {
 		var currentPrototypeClass:Class<IGPrototypable> = GPrototypeFactory.getPrototypeClass(p_prototypeName);
+		
 		var propertyNames:Array<String> = Reflect.field(currentPrototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
 		for (property in properties) {
 			if (propertyNames.indexOf(property.name) != -1 && (property.extras & GPrototypeExtras.IGNORE_AUTO_BIND) == 0) property.bind(p_instance);

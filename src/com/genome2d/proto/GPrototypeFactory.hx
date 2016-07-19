@@ -13,14 +13,22 @@ class GPrototypeFactory {
         if (g2d_lookups != null) return;
         g2d_lookups = new Map<String,Class<IGPrototypable>>();
 		
-		#if flash
+		// For some reason when Haxe is compiled to JS it can't find classes generated during macro directly
+		#if js
+		var fields:Array<String> = untyped Type.getClassFields(com_genome2d_proto_GPrototypeHelper);
+		#else
 		var fields:Array<String> = Type.getClassFields(GPrototypeHelper);
+		#end
 		for (i in fields) {
 			if (i.indexOf("g2d_") == 0) continue;
+			#if js
+			var cls:Class<IGPrototypable> = cast Type.resolveClass(Reflect.field(untyped com_genome2d_proto_GPrototypeHelper, i));
+			#else
 			var cls:Class<IGPrototypable> = cast Type.resolveClass(Reflect.field(GPrototypeHelper, i));
+			#end
             if (cls != null) g2d_lookups.set(i, cls);
 		}
-		#end
+		
     }
 
     static public function getPrototypeClass(p_prototypeName:String):Class<IGPrototypable> {
