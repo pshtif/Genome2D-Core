@@ -1,3 +1,5 @@
+# DO NOT BUILD THIS SWC DIRECTLY IT SHOULD BE CALLED WITHIN build.swc IN THE ROOT DIRECTORY
+
 # Include sources
 -cp Genome2D-Core/src
 -cp Genome2D-ContextFlash/src
