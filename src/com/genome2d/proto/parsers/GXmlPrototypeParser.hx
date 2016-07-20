@@ -22,7 +22,7 @@ class GXmlPrototypeParser
 			} else {
 				if (property.isPrototype()) {
 					var propertyXml:Xml = Xml.createElement("p:" + property.name);
-					propertyXml.addChild(property.value.toXml());
+					propertyXml.addChild(toXml(property.value));
 					xml.addChild(propertyXml);
 				} else {
 					GDebug.error("Error during prototype parsing unknown property type", property.type);
