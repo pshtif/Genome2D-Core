@@ -32,4 +32,9 @@ class G3DModel extends G3DNode {
         }
         return null;
     }
+	
+	public function dispose():Void {
+		if (renderer != null) renderer.dispose();
+		renderer = null;
+	}
 }
