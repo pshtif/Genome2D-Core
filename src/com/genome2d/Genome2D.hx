@@ -8,6 +8,7 @@
  */
 package com.genome2d;
 
+import com.genome2d.assets.GStaticAssetManager;
 import com.genome2d.callbacks.GCallback;
 import com.genome2d.debug.IGDebuggableInternal;
 import com.genome2d.macros.MGDebug;
@@ -172,6 +173,11 @@ class Genome2D implements IGDebuggableInternal
     inline public function getCurrentFrameDeltaTime():Float {
         return g2d_currentFrameDeltaTime;
     }
+	
+	private var g2d_assetManager:GAssetManager;
+	inline public function getAssetManager():GAssetManager {
+		return g2d_assetManager;
+	}
 
     private var g2d_root:GNode;
     /**
@@ -242,7 +248,7 @@ class Genome2D implements IGDebuggableInternal
         g2d_context.onInvalidated.add(g2d_contextInvalidated_handler);
 		
 		GPrototypeFactory.initializePrototypes();
-        GAssetManager.init();
+        g2d_assetManager = new GAssetManager();
 		GFontManager.init();
 		GTextureManager.init(g2d_context);
         GUISkinManager.init();
