@@ -10,18 +10,18 @@ package com.genome2d.spine;
 import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 
-import com.spine.Bone;
-import com.spine.Skin;
-import com.spine.atlas.Atlas;
-import com.spine.attachments.AtlasAttachmentLoader;
-import com.spine.attachments.Attachment;
+import spine.Bone;
+import spine.Skin;
+import spine.atlas.Atlas;
+import spine.attachments.AtlasAttachmentLoader;
+import spine.attachments.Attachment;
 
-import com.spine.attachments.AttachmentLoader;
-import com.spine.attachments.AttachmentType;
-import com.spine.attachments.BoundingBoxAttachment;
-import com.spine.attachments.MeshAttachment;
-import com.spine.attachments.RegionAttachment;
-import com.spine.attachments.SkinnedMeshAttachment;
+import spine.attachments.AttachmentLoader;
+import spine.attachments.AttachmentType;
+import spine.attachments.BoundingBoxAttachment;
+import spine.attachments.MeshAttachment;
+import spine.attachments.RegionAttachment;
+import spine.attachments.SkinnedMeshAttachment;
 
 class GAtlasAttachmentLoader implements AttachmentLoader {
     private var g2d_atlas:Atlas;

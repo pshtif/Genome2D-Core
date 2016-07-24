@@ -19,15 +19,15 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.geom.GRectangle;
 import haxe.ds.Vector;
 
-import com.spine.Bone;
-import com.spine.Skeleton;
-import com.spine.SkeletonData;
-import com.spine.SkeletonJson;
-import com.spine.Slot;
-import com.spine.animation.AnimationState;
-import com.spine.animation.AnimationStateData;
-import com.spine.atlas.Atlas;
-import com.spine.attachments.RegionAttachment;
+import spine.Bone;
+import spine.Skeleton;
+import spine.SkeletonData;
+import spine.SkeletonJson;
+import spine.Slot;
+import spine.animation.AnimationState;
+import spine.animation.AnimationStateData;
+import spine.atlas.Atlas;
+import spine.attachments.RegionAttachment;
 
 class GSpine extends GComponent implements IGRenderable
 {

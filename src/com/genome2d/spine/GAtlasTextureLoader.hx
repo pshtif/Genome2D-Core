@@ -7,10 +7,10 @@ import com.genome2d.geom.GRectangle;
 import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 
-import com.spine.atlas.AtlasPage;
-import com.spine.atlas.AtlasRegion;
+import spine.atlas.AtlasPage;
+import spine.atlas.AtlasRegion;
 
-import com.spine.atlas.TextureLoader;
+import spine.atlas.TextureLoader;
 
 class GAtlasTextureLoader implements TextureLoader {
     private var _texture:GTexture;
