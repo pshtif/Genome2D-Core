@@ -98,7 +98,7 @@ class G3DScene {
 				var texture:G3DTexture = model.getMaterial().getTexture();
 				if (texture == null) MGDebug.G2D_ERROR("Model material has no texture.");
 				
-				var textureId:String = (texture.relativePath.lastIndexOf(".") != -1) ? texture.relativePath.substring(texture.relativePath.lastIndexOf("\\") + 1, texture.relativePath.lastIndexOf(".")) : texture.relativePath;
+				var textureId:String = texture.relativePath;
 				renderer.texture = GTextureManager.getTexture(textureId);
 				if (renderer.texture == null) MGDebug.G2D_ERROR("Couldn't find texture", textureId);
 				

@@ -17,7 +17,7 @@ import com.genome2d.textures.GTexture;
     Particle element class used by `GParticlePool` and `GParticleSystem`
  **/
 @:allow(com.genome2d.deprecated.particles.GParticlePoolD)
-@:allow(Genome2D-Core.src.com.genome2d.deprecated.components.renderable.particles.GParticleSystem)
+@:allow(com.genome2d.deprecated.components.renderable.particles.GParticleSystem)
 class GParticleD
 {
     public var texture:GTexture;

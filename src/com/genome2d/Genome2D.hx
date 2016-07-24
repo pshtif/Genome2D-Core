@@ -248,7 +248,10 @@ class Genome2D implements IGDebuggableInternal
         g2d_context.onInvalidated.add(g2d_contextInvalidated_handler);
 		
 		GPrototypeFactory.initializePrototypes();
+		
         g2d_assetManager = new GAssetManager();
+		GStaticAssetManager.setInstance(g2d_assetManager);
+		
 		GFontManager.init();
 		GTextureManager.init(g2d_context);
         GUISkinManager.init();
