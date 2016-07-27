@@ -7,6 +7,9 @@ import com.genome2d.context.renderers.G3DRenderer;
 import com.genome2d.debug.GDebug;
 import com.genome2d.fbx.GFbxParserNode;
 import com.genome2d.fbx.GFbxTools;
+import com.genome2d.geom.GPoint;
+import com.genome2d.geom.GRectangle;
+import com.genome2d.geom.GVector3D;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.textures.GTexture;
 
@@ -107,6 +110,20 @@ class G3DScene {
             }
         }
     }
+	
+	static public function projectPoint(p_point:GVector3D, p_sceneMatrix:GMatrix3D, p_cameraMatrix:GMatrix3D, p_projectionMatrix:GProjectionMatrix):GPoint {
+		var stageRect:GRectangle = Genome2D.getInstance().getContext().getStageViewRect();
+		
+		if (p_projectionMatrix == null) {
+			p_projectionMatrix = new GProjectionMatrix();
+			p_projectionMatrix.ortho(stageRect.width, stageRect.height);
+		}
+		
+		p_point = p_sceneMatrix.transformVector(p_point);
+		p_point = p_cameraMatrix.transformVector(p_point);
+		p_point = p_projectionMatrix.transformVector(p_point);
+		return new GPoint((p_point.x+1)/2*stageRect.width, -(p_point.y-1)/2*stageRect.height);
+	}
 
     public function render(p_cameraMatrix:GMatrix3D, p_type:Int = 1, p_textureOverride:GTexture = null):Void {
 		var renderer:G3DRenderer;

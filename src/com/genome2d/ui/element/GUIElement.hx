@@ -902,7 +902,10 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                 g2d_children[i].render(worldRed, worldGreen, worldBlue, worldAlpha);
             }
 			
-			if (!expand) context.setMaskRect(previousMask);
+			if (!expand) {
+				GUISkin.flushBatch();
+				context.setMaskRect(previousMask);
+			}
         }
     }
 
