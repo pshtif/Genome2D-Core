@@ -43,8 +43,6 @@ class GAtlasAttachmentLoader implements AttachmentLoader {
         regionAttachment.regionHeight = texture.height;
         regionAttachment.regionOriginalWidth = texture.width;
         regionAttachment.regionOriginalHeight = texture.height;
-		//trace('new region attachment: ', p_name);
-		//trace('data:', regionAttachment.regionOffsetX, regionAttachment.regionOffsetY, regionAttachment.regionWidth, regionAttachment.regionHeight, regionAttachment.regionOriginalWidth, regionAttachment.regionOriginalHeight);
         return regionAttachment;
     }
 

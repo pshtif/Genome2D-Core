@@ -142,7 +142,6 @@ class MGPrototypeProcessor {
 									prototypePropertyDefaults.push(defaultValue == null?extractDefault(p.name, e, pos):defaultValue);
                                     prototypePropertyNames.push(i.name);
 									//var fileName:String = PositionTools.getInfos(i.pos).file;
-									//trace(localClass.name, fileName.substring(fileName.lastIndexOf("/")+1, fileName.lastIndexOf(".hx")), i.name);
 									prototypePropertyTypes.push(extractType(p));
 									prototypePropertyExtras.push(extras);
                                 case _:
@@ -152,7 +151,6 @@ class MGPrototypeProcessor {
                 }
             }
         }
-		//trace(Type.resolveClass(localClass.module));
 		var getPrototype = generateGetPrototype(macro $v { prototypeName });
 		switch (getPrototype) {
 			case TAnonymous(f):
@@ -313,7 +311,6 @@ class MGPrototypeProcessor {
 				case _:
 			}
 		}
-
         return typeName;
     }
 

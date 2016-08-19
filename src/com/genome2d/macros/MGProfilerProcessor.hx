@@ -87,7 +87,6 @@ class MGProfilerProcessor {
                     case EConst(c):
                         switch(c) {
                             case CIdent(s):
-                                trace(s);
                             default:
                         }
                     default:

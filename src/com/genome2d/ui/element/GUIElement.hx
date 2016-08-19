@@ -147,6 +147,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseMove);
                 if (mdf != null) onMouseMove.remove(mdf);
             }
+			// Change the controller
             g2d_currentController = newController;
             if (g2d_mouseDown != "" && g2d_currentController != null) {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseDown);
@@ -938,6 +939,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
 
     public function dispose():Void {
+		visible = mouseEnabled = mouseChildren = false;
         setDirty();
         if (g2d_parent != null) g2d_parent.removeChild(this);
     }
@@ -995,7 +997,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     public var onMouseClick(get, never):GCallback1<GMouseInput>;
     #if swc @:getter(onMouseClick) #end
     inline private function get_onMouseClick():GCallback1<GMouseInput> {
-        if (g2d_onMouseClick == null) g2d_onMouseMove = new GCallback1(GMouseInput);
+        if (g2d_onMouseClick == null) g2d_onMouseClick = new GCallback1(GMouseInput);
         return g2d_onMouseClick;
     }
 
@@ -1008,13 +1010,13 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 				var i:Int = g2d_numChildren;
 				while (i>0) {
 					i--;
-					g2d_children[i].captureMouseInput(p_input);
+					if (i<g2d_numChildren) g2d_children[i].captureMouseInput(p_input);
 				}
 			}
 
 			if (mouseEnabled) {
 				if (p_input.g2d_captured && p_input.type == GMouseInputType.MOUSE_UP) g2d_mouseDownElement = null;
-				
+
 				p_input.localX = p_input.worldX - g2d_worldLeft;
 				p_input.localY = p_input.worldY - g2d_worldTop;
 				
@@ -1069,7 +1071,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     private function g2d_dispatchMouseCallback(p_type:String, p_element:GUIElement, p_input:GMouseInput):Void {
         if (mouseEnabled) {
             var mouseInput:GMouseInput = p_input.clone(this, p_element, p_type);
-
+			
             switch (p_type) {
                 case GMouseInputType.MOUSE_DOWN:
                     g2d_mouseDownElement = p_element;

@@ -108,7 +108,6 @@ class GSpine extends GComponent implements IGRenderable
             var drawOrder:Array<Slot> = _activeSkeleton.drawOrder;
             for (i in 0...drawOrder.length) {
                 var slot:Slot = drawOrder[i];
-//				trace(slot.attachment);
                 var regionAttachment:RegionAttachment = cast slot.attachment;
                 if (regionAttachment != null) {
                     var bone:Bone = slot.bone;
@@ -118,7 +117,6 @@ class GSpine extends GComponent implements IGRenderable
 
                     var tx:Float = bone.worldX + regionAttachment.x * bone.m00 + regionAttachment.y * bone.m01;
                     var ty:Float = bone.worldY + regionAttachment.x * bone.m10 + regionAttachment.y * bone.m11;
-                    //trace('drawing bone', bone.data.name, bone.worldX, bone.worldY, 'region Attachment', regionAttachment.x, regionAttachment.regionOffsetX, regionAttachment.y, regionAttachment.regionOffsetY);
                     var tr:Float = fx * (bone.worldRotation + regionAttachment.rotation) * Math.PI / 180;
                     var tsx:Float = bone.worldScaleX + regionAttachment.scaleX - 1;
                     var tsy:Float = bone.worldScaleY + regionAttachment.scaleY - 1;

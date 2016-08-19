@@ -12,33 +12,43 @@ import com.genome2d.context.GBlendMode;
 import com.genome2d.context.IGContext;
 import com.genome2d.context.stats.GStats;
 import com.genome2d.geom.GCurve;
+import com.genome2d.proto.IGPrototypable;
 import com.genome2d.textures.GTexture;
 
 /**
  *	Particle emitter
  */
-class GParticleEmitter
+class GParticleEmitter implements IGPrototypable
 {
+	@prototype
 	public var useWorldSpace:Bool = true;	
+	@prototype
 	public var enableSph:Bool = false;
 	
 	public var x:Float = 0;
 	public var y:Float = 0;
 	public var rotation:Float = 0;
 	
+	@prototype
 	public var emit:Bool = true;	
+	@prototype("getReference")
 	public var texture:GTexture;
 	
+	@prototype
 	public var duration:Float = 0;
+	@prototype
 	public var durationVariance:Float = 0;
 	private var g2d_currentDuration:Float = -1;
 	
 	public var loop:Bool = false;
 	
+	@prototype
 	public var delay:Float = 0;
+	@prototype
 	public var delayVariance:Float = 0;
 	
 	public var rate:GCurve;
+	@prototype
 	public var burstDistribution:Array<Float>;
 	
 	private var g2d_accumulatedTime:Float = 0;

@@ -34,7 +34,7 @@ class GPrototype
 		for (i in 0...propertyNames.length) {
 			var name:String = propertyNames[i];
 			var extras:Int = propertyExtras[i];
-			
+
 			if (extras & GPrototypeExtras.SETTER == 0) {
 				var value = Reflect.getProperty(p_instance, name);
 				if (value != propertyDefaults[i]) {
@@ -49,6 +49,7 @@ class GPrototype
 		var currentPrototypeClass:Class<IGPrototypable> = GPrototypeFactory.getPrototypeClass(p_prototypeName);
 		
 		var propertyNames:Array<String> = Reflect.field(currentPrototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
+
 		for (property in properties) {
 			if (propertyNames.indexOf(property.name) != -1 && (property.extras & GPrototypeExtras.IGNORE_AUTO_BIND) == 0) property.bind(p_instance);
 		}
@@ -82,7 +83,10 @@ class GPrototype
 			var propertyExtras:Array<Int> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
 			var propertyIndex:Int = propertyNames.indexOf(split[0]);
 
-			createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex], p_value);
+			var property:GPrototypeProperty = createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex]);
+			trace(p_value);
+			property.setStringValue(p_value);
+			
 		} else {
 			createPrototypeProperty(p_name, "String", 0, p_value);
 		}
@@ -90,7 +94,7 @@ class GPrototype
 	
 	public function createPrototypeProperty(p_name:String, p_type:String, p_extras:Int, p_value:Dynamic = null):GPrototypeProperty {
 		var property:GPrototypeProperty = new GPrototypeProperty(p_name, p_type, p_extras);
-		
+
 		properties.set(p_name, property);
 		property.value = p_value;
 		
@@ -111,15 +115,37 @@ class GPrototypeProperty {
 	}
 	
 	public function setDynamicValue(p_value:Dynamic):Void {
-		if (type.indexOf("Array") == 0) {
-			var subtype:String = type.substr(6);
-		} else if ((extras & GPrototypeExtras.REFERENCE_GETTER) != 0) {
+		if ((extras & GPrototypeExtras.REFERENCE_GETTER) != 0) {
 			value = cast(p_value, IGPrototypable).toReference();
 		} else {
 			if (isBasicType()) {
-				value = Std.string(p_value);
+				value = p_value;
 			} else {
 				value = cast(p_value, IGPrototypable).getPrototype();
+			}
+		}
+	}
+	
+	public function setStringValue(p_value:String):Void {
+		if ((extras & GPrototypeExtras.REFERENCE_GETTER) != 0) {
+			value = p_value;
+		} else {
+			switch (type) {
+				case "Bool":
+					value = (p_value != "false" && p_value != "0");
+				case "Int":
+					value = Std.parseInt(p_value);
+				case "Float":
+					value = Std.parseFloat(p_value);
+				case "String" | "Dynamic" :
+					value = p_value; 
+				case _:
+					if (type.indexOf("Array") == 0) {
+						// We need to strip the string of brackets before splitting
+						value = (p_value).substr(1,p_value.length-2).split(",");
+					} else {
+						GDebug.error("Error during prototype binding invalid value for type: " + type);
+					}
 			}
 		}
 	}
@@ -129,8 +155,10 @@ class GPrototypeProperty {
 		if (isReference()) {
 			var c:Class<IGPrototypable> = GPrototypeFactory.getPrototypeClass(type);
 			realValue = Reflect.callMethod(c, Reflect.field(c,"fromReference"), [value]);
+		} else if (isPrototype()) {
+			realValue = GPrototypeFactory.createPrototype(value);
 		} else {
-			realValue = g2d_getRealValue();
+			realValue = value;
 		}
 
 		var split:Array<String> = name.split(".");
@@ -150,7 +178,8 @@ class GPrototypeProperty {
 		p_instance.g2d_prototypeStates.setProperty(split[0], realValue, extras, split[1], split[2]);
 	}
 	
-	inline private function g2d_getRealValue():Dynamic {
+	/*
+	inline private function getRealValue():Dynamic {
 		var realValue:Dynamic = null;
 
 		switch (type) {
@@ -165,15 +194,18 @@ class GPrototypeProperty {
 			case _:
 				if (isPrototype()) {
 					realValue = GPrototypeFactory.createPrototype(value);
+				} else if (type.indexOf("Array") == 0) {
+					// We need to strip the string of brackets before splitting
+					realValue = (value).substr(1,value.length-2).split(",");
 				} else {
 					GDebug.error("Error during prototype binding invalid value for type: " + type);
 				}
 		}
 		return realValue;
 	}
-	
+	/**/
 	inline public function isBasicType():Bool {
-		return (type == "Bool" || type == "Int" || type == "Float" || type == "String");
+		return (type == "Bool" || type == "Int" || type == "Float" || type == "String" || type.indexOf("Array")==0);
 	}
 	
 	inline public function isReference():Bool {

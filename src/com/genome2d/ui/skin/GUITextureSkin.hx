@@ -1,4 +1,5 @@
 package com.genome2d.ui.skin;
+import com.genome2d.context.filters.GFilter;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.proto.GPrototype;
 import com.genome2d.textures.GTextureManager;
@@ -69,7 +70,12 @@ class GUITextureSkin extends GUISkin {
 	public var tiled:Bool = false;
 	
 	@prototype
+	public var usePivot:Bool = false;
+	
+	@prototype
 	public var bindTextureToModel:Bool = false;
+	
+	public var filter:GFilter;
 
     override public function getMinWidth():Float {
         return (texture != null && autoSize) ? texture.width * scaleX : 0;
@@ -120,13 +126,13 @@ class GUITextureSkin extends GUISkin {
 							var sy:Float = (finalScaleY - j > 1) ? 1 : (finalScaleY - j);
 							var px:Float = (texture.nativeWidth / 2 + texture.pivotX) - sx * scaleX * texture.nativeWidth / 2;
 							var py:Float = (texture.nativeHeight / 2 + texture.pivotY) - sy * scaleY * texture.nativeHeight / 2;
-							context.drawSource(texture, rx, ry, sx*texture.nativeWidth, sy*texture.nativeHeight, 0, 0, x+i*texture.width*scaleX-px, y+j*texture.height*scaleY-py, scaleX, scaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, 1, null);
+							context.drawSource(texture, rx, ry, sx*texture.nativeWidth, sy*texture.nativeHeight, 0, 0, x+i*texture.width*scaleX-px, y+j*texture.height*scaleY-py, scaleX, scaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, 1, filter);
 						}
 					}
 				} else {
-					var x:Float = p_left + (.5 * texture.width + texture.pivotX) * finalScaleX;
-					var y:Float = p_top + (.5 * texture.height + texture.pivotY) * finalScaleY;
-					context.draw(texture, x, y, finalScaleX, finalScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, 1, null);
+					var x:Float = p_left + (.5 * texture.width + (usePivot?0:texture.pivotX)) * finalScaleX;
+					var y:Float = p_top + (.5 * texture.height + (usePivot?0:texture.pivotY)) * finalScaleY;
+					context.draw(texture, x, y, finalScaleX, finalScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, 1, filter);
 				}
             } else {
 				var rx:Float = texture.u * texture.gpuWidth;// (texture.region != null) ? texture.region.x : 0;
@@ -143,7 +149,7 @@ class GUITextureSkin extends GUISkin {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left, p_top, scaleX, scaleY, 0,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
-                                       1, null);
+                                       1, filter);
                 }
 				/**/
                 tx = sl;
@@ -152,7 +158,7 @@ class GUITextureSkin extends GUISkin {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+sl*texture.scaleFactor*scaleX, p_top, finalScaleX, scaleY, 0,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
-                                       1, null);
+                                       1, filter);
                 }
                 /**/
                 tx = sr;
@@ -161,7 +167,7 @@ class GUITextureSkin extends GUISkin {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+(sl*scaleX+sw*finalScaleX)*texture.scaleFactor, p_top, scaleX, scaleY, 0,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
-                                       1, null);
+                                       1, filter);
                 }
 				/**/
                 tx = 0;
@@ -172,7 +178,7 @@ class GUITextureSkin extends GUISkin {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left, p_top+st*texture.scaleFactor*scaleY, scaleX, finalScaleY, 0,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
-                                       1, null);
+                                       1, filter);
                 }
                 /**/
                 tx = sl;
@@ -181,7 +187,7 @@ class GUITextureSkin extends GUISkin {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+sl*texture.scaleFactor*scaleX, p_top+st*texture.scaleFactor*scaleY, finalScaleX, finalScaleY, 0,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
-                                       1, null);
+                                       1, filter);
                 }
                 /**/
                 tx = sr;
@@ -191,7 +197,7 @@ class GUITextureSkin extends GUISkin {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+(sl*scaleX+sw*finalScaleX)*texture.scaleFactor, p_top+st*texture.scaleFactor*scaleY, scaleX, finalScaleY, 0,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
-                                       1, null);
+                                       1, filter);
                 }
                 /**/
                 tx = 0;
@@ -202,7 +208,7 @@ class GUITextureSkin extends GUISkin {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left, p_top+(st*scaleY+sh*finalScaleY)*texture.scaleFactor, scaleX, scaleY, 0,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
-                                       1, null);
+                                       1, filter);
                 }
                 /**/
                 tx = sl;
@@ -211,7 +217,7 @@ class GUITextureSkin extends GUISkin {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+sl*texture.scaleFactor*scaleX, p_top+(st*scaleY+sh*finalScaleY)*texture.scaleFactor, finalScaleX, scaleY, 0,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
-                                       1, null);
+                                       1, filter);
                 }
                 /**/
                 tx = sr;
@@ -220,7 +226,7 @@ class GUITextureSkin extends GUISkin {
                     context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+(sl*scaleX+sw*finalScaleX)*texture.scaleFactor, p_top+(st*scaleY+sh*finalScaleY)*texture.scaleFactor, scaleX, scaleY, 0,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
-                                       1, null);
+                                       1, filter);
                 }
                 /**/
             }
@@ -255,6 +261,8 @@ class GUITextureSkin extends GUISkin {
 		clone.scaleY = scaleY;
 		clone.rotation = rotation;
 		clone.tiled = tiled;
+		clone.usePivot = usePivot;
+		clone.filter = filter;
         return clone;
     }
 	

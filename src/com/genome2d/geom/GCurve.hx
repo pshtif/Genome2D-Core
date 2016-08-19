@@ -7,8 +7,9 @@
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
 package com.genome2d.geom;
+import com.genome2d.proto.IGPrototypable;
 
-class GCurve {
+class GCurve implements IGPrototypable {
     public var start:Float;
 
     private var g2d_segments:Array<Segment>;
