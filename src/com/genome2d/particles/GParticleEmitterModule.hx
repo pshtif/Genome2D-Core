@@ -7,14 +7,18 @@
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
 package com.genome2d.particles;
+import com.genome2d.proto.IGPrototypable;
 
 /**
  * Particle emitter module abstract
  */
-class GParticleEmitterModule
+class GParticleEmitterModule implements IGPrototypable
 {
+	@prototype
 	public var spawnModule:Bool = false;
+	@prototype
 	public var updateModule:Bool = false;
+	@prototype
 	public var enabled:Bool = true;
 	
 	public function new() {}

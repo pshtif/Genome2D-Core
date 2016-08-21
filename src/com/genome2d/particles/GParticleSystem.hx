@@ -280,7 +280,7 @@ class GSPHNeighbor
 			var fy:Float = ny * pressureWeight;
 			var fax:Float = (particle2.velocityX - particle1.velocityX) * weight;
 			var fay:Float = (particle2.velocityY - particle1.velocityY) * weight;
-			// Add some delta to avoid unnatural direct axis simulation
+			// Add some delta to avoid possible unnatural direct axis simulation
 			if (fx == 0) fx += .0000001;
 			if (fy == 0) fy += .0000001;
 			

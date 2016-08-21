@@ -111,7 +111,7 @@ class GParticleEmitter implements IGPrototypable
 			while (particle != null) {
 				var next:GParticle = particle.g2d_next;
 				for (module in g2d_updateModules) {
-					if (module.updateModule) module.update(this, particle, p_deltaTime);
+					if (module.updateModule && module.enabled) module.update(this, particle, p_deltaTime);
 				}
 				particle = next;
 			}
@@ -193,7 +193,7 @@ class GParticleEmitter implements IGPrototypable
         particle.g2d_spawn(this);
 		
 		for (module in g2d_modules) {
-			if (module.spawnModule) module.spawn(this, particle);
+			if (module.spawnModule && module.enabled) module.spawn(this, particle);
 		}
 		
 		return particle;
