@@ -49,9 +49,12 @@ class GPrototype
 		var currentPrototypeClass:Class<IGPrototypable> = GPrototypeFactory.getPrototypeClass(p_prototypeName);
 		
 		var propertyNames:Array<String> = Reflect.field(currentPrototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
-
+		
 		for (property in properties) {
-			if (propertyNames.indexOf(property.name) != -1 && (property.extras & GPrototypeExtras.IGNORE_AUTO_BIND) == 0) property.bind(p_instance);
+			var name:String = property.name.split(".")[0];
+			if (propertyNames.indexOf(name) != -1 && (property.extras & GPrototypeExtras.IGNORE_AUTO_BIND) == 0) {
+				property.bind(p_instance);
+			}
 		}
 	}
 	
@@ -84,7 +87,6 @@ class GPrototype
 			var propertyIndex:Int = propertyNames.indexOf(split[0]);
 
 			var property:GPrototypeProperty = createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex]);
-			trace(p_value);
 			property.setStringValue(p_value);
 			
 		} else {
@@ -162,7 +164,6 @@ class GPrototypeProperty {
 		}
 
 		var split:Array<String> = name.split(".");
-		
 		if (split.length == 1 || split[1].split("-").indexOf("default") != -1) {
 			try {
 				if ((extras & GPrototypeExtras.SETTER) != 0) {

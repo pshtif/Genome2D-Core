@@ -86,20 +86,6 @@ class GNode implements IGInteractive implements IGPrototypable
         var node:GNode = new GNode();
 		node.bindPrototype(p_prototype);
 
-		var components:Array<GPrototype> = p_prototype.getGroup("components");
-		if (components != null) {
-			for (prototype in components) {
-				node.addComponentPrototype(prototype);
-			}
-		}
-		
-		var children:Array<GPrototype> = p_prototype.getGroup("children");
-		if (children != null) {
-			for (prototype in children) {
-				node.addChild(createFromPrototype(prototype));
-			}
-		}
-
         return node;
     }
 

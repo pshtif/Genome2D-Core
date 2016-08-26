@@ -74,7 +74,7 @@ class GPrototypeFactory {
 	static public function g2d_bindPrototype(p_instance:IGPrototypable, p_prototype:GPrototype, p_prototypeName:String):Void {
         if (p_prototype == null) GDebug.error("Null prototype");
 		if (p_instance.g2d_prototypeStates == null) p_instance.g2d_prototypeStates = new GPrototypeStates();
-		
+
 		p_prototype.bind(p_instance, p_prototypeName);
     }
 }

@@ -235,9 +235,13 @@ class GUITextureSkin extends GUISkin {
         return rendered;
     }
 
-    override public function getTexture():GTexture {
+    override private function getTexture():GTexture {
         return texture;
     }
+	
+	override private function getFilter():GFilter {
+		return filter;
+	}
 	
 	override private function invalidateClones():Void {
 		for (clone in g2d_clones) {

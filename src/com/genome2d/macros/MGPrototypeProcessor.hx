@@ -258,6 +258,7 @@ class MGPrototypeProcessor {
 			var field = { name : prototypeName, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
 			prototypes.push(field);
 		}
+
 		// Prototype class implementation to avoid DCE
 		var kind = TPath({ pack : localClass.pack, name : localClass.name, params : []});
         var field = { name : "g2d_"+localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, null), pos : pos };

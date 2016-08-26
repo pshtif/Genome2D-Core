@@ -1,4 +1,5 @@
 package com.genome2d.ui.skin;
+import com.genome2d.context.filters.GFilter;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.proto.GPrototype;
 import com.genome2d.ui.element.GUIElement;
@@ -12,26 +13,32 @@ import com.genome2d.debug.GDebug;
 class GUISkin implements IGPrototypable {
     static private var g2d_batchQueue:Array<GUISkin>;
     static private var g2d_currentBatchTexture:GTexture;
+	static private var g2d_currentBatchFilter:GFilter;
 
     static private function batchRender(p_skin:GUISkin):Bool {
         var batched:Bool = false;
-        if (g2d_currentBatchTexture != null && p_skin.getTexture() != null && !p_skin.getTexture().hasSameGPUTexture(g2d_currentBatchTexture)) {
+        if (g2d_currentBatchTexture != null &&
+			p_skin.getTexture() != null && !p_skin.getTexture().hasSameGPUTexture(g2d_currentBatchTexture) &&
+			p_skin.getFilter() == g2d_currentBatchFilter) {
             g2d_batchQueue.push(p_skin);
             batched = true;
         } else if (g2d_currentBatchTexture == null && p_skin.getTexture() != null) {
             g2d_currentBatchTexture = p_skin.getTexture();
+			g2d_currentBatchFilter = p_skin.getFilter();
         }
         return batched;
     }
 
     static private function flushBatch():Void {
         g2d_currentBatchTexture = null;
+		g2d_currentBatchFilter = null;
         var queueLength:Int = g2d_batchQueue.length;
         for (i in 0...queueLength) {
             g2d_batchQueue.shift().flushRender();
         }
         if (g2d_batchQueue.length>0) flushBatch();
         g2d_currentBatchTexture = null;
+		g2d_currentBatchFilter = null;
     }
 
     private var g2d_id:String;
@@ -89,9 +96,13 @@ class GUISkin implements IGPrototypable {
         render(g2d_renderLeft, g2d_renderTop, g2d_renderRight, g2d_renderBottom, g2d_renderRed, g2d_renderGreen, g2d_renderBlue, g2d_renderAlpha);
     }
 
-    public function getTexture():GTexture {
+	private function getTexture():GTexture {
         return null;
     }
+	
+	private function getFilter():GFilter {
+		return null;
+	}
 
     private function attach(p_element:GUIElement):GUISkin {
         var origin:GUISkin = (g2d_origin == null) ? this : g2d_origin;

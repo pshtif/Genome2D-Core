@@ -681,6 +681,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_parent.isParent(p_element);
     }
 
+	/*
     public function setRect(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Void {
         var w:Float = p_right-p_left;
         var h:Float = p_bottom-p_top;
@@ -718,7 +719,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
         setDirty();
     }
-
+	/**/
     public function addChild(p_child:GUIElement):Void {
         if (p_child.g2d_parent == this) return;
         if (g2d_children == null) g2d_children = new Array<GUIElement>();

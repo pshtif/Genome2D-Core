@@ -219,8 +219,9 @@ class GText extends GComponent implements IGRenderable
 	}
 	
 	override public function bindPrototype(p_prototype:GPrototype):Void {
-		renderer.textureFont = GFontManager.getFont(p_prototype.getProperty("font").value);
+		bindPrototypeDefault(p_prototype);
 		
-		super.bindPrototype(p_prototype);
+		renderer.textureFont = GFontManager.getFont(p_prototype.getProperty("font").value);
 	}
+	/**/
 }
