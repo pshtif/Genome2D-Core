@@ -81,12 +81,14 @@ class GTextureTextRenderer extends GTextRenderer {
 		var charRed:Float = 1;
 		var charGreen:Float = 1;
 		var charBlue:Float = 1;
+		var charAlpha:Float = 1;
         for (i in 0...charCount) {
             var renderable:GTextureCharRenderable = g2d_chars[i];
 			
 			if (format != null) {
 				var indexColor:Int = format.getIndexColor(i);
 				if (indexColor != -1 && lastRenderColor != indexColor) {
+					charAlpha = (indexColor >> 24 & 0xFF) / 0xFF;
 					charRed = (indexColor >> 16 & 0xFF) / 0xFF;
 					charGreen = (indexColor >> 8 & 0xFF) / 0xFF;
 					charBlue = (indexColor & 0xFF) / 0xFF;
@@ -108,10 +110,10 @@ class GTextureTextRenderer extends GTextRenderer {
 				ty = cy * p_scaleY + p_y;
 			}
 			
-			if (charRed == 1 && charBlue == 1 && charGreen == 1) {
+			if (charRed == 1 && charBlue == 1 && charGreen == 1 && charAlpha == 1) {
 				g2d_context.draw(renderable.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, 1, null);
 			} else {
-				g2d_context.draw(renderable.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, charRed * p_red, charGreen * p_green, charBlue * p_blue, alpha * p_alpha, 1, null);
+				g2d_context.draw(renderable.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, charRed * p_red, charGreen * p_green, charBlue * p_blue, charAlpha * p_alpha, 1, null);
 			}
         }
 	}

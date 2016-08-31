@@ -59,7 +59,7 @@ class GFontManager
                     textureFont.kerning.set(first, map);
                 }
                 var second:Int = Std.parseInt(node.get("second"));
-                map.set(second, Std.parseInt("amount"));
+                map.set(second, Std.parseInt(node.get("amount")));
             }
         }
 		
