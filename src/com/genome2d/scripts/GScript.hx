@@ -6,6 +6,7 @@ package com.genome2d.scripts;
  */
 class GScript
 {
+	public var id:String;
 	public var includeMath:Bool = true;
 	
 	private var g2d_interpreter:hscript.Interp;
@@ -24,7 +25,7 @@ class GScript
 		if (includeMath) g2d_interpreter.variables.set("Math", Math);
 		var compiled:Bool = true;
 		try {
-			g2d_program = g2d_parser.parseString(g2d_script);
+			g2d_program = g2d_parser.parseString(g2d_source);
 			g2d_interpreter.execute(g2d_program);
 		} catch (e:Dynamic) {
 			compiled = false;
@@ -48,4 +49,11 @@ class GScript
 		g2d_parser.allowTypes = true;
 	}
 	
+	public function dispose():Void {
+		
+	}
+	
+	private function internalDispose():Void {
+		
+	}
 }

@@ -71,7 +71,7 @@ class G3DScene {
         g2d_nodes = new Map<String,G3DNode>();
 		g2d_connections = new Array<G3DConnection>();
 
-        lightDirection = new GFloat4(1,1,1,1);
+        lightDirection = new GFloat4(1,1,1);
         ambientColor = new GFloat4(1,1,1,1);
         tintColor = new GFloat4(1,1,1,1);
         lightColor = new GFloat4(1,1,1,1);
