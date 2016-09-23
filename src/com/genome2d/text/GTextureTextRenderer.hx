@@ -235,9 +235,10 @@ class GTextureTextRenderer extends GTextRenderer {
 				renderable.x = offsetX;
 				renderable.y = offsetY;
 				charIndex++;
+
+				if (currentCharCode == 32 || currentCharCode == 46) whiteSpaceIndex = i;
 				
 				if (currentCharCode == 32) {
-					whiteSpaceIndex = i;
 					renderable.whiteSpace = true;
 				} else {
 					renderable.whiteSpace = false;

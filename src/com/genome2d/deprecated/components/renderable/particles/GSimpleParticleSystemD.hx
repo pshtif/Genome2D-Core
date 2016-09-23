@@ -71,15 +71,15 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 	@prototype
 	public var initialAngularVelocityVariance:Float = 0;
 
-	@prototype
+
 	public var initialRed:Float = 1;
 	@prototype
 	public var initialRedVariance:Float = 0;
-	@prototype
+
 	public var initialGreen:Float = 1;
 	@prototype
 	public var initialGreenVariance:Float = 0;
-	@prototype
+
 	public var initialBlue:Float = 1;
 	@prototype
 	public var initialBlueVariance:Float = 0;
@@ -371,15 +371,24 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 		}
 	}
 
-    public function getBounds(p_target:GRectangle = null):GRectangle {
-        // TODO
-        return null;
+    public function getBounds(p_bounds:GRectangle = null):GRectangle {
+        if (p_bounds != null) p_bounds.setTo( -8, -8, 16, 16);
+        else p_bounds = new GRectangle( -8, -8, 16, 16);
+			
+		return p_bounds;
     }
 
     public function captureMouseInput(p_input:GMouseInput):Void {
+		p_input.g2d_captured = p_input.g2d_captured || hitTest(p_input.localX, p_input.localY);
     }
 	
 	public function hitTest(p_x:Float, p_y:Float):Bool {
-        return false;
+		var hit:Bool = false;
+		p_x = p_x / 16 + .5;
+		p_y = p_y / 16 + .5;
+
+		hit = (p_x >= 0 && p_x <= 1 && p_y >= 0 && p_y <= 1);
+		
+		return hit;
     }
 }

@@ -16,12 +16,20 @@ import com.genome2d.proto.IGPrototypable;
 class GUILayout implements IGPrototypable {
     @prototype public var type:Int = GUILayoutType.HORIZONTAL;
 
+	private function isCalculatingWidth():Bool {
+		return true;
+	}
+	
     private function calculateWidth(p_element:GUIElement):Void {
     }
 
     private function invalidateWidth(p_element:GUIElement):Void {
     }
 
+	private function isCalculatingHeight():Bool {
+		return true;
+	}
+	
     private function calculateHeight(p_element:GUIElement):Void {
     }
 

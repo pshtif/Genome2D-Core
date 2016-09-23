@@ -8,31 +8,21 @@
  */
 package com.genome2d.ui.element;
 
-import com.genome2d.callbacks.GCallback;
+import com.genome2d.Genome2D;
+import com.genome2d.callbacks.GCallback.GCallback1;
 import com.genome2d.context.GCamera;
 import com.genome2d.context.IGContext;
-import com.genome2d.input.GFocusManager;
-import com.genome2d.Genome2D;
 import com.genome2d.geom.GRectangle;
-import com.genome2d.input.GKeyboardInput;
-import com.genome2d.input.IGInteractive;
-import com.genome2d.node.GNode;
-import com.genome2d.proto.GPrototype;
-import com.genome2d.proto.GPrototypeExtras;
-import com.genome2d.textures.GTextureManager;
-import com.genome2d.ui.layout.GUIHorizontalLayout;
-import com.genome2d.ui.layout.GUILayoutType;
-import com.genome2d.ui.layout.GUIVerticalLayout;
-import com.genome2d.ui.skin.GUIFontSkin;
-import com.genome2d.ui.skin.GUISkinManager;
-import com.genome2d.ui.layout.GUILayout;
-import Xml.XmlType;
-import com.genome2d.input.GMouseInputType;
+import com.genome2d.input.GFocusManager;
 import com.genome2d.input.GMouseInput;
+import com.genome2d.input.GMouseInputType;
+import com.genome2d.input.IGInteractive;
+import com.genome2d.proto.GPrototype;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
+import com.genome2d.ui.layout.GUILayout;
 import com.genome2d.ui.skin.GUISkin;
-import com.genome2d.ui.skin.GUITextureSkin;
+import com.genome2d.ui.skin.GUISkinManager;
 
 @:access(com.genome2d.ui.layout.GUILayout)
 @:access(com.genome2d.ui.skin.GUISkin)
@@ -381,7 +371,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         }
         onModelChanged.dispatch(this);
     }
-
+	
     private var g2d_onModelChanged:GCallback1<GUIElement>;
     #if swc @:extern #end
     public var onModelChanged(get, never):GCallback1<GUIElement>;
@@ -788,7 +778,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	
     private function calculateWidth():Void {
         if (g2d_dirty) {
-            if (g2d_layout != null) {
+            if (g2d_layout != null && g2d_layout.isCalculatingWidth()) {
                 g2d_layout.calculateWidth(this);
             } else {
                 g2d_minWidth = g2d_activeSkin != null ? g2d_activeSkin.getMinWidth() : 0;

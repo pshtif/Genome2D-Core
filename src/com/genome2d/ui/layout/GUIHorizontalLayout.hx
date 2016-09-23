@@ -17,7 +17,7 @@ class GUIHorizontalLayout extends GUILayout {
 	public var gap:Float = 0;
 	
 	public function new() {
-		
+		type = GUILayoutType.HORIZONTAL;
 	}
 
     override private function calculateWidth(p_element:GUIElement):Void {
