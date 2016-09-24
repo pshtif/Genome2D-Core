@@ -40,6 +40,10 @@ class GTextureTextRenderer extends GTextRenderer {
 	public var cursorEndIndex:Int = 0;
 	private var g2d_cursorCurrentIndex:Int = 0;
 	public var enableCursor:Bool = false;
+	public var scrollLine:Int = 0;
+	private var maxVisibleLine:Int = 0;
+	public var autoScroll:Bool = true;
+	private var lineCount:Int = 0;
 	
 	public var format:GTextFormat;
 	
@@ -82,6 +86,8 @@ class GTextureTextRenderer extends GTextRenderer {
 		var charGreen:Float = 1;
 		var charBlue:Float = 1;
 		var charAlpha:Float = 1;
+		if (autoScroll && lineCount>maxVisibleLine) scrollLine = lineCount - maxVisibleLine - 1;
+		var scrollOffset:Float = scrollLine * (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale;
         for (i in 0...charCount) {
             var renderable:GTextureCharRenderable = g2d_chars[i];
 			
@@ -95,12 +101,14 @@ class GTextureTextRenderer extends GTextRenderer {
 					lastRenderColor = indexColor;
 				}
 			}
-			
-            if (!renderable.visible) break;
-			if (renderable.whiteSpace) continue;
+
+            if (!renderable.visible || renderable.line > maxVisibleLine+scrollLine) {
+				break;
+			}
+			if (renderable.whiteSpace || renderable.line<scrollLine) continue;
 			
 			var cx:Float = renderable.x + renderable.xoffset*fontScale;
-			var cy:Float = renderable.y + renderable.yoffset*fontScale;
+			var cy:Float = renderable.y + renderable.yoffset*fontScale - scrollOffset;
 
             if (p_rotation != 0) {
                 tx = (cx * cos - cy * sin) * p_scaleX + p_x;
@@ -171,6 +179,7 @@ class GTextureTextRenderer extends GTextRenderer {
         var charIndex:Int = 0;
         var whiteSpaceIndex:Int = -1;
         var i:Int = 0;
+		var isAllVisible:Bool = true;
 
         while (i < g2d_textLength) {
 			if (charIndex>=g2d_chars.length) {
@@ -188,16 +197,25 @@ class GTextureTextRenderer extends GTextRenderer {
                 previousCharCode = -1;
                 lines.push(currentLine);
                 currentLine = new Array<GTextureCharRenderable>();
-                if (!g2d_autoSize && offsetY + 2*(g2d_textureFont.lineHeight + g2d_lineSpace) > g2d_height) break;
+				// TODO: Vertical autosize
+                if (!g2d_autoSize && offsetY + 2 * (g2d_textureFont.lineHeight + g2d_lineSpace)*g2d_fontScale > g2d_height && isAllVisible) {
+					isAllVisible = false;
+					maxVisibleLine = lines.length;
+				}
                 offsetX = 0;
                 offsetY += (g2d_textureFont.lineHeight + g2d_lineSpace)*g2d_fontScale;
 				
+				renderable.line = lines.length - 1;
 				renderable.x = offsetX;
 				renderable.y = offsetY;
 				renderable.whiteSpace = true;
 				charIndex++;
             } else {
-                if (!g2d_autoSize && offsetY + (g2d_textureFont.lineHeight + g2d_lineSpace)*g2d_fontScale > g2d_height) break;
+				// TODO: Vertical autosize
+                if (!g2d_autoSize && offsetY + (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale > g2d_height && isAllVisible) {
+					isAllVisible = false;
+					maxVisibleLine = lines.length;
+				}
 
                 currentCharCode = g2d_text.charCodeAt(i);
                 char = g2d_textureFont.getChar(Std.string(currentCharCode));
@@ -209,7 +227,7 @@ class GTextureTextRenderer extends GTextRenderer {
                 }
 
                 if (previousCharCode != -1) {
-                    offsetX += g2d_textureFont.getKerning(previousCharCode,currentCharCode)*g2d_fontScale;
+                    offsetX += g2d_textureFont.getKerning(previousCharCode, currentCharCode) * g2d_fontScale;
                 }
 
 				renderable.setCharCode(currentCharCode);
@@ -223,7 +241,10 @@ class GTextureTextRenderer extends GTextRenderer {
 					charIndex -= backtrack;
 
 					if (backtrack >= currentCount) break;
-					if (!g2d_autoSize && offsetY + 2 * (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale > g2d_height) break;
+					if (!g2d_autoSize && offsetY + 2 * (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale > g2d_height && isAllVisible) {
+						isAllVisible = false;
+						maxVisibleLine = lines.length;
+					}
 
 					i = whiteSpaceIndex+1;
 					offsetX = 0;
@@ -232,6 +253,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				}
 
 				currentLine.push(renderable);
+				renderable.line = lines.length;
 				renderable.x = offsetX;
 				renderable.y = offsetY;
 				charIndex++;
@@ -253,6 +275,9 @@ class GTextureTextRenderer extends GTextRenderer {
             ++i;
         }
         lines.push(currentLine);
+		lineCount = lines.length;
+
+		if (isAllVisible) maxVisibleLine = lines.length;
 
         var charCount:Int = g2d_chars.length;
         for (i in charIndex...charCount) {

@@ -931,6 +931,13 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
     public function dispose():Void {
 		visible = mouseEnabled = mouseChildren = false;
+		
+		GUISkinManager.onSkinChanged.remove(skinChanged_handler);
+	
+		if (g2d_skin != null) g2d_skin.remove();
+		g2d_skin = null;
+		g2d_activeSkin = null;
+		
         setDirty();
         if (g2d_parent != null) g2d_parent.removeChild(this);
     }
@@ -1103,6 +1110,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	
 	private function skinChanged_handler(p_skinId:String):Void {
 		if (g2d_skin != null && g2d_skin.id == p_skinId) {
+			var t = GUISkinManager.getSkin(p_skinId);
 			skin = GUISkinManager.getSkin(p_skinId);
 		}
 	}

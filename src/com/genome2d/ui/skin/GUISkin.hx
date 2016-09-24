@@ -63,11 +63,11 @@ class GUISkin implements IGPrototypable {
     public function new(p_id:String = "", p_origin:GUISkin) {
 		g2d_origin = p_origin;
         if (g2d_origin == null) {
+			g2d_clones = new Array<GUISkin>();
 			if (p_id != "") {
 				g2d_id = p_id;
 				GUISkinManager.g2d_addSkin(g2d_id, this);
 			}
-			g2d_clones = new Array<GUISkin>();
 		}
     }
 
@@ -110,7 +110,6 @@ class GUISkin implements IGPrototypable {
         clone.g2d_element = p_element;
         clone.elementModelChanged_handler(p_element);
         p_element.onModelChanged.add(clone.elementModelChanged_handler);
-		
 		origin.g2d_clones.push(clone);
         return clone;
     }
