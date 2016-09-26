@@ -14,6 +14,7 @@ class GUISkin implements IGPrototypable {
     static private var g2d_batchQueue:Array<GUISkin>;
     static private var g2d_currentBatchTexture:GTexture;
 	static private var g2d_currentBatchFilter:GFilter;
+	static public var useBatch:Bool = true;
 
     static private function batchRender(p_skin:GUISkin):Bool {
         var batched:Bool = false;
@@ -22,7 +23,8 @@ class GUISkin implements IGPrototypable {
 			p_skin.getFilter() == g2d_currentBatchFilter) {
             g2d_batchQueue.push(p_skin);
             batched = true;
-        } else if (g2d_currentBatchTexture == null && p_skin.getTexture() != null) {
+        } else if (g2d_currentBatchTexture == null &&
+				   p_skin.getTexture() != null) {
             g2d_currentBatchTexture = p_skin.getTexture();
 			g2d_currentBatchFilter = p_skin.getFilter();
         }
@@ -30,15 +32,17 @@ class GUISkin implements IGPrototypable {
     }
 
     static private function flushBatch():Void {
-        g2d_currentBatchTexture = null;
-		g2d_currentBatchFilter = null;
-        var queueLength:Int = g2d_batchQueue.length;
-        for (i in 0...queueLength) {
-            g2d_batchQueue.shift().flushRender();
-        }
-        if (g2d_batchQueue.length>0) flushBatch();
-        g2d_currentBatchTexture = null;
-		g2d_currentBatchFilter = null;
+		if (useBatch) {
+			g2d_currentBatchTexture = null;
+			g2d_currentBatchFilter = null;
+			var queueLength:Int = g2d_batchQueue.length;
+			for (i in 0...queueLength) {
+				g2d_batchQueue.shift().flushRender();
+			}
+			if (g2d_batchQueue.length>0) flushBatch();
+			g2d_currentBatchTexture = null;
+			g2d_currentBatchFilter = null;
+		}
     }
 
     private var g2d_id:String;
@@ -89,7 +93,7 @@ class GUISkin implements IGPrototypable {
 		g2d_renderBlue = p_blue;
 		g2d_renderAlpha = p_alpha;
 
-        return !batchRender(this);
+        return useBatch ? !batchRender(this) : true;
     }
 
     inline private function flushRender():Void {

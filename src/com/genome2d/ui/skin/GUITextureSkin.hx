@@ -114,19 +114,27 @@ class GUITextureSkin extends GUISkin {
 
             if (sw == 0 || sh == 0) {
 				if (tiled) {
-					var rx:Float = texture.u * texture.gpuWidth;// (texture.region != null) ? texture.region.x : 0;
-					var ry:Float = texture.v * texture.gpuHeight;// (texture.region != null) ? texture.region.y : 0;
-					var x:Float = p_left + (.5 * texture.width + texture.pivotX);
-					var y:Float = p_top + (.5 * texture.height + texture.pivotY);
-					finalScaleX /= scaleX;
-					finalScaleY /= scaleY;
-					for (i in 0...Math.ceil(finalScaleX)) {
-						for (j in 0...Math.ceil(finalScaleY)) {
-							var sx:Float = (finalScaleX - i > 1) ? 1 : (finalScaleX - i);
-							var sy:Float = (finalScaleY - j > 1) ? 1 : (finalScaleY - j);
-							var px:Float = (texture.nativeWidth / 2 + texture.pivotX) - sx * scaleX * texture.nativeWidth / 2;
-							var py:Float = (texture.nativeHeight / 2 + texture.pivotY) - sy * scaleY * texture.nativeHeight / 2;
-							context.drawSource(texture, rx, ry, sx*texture.nativeWidth, sy*texture.nativeHeight, 0, 0, x+i*texture.width*scaleX-px, y+j*texture.height*scaleY-py, scaleX, scaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, 1, filter);
+					if (texture.repeatable) {
+						texture.uScale = finalScaleX;
+						texture.vScale = finalScaleY;
+						var x:Float = p_left + (.5 * texture.width + (usePivot?0:texture.pivotX)) * finalScaleX;
+						var y:Float = p_top + (.5 * texture.height + (usePivot?0:texture.pivotY)) * finalScaleY;
+						context.draw(texture, x, y, finalScaleX, finalScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, 1, filter);
+					} else {
+						var rx:Float = texture.u * texture.gpuWidth;// (texture.region != null) ? texture.region.x : 0;
+						var ry:Float = texture.v * texture.gpuHeight;// (texture.region != null) ? texture.region.y : 0;
+						var x:Float = p_left + (.5 * texture.width + texture.pivotX);
+						var y:Float = p_top + (.5 * texture.height + texture.pivotY);
+						finalScaleX /= scaleX;
+						finalScaleY /= scaleY;
+						for (i in 0...Math.ceil(finalScaleX)) {
+							for (j in 0...Math.ceil(finalScaleY)) {
+								var sx:Float = (finalScaleX - i > 1) ? 1 : (finalScaleX - i);
+								var sy:Float = (finalScaleY - j > 1) ? 1 : (finalScaleY - j);
+								var px:Float = (texture.nativeWidth / 2 + texture.pivotX) - sx * scaleX * texture.nativeWidth / 2;
+								var py:Float = (texture.nativeHeight / 2 + texture.pivotY) - sy * scaleY * texture.nativeHeight / 2;
+								context.drawSource(texture, rx, ry, sx*texture.nativeWidth, sy*texture.nativeHeight, 0, 0, x+i*texture.width*scaleX-px, y+j*texture.height*scaleY-py, scaleX, scaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, 1, filter);
+							}
 						}
 					}
 				} else {

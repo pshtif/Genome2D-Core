@@ -1019,13 +1019,16 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 				p_input.localY = p_input.worldY - g2d_worldTop;
 				
 				if (!p_input.g2d_captured && p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom) {
-					if (g2d_activeSkin != null) g2d_activeSkin.captureMouseInput(p_input);
-					p_input.g2d_captured = true;
-					GFocusManager.activeFocus = this;
-					g2d_dispatchMouseCallback(p_input.type, this, p_input);
+					if (g2d_activeSkin != null) {
+						g2d_activeSkin.captureMouseInput(p_input);
+						
+						p_input.g2d_captured = true;
+						GFocusManager.activeFocus = this;
+						g2d_dispatchMouseCallback(p_input.type, this, p_input);
 
-					if (g2d_mouseOverElement != this) {
-						g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, this, p_input);
+						if (g2d_mouseOverElement != this) {
+							g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, this, p_input);
+						}
 					}
 				} else {
 					if (g2d_mouseOverElement == this) {
@@ -1049,7 +1052,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 		//g2d_movedMouseY += p_input.contextY - g2d_previousMouseY;
 		if (g2d_dragging || Math.abs(g2d_movedMouseX)>dragSensitivity || Math.abs(g2d_movedMouseY)>dragSensitivity) {
 			//_dragFrame = Genome2D.getInstance().getCurrentFrameId();
-			anchorX += (p_input.contextX - g2d_previousMouseX) / p_input.camera.scaleX;
+			anchorX += (p_input.contextX - g2d_previousMouseX) / p_input.camera.contextCamera.scaleX;
 			if (anchorX > 0) anchorX = 0;
 			if (anchorX < parent.g2d_finalWidth - g2d_minWidth) anchorX = parent.g2d_finalWidth - g2d_minWidth;
 			g2d_dragging = true;
