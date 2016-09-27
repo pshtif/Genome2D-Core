@@ -40,38 +40,7 @@ class GUIFontSkin extends GUISkin {
         return p_value;
     }
 	
-	#if swc @:extern #end
-    @prototype
-	public var color(get, set):Int;
-	#if swc @:getter(color) #end
-    inline private function get_color():Int {
-        var color:Int = 0;
-		color += Std.int(red * 0xFF) << 16;
-		color += Std.int(green * 0xFF) << 8;
-		color += Std.int(blue * 0xFF);
-		return color;
-    }
-	#if swc @:setter(color) #end
-	inline public function set_color(p_value:Int):Int {
-		red = Std.int(p_value >> 16 & 0xFF) / 0xFF;
-        green = Std.int(p_value >> 8 & 0xFF) / 0xFF;
-        blue = Std.int(p_value & 0xFF) / 0xFF;
-		return p_value;
-	}
-	
 	public var format:GTextFormat;
-	
-	@prototype
-	public var red:Float = 1;
-	
-	@prototype
-	public var green:Float = 1;
-	
-	@prototype
-	public var blue:Float = 1;
-	
-	@prototype
-	public var alpha:Float = 1;
 	
     #if swc @:extern #end
 	public var text(get, set):String;

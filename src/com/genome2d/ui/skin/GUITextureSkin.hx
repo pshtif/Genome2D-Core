@@ -46,18 +46,6 @@ class GUITextureSkin extends GUISkin {
 	public var autoSize:Bool = true;
 	
 	@prototype
-	public var red:Float = 1;
-	
-	@prototype
-	public var green:Float = 1;
-	
-	@prototype
-	public var blue:Float = 1;
-	
-	@prototype
-	public var alpha:Float = 1;
-	
-	@prototype
 	public var scaleX:Float = 1;
 	
 	@prototype
