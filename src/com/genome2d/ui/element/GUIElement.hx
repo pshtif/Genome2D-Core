@@ -61,8 +61,18 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     @prototype 
 	public var mouseChildren:Bool = true;
 
+    private var g2d_visible:Bool = true;
+    #if swc @:extern #end
 	@prototype
-    public var visible:Bool = true;
+    public var visible(get,set):Bool;
+    #if swc @:getter(visible) #end
+    inline private function get_visible():Bool {
+        return g2d_visible;
+    }
+    #if swc @:setter(visible) #end
+    inline private function set_visible(p_value:Bool):Bool {
+        g2d_visible = p_value;
+    }
 
     @prototype 
 	public var flushBatch:Bool = false;
