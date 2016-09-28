@@ -34,6 +34,9 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	public var blue:Float = 1;
 	@prototype
 	public var alpha:Float = 1;
+
+    @prototype
+    public var useMask:Bool = false;
 	
 	static public var setModelHook:Dynamic->Dynamic;
 	
@@ -895,9 +898,12 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 			var previousMask:GRectangle = context.getMaskRect();
 			var camera:GCamera = context.getActiveCamera();
 			
-            if (flushBatch || !expand) GUISkin.flushBatch();
-			if (!expand) {
-				context.setMaskRect(new GRectangle(g2d_worldLeft*camera.scaleX, g2d_worldTop*camera.scaleY, (g2d_worldRight - g2d_worldLeft)*camera.scaleX, (g2d_worldBottom - g2d_worldTop)*camera.scaleY));
+            if (flushBatch || useMask) GUISkin.flushBatch();
+			if (useMask) {
+                var w:Float = (g2d_worldRight - g2d_worldLeft) * camera.scaleX;
+                var h:Float = (g2d_worldBottom - g2d_worldTop) * camera.scaleY;
+                if (w <= 0 || h <= 0) return;
+				context.setMaskRect(new GRectangle(g2d_worldLeft*camera.scaleX, g2d_worldTop*camera.scaleY, w, h));
 			}
 
             if (g2d_activeSkin != null) g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom, worldRed, worldGreen, worldBlue, worldAlpha);
@@ -906,7 +912,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                 g2d_children[i].render(worldRed, worldGreen, worldBlue, worldAlpha);
             }
 			
-			if (!expand) {
+			if (useMask) {
 				GUISkin.flushBatch();
 				context.setMaskRect(previousMask);
 			}
@@ -1055,7 +1061,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         var found:Bool = false;
         if (g2d_mouseOverElement != null) {
             var input:GMouseInput = new GMouseInput(g2d_mouseOverElement, g2d_mouseOverElement, GMouseInputType.fromNative(GMouseInputType.MOUSE_OUT),0, 0);
-            g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_mouseOverElement, input);
+            g2d_mouseOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_mouseOverElement, input);
             found = true;
         } else {
             if (g2d_children != null) {
