@@ -1122,13 +1122,13 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                     g2d_mouseDownElement = null;
                     if (g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_OVER:
-                    g2d_mouseOverElement = p_element;
-                    if (g2d_onMouseOver != null) g2d_onMouseOver.dispatch(mouseInput);
-                case GMouseInputType.MOUSE_OUT:
-                    if (g2d_mouseOverElement == this) {
-                        g2d_mouseOverElement = null;
-                        if (g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseInput);
+                    if (g2d_mouseOverElement != p_element) {
+                        g2d_mouseOverElement = p_element;
+                        if (g2d_onMouseOver != null) g2d_onMouseOver.dispatch(mouseInput);
                     }
+                case GMouseInputType.MOUSE_OUT:
+                    g2d_mouseOverElement = null;
+                    if (g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseInput);
             }
         }
 
