@@ -340,13 +340,6 @@ class Genome2D implements IGDebuggableInternal
     }
 
     private function g2d_contextFailed_handler(p_error:String):Void {
-        if (g2d_contextConfig.fallbackContextClass != null) {
-            g2d_context = Type.createInstance(g2d_contextConfig.fallbackContextClass, [g2d_contextConfig]);
-            g2d_context.onInitialized.add(g2d_contextInitialized_handler);
-            g2d_context.onFailed.add(g2d_contextFailed_handler);
-            g2d_context.init();
-        }
-
         onFailed.dispatch(p_error);
     }
 
