@@ -37,10 +37,11 @@ class GPrototype
 
 			if (extras & GPrototypeExtras.SETTER == 0) {
 				var value = Reflect.getProperty(p_instance, name);
+				if (value != null) {
 				//if (value != propertyDefaults[i]) {
 					var property:GPrototypeProperty = createPrototypeProperty(name, propertyTypes[i], extras);
-					property.setDynamicValue(Reflect.getProperty(p_instance, name));
-				//}
+					property.setDynamicValue(value);
+				}
 			}
 		}
 	}
