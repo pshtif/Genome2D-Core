@@ -2,7 +2,6 @@ package com.genome2d.proto;
 
 import com.genome2d.transitions.GTransitionManager;
 import com.genome2d.transitions.IGTransition;
-import motion.Actuate;
 
 /**
  * ...

@@ -72,6 +72,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     #if swc @:setter(visible) #end
     inline private function set_visible(p_value:Bool):Bool {
         g2d_visible = p_value;
+        dispatchHidden();
+        return g2d_visible;
     }
 
     @prototype 
@@ -83,7 +85,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	static public var dragSensitivity:Float = 0;
 	
 	public var userData:Dynamic;
-	
+	/*
 	private var g2d_scrollable:Bool = false;
 	#if swc @:extern #end
     @prototype 
@@ -102,7 +104,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 		g2d_scrollable = p_value;
         return g2d_scrollable;
     }
-	
+	/**/
 	private var g2d_dragging:Bool = false;
 	private var g2d_previousMouseX:Float;
 	private var g2d_previousMouseY:Float;
@@ -1048,7 +1050,24 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 			}
 		}
     }
-	
+
+    private function dispatchHidden():Bool {
+        var found:Bool = false;
+        if (g2d_mouseOverElement != null) {
+            var input:GMouseInput = new GMouseInput(g2d_mouseOverElement, g2d_mouseOverElement, GMouseInputType.fromNative(GMouseInputType.MOUSE_OUT),0, 0);
+            g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_mouseOverElement, input);
+            found = true;
+        } else {
+            if (g2d_children != null) {
+                for (child in g2d_children) {
+                    found = found || child.dispatchHidden();
+                    if (found) break;
+                }
+            }
+        }
+        return found;
+    }
+	/*
 	private function mouseDown_handler(p_input:GMouseInput):Void {
 		g2d_movedMouseX = g2d_movedMouseY = 0;
 		g2d_previousMouseX = p_input.contextX;
@@ -1070,7 +1089,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 		g2d_previousMouseX = p_input.contextX;
 		g2d_previousMouseY = p_input.contextY;
 	}
-	
+
 	private function contextMouseInput_handler(p_input:GMouseInput):Void {
 		if (p_input.type == GMouseInputType.MOUSE_UP) {
 			g2d_dragging = false;
@@ -1078,7 +1097,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 			Genome2D.getInstance().getContext().onMouseInput.remove(contextMouseInput_handler);
 		}
 	}
-
+    /**/
     private function g2d_dispatchMouseCallback(p_type:String, p_element:GUIElement, p_input:GMouseInput):Void {
         if (mouseEnabled) {
             var mouseInput:GMouseInput = p_input.clone(this, p_element, p_type);
@@ -1100,8 +1119,10 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                     g2d_mouseOverElement = p_element;
                     if (g2d_onMouseOver != null) g2d_onMouseOver.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_OUT:
-                    g2d_mouseOverElement = null;
-                    if (g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseInput);
+                    if (g2d_mouseOverElement == this) {
+                        g2d_mouseOverElement = null;
+                        if (g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseInput);
+                    }
             }
         }
 
