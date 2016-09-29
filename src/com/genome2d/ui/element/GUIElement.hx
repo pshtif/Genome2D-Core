@@ -8,10 +8,10 @@
  */
 package com.genome2d.ui.element;
 
+import com.genome2d.context.IGContext;
 import com.genome2d.Genome2D;
 import com.genome2d.callbacks.GCallback.GCallback1;
 import com.genome2d.context.GCamera;
-import com.genome2d.context.IGContext;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.input.GFocusManager;
 import com.genome2d.input.GMouseInput;
@@ -893,7 +893,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 			var worldGreen:Float = p_green * green;
 			var worldBlue:Float = p_blue * blue;
 			var worldAlpha:Float = p_alpha * alpha;
-			
+
 			var context:IGContext = Genome2D.getInstance().getContext();
 			var previousMask:GRectangle = context.getMaskRect();
 			var camera:GCamera = context.getActiveCamera();
