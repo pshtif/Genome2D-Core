@@ -24,6 +24,7 @@ import com.genome2d.context.GCamera;
  **/
 class GSimpleParticleSystemD extends GComponent implements IGRenderable
 {
+	@category("rendering")
 	@prototype
     public var blendMode:Int = 1;
 
@@ -33,13 +34,17 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 	@prototype
     public var useWorldSpace:Bool = false;
 
+	@category("rendering")
 	@range(0, 10)
 	@prototype
 	public var initialScale:Float = 1;
+	@category("rendering")
 	@prototype
 	public var initialScaleVariance:Float = 0;
+	@category("rendering")
 	@prototype
 	public var endScale:Float = 1;
+	@category("rendering")
 	@prototype
 	public var endScaleVariance:Float = 0;
 
@@ -73,22 +78,29 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 
 
 	public var initialRed:Float = 1;
+	@category("color")
 	@prototype
 	public var initialRedVariance:Float = 0;
 
 	public var initialGreen:Float = 1;
+	@category("color")
 	@prototype
 	public var initialGreenVariance:Float = 0;
 
 	public var initialBlue:Float = 1;
+	@category("color")
 	@prototype
 	public var initialBlueVariance:Float = 0;
+
+	@category("color")
 	@prototype
 	public var initialAlpha:Float = 1;
+	@category("color")
 	@prototype
 	public var initialAlphaVariance:Float = 0;
 
     #if swc @:extern #end
+	@category("color")
 	@prototype
 	public var initialColor(get, set):Int;
     #if swc @:getter(initialColor) #end
@@ -106,24 +118,29 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 		return p_value;
 	}
 
-	@prototype
 	public var endRed:Float = 1;
+	@category("color")
 	@prototype
 	public var endRedVariance:Float = 0;
-	@prototype
+
 	public var endGreen:Float = 1;
+	@category("color")
 	@prototype
 	public var endGreenVariance:Float = 0;
-	@prototype
+
 	public var endBlue:Float = 1;
+	@category("color")
 	@prototype
 	public var endBlueVariance:Float = 0;
+	@category("color")
 	@prototype
 	public var endAlpha:Float = 1;
+	@category("color")
 	@prototype
 	public var endAlphaVariance:Float = 0;
 	
 	#if swc @:extern #end
+	@category("color")
 	@prototype
 	public var endColor(get, set):Int;
 	#if swc @:getter(endColor) #end
@@ -236,7 +253,8 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 
         return p_value;
     }
-	
+
+	@category("rendering")
 	@prototype("getReference")
 	public var texture:GTexture;
 
