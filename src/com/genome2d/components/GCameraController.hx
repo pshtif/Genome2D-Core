@@ -120,6 +120,8 @@ class GCameraController extends GComponent
         g2d_contextCamera.y = node.g2d_worldY;
         g2d_contextCamera.rotation = node.g2d_worldRotation;
 
+		if (g2d_contextCamera.normalizedViewWidth <= 0 || g2d_contextCamera.normalizedViewHeight <= 0) return;
+
 		node.core.getContext().setActiveCamera(g2d_contextCamera);
         node.core.getContext().setRenderTarget(renderTarget);
 		node.core.root.render(false, false, g2d_contextCamera, false, false);

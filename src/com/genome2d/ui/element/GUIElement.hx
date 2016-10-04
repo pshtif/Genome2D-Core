@@ -8,6 +8,7 @@
  */
 package com.genome2d.ui.element;
 
+import com.genome2d.geom.GRectangle;
 import com.genome2d.context.IGContext;
 import com.genome2d.Genome2D;
 import com.genome2d.callbacks.GCallback.GCallback1;
@@ -897,13 +898,16 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 			var context:IGContext = Genome2D.getInstance().getContext();
 			var previousMask:GRectangle = context.getMaskRect();
 			var camera:GCamera = context.getActiveCamera();
-			
+
             if (flushBatch || useMask) GUISkin.flushBatch();
 			if (useMask) {
                 var w:Float = (g2d_worldRight - g2d_worldLeft) * camera.scaleX;
                 var h:Float = (g2d_worldBottom - g2d_worldTop) * camera.scaleY;
-                if (w <= 0 || h <= 0) return;
-				context.setMaskRect(new GRectangle(g2d_worldLeft*camera.scaleX, g2d_worldTop*camera.scaleY, w, h));
+                var maskRect:GRectangle = new GRectangle(g2d_worldLeft*camera.scaleX, g2d_worldTop*camera.scaleY, w, h);
+
+                var intersection:GRectangle = (previousMask == null) ? maskRect : previousMask.intersection(maskRect);
+                if (intersection.width <= 0 || intersection.height <= 0) return;
+				context.setMaskRect(intersection);
 			}
 
             if (g2d_activeSkin != null) g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom, worldRed, worldGreen, worldBlue, worldAlpha);

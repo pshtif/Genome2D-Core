@@ -1594,17 +1594,12 @@ class GNode implements IGInteractive implements IGPrototypable
     public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_renderAsMask:Bool, p_useMatrix:Bool):Void {
         if (g2d_active) {
             /*  Masking  */
-            var previousMaskRect:GRectangle = null;
+            var previousMask:GRectangle = core.getContext().getMaskRect();
             var hasMask:Bool = false;
             if (maskRect != null && maskRect != parent.maskRect) {
                 hasMask = true;
-                previousMaskRect = (core.getContext().getMaskRect() == null) ? null : core.getContext().getMaskRect().clone();
-                if (parent.maskRect!=null) {
-                    var intersection:GRectangle = parent.maskRect.intersection(maskRect);
-                    core.getContext().setMaskRect(intersection);
-                } else {
-                    core.getContext().setMaskRect(maskRect);
-                }
+				var intersection:GRectangle = previousMask.intersection(maskRect);
+				core.getContext().setMaskRect(intersection);
             }
             /*  Transform invalidation  */
             var invalidateTransform:Bool = p_parentTransformUpdate || g2d_transformDirty;
@@ -1653,7 +1648,7 @@ class GNode implements IGInteractive implements IGPrototypable
 
                 /*  Masking   */
                 if (hasMask) {
-                    core.getContext().setMaskRect(previousMaskRect);
+                    core.getContext().setMaskRect(previousMask);
                 }
 
                 if (!p_renderAsMask && mask != null) {
