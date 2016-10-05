@@ -80,6 +80,11 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_visible;
     }
 
+    public function isVisible():Bool {
+        if (parent != null) return visible && parent.isVisible();
+        return visible;
+    }
+
     @prototype 
 	public var flushBatch:Bool = false;
 
@@ -1109,30 +1114,36 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	}
     /**/
     private function g2d_dispatchMouseCallback(p_type:String, p_element:GUIElement, p_input:GMouseInput):Void {
-        if (mouseEnabled) {
+        if (mouseEnabled && (isVisible() || p_type == GMouseInputType.MOUSE_OUT)) {
             var mouseInput:GMouseInput = p_input.clone(this, p_element, p_type);
 			
             switch (p_type) {
                 case GMouseInputType.MOUSE_DOWN:
-                    g2d_mouseDownElement = p_element;
-                    if (g2d_onMouseDown != null) g2d_onMouseDown.dispatch(mouseInput);
+                    if (g2d_mouseDownElement != p_element) {
+                        g2d_mouseDownElement = p_element;
+                        if (g2d_onMouseDown != null) g2d_onMouseDown.dispatch(mouseInput);
+                    }
                 case GMouseInputType.MOUSE_MOVE:
                     if (g2d_onMouseMove != null) g2d_onMouseMove.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_UP:
-                    if (g2d_mouseDownElement == p_element && g2d_onMouseClick != null) {
-                        var mouseClickInput:GMouseInput = p_input.clone(this, p_element, GMouseInputType.MOUSE_UP);
-                        g2d_onMouseClick.dispatch(mouseClickInput);
+                    if (g2d_mouseDownElement != null) {
+                        if (g2d_mouseDownElement == p_element && g2d_onMouseClick != null) {
+                            var mouseClickInput:GMouseInput = p_input.clone(this, p_element, GMouseInputType.MOUSE_UP);
+                            g2d_onMouseClick.dispatch(mouseClickInput);
+                        }
+                        g2d_mouseDownElement = null;
+                        if (g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseInput);
                     }
-                    g2d_mouseDownElement = null;
-                    if (g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_OVER:
                     if (g2d_mouseOverElement != p_element) {
                         g2d_mouseOverElement = p_element;
                         if (g2d_onMouseOver != null) g2d_onMouseOver.dispatch(mouseInput);
                     }
                 case GMouseInputType.MOUSE_OUT:
-                    g2d_mouseOverElement = null;
-                    if (g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseInput);
+                    if (g2d_mouseOverElement != null) {
+                        g2d_mouseOverElement = null;
+                        if (g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseInput);
+                    }
             }
         }
 
