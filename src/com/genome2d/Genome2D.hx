@@ -8,6 +8,7 @@
  */
 package com.genome2d;
 
+import com.genome2d.debug.GDebug;
 import com.genome2d.assets.GStaticAssetManager;
 import com.genome2d.callbacks.GCallback;
 import com.genome2d.debug.IGDebuggableInternal;
@@ -212,6 +213,8 @@ class Genome2D implements IGDebuggableInternal
 		if (!g2d_instantiable) MGDebug.ERROR("Can't instantiate singleton directly");
 
 		g2d_instance = this;
+
+        haxe.Log.trace = GDebug.traceRedirect;
 
         g2d_onInitialized = new GCallback0();
         g2d_onFailed = new GCallback1<String>();
