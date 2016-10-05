@@ -100,6 +100,7 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 	public var initialAlphaVariance:Float = 0;
 
     #if swc @:extern #end
+	@type("color")
 	@category("color")
 	@prototype
 	public var initialColor(get, set):Int;
@@ -120,6 +121,7 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 
 	public var endRed:Float = 1;
 	@category("color")
+	@range(0,1,.01)
 	@prototype
 	public var endRedVariance:Float = 0;
 
@@ -140,6 +142,7 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 	public var endAlphaVariance:Float = 0;
 	
 	#if swc @:extern #end
+	@type("color")
 	@category("color")
 	@prototype
 	public var endColor(get, set):Int;
