@@ -42,7 +42,7 @@ class GTextureTextRenderer extends GTextRenderer {
 	public var enableCursor:Bool = false;
 	public var scrollLine:Int = 0;
 	private var maxVisibleLine:Int = 0;
-	public var autoScroll:Bool = true;
+	public var autoScroll:Bool = false;
 	private var lineCount:Int = 0;
 	
 	public var format:GTextFormat;
@@ -180,6 +180,7 @@ class GTextureTextRenderer extends GTextRenderer {
         var whiteSpaceIndex:Int = -1;
         var i:Int = 0;
 		var isAllVisible:Bool = true;
+		var maxLineWidth:Float = 0;
 
         while (i < g2d_textLength) {
 			if (charIndex>=g2d_chars.length) {
@@ -202,6 +203,7 @@ class GTextureTextRenderer extends GTextRenderer {
 					isAllVisible = false;
 					maxVisibleLine = lines.length;
 				}
+				if (offsetX>maxLineWidth) maxLineWidth = offsetX;
                 offsetX = 0;
                 offsetY += (g2d_textureFont.lineHeight + g2d_lineSpace)*g2d_fontScale;
 				
@@ -247,6 +249,7 @@ class GTextureTextRenderer extends GTextRenderer {
 					}
 
 					i = whiteSpaceIndex+1;
+					if (offsetX>maxLineWidth) maxLineWidth = offsetX;
 					offsetX = 0;
 					offsetY += (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale;
 					continue;
@@ -274,6 +277,7 @@ class GTextureTextRenderer extends GTextRenderer {
 			renderable.visible = true;
             ++i;
         }
+		if (offsetX>maxLineWidth) maxLineWidth = offsetX;
         lines.push(currentLine);
 		lineCount = lines.length;
 
@@ -285,9 +289,12 @@ class GTextureTextRenderer extends GTextRenderer {
         }
 
         if (g2d_autoSize) {
-            g2d_width = (offsetX > g2d_width) ? offsetX : g2d_width;
+			g2d_textWidth = g2d_width = (maxLineWidth > g2d_width) ? maxLineWidth : g2d_width;
             g2d_height = offsetY + g2d_textureFont.lineHeight * g2d_fontScale;
-        }
+        } else {
+			g2d_textWidth = maxLineWidth;
+		}
+		g2d_textHeight = offsetY + g2d_textureFont.lineHeight * g2d_fontScale;
 
         var bottom:Float = offsetY + g2d_textureFont.lineHeight * g2d_fontScale;
         var offsetY:Float = 0;
