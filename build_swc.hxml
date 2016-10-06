@@ -14,9 +14,9 @@
 # Haxe flags
 -dce no
 --macro include('com')
+--no-traces
 
 # Genome2D flags
--D genome_stage3donly
 #-D genome_debug
 
 # Flash Swc flags
