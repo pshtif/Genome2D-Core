@@ -201,7 +201,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				// TODO: Vertical autosize
                 if (!g2d_autoSize && offsetY + 2 * (g2d_textureFont.lineHeight + g2d_lineSpace)*g2d_fontScale > g2d_height && isAllVisible) {
 					isAllVisible = false;
-					maxVisibleLine = lines.length;
+					maxVisibleLine = lines.length - 1;
 				}
 				if (offsetX>maxLineWidth) maxLineWidth = offsetX;
                 offsetX = 0;
@@ -216,7 +216,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				// TODO: Vertical autosize
                 if (!g2d_autoSize && offsetY + (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale > g2d_height && isAllVisible) {
 					isAllVisible = false;
-					maxVisibleLine = lines.length;
+					maxVisibleLine = lines.length - 1;
 				}
 
                 currentCharCode = g2d_text.charCodeAt(i);
@@ -245,7 +245,7 @@ class GTextureTextRenderer extends GTextRenderer {
 					if (backtrack >= currentCount) break;
 					if (!g2d_autoSize && offsetY + 2 * (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale > g2d_height && isAllVisible) {
 						isAllVisible = false;
-						maxVisibleLine = lines.length;
+						maxVisibleLine = lines.length - 1;
 					}
 
 					i = whiteSpaceIndex+1;
@@ -281,7 +281,7 @@ class GTextureTextRenderer extends GTextRenderer {
         lines.push(currentLine);
 		lineCount = lines.length;
 
-		if (isAllVisible) maxVisibleLine = lines.length;
+		if (isAllVisible) maxVisibleLine = lines.length - 1;
 
         var charCount:Int = g2d_chars.length;
         for (i in charIndex...charCount) {
@@ -296,7 +296,7 @@ class GTextureTextRenderer extends GTextRenderer {
 		}
 		g2d_textHeight = offsetY + g2d_textureFont.lineHeight * g2d_fontScale;
 
-        var bottom:Float = offsetY + g2d_textureFont.lineHeight * g2d_fontScale;
+        var bottom:Float = maxVisibleLine * (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale + g2d_textureFont.lineHeight * g2d_fontScale;
         var offsetY:Float = 0;
         if (g2d_vAlign == GVAlignType.MIDDLE) {
             offsetY = (g2d_height - bottom) * .5;
