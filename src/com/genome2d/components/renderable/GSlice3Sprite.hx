@@ -38,11 +38,11 @@ class GSlice3Sprite extends GTiledSprite {
 
                 cw = (i==ix-2 && i!=0 && g2d_width%texture.width!=0) ? w*(g2d_width%texture.width)/texture.width : w;
                 ch = (j==iy-1 && g2d_height%texture.height!=0) ? h*(g2d_height%texture.height)/texture.height : h;
-                node.core.getContext().drawSource(texture,
+                node.core.getContext().drawSource(texture, blendMode,
                                                   texture.region.x, texture.region.y, cw, ch, -cw*.5, -ch*.5,
                                                   node.g2d_worldX+cx*cos-cy*sin, node.g2d_worldY+cy*cos+cx*sin, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation,
                                                   node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha,
-                                                  blendMode, filter);
+                                                  filter);
                 cx += cw*node.g2d_worldScaleX;
             }
             cx = 0;

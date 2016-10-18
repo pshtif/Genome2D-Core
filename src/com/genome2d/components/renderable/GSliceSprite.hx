@@ -1,5 +1,6 @@
 package com.genome2d.components.renderable;
 
+import com.genome2d.context.GBlendMode;
 import com.genome2d.context.IGContext;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.geom.GRectangle;
@@ -156,13 +157,13 @@ class GSliceSprite extends GComponent implements IGRenderable {
 							var sy:Float = (finalScaleY - j > 1) ? 1 : (finalScaleY - j);
 							var px:Float = (texture.nativeWidth / 2 + texture.pivotX) - sx * scaleX * texture.nativeWidth / 2;
 							var py:Float = (texture.nativeHeight / 2 + texture.pivotY) - sy * scaleY * texture.nativeHeight / 2;
-							context.drawSource(texture, rx, ry, sx*texture.nativeWidth, sy*texture.nativeHeight, 0, 0, x+i*texture.width*scaleX-px, y+j*texture.height*scaleY-py, scaleX, scaleY, rotation, red, green, blue, alpha, 1, null);
+							context.drawSource(texture, GBlendMode.NORMAL, rx, ry, sx*texture.nativeWidth, sy*texture.nativeHeight, 0, 0, x+i*texture.width*scaleX-px, y+j*texture.height*scaleY-py, scaleX, scaleY, rotation, red, green, blue, alpha, null);
 						}
 					}
 				} else {
 					var x:Float = left + (.5 * texture.width + texture.pivotX) * finalScaleX;
 					var y:Float = top + (.5 * texture.height + texture.pivotY) * finalScaleY;
-					context.draw(texture, x, y, finalScaleX, finalScaleY, rotation, red, green, blue, alpha, 1, null);
+					context.draw(texture, GBlendMode.NORMAL, x, y, finalScaleX, finalScaleY, rotation, red, green, blue, alpha, null);
 				}
             } else {
 				var rx:Float = texture.u * texture.gpuWidth;// (texture.region != null) ? texture.region.x : 0;
@@ -176,28 +177,28 @@ class GSliceSprite extends GComponent implements IGRenderable {
                 var tw:Float = sl;
                 var th:Float = st;
                 if (tw != 0 && th != 0) {
-                    context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        left, top, scaleX, scaleY, 0,
                                        red, green, blue, alpha,
-                                       1, null);
+                                       null);
                 }
 				/**/
                 tx = sl;
                 tw = sw;
                 if (tw != 0 && th != 0) {
-                    context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        left+sl*texture.scaleFactor*scaleX, top, finalScaleX, scaleY, 0,
                                        red, green, blue, alpha,
-                                       1, null);
+                                       null);
                 }
                 /**/
                 tx = sr;
                 tw = texture.width / texture.scaleFactor - sr;
                 if (tw != 0 && th != 0) {
-                    context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        left+(sl*scaleX+sw*finalScaleX)*texture.scaleFactor, top, scaleX, scaleY, 0,
                                        red, green, blue, alpha,
-                                       1, null);
+                                       null);
                 }
 				/**/
                 tx = 0;
@@ -205,29 +206,29 @@ class GSliceSprite extends GComponent implements IGRenderable {
                 tw = sl;
                 th = sh;
                 if (tw != 0 && th != 0) {
-                    context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        left, top+st*texture.scaleFactor*scaleY, scaleX, finalScaleY, 0,
                                        red, green, blue, alpha,
-                                       1, null);
+                                       null);
                 }
                 /**/
                 tx = sl;
                 tw = sw;
                 if (tw != 0 && th != 0) {
-                    context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        left+sl*texture.scaleFactor*scaleX, top+st*texture.scaleFactor*scaleY, finalScaleX, finalScaleY, 0,
                                        red, green, blue, alpha,
-                                       1, null);
+                                       null);
                 }
                 /**/
                 tx = sr;
                 tw = texture.width/texture.scaleFactor-sr;
 
                 if (tw != 0 && th != 0) {
-                    context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        left+(sl*scaleX+sw*finalScaleX)*texture.scaleFactor, top+st*texture.scaleFactor*scaleY, scaleX, finalScaleY, 0,
                                        red, green, blue, alpha,
-                                       1, null);
+                                       null);
                 }
                 /**/
                 tx = 0;
@@ -235,28 +236,28 @@ class GSliceSprite extends GComponent implements IGRenderable {
                 tw = sl;
                 th = texture.nativeHeight-sb;
                 if (tw != 0 && th != 0) {
-                    context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        left, top+(st*scaleY+sh*finalScaleY)*texture.scaleFactor, scaleX, scaleY, 0,
                                        red, green, blue, alpha,
-                                       1, null);
+                                       null);
                 }
                 /**/
                 tx = sl;
                 tw = sw;
                 if (tw != 0 && th != 0) {
-                    context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        left+sl*texture.scaleFactor*scaleX, top+(st*scaleY+sh*finalScaleY)*texture.scaleFactor, finalScaleX, scaleY, 0,
                                        red, green, blue, alpha,
-                                       1, null);
+                                       null);
                 }
                 /**/
                 tx = sr;
                 tw = texture.width/texture.scaleFactor-sr;
                 if (tw != 0 && th != 0) {
-                    context.drawSource(texture, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        left+(sl*scaleX+sw*finalScaleX)*texture.scaleFactor, top+(st*scaleY+sh*finalScaleY)*texture.scaleFactor, scaleX, scaleY, 0,
                                        red, green, blue, alpha,
-                                       1, null);
+                                       null);
                 }
                 /**/
             }

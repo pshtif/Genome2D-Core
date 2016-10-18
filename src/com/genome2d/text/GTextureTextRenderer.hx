@@ -1,4 +1,5 @@
 package com.genome2d.text;
+import com.genome2d.context.GBlendMode;
 import com.genome2d.components.renderable.text.GText;
 import com.genome2d.debug.GDebug;
 import com.genome2d.input.GMouseInput;
@@ -119,9 +120,9 @@ class GTextureTextRenderer extends GTextRenderer {
 			}
 			
 			if (charRed == 1 && charBlue == 1 && charGreen == 1 && charAlpha == 1) {
-				g2d_context.draw(renderable.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, 1, null);
+				g2d_context.draw(renderable.texture, GBlendMode.NORMAL, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, null);
 			} else {
-				g2d_context.draw(renderable.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, charRed * p_red, charGreen * p_green, charBlue * p_blue, charAlpha * p_alpha, 1, null);
+				g2d_context.draw(renderable.texture, GBlendMode.NORMAL, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, charRed * p_red, charGreen * p_green, charBlue * p_blue, charAlpha * p_alpha, null);
 			}
         }
 	}
@@ -137,7 +138,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				ty = char.y * p_scaleY * g2d_fontScale + p_y;
 			}
 			var char:GTextureChar = g2d_textureFont.getChar(Std.string(124));
-			g2d_context.draw(char.texture, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red, green, blue, alpha, 1, null);
+			g2d_context.draw(char.texture, GBlendMode.NORMAL, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red, green, blue, alpha, null);
 		} else if (cursorStartIndex != cursorEndIndex) {
 			var startChar:GTextureCharRenderable = (cursorStartIndex >= g2d_textLength) ? g2d_chars[g2d_textLength - 1] : g2d_chars[cursorStartIndex];
 			var sx:Float = startChar.x * p_scaleX * g2d_fontScale + p_x + (cursorStartIndex >= g2d_textLength?startChar.xadvance + g2d_tracking:0);
@@ -148,13 +149,13 @@ class GTextureTextRenderer extends GTextRenderer {
 			var ey:Float = endChar.y * p_scaleY * g2d_fontScale + p_y;
 			
 			if (sy == ey) {
-				g2d_context.draw(g2d_helperTexture, sx, sy, (ex-sx)/4*p_scaleX * g2d_fontScale, g2d_textureFont.lineHeight/4*p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
+				g2d_context.draw(g2d_helperTexture, GBlendMode.NORMAL, sx, sy, (ex-sx)/4*p_scaleX * g2d_fontScale, g2d_textureFont.lineHeight/4*p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, null);
 			} else {
-				g2d_context.draw(g2d_helperTexture, sx, sy, (g2d_width + p_x - sx) / 4 * p_scaleX * g2d_fontScale, g2d_textureFont.lineHeight / 4 * p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
+				g2d_context.draw(g2d_helperTexture, GBlendMode.NORMAL, sx, sy, (g2d_width + p_x - sx) / 4 * p_scaleX * g2d_fontScale, g2d_textureFont.lineHeight / 4 * p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, null);
 				for (i in 1...Std.int((ey - sy) / g2d_textureFont.lineHeight)) {
-					g2d_context.draw(g2d_helperTexture, p_x, sy+i*g2d_textureFont.lineHeight, g2d_width / 4 * p_scaleX * g2d_fontScale, g2d_textureFont.lineHeight / 4 * p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
+					g2d_context.draw(g2d_helperTexture, GBlendMode.NORMAL, p_x, sy+i*g2d_textureFont.lineHeight, g2d_width / 4 * p_scaleX * g2d_fontScale, g2d_textureFont.lineHeight / 4 * p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, null);
 				}
-				g2d_context.draw(g2d_helperTexture, p_x, ey, (ex - p_x) / 4 * p_scaleX * g2d_fontScale, g2d_textureFont.lineHeight / 4 * p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, 1, null);
+				g2d_context.draw(g2d_helperTexture, GBlendMode.NORMAL, p_x, ey, (ex - p_x) / 4 * p_scaleX * g2d_fontScale, g2d_textureFont.lineHeight / 4 * p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, null);
 			}
 		}
 	}

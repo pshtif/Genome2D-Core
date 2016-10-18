@@ -22,17 +22,21 @@ import com.genome2d.textures.GTexture;
 class GShape extends GComponent implements IGRenderable
 {
     public var texture:GTexture;
-    public var blendMode:Int = GBlendMode.NORMAL;
+    public var blendMode:GBlendMode;
 
     private var g2d_vertices:Array<Float>;
     private var g2d_uvs:Array<Float>;
 
     private var g2d_shapeRenderer:Dynamic;
 
+    override public function init():Void {
+        blendMode = GBlendMode.NORMAL;
+    }
+
     public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         if (texture == null || g2d_vertices == null || g2d_uvs == null) return;
         if (g2d_shapeRenderer == null) {
-            node.core.getContext().drawPoly(texture, g2d_vertices, g2d_uvs, node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, blendMode);
+            node.core.getContext().drawPoly(texture, blendMode, g2d_vertices, g2d_uvs, node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha);
         } else {
             node.core.getContext().setRenderer(g2d_shapeRenderer);
             g2d_shapeRenderer.draw(texture);

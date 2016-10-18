@@ -8,6 +8,7 @@
  */
 package com.genome2d.postprocess;
 
+import com.genome2d.context.GBlendMode;
 import com.genome2d.utils.GRenderTargetStack;
 import com.genome2d.context.IGContext;
 import com.genome2d.geom.GRectangle;
@@ -94,10 +95,10 @@ class GHDRPP extends GPostProcess
 
         if (p_target == null) {
             GRenderTargetStack.popRenderTarget(context);
-            context.draw(g2d_passTextures[1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_hdrPassFilter);
+            context.draw(g2d_passTextures[1], GBlendMode.NORMAL, bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, g2d_hdrPassFilter);
         } else {
             context.setRenderTarget(p_target);
-            context.draw(g2d_passTextures[1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_hdrPassFilter);
+            context.draw(g2d_passTextures[1], GBlendMode.NORMAL, bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, g2d_hdrPassFilter);
         }
     }
 
@@ -118,7 +119,7 @@ class GHDRPP extends GPostProcess
 
         context.setRenderTarget(null);
         context.setActiveCamera(p_camera);
-        context.draw(g2d_passTextures[1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_hdrPassFilter);
+        context.draw(g2d_passTextures[1], GBlendMode.NORMAL, bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, g2d_hdrPassFilter);
     }
 
     override public function dispose():Void {

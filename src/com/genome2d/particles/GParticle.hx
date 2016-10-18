@@ -48,7 +48,7 @@ class GParticle
     public var blue:Float = 1;
     public var alpha:Float = 1;
 	public var texture:GTexture;
-	public var blendMode:Int = GBlendMode.NORMAL;
+	public var blendMode:GBlendMode;
 	
 	// Dynamics
     public var velocityX:Float = 0;
@@ -83,6 +83,8 @@ class GParticle
 		instanceId = g2d_instanceId++;
         g2d_pool = p_pool;
         index = g2d_pool.g2d_count;
+
+        blendMode = GBlendMode.NORMAL;
     }
 
     private function g2d_spawn(p_emitter:GParticleEmitter):Void {

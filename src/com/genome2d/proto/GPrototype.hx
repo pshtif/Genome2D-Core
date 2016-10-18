@@ -1,4 +1,5 @@
 package com.genome2d.proto;
+import com.genome2d.macros.MGDebug;
 import com.genome2d.debug.GDebug;
 
 /**
@@ -79,9 +80,11 @@ class GPrototype
 		
 		while (propertyNames.indexOf(split[0]) == -1 && lookupClass != null) {
 			lookupClass = cast Type.getSuperClass(lookupClass);
-			if (lookupClass != null) propertyNames = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
+			if (lookupClass != null) {
+				propertyNames = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
+			}
 		}
-		
+
 		if (lookupClass != null) {
 			var propertyTypes:Array<String> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES);
 			var propertyExtras:Array<Int> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
@@ -89,9 +92,9 @@ class GPrototype
 
 			var property:GPrototypeProperty = createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex]);
 			property.setStringValue(p_value);
-			
 		} else {
-			createPrototypeProperty(p_name, "String", 0, p_value);
+			MGDebug.WARNING("Unknown prototype property.", split[0]);
+			//createPrototypeProperty(p_name, "String", 0, p_value);
 		}
 	}
 	
@@ -124,7 +127,14 @@ class GPrototypeProperty {
 			if (isBasicType()) {
 				value = p_value;
 			} else {
-				value = cast(p_value, IGPrototypable).getPrototype();
+				var split:Array<String> = type.split(":");
+				if (split.length == 2 && split[0] == "C") {
+					value = cast(p_value, IGPrototypable).getPrototype();
+				} else if (split.length == 2 && split[0] == "E") {
+					value = p_value;
+				} else {
+					MGDebug.ERROR("Invalid prototype property", name, type);
+				}
 			}
 		}
 	}
@@ -143,9 +153,16 @@ class GPrototypeProperty {
 				case "String" | "Dynamic" :
 					value = p_value; 
 				case _:
-					if (type.indexOf("Array") == 0) {
+					var split:Array<String> = type.split(":");
+					if (split.length == 2 && split[0] == "Array") {
 						// We need to strip the string of brackets before splitting
 						value = (p_value).substr(1,p_value.length-2).split(",");
+					} else if (split.length == 2 && split[0] == "E") {
+						try {
+							value = Type.createEnum(Type.resolveEnum(split[1]), Std.string(p_value));
+						} catch(e:String) {
+							MGDebug.ERROR("Cannot create prototype enum", e);
+						}
 					} else {
 						GDebug.error("Error during prototype binding invalid value for type: " + type);
 					}
@@ -179,33 +196,7 @@ class GPrototypeProperty {
 			
 		p_instance.g2d_prototypeStates.setProperty(split[0], realValue, extras, split[1], split[2]);
 	}
-	
-	/*
-	inline private function getRealValue():Dynamic {
-		var realValue:Dynamic = null;
 
-		switch (type) {
-			case "Bool":
-				realValue = (value != "false" && value != "0");
-			case "Int":
-				realValue = Std.parseInt(value);
-			case "Float":
-				realValue = Std.parseFloat(value);
-			case "String" | "Dynamic" :
-				realValue = value; 
-			case _:
-				if (isPrototype()) {
-					realValue = GPrototypeFactory.createPrototype(value);
-				} else if (type.indexOf("Array") == 0) {
-					// We need to strip the string of brackets before splitting
-					realValue = (value).substr(1,value.length-2).split(",");
-				} else {
-					GDebug.error("Error during prototype binding invalid value for type: " + type);
-				}
-		}
-		return realValue;
-	}
-	/**/
 	inline public function isBasicType():Bool {
 		return (type == "Bool" || type == "Int" || type == "Float" || type == "String" || type.indexOf("Array")==0);
 	}
@@ -216,5 +207,9 @@ class GPrototypeProperty {
 	
 	inline public function isPrototype():Bool {
 		return Std.is(value, GPrototype);
+	}
+
+	inline public function isEnum():Bool {
+		return type.indexOf("E:") == 0;
 	}
 }

@@ -1,5 +1,6 @@
 package com.genome2d.components.renderable;
 
+import com.genome2d.context.GBlendMode;
 import com.genome2d.input.GMouseInputType;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.geom.GRectangle;
@@ -12,7 +13,7 @@ class GTiledSprite extends GComponent implements IGRenderable {
     /**
         Blend mode used for rendering
     **/
-    public var blendMode:Int = 1;
+    public var blendMode:GBlendMode;
 
     /**
         Specify alpha treshold for pixel perfect mouse detection, works with mousePixelEnabled true
@@ -54,6 +55,10 @@ class GTiledSprite extends GComponent implements IGRenderable {
         return g2d_height = p_value;
     }
 
+    override public function init():Void {
+        blendMode = GBlendMode.NORMAL;
+    }
+
     @:dox(hide)
     public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         if (texture == null) return;
@@ -81,11 +86,11 @@ class GTiledSprite extends GComponent implements IGRenderable {
                 cw = (i==ix-1 && g2d_width%texture.width!=0) ? w*(g2d_width%texture.width)/texture.width : w;
                 ch = (j==iy-1 && g2d_height%texture.height!=0) ? h*(g2d_height%texture.height)/texture.height : h;
 
-                node.core.getContext().drawSource(texture,
+                node.core.getContext().drawSource(texture, blendMode,
                                                   texture.region.x, texture.region.y, cw, ch, -cw*.5, -ch*.5,
                                                   node.g2d_worldX+cx*cos-cy*sin, node.g2d_worldY+cy*cos+cx*sin, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation,
                                                   node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha,
-                                                  blendMode, filter);
+                                                  filter);
                 cx += cw*node.g2d_worldScaleX;
             }
             cx = 0;

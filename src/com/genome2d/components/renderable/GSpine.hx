@@ -7,6 +7,7 @@
  */
 package com.genome2d.components.renderable;
 
+import com.genome2d.context.GBlendMode;
 import com.genome2d.Genome2D;
 import com.genome2d.components.GComponent;
 import com.genome2d.components.renderable.IGRenderable;
@@ -129,7 +130,7 @@ class GSpine extends GComponent implements IGRenderable
 
                     var texture:GTexture = cast regionAttachment.rendererObject;
 					if (texture.rotate) tr += Math.PI / 2;
-                    context.draw(regionAttachment.rendererObject, tx * sx + node.g2d_worldX, ty * sy + node.g2d_worldY, tsx * sx, tsy * sy, (tr - fx * node.g2d_worldRotation), node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha);
+                    context.draw(regionAttachment.rendererObject, GBlendMode.NORMAL, tx * sx + node.g2d_worldX, ty * sy + node.g2d_worldY, tsx * sx, tsy * sy, (tr - fx * node.g2d_worldRotation), node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha);
                 }
             }
         }

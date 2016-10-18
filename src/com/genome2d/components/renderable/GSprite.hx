@@ -37,6 +37,7 @@ class GSprite extends GTexturedQuad
 	public var frameAnimation:GFrameAnimation;
 	
 	override public function init():Void {
+		super.init();
 	}
 	
     @:dox(hide)
@@ -49,9 +50,9 @@ class GSprite extends GTexturedQuad
         if (texture != null) {
             if (p_useMatrix && !ignoreMatrix) {
                 var matrix:GMatrix = node.core.g2d_renderMatrix;
-                node.core.getContext().drawMatrix(texture, matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, blendMode, filter);
+                node.core.getContext().drawMatrix(texture, blendMode, matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, filter);
             } else {
-                node.core.getContext().draw(texture, node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, blendMode, filter);
+                node.core.getContext().draw(texture, blendMode, node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, filter);
             }
         }
     }

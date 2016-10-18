@@ -1,5 +1,6 @@
 package com.genome2d.tilemap;
 
+import com.genome2d.context.GBlendMode;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.context.IGContext;
 import com.genome2d.textures.GTexture;
@@ -132,7 +133,7 @@ class GTile
         g2d_playing = false;
     }
 
-    inline public function render(p_context:IGContext, p_x:Float, p_y:Float, p_frameId:Int, p_time:Float, p_blendMode:Int):Void {
+    inline public function render(p_context:IGContext, p_x:Float, p_y:Float, p_frameId:Int, p_time:Float, p_blendMode:GBlendMode):Void {
         if (texture != null && visible) {
             if (g2d_playing && g2d_frameTextures != null && p_frameId != g2d_lastFrameRendered) {
                 g2d_accumulatedTime += p_time - g2d_lastTimeRendered;
@@ -150,7 +151,7 @@ class GTile
                 }
                 g2d_accumulatedTime %= g2d_speed;
             }
-            p_context.draw(texture, p_x, p_y, 1, 1, rotation, red, green, blue, alpha, p_blendMode);
+            p_context.draw(texture, p_blendMode, p_x, p_y, 1, 1, rotation, red, green, blue, alpha);
             g2d_lastTimeRendered = p_time;
             g2d_lastFrameRendered = p_frameId;
         }

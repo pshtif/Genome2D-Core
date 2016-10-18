@@ -1,14 +1,11 @@
 package com.genome2d.transitions;
 import com.genome2d.debug.GDebug;
 import com.genome2d.proto.IGPrototypable;
-import motion.Actuate;
-import motion.easing.IEasing;
-import motion.easing.Linear;
 
 @:access(com.genome2d.transitions.GTransitionManager)
 @:allow(com.genome2d.transitions.GTransitionManager)
 @prototypeName("transition")
-class GTransition implements IGPrototypable implements IGTransition {	
+class GTransition implements IGPrototypable {
 	private var g2d_id:String;
     #if swc @:extern #end
 	@prototype
@@ -21,7 +18,7 @@ class GTransition implements IGPrototypable implements IGTransition {
     inline private function set_id(p_value:String):String {
         if (p_value != g2d_id && p_value.length > 0) {
             if (GTransitionManager.getTransition(p_value) != null) GDebug.error("Duplicate transition id: "+p_value);
-            GTransitionManager.g2d_references.set(p_value,this);
+            //GTransitionManager.g2d_references.set(p_value,this);
 
             if (GTransitionManager.getTransition(g2d_id) != null) GTransitionManager.g2d_references.remove(g2d_id);
             g2d_id = p_value;
@@ -34,7 +31,7 @@ class GTransition implements IGPrototypable implements IGTransition {
 	public var time:Float = 0;
 	@prototype
 	public var delay:Float = 0;
-	
+	/*
 	private var ease:IEasing;
 	
 	static private var g2d_instanceCount:Int = 0;
@@ -50,7 +47,7 @@ class GTransition implements IGPrototypable implements IGTransition {
 	public function apply(p_instance:Dynamic, p_property:String, p_value:Dynamic):Void {
 		var prop:Dynamic = { };
 		Reflect.setField(prop, p_property, p_value);
-		Actuate.tween(p_instance, time, prop).delay(delay);
+		//Actuate.tween(p_instance, time, prop).delay(delay);
 	}
 	/**/
 }

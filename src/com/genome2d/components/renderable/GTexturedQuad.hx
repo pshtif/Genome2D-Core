@@ -8,6 +8,7 @@
  */
 package com.genome2d.components.renderable;
 
+import com.genome2d.context.GBlendMode;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.context.filters.GFilter;
@@ -28,7 +29,7 @@ class GTexturedQuad extends GComponent implements IGRenderable
         Blend mode used for rendering
     **/
     @prototype 
-	public var blendMode:Int = 1;
+	public var blendMode:GBlendMode;
 
     /**
         Enable/disable pixel perfect mouse detection, not supported by all contexts.
@@ -57,15 +58,19 @@ class GTexturedQuad extends GComponent implements IGRenderable
     **/
     public var ignoreMatrix:Bool = false;
 
+    override public function init():Void {
+        blendMode = GBlendMode.NORMAL;
+    }
+
     @:dox(hide)
     @:access(com.genome2d.Genome2D)
 	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
 		if (texture != null) {
             if (p_useMatrix && !ignoreMatrix) {
                 var matrix:GMatrix = node.core.g2d_renderMatrix;
-                node.core.getContext().drawMatrix(texture, matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, blendMode, filter);
+                node.core.getContext().drawMatrix(texture, blendMode, matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, filter);
             } else {
-                node.core.getContext().draw(texture, node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, blendMode, filter);
+                node.core.getContext().draw(texture, blendMode, node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, filter);
             }
 		}
 	}

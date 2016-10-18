@@ -7,10 +7,12 @@ import com.genome2d.proto.IGPrototypable;
 import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTexture;
 import com.genome2d.debug.GDebug;
+import com.genome2d.context.GDepthFunc;
 
 @:access(com.genome2d.ui.skin.GUISkinManager)
 @:allow(com.genome2d.ui.skin.GUISkinManager)
 class GUISkin implements IGPrototypable {
+
     static private var g2d_batchQueue:Array<GUISkin>;
     static private var g2d_currentBatchTexture:GTexture;
 	static private var g2d_currentBatchFilter:GFilter;

@@ -12,7 +12,7 @@ import com.genome2d.node.GNode;
 
 class GTileMap extends GComponent implements IGRenderable
 {
-    public var blendMode:Int = GBlendMode.NORMAL;
+    public var blendMode:GBlendMode;
 
     private var g2d_width:Int;
     private var g2d_height:Int;
@@ -29,6 +29,10 @@ class GTileMap extends GComponent implements IGRenderable
 
     public var horizontalMargin:Float = 0;
     public var verticalMargin:Float = 0;
+
+    override public function init():Void {
+        blendMode = GBlendMode.NORMAL;
+    }
 
     public function setTiles(p_mapWidth:Int, p_mapHeight:Int, p_tileWidth:Int, p_tileHeight:Int, p_tiles:Array<GTile> = null,  p_iso:Bool = false):Void {
         if (p_tiles != null && p_mapWidth*p_mapHeight != p_tiles.length) GDebug.error("Incorrect number of tiles provided for that map size.");

@@ -8,6 +8,7 @@
  */
 package com.genome2d.postprocess;
 
+import com.genome2d.context.GBlendMode;
 import com.genome2d.utils.GRenderTargetStack;
 import com.genome2d.context.IGContext;
 import com.genome2d.node.GNode;
@@ -56,10 +57,10 @@ class GBloomPP extends GPostProcess
         g2d_bloomFilter.texture = g2d_bright.getPassTexture(0);
         if (p_target == null) {
             GRenderTargetStack.popRenderTarget(context);
-            context.draw(g2d_passTextures[1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_bloomFilter);
+            context.draw(g2d_passTextures[1], GBlendMode.NORMAL, bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, g2d_bloomFilter);
         } else {
             context.setRenderTarget(p_target);
-            context.draw(g2d_passTextures[1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_bloomFilter);
+            context.draw(g2d_passTextures[1], GBlendMode.NORMAL, bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, g2d_bloomFilter);
         }
     }
 
@@ -80,7 +81,7 @@ class GBloomPP extends GPostProcess
 
         context.setRenderTarget(null);
         context.setActiveCamera(p_camera);
-        context.draw(g2d_passTextures[1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_bloomFilter);
+        context.draw(g2d_passTextures[1], GBlendMode.NORMAL, bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, g2d_bloomFilter);
     }
 
     override public function dispose():Void {

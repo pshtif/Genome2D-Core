@@ -8,6 +8,7 @@
  */
 package com.genome2d.deprecated.components.renderable.particles;
 
+import com.genome2d.context.GBlendMode;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.deprecated.particles.GSimpleParticleD;
@@ -26,7 +27,7 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 {
 	@category("rendering")
 	@prototype
-    public var blendMode:Int = 1;
+    public var blendMode:GBlendMode;
 
 	@prototype
 	public var emit:Bool = false;
@@ -205,7 +206,7 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
     inline private function set_settings(p_value:String):String {
         var split:Array<String> = p_value.split("|");
 
-        blendMode = Std.parseInt(split[0]);
+        blendMode =  GBlendMode.NORMAL;
         emit = split[1]=="true" ? true : false;
         useWorldSpace = split[2]=="true" ? true : false;
         initialScale = Std.parseFloat(split[3]);
@@ -277,6 +278,7 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 	}
 
 	override public function init():Void {
+		blendMode = GBlendMode.NORMAL;
         node.core.onUpdate.add(update);
 	}
 
@@ -346,7 +348,7 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
                 ty = node.g2d_worldY + particle.g2d_y;
             }
 		
-			node.core.getContext().draw(particle.g2d_texture, tx, ty, particle.g2d_scaleX*node.g2d_worldScaleX, particle.g2d_scaleY*node.g2d_worldScaleY, particle.g2d_rotation, particle.g2d_red, particle.g2d_green, particle.g2d_blue, particle.g2d_alpha, blendMode);
+			node.core.getContext().draw(particle.g2d_texture, blendMode, tx, ty, particle.g2d_scaleX*node.g2d_worldScaleX, particle.g2d_scaleY*node.g2d_worldScaleY, particle.g2d_rotation, particle.g2d_red, particle.g2d_green, particle.g2d_blue, particle.g2d_alpha);
 
 			particle = next;
 		}

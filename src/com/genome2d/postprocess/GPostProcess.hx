@@ -8,6 +8,7 @@
  */
 package com.genome2d.postprocess;
 
+import com.genome2d.context.GBlendMode;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.utils.GRenderTargetStack;
 import com.genome2d.debug.GDebug;
@@ -85,22 +86,22 @@ class GPostProcess {
         g2d_matrix.identity();
         g2d_matrix.prependTranslation(-bounds.x+g2d_leftMargin, -bounds.y+g2d_topMargin, 0);
         context.setRenderTarget(g2d_passTextures[0], g2d_matrix, true);
-        context.draw(p_source,p_x,p_y,1,1,0,1,1,1,1);
+        context.draw(p_source, GBlendMode.NORMAL, p_x,p_y,1,1,0,1,1,1);
 
         var zero:GTexture = g2d_passTextures[0];
         //g2d_passTextures[0] = p_source;
 
         for (i in 1...g2d_passes) {
             context.setRenderTarget(g2d_passTextures[i],null,true);
-            context.draw(g2d_passTextures[i-1], 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[i-1]);
+            context.draw(g2d_passTextures[i-1], GBlendMode.NORMAL, 0, 0, 1, 1, 0, 1, 1, 1, 1, g2d_passFilters[i-1]);
         }
 
         if (p_target == null) {
             GRenderTargetStack.popRenderTarget(context);
-            if (renderOut) context.draw(g2d_passTextures[g2d_passes-1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
+            if (renderOut) context.draw(g2d_passTextures[g2d_passes-1], GBlendMode.NORMAL, bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
         } else {
             context.setRenderTarget(p_target);
-            context.draw(g2d_passTextures[g2d_passes-1], 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
+            context.draw(g2d_passTextures[g2d_passes-1], GBlendMode.NORMAL, 0, 0, 1, 1, 0, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
         }
         g2d_passTextures[0] = zero;
     }
@@ -129,16 +130,16 @@ class GPostProcess {
 
         for (i in 1...g2d_passes) {
             context.setRenderTarget(g2d_passTextures[i],null,true);
-            context.draw(g2d_passTextures[i-1], 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[i-1]);
+            context.draw(g2d_passTextures[i-1], GBlendMode.NORMAL, 0, 0, 1, 1, 0, 1, 1, 1, 1, g2d_passFilters[i-1]);
         }
 
         if (p_target == null) {
             GRenderTargetStack.popRenderTarget(context);
             if (context.getRenderTarget() == null) context.setActiveCamera(p_camera);
-			if (renderOut) context.draw(g2d_passTextures[g2d_passes-1], bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
+			if (renderOut) context.draw(g2d_passTextures[g2d_passes-1], GBlendMode.NORMAL, bounds.x-g2d_leftMargin, bounds.y-g2d_topMargin, 1, 1, 0, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
         } else {
             context.setRenderTarget(p_target);
-            context.draw(g2d_passTextures[g2d_passes-1], 0, 0, 1, 1, 0, 1, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
+            context.draw(g2d_passTextures[g2d_passes-1], GBlendMode.NORMAL, 0, 0, 1, 1, 0, 1, 1, 1, 1, g2d_passFilters[g2d_passes-1]);
         }
         g2d_passTextures[0] = zero;
     }

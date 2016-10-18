@@ -131,7 +131,6 @@ class MGPrototypeProcessor {
                                 case TPath(p):
 									prototypePropertyDefaults.push(defaultValue == null?extractDefault(p.name, e, pos):defaultValue);
                                     prototypePropertyNames.push(i.name);
-									
 									prototypePropertyTypes.push(extractType(p));
 									prototypePropertyExtras.push(extras);
                                 case _:
@@ -299,7 +298,16 @@ class MGPrototypeProcessor {
 	
 	inline static private function extractType(typePath) {
         var typeName = typePath.name;
-		
+		// If we getType String it ends up in infinite loop for some reason
+		if (typeName != "String") {
+			var type = Context.getType(typeName);
+			switch (type) {
+				case TEnum(t,p):
+					typeName = "E:"+t;
+				case _:
+			}
+		}
+
 		if (typeName == "Array") {
 			var param = typePath.params[0];
 			switch (param) {
@@ -312,6 +320,7 @@ class MGPrototypeProcessor {
 				case _:
 			}
 		}
+
         return typeName;
     }
 

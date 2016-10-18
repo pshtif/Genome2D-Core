@@ -17,7 +17,7 @@ class GXmlPrototypeParser
 	static public function toXml(p_prototype:GPrototype):Xml {
 		var xml:Xml = Xml.createElement(p_prototype.prototypeName);
 		for (property in p_prototype.properties) {
-			if (property.isBasicType() || property.isReference()) {
+			if (property.isBasicType() || property.isReference() || property.isEnum()) {
 				xml.set(property.name, property.value);
 			} else {
 				if (property.isPrototype()) {
