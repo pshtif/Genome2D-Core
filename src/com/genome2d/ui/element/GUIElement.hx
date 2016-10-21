@@ -11,6 +11,7 @@ package com.genome2d.ui.element;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.IGContext;
 import com.genome2d.Genome2D;
+import com.genome2d.callbacks.GCallback.GCallback0;
 import com.genome2d.callbacks.GCallback.GCallback1;
 import com.genome2d.context.GCamera;
 import com.genome2d.geom.GRectangle;
@@ -80,9 +81,14 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_visible;
     }
 
+    public function isInHierarchy():Bool {
+        if (parent != null) return parent.isInHierarchy();
+        return g2d_isRoot;
+    }
+
     public function isVisible():Bool {
         if (parent != null) return visible && parent.isVisible();
-        return visible;
+        return g2d_isRoot && visible;
     }
 
     @prototype 
@@ -90,6 +96,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 
     @prototype 
 	public var name:String = "";
+
+    private var g2d_isRoot:Bool = false;
 	
 	static public var dragSensitivity:Float = 0;
 	
@@ -891,6 +899,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                 }
             }
         }
+
+        if (g2d_onInvalidate != null) g2d_onInvalidate.dispatch();
     }
 
     public function render(p_red:Float = 1, p_green:Float = 1, p_blue:Float = 1, p_alpha:Float = 1):Void {
@@ -915,7 +925,9 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 				context.setMaskRect(intersection);
 			}
 
-            if (g2d_activeSkin != null) g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom, worldRed, worldGreen, worldBlue, worldAlpha);
+            if (g2d_activeSkin != null) {
+                g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom, worldRed, worldGreen, worldBlue, worldAlpha);
+            }
 
             for (i in 0...g2d_numChildren) {
                 g2d_children[i].render(worldRed, worldGreen, worldBlue, worldAlpha);
@@ -1026,6 +1038,15 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_onMouseClick;
     }
 
+    private var g2d_onInvalidate:GCallback0;
+    #if swc @:extern #end
+    public var onInvalidate(get, never):GCallback0;
+    #if swc @:getter(onInvalidate) #end
+    inline private function get_onInvalidate():GCallback0 {
+        if (g2d_onInvalidate == null) g2d_onInvalidate = new GCallback0();
+        return g2d_onInvalidate;
+    }
+
     private var g2d_mouseDownElement:GUIElement;
     private var g2d_mouseOverElement:GUIElement;
 
@@ -1119,10 +1140,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 			
             switch (p_type) {
                 case GMouseInputType.MOUSE_DOWN:
-                    if (g2d_mouseDownElement != p_element) {
-                        g2d_mouseDownElement = p_element;
-                        if (g2d_onMouseDown != null) g2d_onMouseDown.dispatch(mouseInput);
-                    }
+                    g2d_mouseDownElement = p_element;
+                    if (g2d_onMouseDown != null) g2d_onMouseDown.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_MOVE:
                     if (g2d_onMouseMove != null) g2d_onMouseMove.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_UP:
