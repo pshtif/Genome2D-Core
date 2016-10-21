@@ -8,6 +8,7 @@
  */
 package com.genome2d;
 
+import com.genome2d.globals.GParameters;
 import com.genome2d.debug.GDebug;
 import com.genome2d.assets.GStaticAssetManager;
 import com.genome2d.callbacks.GCallback;
@@ -42,6 +43,7 @@ class Genome2D implements IGDebuggableInternal
 
 	static private var g2d_instance:Genome2D;
 	static private var g2d_instantiable:Bool = false;
+
 
     /**
         Get the singleton instance of Genome2D
@@ -92,6 +94,19 @@ class Genome2D implements IGDebuggableInternal
     #if swc @:getter(onFailed) #end
     inline private function get_onFailed():GCallback1<String> {
         return g2d_onFailed;
+    }
+
+    private var g2d_onCameraAdded:GCallback1<GCameraController>;
+    /**
+        Callback dispatched when Genome2D fails to initialize
+
+        Sends reason message
+    **/
+    #if swc @:extern #end
+    public var onCameraAdded(get, never):GCallback1<GCameraController>;
+        #if swc @:getter(onCameraAdded) #end
+    inline private function get_onCameraAdded():GCallback1<GCameraController> {
+        return g2d_onCameraAdded;
     }
 
     private var g2d_onInvalidated:GCallback0;
@@ -205,6 +220,11 @@ class Genome2D implements IGDebuggableInternal
     private var g2d_contextConfig:GContextConfig;
     private var g2d_cameras:Array<GCameraController>;
 
+    private var g2d_parameters:GParameters;
+    public function getParameters():GParameters {
+        return g2d_parameters;
+    }
+
 	/**
        CONSTRUCTOR
     **/
@@ -223,6 +243,9 @@ class Genome2D implements IGDebuggableInternal
         g2d_onPreRender = new GCallback0();
         g2d_onPostRender = new GCallback0();
         g2d_onKeyboardInput = new GCallback1<GKeyboardInput>();
+        g2d_onCameraAdded = new GCallback1<GCameraController>();
+
+        g2d_parameters = new GParameters();
 	}
 
     /**
@@ -230,6 +253,7 @@ class Genome2D implements IGDebuggableInternal
 
         @param p_config `GContextConfig` instance configuring Genome2D context
     **/
+    @:access(com.genome2d.proto.GPrototypeFactory)
 	public function init(p_config:GContextConfig):Void {
         // Initialize root
         if (g2d_root != null) g2d_root.dispose();
@@ -359,6 +383,10 @@ class Genome2D implements IGDebuggableInternal
         }
     }
 
+    public function getCameraCount():Int {
+        return g2d_cameras.length;
+    }
+
 	public function getCamera(p_id:String):GCameraController {
 		for (i in 0...g2d_cameras.length) {
             if (g2d_cameras[i].id == p_id) return g2d_cameras[i];
@@ -366,6 +394,14 @@ class Genome2D implements IGDebuggableInternal
 		
 		return null;
 	}
+
+    public function setCameraIndex(p_camera:GCameraController, p_index:Int):Void {
+        if (p_index>=0 && p_index<g2d_cameras.length) {
+            if (g2d_cameras.remove(p_camera)) {
+                g2d_cameras.insert(p_index,p_camera);
+            }
+        }
+    }
 	
     @:allow(com.genome2d.components.GCameraController)
 	private function g2d_addCameraController(p_camera:GCameraController):Void {
@@ -373,6 +409,7 @@ class Genome2D implements IGDebuggableInternal
             if (g2d_cameras[i] == p_camera) return;
         }
         g2d_cameras.push(p_camera);
+        g2d_onCameraAdded.dispatch(p_camera);
     }
 
     @:allow(com.genome2d.components.GCameraController)
