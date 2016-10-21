@@ -113,6 +113,7 @@ class GPrototypeProperty {
 	public var value:Dynamic;
 	public var type:String;
 	public var extras:Int;
+	public var isParameter:Bool = false;
 	
 	public function new(p_name:String, p_type:String, p_extras:Int):Void {
 		name = p_name;
@@ -140,26 +141,36 @@ class GPrototypeProperty {
 	}
 	
 	public function setStringValue(p_value:String):Void {
+		if (p_value.indexOf("$") == 0) {
+			isParameter = true;
+			value = p_value.substr(1);
+		} else {
+			value = getRealValue(p_value);
+		}
+	}
+
+	private function getRealValue(p_value:String):Dynamic {
+		var realValue:Dynamic = null;
 		if ((extras & GPrototypeExtras.REFERENCE_GETTER) != 0) {
-			value = p_value;
+			realValue = p_value;
 		} else {
 			switch (type) {
 				case "Bool":
-					value = (p_value != "false" && p_value != "0");
+					realValue = (p_value != "false" && p_value != "0");
 				case "Int":
-					value = Std.parseInt(p_value);
+					realValue = Std.parseInt(p_value);
 				case "Float":
-					value = Std.parseFloat(p_value);
+					realValue = Std.parseFloat(p_value);
 				case "String" | "Dynamic" :
-					value = p_value; 
+					realValue = p_value;
 				case _:
 					var split:Array<String> = type.split(":");
 					if (split.length == 2 && split[0] == "Array") {
 						// We need to strip the string of brackets before splitting
-						value = (p_value).substr(1,p_value.length-2).split(",");
+						realValue = (p_value).substr(1,p_value.length-2).split(",");
 					} else if (split.length == 2 && split[0] == "E") {
 						try {
-							value = Type.createEnum(Type.resolveEnum(split[1]), Std.string(p_value));
+							realValue = Type.createEnum(Type.resolveEnum(split[1]), Std.string(p_value));
 						} catch(e:String) {
 							MGDebug.ERROR("Cannot create prototype enum", e);
 						}
@@ -168,17 +179,25 @@ class GPrototypeProperty {
 					}
 			}
 		}
+
+		return realValue;
 	}
-	
+
 	public function bind(p_instance:IGPrototypable):Void {
 		var realValue:Dynamic;
+		var mapValue:Dynamic = value;
+		if (isParameter) {
+			if (!GPrototypeFactory.getParameters().hasParameter(value)) GDebug.error("Invalid parameter in prototype", value);
+			mapValue = getRealValue(GPrototypeFactory.getParameters().getParameter(value));
+		}
+
 		if (isReference()) {
 			var c:Class<IGPrototypable> = GPrototypeFactory.getPrototypeClass(type);
-			realValue = Reflect.callMethod(c, Reflect.field(c,"fromReference"), [value]);
+			realValue = Reflect.callMethod(c, Reflect.field(c,"fromReference"), [mapValue]);
 		} else if (isPrototype()) {
-			realValue = GPrototypeFactory.createPrototype(value);
+			realValue = GPrototypeFactory.createPrototype(mapValue);
 		} else {
-			realValue = value;
+			realValue = mapValue;
 		}
 
 		var split:Array<String> = name.split(".");

@@ -1,4 +1,5 @@
 package com.genome2d.proto.parsers;
+import com.genome2d.macros.MGDebug;
 import com.genome2d.debug.GDebug;
 import com.genome2d.proto.GPrototype;
 import com.genome2d.proto.GPrototypeFactory;
@@ -69,6 +70,7 @@ class GXmlPrototypeParser
 		
 		prototype.prototypeName = p_xml.nodeName;
 		prototype.prototypeClass = GPrototypeFactory.getPrototypeClass(prototype.prototypeName);
+		if (prototype.prototypeClass == null) MGDebug.ERROR("Invalid prototype type", prototype.prototypeName);
 
 		var propertyNames:Array<String> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
 		var propertyDefaults:Array<Dynamic> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_DEFAULTS);
@@ -99,5 +101,18 @@ class GXmlPrototypeParser
         }
 		
 		return prototype;
+	}
+
+	static public function multipleFromXml(p_xml:Xml):Array<GPrototype> {
+		if (p_xml.nodeType == Xml.Document) p_xml = p_xml.firstElement();
+
+		var prototypes:Array<GPrototype> = new Array<GPrototype>();
+
+		for (element in p_xml.elements()) {
+			var prototype:GPrototype = fromXml(element);
+			prototypes.push(prototype);
+		}
+
+		return prototypes;
 	}
 }
