@@ -22,6 +22,18 @@ class GTextureFont implements IGPrototypable {
 	
 	@prototype
     public var lineHeight:Int = 0;
+
+	@prototype
+	public var base:Int = 0;
+
+	@prototype
+	public var face:String;
+
+	@prototype
+	public var italic:Bool = false;
+
+	@prototype
+	public var bold:Bool = false;
 	
 	private var g2d_chars:Map<String,GTextureChar>;
 	
