@@ -75,8 +75,15 @@ class GTextureFont implements IGPrototypable {
 		/**/
         return 0;
     }
+
+	/*
+	 *	Get a reference value
+	 */
+	public function toReference():String {
+		return "@"+id;
+	}
 	
 	static public function fromReference(p_reference:String) {
-		return GFontManager.getFont(p_reference);
+		return GFontManager.getFont(p_reference.substr(1));
 	}
 }

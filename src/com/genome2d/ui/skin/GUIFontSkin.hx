@@ -89,15 +89,16 @@ class GUIFontSkin extends GUISkin {
     }
 	
 	#if swc @:extern #end
-    @prototype
-	public var fontId(get, set):String;
-    #if swc @:getter(fontId) #end
-    inline private function get_fontId():String {
-        return g2d_textRenderer.textureFont.id;
+    @prototype("getReference")
+	public var font(get, set):GTextureFont;
+    #if swc @:getter(font) #end
+    inline private function get_font():GTextureFont {
+        return g2d_textRenderer.textureFont;
     }
-    #if swc @:setter(fontId) #end
-    inline private function set_fontId(p_value:String):String {
-        g2d_textRenderer.textureFont = GFontManager.getFont(p_value);
+    #if swc @:setter(font) #end
+    inline private function set_font(p_value:GTextureFont):GTextureFont {
+        trace(p_value);
+        g2d_textRenderer.textureFont = p_value;
         return p_value;
     }
 	
@@ -145,7 +146,7 @@ class GUIFontSkin extends GUISkin {
         g2d_textRenderer = new GTextureTextRenderer();
         g2d_textRenderer.autoSize = p_autoSize;
 
-        if (p_font != null) fontId = p_font.id;
+        if (p_font != null) font = p_font;
         fontScale = p_fontScale;
         autoSize = p_autoSize;
     }
