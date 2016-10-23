@@ -8,6 +8,8 @@
  */
 package com.genome2d.components.renderable.text;
 
+import com.genome2d.utils.GHAlignType;
+import com.genome2d.utils.GVAlignType;
 import com.genome2d.proto.GPrototype;
 import com.genome2d.proto.GPrototypeExtras;
 import com.genome2d.text.GFontManager;
@@ -31,7 +33,8 @@ class GText extends GComponent implements IGRenderable
      *  Default 0
      */
     #if swc @:extern #end
-	@prototype public var tracking(get, set):Float;
+	@prototype
+	public var tracking(get, set):Float;
     #if swc @:getter(tracking) #end
 	inline private function get_tracking():Float {
 		return renderer.tracking;
@@ -47,7 +50,8 @@ class GText extends GComponent implements IGRenderable
      *  Default 0
      */
     #if swc @:extern #end
-	@prototype public var lineSpace(get, set):Float;
+	@prototype
+	public var lineSpace(get, set):Float;
     #if swc @:getter(lineSpace) #end
 	inline private function get_lineSpace():Float {
 		return renderer.lineSpace;
@@ -59,25 +63,27 @@ class GText extends GComponent implements IGRenderable
 	}
 
     #if swc @:extern #end
-	@prototype public var vAlign(get,set):Int;
+	@prototype
+	public var vAlign(get,set):GVAlignType;
     #if swc @:getter(vAlign) #end
-	inline private function get_vAlign():Int {
+	inline private function get_vAlign():GVAlignType {
 		return renderer.vAlign;
 	}
     #if swc @:setter(vAlign) #end
-	inline private function set_vAlign(p_value:Int):Int {
+	inline private function set_vAlign(p_value:GVAlignType):GVAlignType {
 		renderer.vAlign = p_value;
 		return p_value;
 	}
 
     #if swc @:extern #end
-    @prototype public var hAlign(get,set):Int;
+    @prototype
+	public var hAlign(get,set):GHAlignType;
     #if swc @:getter(hAlign) #end
-    inline private function get_hAlign():Int {
+    inline private function get_hAlign():GHAlignType {
         return renderer.hAlign;
     }
     #if swc @:setter(hAlign) #end
-    inline private function set_hAlign(p_value:Int):Int {
+    inline private function set_hAlign(p_value:GHAlignType):GHAlignType {
         renderer.hAlign = p_value;
         return p_value;
     }
@@ -86,7 +92,8 @@ class GText extends GComponent implements IGRenderable
      *  Text
      */
     #if swc @:extern #end
-	@prototype public var text(get, set):String;
+	@prototype
+	public var text(get, set):String;
     #if swc @:getter(text) #end
 	inline private function get_text():String {
 		return renderer.text;
@@ -101,7 +108,8 @@ class GText extends GComponent implements IGRenderable
         Text should automatically resize width/height
      */
     #if swc @:extern #end
-    @prototype public var autoSize(get, set):Bool;
+    @prototype
+	public var autoSize(get, set):Bool;
     #if swc @:getter(autoSize) #end
     inline private function get_autoSize():Bool {
         return renderer.autoSize;
@@ -116,7 +124,8 @@ class GText extends GComponent implements IGRenderable
         Width of the text
      */
     #if swc @:extern #end
-	@prototype public var width(get, set):Float;
+	@prototype
+	public var width(get, set):Float;
     #if swc @:getter(width) #end
 	inline private function get_width():Float {
 		if (renderer.autoSize && renderer.isDirty()) renderer.invalidate();
@@ -133,7 +142,8 @@ class GText extends GComponent implements IGRenderable
         Height of the text
      */
     #if swc @:extern #end
-	@prototype public var height(get, set):Float;
+	@prototype
+	public var height(get, set):Float;
     #if swc @:getter(height) #end
 	inline private function get_height():Float {
         if (renderer.autoSize && renderer.isDirty()) renderer.invalidate();
@@ -213,7 +223,7 @@ class GText extends GComponent implements IGRenderable
 	
 	override public function getPrototype(p_prototype:GPrototype = null):GPrototype {
 		p_prototype = getPrototypeDefault(p_prototype);
-		p_prototype.createPrototypeProperty("font", "String", GPrototypeExtras.IGNORE_AUTO_BIND, renderer.textureFont.id);
+		p_prototype.createPrototypeProperty("font", "String", GPrototypeExtras.IGNORE_AUTO_BIND, null, renderer.textureFont.id);
 		
 		return p_prototype;
 	}

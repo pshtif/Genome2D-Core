@@ -1,4 +1,6 @@
 package com.genome2d.ui.skin;
+import com.genome2d.utils.GHAlignType;
+import com.genome2d.utils.GVAlignType;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.proto.GPrototype;
 import com.genome2d.text.GFontManager;
@@ -16,26 +18,26 @@ class GUIFontSkin extends GUISkin {
 	
 	#if swc @:extern #end
     @prototype
-	public var vAlign(get, set):Int;
+	public var vAlign(get, set):GVAlignType;
     #if swc @:getter(vAlign) #end
-    inline private function get_vAlign():Int {
+    inline private function get_vAlign():GVAlignType {
         return g2d_textRenderer.vAlign;
     }
     #if swc @:setter(vAlign) #end
-    inline private function set_vAlign(p_value:Int):Int {
+    inline private function set_vAlign(p_value:GVAlignType):GVAlignType {
         g2d_textRenderer.vAlign = p_value;
         return p_value;
     }
 	
 	#if swc @:extern #end
     @prototype
-	public var hAlign(get, set):Int;
+	public var hAlign(get, set):GHAlignType;
     #if swc @:getter(hAlign) #end
-    inline private function get_hAlign():Int {
+    inline private function get_hAlign():GHAlignType {
         return g2d_textRenderer.hAlign;
     }
     #if swc @:setter(hAlign) #end
-    inline private function set_hAlign(p_value:Int):Int {
+    inline private function set_hAlign(p_value:GHAlignType):GHAlignType {
         g2d_textRenderer.hAlign = p_value;
         return p_value;
     }
@@ -97,7 +99,6 @@ class GUIFontSkin extends GUISkin {
     }
     #if swc @:setter(font) #end
     inline private function set_font(p_value:GTextureFont):GTextureFont {
-        trace(p_value);
         g2d_textRenderer.textureFont = p_value;
         return p_value;
     }
