@@ -1,4 +1,5 @@
 package com.genome2d.proto.parsers;
+import haxe.rtti.Meta;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.debug.GDebug;
 import com.genome2d.proto.GPrototype;
@@ -58,8 +59,9 @@ class GXmlPrototypeParser
 			var propertyTypes:Array<String> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES);
 			var propertyExtras:Array<Int> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
 			var propertyIndex:Int = propertyNames.indexOf(split[0]);
+			var meta = Reflect.getProperty(Meta.getFields(lookupClass),p_name);
 			
-			p_prototype.createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex], fromXml(p_value));
+			p_prototype.createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex], meta, fromXml(p_value));
 		}
 	}
 	

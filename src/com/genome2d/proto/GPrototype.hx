@@ -1,4 +1,5 @@
 package com.genome2d.proto;
+import haxe.rtti.Meta;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.debug.GDebug;
 
@@ -36,11 +37,22 @@ class GPrototype
 			var name:String = propertyNames[i];
 			var extras:Int = propertyExtras[i];
 
+			// Find property meta data and since it can be anywhere in inheritance chain we need to look up for it
+			var lookupClass:Class<IGPrototypable> = prototypeClass;
+			var meta = Reflect.getProperty(Meta.getFields(lookupClass), name);
+			while (meta == null && lookupClass != null) {
+				lookupClass = cast Type.getSuperClass(lookupClass);
+				if (lookupClass != null) {
+					propertyNames = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
+				}
+				meta = Reflect.getProperty(Meta.getFields(lookupClass), name);
+			}
+
 			if (extras & GPrototypeExtras.SETTER == 0) {
 				var value = Reflect.getProperty(p_instance, name);
 				if (value != null) {
 				//if (value != propertyDefaults[i]) {
-					var property:GPrototypeProperty = createPrototypeProperty(name, propertyTypes[i], extras);
+					var property:GPrototypeProperty = createPrototypeProperty(name, propertyTypes[i], extras, meta, null);
 					property.setDynamicValue(value);
 				}
 			}
@@ -89,17 +101,19 @@ class GPrototype
 			var propertyTypes:Array<String> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES);
 			var propertyExtras:Array<Int> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
 			var propertyIndex:Int = propertyNames.indexOf(split[0]);
+			var meta = Reflect.getProperty(Meta.getFields(lookupClass),p_name);
 
-			var property:GPrototypeProperty = createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex]);
+			var property:GPrototypeProperty = createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex], meta, null);
 			property.setStringValue(p_value);
 		} else {
-			MGDebug.WARNING("Unknown prototype property.", split[0]);
-			//createPrototypeProperty(p_name, "String", 0, p_value);
+			// Create property even if its not found among macro generated properties, could be custom
+			// TODO: Think about better implementation to define customs
+			createPrototypeProperty(p_name, "String", 0, null, p_value);
 		}
 	}
 	
-	public function createPrototypeProperty(p_name:String, p_type:String, p_extras:Int, p_value:Dynamic = null):GPrototypeProperty {
-		var property:GPrototypeProperty = new GPrototypeProperty(p_name, p_type, p_extras);
+	public function createPrototypeProperty(p_name:String, p_type:String, p_extras:Int, p_meta:Dynamic, p_value:Dynamic):GPrototypeProperty {
+		var property:GPrototypeProperty = new GPrototypeProperty(p_name, p_type, p_extras, p_meta);
 
 		properties.set(p_name, property);
 		property.value = p_value;
@@ -114,11 +128,13 @@ class GPrototypeProperty {
 	public var type:String;
 	public var extras:Int;
 	public var isParameter:Bool = false;
+	public var meta:Dynamic;
 	
-	public function new(p_name:String, p_type:String, p_extras:Int):Void {
+	public function new(p_name:String, p_type:String, p_extras:Int, p_meta:Dynamic):Void {
 		name = p_name;
 		type = p_type;
 		extras = p_extras;
+		meta = p_meta;
 	}
 	
 	public function setDynamicValue(p_value:Dynamic):Void {
