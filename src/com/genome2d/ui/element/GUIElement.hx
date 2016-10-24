@@ -1029,6 +1029,15 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_onMouseOut;
     }
 
+    private var g2d_onDoubleMouseClick:GCallback1<GMouseInput>;
+    #if swc @:extern #end
+    public var onDoubleMouseClick(get, never):GCallback1<GMouseInput>;
+        #if swc @:getter(onDoubleMouseClick) #end
+    inline private function get_onDoubleMouseClick():GCallback1<GMouseInput> {
+        if (g2d_onDoubleMouseClick == null) g2d_onDoubleMouseClick = new GCallback1(GMouseInput);
+        return g2d_onDoubleMouseClick;
+    }
+
     private var g2d_onMouseClick:GCallback1<GMouseInput>;
     #if swc @:extern #end
     public var onMouseClick(get, never):GCallback1<GMouseInput>;
@@ -1134,6 +1143,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 		}
 	}
     /**/
+
+    private var g2d_lastClickTime:Float = -1;
     private function g2d_dispatchMouseCallback(p_type:String, p_element:GUIElement, p_input:GMouseInput):Void {
         if (mouseEnabled && (isVisible() || p_type == GMouseInputType.MOUSE_OUT)) {
             var mouseInput:GMouseInput = p_input.clone(this, p_element, p_type);
@@ -1146,9 +1157,16 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                     if (g2d_onMouseMove != null) g2d_onMouseMove.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_UP:
                     if (g2d_mouseDownElement != null) {
-                        if (g2d_mouseDownElement == p_element && g2d_onMouseClick != null) {
+                        if (g2d_mouseDownElement == p_element && (g2d_onMouseClick != null || g2d_onDoubleMouseClick != null)) {
                             var mouseClickInput:GMouseInput = p_input.clone(this, p_element, GMouseInputType.MOUSE_UP);
-                            g2d_onMouseClick.dispatch(mouseClickInput);
+                            if (g2d_onMouseClick != null) g2d_onMouseClick.dispatch(mouseClickInput);
+                            trace(g2d_lastClickTime, p_input.time);
+                            if (g2d_lastClickTime>0 && p_input.time-g2d_lastClickTime<250) {
+                                if (g2d_onDoubleMouseClick != null) g2d_onDoubleMouseClick.dispatch(mouseClickInput);
+                                g2d_lastClickTime = -1;
+                            } else {
+                                g2d_lastClickTime = p_input.time;
+                            }
                         }
                         g2d_mouseDownElement = null;
                         if (g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseInput);
