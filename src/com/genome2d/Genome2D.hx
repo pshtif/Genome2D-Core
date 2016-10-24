@@ -182,6 +182,7 @@ class Genome2D implements IGDebuggableInternal
         return g2d_runTime;
     }
 
+    private var g2d_accumulatedDeltaTime:Float = 0;
     private var g2d_currentFrameDeltaTime:Float;
     /**
         Return current frame delta time
@@ -294,6 +295,7 @@ class Genome2D implements IGDebuggableInternal
     **/
 	public function update(p_deltaTime:Float):Void {
         g2d_currentFrameDeltaTime = p_deltaTime;
+        g2d_accumulatedDeltaTime += g2d_currentFrameDeltaTime;
         onUpdate.dispatch(g2d_currentFrameDeltaTime);
 	}
 
@@ -421,6 +423,7 @@ class Genome2D implements IGDebuggableInternal
 
     @:access(com.genome2d.components.GCameraController)
 	private function g2d_contextMouseInput_handler(p_input:GMouseInput):Void {
+        p_input.time = g2d_accumulatedDeltaTime;
         // If there is no camera process the callbacks directly by root node
 		if (g2d_cameras.length == 0) {
             root.captureMouseInput(p_input);
