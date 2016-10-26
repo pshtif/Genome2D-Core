@@ -169,7 +169,7 @@ class GTextureTextRenderer extends GTextRenderer {
         }
 
         var offsetX:Float = 0;
-        var offsetY:Float = (g2d_textureFont.lineHeight - g2d_textureFont.base)*g2d_fontScale;
+        var offsetY:Float = 0;//(g2d_textureFont.lineHeight - g2d_textureFont.base)*g2d_fontScale;
         var renderable:GTextureCharRenderable;
         var char:GTextureChar = null;
         var currentCharCode:Int = -1;
@@ -207,7 +207,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				}
 				if (offsetX>maxLineWidth) maxLineWidth = offsetX;
                 offsetX = 0;
-                offsetY += (2 * g2d_textureFont.lineHeight - g2d_textureFont.base + g2d_lineSpace)*g2d_fontScale;
+                offsetY += (g2d_textureFont.lineHeight + g2d_lineSpace)*g2d_fontScale;
 				
 				renderable.line = lines.length - 1;
 				renderable.x = offsetX;
@@ -253,7 +253,7 @@ class GTextureTextRenderer extends GTextRenderer {
 					i = whiteSpaceIndex+1;
 					if (offsetX>maxLineWidth) maxLineWidth = offsetX;
 					offsetX = 0;
-					offsetY += (2 * g2d_textureFont.lineHeight - g2d_textureFont.base + g2d_lineSpace) * g2d_fontScale;
+					offsetY += (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale;
 					continue;
 				}
 
@@ -298,7 +298,7 @@ class GTextureTextRenderer extends GTextRenderer {
 		}
 		g2d_textHeight = offsetY + g2d_textureFont.lineHeight * g2d_fontScale;
 
-        var bottom:Float = maxVisibleLine * (2*g2d_textureFont.lineHeight - g2d_textureFont.base + g2d_lineSpace) * g2d_fontScale + g2d_textureFont.lineHeight * g2d_fontScale;
+        var bottom:Float = maxVisibleLine * (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale + g2d_textureFont.lineHeight * g2d_fontScale;
         var offsetY:Float = 0;
         if (g2d_vAlign == GVAlignType.MIDDLE) {
             offsetY = (g2d_height - bottom) * .5;

@@ -8,7 +8,7 @@ class G3DModel extends G3DNode {
 	
 	public var renderer:G3DRenderer;
 	
-	public var inheritSceneMatrixMode:Int = G3DMatrixInheritMode.REPLACE;
+	public var inheritSceneMatrixMode:G3DMatrixInheritMode = G3DMatrixInheritMode.REPLACE;
 	public var modelMatrix:GMatrix3D;
 	
 	public function new(p_id:String):Void {

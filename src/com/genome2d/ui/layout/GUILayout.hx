@@ -14,7 +14,7 @@ import com.genome2d.proto.IGPrototypable;
 @:access(com.genome2d.ui.element.GUIElement)
 @prototypeName("layout")
 class GUILayout implements IGPrototypable {
-    @prototype public var type:Int = GUILayoutType.HORIZONTAL;
+    @prototype public var type:GUILayoutType = GUILayoutType.HORIZONTAL;
 
 	private function isCalculatingWidth():Bool {
 		return true;
