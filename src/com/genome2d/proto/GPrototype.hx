@@ -44,8 +44,8 @@ class GPrototype
 				lookupClass = cast Type.getSuperClass(lookupClass);
 				if (lookupClass != null) {
 					propertyNames = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
+					meta = Reflect.getProperty(Meta.getFields(lookupClass), name);
 				}
-				meta = Reflect.getProperty(Meta.getFields(lookupClass), name);
 			}
 
 			if (extras & GPrototypeExtras.SETTER == 0) {
