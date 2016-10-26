@@ -1591,15 +1591,18 @@ class GNode implements IGInteractive implements IGPrototypable
     @:dox(hide)
     public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_renderAsMask:Bool, p_useMatrix:Bool):Void {
         if (g2d_active) {
-            /*  Masking  */
-            var previousMask:GRectangle = core.getContext().getMaskRect();
+            // Rectangle masking
             var hasMask:Bool = false;
+            var previousMask:GRectangle = null;
             if (maskRect != null && maskRect != parent.maskRect) {
-                hasMask = true;
-				var intersection:GRectangle = previousMask.intersection(maskRect);
+				hasMask = true;
+                previousMask = core.getContext().getMaskRect();
+				var intersection:GRectangle = previousMask == null ? maskRect : previousMask.intersection(maskRect);
+                //if (intersection.width <= 0 || intersection.height <= 0) return;
 				core.getContext().setMaskRect(intersection);
             }
-            /*  Transform invalidation  */
+
+            // Transform invalidation
             var invalidateTransform:Bool = p_parentTransformUpdate || g2d_transformDirty;
             var invalidateColor:Bool = p_parentColorUpdate || g2d_colorDirty;
 
@@ -1608,7 +1611,7 @@ class GNode implements IGInteractive implements IGPrototypable
             }
 
             if (g2d_active && visible && ((cameraGroup & p_camera.mask) != 0 || cameraGroup == 0) && (g2d_usedAsMask == 0 || p_renderAsMask)) {
-                /*  Masking  */
+                // Node masking
                 if (!p_renderAsMask && mask != null) {
                     core.getContext().renderToStencil(g2d_activeMasks.length);
                     mask.render(true, false, p_camera, true, false);
@@ -1616,7 +1619,7 @@ class GNode implements IGInteractive implements IGPrototypable
                     core.getContext().renderToColor(g2d_activeMasks.length);
                 }
 
-                /*  Matrix  */
+                // Matrix
                 var useMatrix:Bool = p_useMatrix || g2d_useMatrix > 0;
 
                 if (useMatrix) {
@@ -1626,13 +1629,14 @@ class GNode implements IGInteractive implements IGPrototypable
                     core.g2d_renderMatrixIndex++;
                 }
 
+				// Render renderable component
                 if (g2d_defaultRenderable != null) {
                     g2d_defaultRenderable.render(p_camera, useMatrix);
                 } else if (g2d_renderable != null) {
                     g2d_renderable.render(p_camera, useMatrix);
                 }
 
-                /*  Render children  */
+                // Render children
                 var child:GNode = g2d_firstChild;
                 while (child != null) {
                     var next:GNode = child.g2d_next;
@@ -1644,18 +1648,19 @@ class GNode implements IGInteractive implements IGPrototypable
                     child = next;
                 }
 
-                /*  Masking   */
+                //  Rectangle Masking
                 if (hasMask) {
                     core.getContext().setMaskRect(previousMask);
                 }
 
+				// Node masking
                 if (!p_renderAsMask && mask != null) {
                     g2d_activeMasks.pop();
                     if (g2d_activeMasks.length==0) core.getContext().clearStencil();
                     core.getContext().renderToColor(g2d_activeMasks.length);
                 }
 
-                /*  Use matrix  */
+                // Use matrix
                 if (useMatrix) {
                     core.g2d_renderMatrixIndex--;
                     core.g2d_renderMatrix.copyFrom(core.g2d_renderMatrixArray[core.g2d_renderMatrixIndex]);
