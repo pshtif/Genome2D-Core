@@ -1591,17 +1591,6 @@ class GNode implements IGInteractive implements IGPrototypable
     @:dox(hide)
     public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_renderAsMask:Bool, p_useMatrix:Bool):Void {
         if (g2d_active) {
-            // Rectangle masking
-            var hasMask:Bool = false;
-            var previousMask:GRectangle = null;
-            if (maskRect != null && maskRect != parent.maskRect) {
-				hasMask = true;
-                previousMask = core.getContext().getMaskRect();
-				var intersection:GRectangle = previousMask == null ? maskRect : previousMask.intersection(maskRect);
-                //if (intersection.width <= 0 || intersection.height <= 0) return;
-				core.getContext().setMaskRect(intersection);
-            }
-
             // Transform invalidation
             var invalidateTransform:Bool = p_parentTransformUpdate || g2d_transformDirty;
             var invalidateColor:Bool = p_parentColorUpdate || g2d_colorDirty;
@@ -1611,6 +1600,17 @@ class GNode implements IGInteractive implements IGPrototypable
             }
 
             if (g2d_active && visible && ((cameraGroup & p_camera.mask) != 0 || cameraGroup == 0) && (g2d_usedAsMask == 0 || p_renderAsMask)) {
+				// Rectangle masking
+				var hasMask:Bool = false;
+				var previousMask:GRectangle = null;
+				if (maskRect != null && ((maskRect != parent.maskRect) || (parent.maskRect != null && (maskRect.width != parent.maskRect.width || maskRect.height != parent.maskRect.height && maskRect.x != parent.maskRect.x || maskRect.y != parent.maskRect.y)))) {
+					hasMask = true;
+					previousMask = core.getContext().getMaskRect();
+					var intersection:GRectangle = previousMask == null ? maskRect : maskRect.intersection(previousMask);
+					//if (intersection.width <= 0 || intersection.height <= 0) return;
+					core.getContext().setMaskRect(intersection);
+				}
+
                 // Node masking
                 if (!p_renderAsMask && mask != null) {
                     core.getContext().renderToStencil(g2d_activeMasks.length);
