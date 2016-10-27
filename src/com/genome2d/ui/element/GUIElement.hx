@@ -8,6 +8,8 @@
  */
 package com.genome2d.ui.element;
 
+import com.genome2d.input.GMouseInput;
+import com.genome2d.input.GMouseInputType;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.IGContext;
 import com.genome2d.Genome2D;
@@ -1160,8 +1162,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                         if (g2d_mouseDownElement == p_element && (g2d_onMouseClick != null || g2d_onDoubleMouseClick != null)) {
                             var mouseClickInput:GMouseInput = p_input.clone(this, p_element, GMouseInputType.MOUSE_UP);
                             if (g2d_onMouseClick != null) g2d_onMouseClick.dispatch(mouseClickInput);
-                            trace(g2d_lastClickTime, p_input.time);
-                            if (g2d_lastClickTime>0 && p_input.time-g2d_lastClickTime<250) {
+                            if (g2d_lastClickTime>0 && p_input.time-g2d_lastClickTime<GMouseInput.DOUBLE_CLICK_TIME) {
                                 if (g2d_onDoubleMouseClick != null) g2d_onDoubleMouseClick.dispatch(mouseClickInput);
                                 g2d_lastClickTime = -1;
                             } else {
