@@ -30,73 +30,100 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
     public var blendMode:GBlendMode;
 
 	@prototype
-	public var emit:Bool = false;
-
-	@prototype
     public var useWorldSpace:Bool = false;
 
 	@category("rendering")
 	@range(0, 10)
 	@prototype
 	public var initialScale:Float = 1;
+
 	@category("rendering")
 	@prototype
 	public var initialScaleVariance:Float = 0;
+
 	@category("rendering")
 	@prototype
 	public var endScale:Float = 1;
+
 	@category("rendering")
 	@prototype
 	public var endScaleVariance:Float = 0;
 
+	@category("emission")
+	@prototype
+	public var emit:Bool = false;
+
+	@category("emission")
 	@prototype
 	public var energy:Float = 0;
+
+	@category("emission")
 	@prototype
 	public var energyVariance:Float = 0;
 
+	@category("emission")
 	@prototype
 	public var emission:Int = 1;
+
+	@category("emission")
 	@prototype
 	public var emissionVariance:Int = 0;
+
+	@category("emission")
 	@prototype
 	public var emissionTime:Float = 1;
+
+	@category("emission")
 	@prototype
 	public var emissionDelay:Float = 0;
 
 	@prototype
 	public var initialVelocity:Float = 0;
+
 	@prototype
 	public var initialVelocityVariance:Float = 0;
+
 	@prototype
 	public var initialAcceleration:Float = 0;
+
 	@prototype
 	public var initialAccelerationVariance:Float = 0;
 
 	@prototype
 	public var initialAngularVelocity:Float = 0;
+
 	@prototype
 	public var initialAngularVelocityVariance:Float = 0;
 
 
 	public var initialRed:Float = 1;
+
 	@category("color")
+	@range(0,1,.01)
 	@prototype
 	public var initialRedVariance:Float = 0;
 
 	public var initialGreen:Float = 1;
+
 	@category("color")
+	@range(0,1,.01)
 	@prototype
 	public var initialGreenVariance:Float = 0;
 
 	public var initialBlue:Float = 1;
+
 	@category("color")
+	@range(0,1,.01)
 	@prototype
 	public var initialBlueVariance:Float = 0;
 
 	@category("color")
+	@range(0,1,.01)
 	@prototype
 	public var initialAlpha:Float = 1;
+
 	@category("color")
+	@range(0,1,.01)
 	@prototype
 	public var initialAlphaVariance:Float = 0;
 
@@ -135,9 +162,11 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 	@category("color")
 	@prototype
 	public var endBlueVariance:Float = 0;
+
 	@category("color")
 	@prototype
 	public var endAlpha:Float = 1;
+
 	@category("color")
 	@prototype
 	public var endAlphaVariance:Float = 0;
@@ -179,6 +208,7 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 	@prototype
 	public var paused:Bool = false;
 
+	@category("emission")
 	@prototype
 	public var burst:Bool = false;
 
