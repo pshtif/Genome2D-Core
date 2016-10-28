@@ -21,8 +21,8 @@ class GUISkinManager {
     }
 
     static private var g2d_skins:Map<String,GUISkin>;
-    static public function getSkin(p_id:String):GUISkin {
-        return g2d_skins.get(p_id);
+    static public function getSkin<T:GUISkin>(p_id:String):T {
+        return cast g2d_skins.get(p_id);
     }
 
     static public function g2d_addSkin(p_id:String, p_value:GUISkin):Void {
