@@ -1,4 +1,7 @@
 package com.genome2d.ui.skin;
+import com.genome2d.input.GMouseInputType;
+import com.genome2d.input.GKeyboardInputType;
+import com.genome2d.input.GKeyboardInput;
 import com.genome2d.utils.GHAlignType;
 import com.genome2d.utils.GVAlignType;
 import com.genome2d.input.GMouseInput;
@@ -129,6 +132,9 @@ class GUIFontSkin extends GUISkin {
         return p_value;
     }
 
+    @prototype
+    public var inputEnabled:Bool = false;
+
     override public function getTexture():GTexture {
         return (g2d_textRenderer != null && g2d_textRenderer.textureFont != null) ? g2d_textRenderer.textureFont.texture : null;
     }
@@ -150,6 +156,8 @@ class GUIFontSkin extends GUISkin {
         if (p_font != null) font = p_font;
         fontScale = p_fontScale;
         autoSize = p_autoSize;
+
+        Genome2D.getInstance().onKeyboardInput.add(keyboard_handler);
     }
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Bool {
@@ -183,10 +191,13 @@ class GUIFontSkin extends GUISkin {
 		clone.color = color;
 		clone.vAlign = vAlign;
 		clone.hAlign = hAlign;
+        clone.inputEnabled = inputEnabled;
         return clone;
     }
 	
 	override public function captureMouseInput(p_input:GMouseInput):Void {
+        if (inputEnabled && p_input.type == GMouseInputType.MOUSE_UP) setFocus(this);
+
 		g2d_textRenderer.captureMouseInput(p_input);
 	}
 	
@@ -200,4 +211,53 @@ class GUIFontSkin extends GUISkin {
 			}
 		}
 	}
+
+    public var restrictedChars:Array<String> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
+
+    private function keyboard_handler(input:GKeyboardInput):Void {
+        if (g2d_focusInstance != this || input.type != GKeyboardInputType.KEY_DOWN) return;
+
+        switch (input.keyCode) {
+            // LEFT
+            case 37:
+                cursorStartIndex = cursorEndIndex = cursorEndIndex-1;
+                if (cursorStartIndex < 0) {
+                    cursorStartIndex = cursorEndIndex = 0;
+                }
+            // RIGHT
+            case 39:
+                cursorStartIndex = cursorEndIndex = cursorEndIndex+1;
+                if (cursorStartIndex > text.length) {
+                    cursorStartIndex = cursorEndIndex = text.length;
+                }
+            // BACKSPACE
+            case 8:
+                if (cursorStartIndex > 0) {
+                    text = text.substr(0,cursorStartIndex-1) + text.substr(cursorStartIndex);
+                    cursorStartIndex = cursorEndIndex = cursorEndIndex-1;
+                }
+            // DELETE
+            case 46:
+                if (cursorStartIndex < text.length) {
+                    text = text.substr(0,cursorStartIndex) + text.substr(cursorStartIndex+1);
+                }
+            case 13:
+
+            case _:
+                var char:String = String.fromCharCode(input.charCode);
+                if (restrictedChars.indexOf(char) != -1) {
+                    text = text.substr(0,cursorStartIndex) + char + text.substr(cursorStartIndex);
+                    cursorStartIndex = cursorEndIndex = cursorEndIndex+1;
+                }
+        }
+
+        g2d_element.setModel(text);
+    }
+
+    static private var g2d_focusInstance:GUIFontSkin;
+    static public function setFocus(p_instance:GUIFontSkin):Void {
+        if (g2d_focusInstance != null) g2d_focusInstance.textRenderer.enableCursor = false;
+        g2d_focusInstance = p_instance;
+        if (g2d_focusInstance != null) g2d_focusInstance.textRenderer.enableCursor = true;
+    }
 }
