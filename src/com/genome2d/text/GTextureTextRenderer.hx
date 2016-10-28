@@ -10,6 +10,8 @@ import com.genome2d.utils.GHAlignType;
 import com.genome2d.utils.GVAlignType;
 import com.genome2d.context.IGContext;
 import com.genome2d.context.GCamera;
+import flash.display.BitmapData;
+
 class GTextureTextRenderer extends GTextRenderer {
 	
 	static public var warnMissingCharTextures:Bool = false;
@@ -39,12 +41,13 @@ class GTextureTextRenderer extends GTextRenderer {
 	
 	public var cursorStartIndex:Int = 0;
 	public var cursorEndIndex:Int = 0;
-	private var g2d_cursorCurrentIndex:Int = 0;
 	public var enableCursor:Bool = false;
 	public var scrollLine:Int = 0;
-	private var maxVisibleLine:Int = 0;
 	public var autoScroll:Bool = false;
-	private var lineCount:Int = 0;
+
+	private var g2d_lineCount:Int = 0;
+	private var g2d_cursorCurrentIndex:Int = 0;
+	private var g2d_maxVisibleLine:Int = 0;
 	
 	public var format:GTextFormat;
 	
@@ -57,8 +60,8 @@ class GTextureTextRenderer extends GTextRenderer {
 		
 		#if flash
 		if (g2d_helperTexture == null) {
-			//g2d_helperTexture = GTextureManager.createTexture("g2d_GTextureTextRenderer_helper", GParameters BitmapData(4, 4, false, 0xFFFFFF));
-			//g2d_helperTexture.pivotX = g2d_helperTexture.pivotY = -2;
+			g2d_helperTexture = GTextureManager.createTexture("g2d_GTextureTextRenderer_helper", new BitmapData(4, 4, false, 0xFFFFFF));
+			g2d_helperTexture.pivotX = g2d_helperTexture.pivotY = -2;
 		}
 		#end
 	}
@@ -87,7 +90,7 @@ class GTextureTextRenderer extends GTextRenderer {
 		var charGreen:Float = 1;
 		var charBlue:Float = 1;
 		var charAlpha:Float = 1;
-		if (autoScroll && lineCount>maxVisibleLine) scrollLine = lineCount - maxVisibleLine - 1;
+		if (autoScroll && g2d_lineCount>g2d_maxVisibleLine) scrollLine = g2d_lineCount - g2d_maxVisibleLine - 1;
 		var scrollOffset:Float = scrollLine * (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale;
 
         for (i in 0...charCount) {
@@ -104,7 +107,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				}
 			}
 
-            if (!renderable.visible || renderable.line > maxVisibleLine+scrollLine) {
+            if (!renderable.visible || renderable.line > g2d_maxVisibleLine+scrollLine) {
 				break;
 			}
 			if (renderable.whiteSpace || renderable.line<scrollLine) continue;
@@ -203,7 +206,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				// TODO: Vertical autosize
                 if (!g2d_autoSize && offsetY + 2 * (g2d_textureFont.lineHeight + g2d_lineSpace)*g2d_fontScale > g2d_height && isAllVisible) {
 					isAllVisible = false;
-					maxVisibleLine = lines.length - 1;
+					g2d_maxVisibleLine = lines.length - 1;
 				}
 				if (offsetX>maxLineWidth) maxLineWidth = offsetX;
                 offsetX = 0;
@@ -218,7 +221,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				// TODO: Vertical autosize
                 if (!g2d_autoSize && offsetY + (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale > g2d_height && isAllVisible) {
 					isAllVisible = false;
-					maxVisibleLine = lines.length - 1;
+					g2d_maxVisibleLine = lines.length - 1;
 				}
 
                 currentCharCode = g2d_text.charCodeAt(i);
@@ -247,7 +250,7 @@ class GTextureTextRenderer extends GTextRenderer {
 					if (backtrack >= currentCount) break;
 					if (!g2d_autoSize && offsetY + 2 * (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale > g2d_height && isAllVisible) {
 						isAllVisible = false;
-						maxVisibleLine = lines.length - 1;
+						g2d_maxVisibleLine = lines.length - 1;
 					}
 
 					i = whiteSpaceIndex+1;
@@ -281,9 +284,9 @@ class GTextureTextRenderer extends GTextRenderer {
         }
 		if (offsetX>maxLineWidth) maxLineWidth = offsetX;
         lines.push(currentLine);
-		lineCount = lines.length;
+		g2d_lineCount = lines.length;
 
-		if (isAllVisible) maxVisibleLine = lines.length - 1;
+		if (isAllVisible) g2d_maxVisibleLine = lines.length - 1;
 
         var charCount:Int = g2d_chars.length;
         for (i in charIndex...charCount) {
@@ -298,7 +301,7 @@ class GTextureTextRenderer extends GTextRenderer {
 		}
 		g2d_textHeight = offsetY + g2d_textureFont.lineHeight * g2d_fontScale;
 
-        var bottom:Float = maxVisibleLine * (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale + g2d_textureFont.lineHeight * g2d_fontScale;
+        var bottom:Float = g2d_maxVisibleLine * (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale + g2d_textureFont.lineHeight * g2d_fontScale;
         var offsetY:Float = 0;
         if (g2d_vAlign == GVAlignType.MIDDLE) {
             offsetY = (g2d_height - bottom) * .5;
