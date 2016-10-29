@@ -1,4 +1,6 @@
 package com.genome2d.ui.skin;
+import com.genome2d.input.IGInteractive;
+import com.genome2d.input.GFocusManager;
 import com.genome2d.input.GMouseInputType;
 import com.genome2d.input.GKeyboardInputType;
 import com.genome2d.input.GKeyboardInput;
@@ -17,7 +19,7 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 
 @prototypeName("fontSkin")
-class GUIFontSkin extends GUISkin {
+class GUIFontSkin extends GUISkin implements IGInteractive {
 	
 	#if swc @:extern #end
     @prototype
@@ -196,7 +198,7 @@ class GUIFontSkin extends GUISkin {
     }
 	
 	override public function captureMouseInput(p_input:GMouseInput):Void {
-        if (inputEnabled && p_input.type == GMouseInputType.MOUSE_UP) setFocus(this);
+        if (inputEnabled && p_input.type == GMouseInputType.MOUSE_UP) GFocusManager.setFocus(this);
 
 		g2d_textRenderer.captureMouseInput(p_input);
 	}
@@ -215,7 +217,7 @@ class GUIFontSkin extends GUISkin {
     public var restrictedChars:Array<String> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
 
     private function keyboard_handler(input:GKeyboardInput):Void {
-        if (g2d_focusInstance != this || input.type != GKeyboardInputType.KEY_DOWN) return;
+        if (!GFocusManager.hasFocus(this) || input.type != GKeyboardInputType.KEY_DOWN) return;
 
         switch (input.keyCode) {
             // LEFT
@@ -254,10 +256,11 @@ class GUIFontSkin extends GUISkin {
         g2d_element.setModel(text);
     }
 
-    static private var g2d_focusInstance:GUIFontSkin;
-    static public function setFocus(p_instance:GUIFontSkin):Void {
-        if (g2d_focusInstance != null) g2d_focusInstance.textRenderer.enableCursor = false;
-        g2d_focusInstance = p_instance;
-        if (g2d_focusInstance != null) g2d_focusInstance.textRenderer.enableCursor = true;
+    private function gotFocus():Void {
+        textRenderer.enableCursor = true;
+    }
+
+    private function lostFocus():Void {
+        textRenderer.enableCursor = false;
     }
 }
