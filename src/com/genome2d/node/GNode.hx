@@ -12,27 +12,21 @@ import com.genome2d.components.renderable.GSprite;
 import com.genome2d.callbacks.GCallback;
 import com.genome2d.geom.GPoint;
 import com.genome2d.context.filters.GFilter;
-import com.genome2d.context.GBlendMode;
 import com.genome2d.input.IGInteractive;
 import com.genome2d.proto.GPrototype;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
-import com.genome2d.textures.GTextureManager;
-import com.genome2d.textures.GTexture;
 import com.genome2d.node.GNode;
 import com.genome2d.components.GComponent;
 import com.genome2d.context.GContextFeature;
-import com.genome2d.context.IGContext;
 import com.genome2d.context.stats.GStats;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.postprocess.GPostProcess;
 import com.genome2d.geom.GMatrix;
 import com.genome2d.geom.GMatrixUtils;
-import com.genome2d.geom.GMatrix;
 import com.genome2d.components.renderable.IGRenderable;
 import com.genome2d.context.GCamera;
 import com.genome2d.input.GMouseInputType;
-import com.genome2d.components.GComponent;
 import com.genome2d.debug.GDebug;
 import com.genome2d.input.GMouseInput;
 
@@ -447,6 +441,14 @@ class GNode implements IGInteractive implements IGPrototypable
 		if (g2d_onMouseDown == null) g2d_onMouseDown = new GCallback1(GMouseInput);
 		return g2d_onMouseDown;
 	}
+    private var g2d_onRightMouseDown:GCallback1<GMouseInput>;
+    #if swc @:extern #end
+    public var onRightMouseDown(get, never):GCallback1<GMouseInput>;
+        #if swc @:getter(onRightMouseDown) #end
+    private function get_onRightMouseDown():GCallback1<GMouseInput> {
+        if (g2d_onRightMouseDown == null) g2d_onRightMouseDown = new GCallback1(GMouseInput);
+        return g2d_onRightMouseDown;
+    }
 	private var g2d_onMouseMove:GCallback1<GMouseInput>;
     #if swc @:extern #end
 	public var onMouseMove(get, never):GCallback1<GMouseInput>;
@@ -488,8 +490,7 @@ class GNode implements IGInteractive implements IGPrototypable
 		return g2d_onMouseOut;
 	}
 
-	private var g2d_onRightMouseDown:GCallback1<GMouseInput>;
-	public var onRightMouseDown:GCallback1<GMouseInput>;
+    // TODO setup getter/setter
 	private var g2d_onRightMouseUp:GCallback1<GMouseInput>;
 	public var onRightMouseUp:GCallback1<GMouseInput>;
 	private var g2d_onRightMouseClick:GCallback1<GMouseInput>;
@@ -563,6 +564,9 @@ class GNode implements IGInteractive implements IGPrototypable
                 case GMouseInputType.MOUSE_DOWN:
                     g2d_mouseDownNode = p_object;
                     if (g2d_onMouseDown != null) g2d_onMouseDown.dispatch(mouseInput);
+                case GMouseInputType.RIGHT_MOUSE_DOWN:
+                    g2d_rightMouseDownNode = p_object;
+                    if (g2d_onRightMouseDown != null) g2d_onRightMouseDown.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_MOVE:
                     if (g2d_onMouseMove != null) g2d_onMouseMove.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_UP:
@@ -580,8 +584,15 @@ class GNode implements IGInteractive implements IGPrototypable
                     if (g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseInput);
             }
 		}
-		
 		if (parent != null) parent.g2d_dispatchMouseCallback(p_type, p_object, p_input);
+	}
+
+	private function gotFocus():Void {
+
+	}
+
+	private function lostFocus():Void {
+
 	}
 	
 	/****************************************************************************************************

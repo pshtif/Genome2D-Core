@@ -148,9 +148,17 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseDown);
                 if (mdf != null) onMouseDown.remove(mdf);
             }
+            if (g2d_rightMouseDown != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_rightMouseDown);
+                if (mdf != null) onRightMouseDown.remove(mdf);
+            }
 			if (g2d_mouseUp != "" && g2d_currentController != null) {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseUp);
                 if (mdf != null) onMouseUp.remove(mdf);
+            }
+            if (g2d_rightMouseUp != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_rightMouseUp);
+                if (mdf != null) onRightMouseUp.remove(mdf);
             }
 			if (g2d_mouseOver != "" && g2d_currentController != null) {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseOver);
@@ -164,6 +172,10 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseClick);
                 if (mdf != null) onMouseClick.remove(mdf);
             }
+            if (g2d_rightMouseClick != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_rightMouseClick);
+                if (mdf != null) onRightMouseClick.remove(mdf);
+            }
 			if (g2d_mouseMove != "" && g2d_currentController != null) {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseMove);
                 if (mdf != null) onMouseMove.remove(mdf);
@@ -174,9 +186,17 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseDown);
                 if (mdf != null) onMouseDown.add(mdf);
             }
+            if (g2d_rightMouseDown != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_rightMouseDown);
+                if (mdf != null) onRightMouseDown.add(mdf);
+            }
 			if (g2d_mouseUp != "" && g2d_currentController != null) {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseUp);
                 if (mdf != null) onMouseUp.add(mdf);
+            }
+            if (g2d_rightMouseUp != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_rightMouseUp);
+                if (mdf != null) onRightMouseUp.add(mdf);
             }
 			if (g2d_mouseOver != "" && g2d_currentController != null) {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseOver);
@@ -189,6 +209,10 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 			if (g2d_mouseClick != "" && g2d_currentController != null) {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseClick);
                 if (mdf != null) onMouseClick.add(mdf);
+            }
+            if (g2d_rightMouseClick != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_rightMouseClick);
+                if (mdf != null) onRightMouseClick.add(mdf);
             }
 			if (g2d_mouseMove != "" && g2d_currentController != null) {
                 var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseMove);
@@ -248,6 +272,29 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_mouseDown;
     }
 
+    private var g2d_rightMouseDown:String = "";
+    #if swc @:extern #end
+    @prototype public var rightMouseDown(get,set):String;
+        #if swc @:getter(rightMouseDown) #end
+    inline private function get_rightMouseDown():String {
+        return g2d_rightMouseDown;
+    }
+        #if swc @:setter(rightMouseDown) #end
+    inline private function set_rightMouseDown(p_value:String):String {
+        if (g2d_rightMouseDown != p_value) {
+            if (g2d_rightMouseDown != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController,g2d_rightMouseDown);
+                if (mdf != null) onRightMouseDown.remove(mdf);
+            }
+            g2d_rightMouseDown = p_value;
+            if (g2d_rightMouseDown != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController,g2d_rightMouseDown);
+                if (mdf != null) onRightMouseDown.add(mdf);
+            }
+        }
+        return g2d_rightMouseDown;
+    }
+
     private var g2d_mouseUp:String = "";
     #if swc @:extern #end
     @prototype public var mouseUp(get,set):String;
@@ -271,6 +318,29 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_mouseUp;
     }
 
+    private var g2d_rightMouseUp:String = "";
+    #if swc @:extern #end
+    @prototype public var rightMouseUp(get,set):String;
+        #if swc @:getter(rightMouseUp) #end
+    inline private function get_rightMouseUp():String {
+        return g2d_rightMouseUp;
+    }
+        #if swc @:setter(rightMouseUp) #end
+    inline private function set_rightMouseUp(p_value:String):String {
+        if (g2d_rightMouseUp != p_value) {
+            if (g2d_rightMouseUp != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_rightMouseUp);
+                if (mdf != null) onRightMouseUp.remove(mdf);
+            }
+            g2d_rightMouseUp = p_value;
+            if (g2d_rightMouseUp != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_rightMouseUp);
+                if (mdf != null) onRightMouseUp.add(mdf);
+            }
+        }
+        return g2d_rightMouseUp;
+    }
+
     private var g2d_mouseClick:String = "";
     #if swc @:extern #end
     @prototype public var mouseClick(get,set):String;
@@ -292,6 +362,29 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 			}
 		}
         return g2d_mouseClick;
+    }
+
+    private var g2d_rightMouseClick:String = "";
+    #if swc @:extern #end
+    @prototype public var rightMouseClick(get,set):String;
+        #if swc @:getter(rightMouseClick) #end
+    inline private function get_rightMouseClick():String {
+        return g2d_rightMouseClick;
+    }
+        #if swc @:setter(rightMouseClick) #end
+    inline private function set_rightMouseClick(p_value:String):String {
+        if (g2d_rightMouseClick != p_value) {
+            if (g2d_rightMouseClick != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_rightMouseClick);
+                if (mdf != null) onRightMouseClick.remove(mdf);
+            }
+            g2d_rightMouseClick = p_value;
+            if (g2d_rightMouseClick != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_rightMouseClick);
+                if (mdf != null) onRightMouseClick.add(mdf);
+            }
+        }
+        return g2d_rightMouseClick;
     }
 
     private var g2d_mouseOver:String = "";
@@ -995,6 +1088,15 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_onMouseDown;
     }
 
+    private var g2d_onRightMouseDown:GCallback1<GMouseInput>;
+    #if swc @:extern #end
+    public var onRightMouseDown(get, never):GCallback1<GMouseInput>;
+    #if swc @:getter(onRightMouseDown) #end
+    inline private function get_onRightMouseDown():GCallback1<GMouseInput> {
+        if (g2d_onRightMouseDown == null) g2d_onRightMouseDown = new GCallback1(GMouseInput);
+        return g2d_onRightMouseDown;
+    }
+
     private var g2d_onMouseUp:GCallback1<GMouseInput>;
     #if swc @:extern #end
     public var onMouseUp(get, never):GCallback1<GMouseInput>;
@@ -1002,6 +1104,15 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     inline private function get_onMouseUp():GCallback1<GMouseInput> {
         if (g2d_onMouseUp == null) g2d_onMouseUp = new GCallback1(GMouseInput);
         return g2d_onMouseUp;
+    }
+
+    private var g2d_onRightMouseUp:GCallback1<GMouseInput>;
+    #if swc @:extern #end
+    public var onRightMouseUp(get, never):GCallback1<GMouseInput>;
+    #if swc @:getter(onRightMouseUp) #end
+    inline private function get_onRightMouseUp():GCallback1<GMouseInput> {
+        if (g2d_onRightMouseUp == null) g2d_onRightMouseUp = new GCallback1(GMouseInput);
+        return g2d_onRightMouseUp;
     }
 
     private var g2d_onMouseMove:GCallback1<GMouseInput>;
@@ -1049,6 +1160,15 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_onMouseClick;
     }
 
+    private var g2d_onRightMouseClick:GCallback1<GMouseInput>;
+    #if swc @:extern #end
+    public var onRightMouseClick(get, never):GCallback1<GMouseInput>;
+        #if swc @:getter(onRightMouseClick) #end
+    inline private function get_onRightMouseClick():GCallback1<GMouseInput> {
+        if (g2d_onRightMouseClick == null) g2d_onRightMouseClick = new GCallback1(GMouseInput);
+        return g2d_onRightMouseClick;
+    }
+
     private var g2d_onInvalidate:GCallback0;
     #if swc @:extern #end
     public var onInvalidate(get, never):GCallback0;
@@ -1059,6 +1179,7 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     }
 
     private var g2d_mouseDownElement:GUIElement;
+    private var g2d_rightMouseDownElement:GUIElement;
     private var g2d_mouseOverElement:GUIElement;
 
     public function captureMouseInput(p_input:GMouseInput):Void {
@@ -1080,9 +1201,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 				if (!p_input.g2d_captured && p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom) {
 					if (g2d_activeSkin != null) {
 						g2d_activeSkin.captureMouseInput(p_input);
-						
+
 						p_input.g2d_captured = true;
-						GFocusManager.activeFocus = this;
 						g2d_dispatchMouseCallback(p_input.type, this, p_input);
 
 						if (g2d_mouseOverElement != this) {
@@ -1150,8 +1270,11 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     private function g2d_dispatchMouseCallback(p_type:String, p_element:GUIElement, p_input:GMouseInput):Void {
         if (mouseEnabled && (isVisible() || p_type == GMouseInputType.MOUSE_OUT)) {
             var mouseInput:GMouseInput = p_input.clone(this, p_element, p_type);
-			
+
             switch (p_type) {
+                case GMouseInputType.RIGHT_MOUSE_DOWN:
+                    g2d_rightMouseDownElement = p_element;
+                    if (g2d_onRightMouseDown != null) g2d_onRightMouseDown.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_DOWN:
                     g2d_mouseDownElement = p_element;
                     if (g2d_onMouseDown != null) g2d_onMouseDown.dispatch(mouseInput);
@@ -1172,6 +1295,15 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                         g2d_mouseDownElement = null;
                         if (g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseInput);
                     }
+                case GMouseInputType.RIGHT_MOUSE_UP:
+                    if (g2d_rightMouseDownElement != null) {
+                        if (g2d_rightMouseDownElement == p_element && g2d_onRightMouseClick != null) {
+                            var mouseClickInput:GMouseInput = p_input.clone(this, p_element, GMouseInputType.RIGHT_MOUSE_UP);
+                            if (g2d_onRightMouseClick != null) g2d_onRightMouseClick.dispatch(mouseClickInput);
+                        }
+                        g2d_rightMouseDownElement = null;
+                        if (g2d_onRightMouseUp != null) g2d_onRightMouseUp.dispatch(mouseInput);
+                    }
                 case GMouseInputType.MOUSE_OVER:
                     if (g2d_mouseOverElement != p_element) {
                         g2d_mouseOverElement = p_element;
@@ -1185,7 +1317,9 @@ class GUIElement implements IGPrototypable implements IGInteractive {
             }
         }
 
-        if (parent != null) parent.g2d_dispatchMouseCallback(p_type, p_element, p_input);
+        if (parent != null) {
+            parent.g2d_dispatchMouseCallback(p_type, p_element, p_input);
+        }
     }
 	
 	public function setState(p_stateName:String):Void {
@@ -1200,6 +1334,14 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	public function getState():String {
 		return g2d_currentState;
 	}
+
+    private function gotFocus():Void {
+
+    }
+
+    private function lostFocus():Void {
+
+    }
 	
 	private function skinChanged_handler(p_skinId:String):Void {
 		if (g2d_skin != null && g2d_skin.id == p_skinId) {
