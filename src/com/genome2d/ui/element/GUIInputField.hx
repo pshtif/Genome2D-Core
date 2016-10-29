@@ -12,10 +12,6 @@ import com.genome2d.input.GKeyboardInput;
 import com.genome2d.input.GKeyboardInputType;
 import com.genome2d.ui.skin.GUIFontSkin;
 
-/**
- * ...
- * @author 
- */
 class GUIInputField extends GUIElement
 {
 	public function new(p_skin:GUIFontSkin) {
@@ -27,7 +23,7 @@ class GUIInputField extends GUIElement
 	}
 	
 	private function keyboardInput_handler(input:GKeyboardInput):Void {
-		if (GFocusManager.activeFocus == this && input.type == GKeyboardInputType.KEY_DOWN && g2d_activeSkin != null) {
+		if (GFocusManager.hasFocus(this) && input.type == GKeyboardInputType.KEY_DOWN && g2d_activeSkin != null) {
 			var skin:GUIFontSkin = cast g2d_activeSkin;
 			switch (input.keyCode) {
 				// ENTER
@@ -63,10 +59,18 @@ class GUIInputField extends GUIElement
 					}
 				// RIGHT ARROW
 				case 39:
-					if (skin.cursorStartIndex == skin.cursorEndIndex)  skin.cursorStartIndex = skin.cursorEndIndex = skin.cursorStartIndex + 1;
+					if (skin.cursorStartIndex == skin.cursorEndIndex) {
+						skin.cursorStartIndex = skin.cursorEndIndex = skin.cursorStartIndex + 1;
+					} else {
+						skin.cursorStartIndex = skin.cursorEndIndex;
+					}
 				// LEFT ARROW
 				case 37:
-					if (skin.cursorStartIndex == skin.cursorEndIndex)  skin.cursorStartIndex = skin.cursorEndIndex = skin.cursorStartIndex - 1;
+					if (skin.cursorStartIndex == skin.cursorEndIndex) {
+						skin.cursorStartIndex = skin.cursorEndIndex = skin.cursorStartIndex - 1;
+					} else {
+						skin.cursorEndIndex = skin.cursorStartIndex;
+					}
 				case 16:
 				case _:
 					if (input.charCode != 0) {
