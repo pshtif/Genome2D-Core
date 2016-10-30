@@ -58,6 +58,9 @@ class GUISkin implements IGPrototypable {
     private var g2d_clones:Array<GUISkin>;
     private var g2d_origin:GUISkin;
     private var g2d_element:GUIElement;
+
+	@prototype
+	public var forcePixelAccuracy:Bool = true;
 	
 	@prototype
 	public var red:Float = 1;

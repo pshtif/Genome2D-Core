@@ -83,6 +83,13 @@ class GUITextureSkin extends GUISkin {
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Bool {
         var rendered:Bool = false;
+
+        if (forcePixelAccuracy) {
+            p_left = Math.round(p_left);
+            p_top = Math.round(p_top);
+            p_right = Math.round(p_right);
+            p_bottom = Math.round(p_bottom);
+        }
 		
         if (texture != null && super.render(p_left, p_top, p_right, p_bottom, p_red, p_green, p_blue, p_alpha)) {
             var context:IGContext = Genome2D.getInstance().getContext();

@@ -52,6 +52,7 @@ class GTextureTextRenderer extends GTextRenderer {
 	public var enableCursor:Bool = false;
 	public var scrollLine:Int = 0;
 	public var autoScroll:Bool = false;
+    public var forcePixelAccuracy:Bool = true;
 
 	private var g2d_lineCount:Int = 0;
 	private var g2d_cursorCurrentIndex:Int = 0;
@@ -130,7 +131,11 @@ class GTextureTextRenderer extends GTextRenderer {
 				tx = cx * p_scaleX + p_x;
 				ty = cy * p_scaleY + p_y;
 			}
-			
+
+            if (forcePixelAccuracy) {
+                tx = Math.round(tx);
+                ty = Math.round(ty);
+            }
 			if (charRed == 1 && charBlue == 1 && charGreen == 1 && charAlpha == 1) {
 				g2d_context.draw(renderable.texture, GBlendMode.NORMAL, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, null);
 			} else {
