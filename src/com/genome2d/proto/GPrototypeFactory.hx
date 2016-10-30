@@ -44,7 +44,7 @@ class GPrototypeFactory {
         return g2d_lookups.get(p_prototypeName);
     }
 
-    static public function createPrototype(p_prototype:GPrototype):IGPrototypable {
+    static public function createPrototype<T:IGPrototypable>(p_prototype:GPrototype):T {
         if (p_prototype.prototypeClass == null) {
             GDebug.error("Non existing prototype class "+p_prototype.prototypeName);
         }
@@ -54,7 +54,7 @@ class GPrototypeFactory {
 		
         proto.bindPrototype(p_prototype);
 
-        return proto;
+        return cast proto;
     }
 
     static public function createPrototypes(p_prototypes:Array<GPrototype>):Array<IGPrototypable> {
