@@ -341,6 +341,29 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_rightMouseUp;
     }
 
+    private var g2d_mouseWheel:String = "";
+    #if swc @:extern #end
+    @prototype public var mouseWheel(get,set):String;
+        #if swc @:getter(mouseWheel) #end
+    inline private function get_mouseWheel():String {
+        return g2d_mouseWheel;
+    }
+        #if swc @:setter(mouseWheel) #end
+    inline private function set_mouseWheel(p_value:String):String {
+        if (g2d_mouseWheel != p_value) {
+            if (g2d_mouseWheel != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseWheel);
+                if (mdf != null) onMouseWheel.remove(mdf);
+            }
+            g2d_mouseWheel = p_value;
+            if (g2d_mouseWheel != "" && g2d_currentController != null) {
+                var mdf:GMouseInput->Void = Reflect.field(g2d_currentController, g2d_mouseWheel);
+                if (mdf != null) onMouseWheel.add(mdf);
+            }
+        }
+        return g2d_mouseWheel;
+    }
+
     private var g2d_mouseClick:String = "";
     #if swc @:extern #end
     @prototype public var mouseClick(get,set):String;
@@ -899,6 +922,13 @@ class GUIElement implements IGPrototypable implements IGInteractive {
     public function getChildIndex(p_child:GUIElement):Int {
         return g2d_children.indexOf(p_child);
     }
+
+    public function setChildIndex(p_child:GUIElement, p_index:Int):Void {
+        if (p_child.parent == this) {
+            g2d_children.remove(p_child);
+            g2d_children.insert(p_index, p_child);
+        }
+    }
 	
     private function calculateWidth():Void {
         if (g2d_dirty) {
@@ -1142,6 +1172,15 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return g2d_onMouseOut;
     }
 
+    private var g2d_onMouseWheel:GCallback1<GMouseInput>;
+    #if swc @:extern #end
+    public var onMouseWheel(get, never):GCallback1<GMouseInput>;
+        #if swc @:getter(onMouseWheel) #end
+    inline private function get_onMouseWheel():GCallback1<GMouseInput> {
+        if (g2d_onMouseWheel == null) g2d_onMouseWheel = new GCallback1(GMouseInput);
+        return g2d_onMouseWheel;
+    }
+
     private var g2d_onDoubleMouseClick:GCallback1<GMouseInput>;
     #if swc @:extern #end
     public var onDoubleMouseClick(get, never):GCallback1<GMouseInput>;
@@ -1234,37 +1273,6 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         }
         return found;
     }
-	/*
-	private function mouseDown_handler(p_input:GMouseInput):Void {
-		g2d_movedMouseX = g2d_movedMouseY = 0;
-		g2d_previousMouseX = p_input.contextX;
-		g2d_previousMouseY = p_input.contextY;
-		Genome2D.getInstance().getContext().onMouseInput.add(contextMouseInput_handler);
-		parent.onMouseMove.add(parentMouseMove_handler);
-	}
-	
-	private function parentMouseMove_handler(p_input:GMouseInput):Void {
-		g2d_movedMouseX += p_input.contextX - g2d_previousMouseX;
-		//g2d_movedMouseY += p_input.contextY - g2d_previousMouseY;
-		if (g2d_dragging || Math.abs(g2d_movedMouseX)>dragSensitivity || Math.abs(g2d_movedMouseY)>dragSensitivity) {
-			//_dragFrame = Genome2D.getInstance().getCurrentFrameId();
-			anchorX += (p_input.contextX - g2d_previousMouseX) / p_input.camera.contextCamera.scaleX;
-			if (anchorX > 0) anchorX = 0;
-			if (anchorX < parent.g2d_finalWidth - g2d_minWidth) anchorX = parent.g2d_finalWidth - g2d_minWidth;
-			g2d_dragging = true;
-		}
-		g2d_previousMouseX = p_input.contextX;
-		g2d_previousMouseY = p_input.contextY;
-	}
-
-	private function contextMouseInput_handler(p_input:GMouseInput):Void {
-		if (p_input.type == GMouseInputType.MOUSE_UP) {
-			g2d_dragging = false;
-			parent.onMouseMove.remove(parentMouseMove_handler);
-			Genome2D.getInstance().getContext().onMouseInput.remove(contextMouseInput_handler);
-		}
-	}
-    /**/
 
     private var g2d_lastClickTime:Float = -1;
     private function g2d_dispatchMouseCallback(p_type:String, p_element:GUIElement, p_input:GMouseInput):Void {
@@ -1272,6 +1280,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
             var mouseInput:GMouseInput = p_input.clone(this, p_element, p_type);
 
             switch (p_type) {
+                case GMouseInputType.MOUSE_WHEEL:
+                    if (g2d_onMouseWheel != null) g2d_onMouseWheel.dispatch(mouseInput);
                 case GMouseInputType.RIGHT_MOUSE_DOWN:
                     g2d_rightMouseDownElement = p_element;
                     if (g2d_onRightMouseDown != null) g2d_onRightMouseDown.dispatch(mouseInput);
