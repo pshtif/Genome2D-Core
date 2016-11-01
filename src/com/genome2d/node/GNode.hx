@@ -214,7 +214,7 @@ class GNode implements IGInteractive implements IGPrototypable
 	@:dox(hide)
 	public function new() {
 		g2d_id = g2d_nodeCount++;
-		name = "GNode";//+g2d_id;
+		name = "node";//+g2d_id;
         // Create cached instances
         if (g2d_cachedMatrix == null)  {
             g2d_cachedMatrix = new GMatrix();
