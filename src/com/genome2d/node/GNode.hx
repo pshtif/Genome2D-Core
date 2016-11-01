@@ -504,7 +504,7 @@ class GNode implements IGInteractive implements IGPrototypable
      *  Capture context mouse callbacks
      **/
 	public function captureMouseInput(p_input:GMouseInput):Void {
-		if (!isActive() || !visible || (p_input.camera != null && (cameraGroup & p_input.camera.contextCamera.mask) == 0 && cameraGroup != 0)) return;
+		if (!isActive() || !visible || (p_input.camera != null && (cameraGroup & p_input.camera.contextCamera.group) == 0 && cameraGroup != 0)) return;
 		
 		if (mouseChildren) {
             var child:GNode = g2d_lastChild;
@@ -1610,7 +1610,7 @@ class GNode implements IGInteractive implements IGPrototypable
                 invalidate(p_parentTransformUpdate, p_parentColorUpdate);
             }
 
-            if (g2d_active && visible && ((cameraGroup & p_camera.mask) != 0 || cameraGroup == 0) && (g2d_usedAsMask == 0 || p_renderAsMask)) {
+            if (g2d_active && visible && ((cameraGroup & p_camera.group) != 0 || cameraGroup == 0) && (g2d_usedAsMask == 0 || p_renderAsMask)) {
 				// Rectangle masking
 				var hasMask:Bool = false;
 				var previousMask:GRectangle = null;
