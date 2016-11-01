@@ -1043,8 +1043,8 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 			if (useMask) {
                 var w:Float = (g2d_worldRight - g2d_worldLeft) * camera.scaleX;
                 var h:Float = (g2d_worldBottom - g2d_worldTop) * camera.scaleY;
-                var maskRect:GRectangle = new GRectangle(g2d_worldLeft*camera.scaleX, g2d_worldTop*camera.scaleY, w, h);
 
+                var maskRect:GRectangle = new GRectangle(g2d_worldLeft*camera.scaleX, g2d_worldTop*camera.scaleY, w, h);
                 var intersection:GRectangle = (previousMask == null) ? maskRect : previousMask.intersection(maskRect);
                 if (intersection.width <= 0 || intersection.height <= 0) return;
 				context.setMaskRect(intersection);
