@@ -34,4 +34,8 @@ class GPrototypeStates
 	inline public function getState(p_stateName:String = "default"):Map<String,GPropertyState> {
 		return g2d_states.get(p_stateName);
 	}
+
+	inline public function hasState(p_stateName:String):Bool {
+		return g2d_states.exists(p_stateName);
+	}
 }
