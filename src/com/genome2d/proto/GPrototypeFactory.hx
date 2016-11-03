@@ -44,12 +44,13 @@ class GPrototypeFactory {
         return g2d_lookups.get(p_prototypeName);
     }
 
-    static public function createPrototype<T:IGPrototypable>(p_prototype:GPrototype):T {
+    static public function createPrototype<T:IGPrototypable>(p_prototype:GPrototype, p_args:Array<Dynamic> = null):T {
         if (p_prototype.prototypeClass == null) {
             GDebug.error("Non existing prototype class "+p_prototype.prototypeName);
         }
 
-        var proto:IGPrototypable = Type.createInstance(p_prototype.prototypeClass,[]);
+        if (p_args == null) p_args = [];
+        var proto:IGPrototypable = Type.createInstance(p_prototype.prototypeClass, p_args);
         if (proto == null) GDebug.error("Invalid prototype class " + p_prototype.prototypeName);
 		
         proto.bindPrototype(p_prototype);
