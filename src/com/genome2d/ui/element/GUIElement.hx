@@ -1075,16 +1075,19 @@ class GUIElement implements IGPrototypable implements IGInteractive {
         return p_prototype;
     }
 /**/
+    private var g2d_useCustomChildPrototypeBinding:Bool = false;
     public function bindPrototype(p_prototype:GPrototype):Void {
-		var group:Array<GPrototype> = p_prototype.getGroup(PROTOTYPE_DEFAULT_CHILD_GROUP);
-		if (group != null) {
-			for (prototype in group) {
-				var prototype:IGPrototypable = GPrototypeFactory.createPrototype(prototype);
-				if (Std.is(prototype,GUIElement)) addChild(cast prototype);
-			}
-		}
+        GPrototypeFactory.g2d_bindPrototype(this, p_prototype, PROTOTYPE_NAME);
 
-		bindPrototypeDefault(p_prototype);
+        if (!g2d_useCustomChildPrototypeBinding) {
+            var group:Array<GPrototype> = p_prototype.getGroup(PROTOTYPE_DEFAULT_CHILD_GROUP);
+            if (group != null) {
+                for (prototype in group) {
+                    var prototype:IGPrototypable = GPrototypeFactory.createPrototype(prototype);
+                    if (Std.is(prototype,GUIElement)) addChild(cast prototype);
+                }
+            }
+        }
     }
 
     public function disposeChildren():Void {
@@ -1317,11 +1320,13 @@ class GUIElement implements IGPrototypable implements IGInteractive {
                 case GMouseInputType.MOUSE_OVER:
                     if (g2d_mouseOverElement != p_element) {
                         g2d_mouseOverElement = p_element;
+                        if (hasState("mouseOver")) setState("mouseOver");
                         if (g2d_onMouseOver != null) g2d_onMouseOver.dispatch(mouseInput);
                     }
                 case GMouseInputType.MOUSE_OUT:
                     if (g2d_mouseOverElement != null) {
                         g2d_mouseOverElement = null;
+                        if (hasState("mouseOut")) setState("mouseOut");
                         if (g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseInput);
                     }
             }
@@ -1344,6 +1349,11 @@ class GUIElement implements IGPrototypable implements IGInteractive {
 	public function getState():String {
 		return g2d_currentState;
 	}
+
+    public function hasState(p_stateName:String):Bool {
+        if (g2d_prototypeStates == null) return false;
+        return g2d_prototypeStates.hasState(p_stateName);
+    }
 
     private function gotFocus():Void {
 
