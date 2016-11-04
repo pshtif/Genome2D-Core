@@ -16,8 +16,10 @@ class GParticleEmitterModule implements IGPrototypable
 {
 	@prototype
 	public var spawnModule:Bool = false;
+
 	@prototype
 	public var updateModule:Bool = false;
+
 	@prototype
 	public var enabled:Bool = true;
 	
@@ -25,5 +27,5 @@ class GParticleEmitterModule implements IGPrototypable
 	
 	public function spawn(p_emitter:GParticleEmitter, p_particle:GParticle):Void {}
 	
-	public function update(p_emitter:GParticleEmitter, p_particle:GParticle, p_deltaTime:Float):Void { }
+	public function update(p_emitter:GParticleEmitter, p_particle:GParticle, p_deltaTime:Float):Void {}
 }

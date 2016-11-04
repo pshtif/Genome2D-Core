@@ -8,6 +8,9 @@
  */
 package com.genome2d.particles;
 
+import com.genome2d.proto.GPrototypeFactory;
+import com.genome2d.particles.modules.GParticleEmitterModule;
+import com.genome2d.proto.GPrototype;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.context.IGContext;
 import com.genome2d.context.stats.GStats;
@@ -18,6 +21,8 @@ import com.genome2d.textures.GTexture;
 /**
  *	Particle emitter
  */
+@prototypeName("particle_emitter")
+@prototypeDefaultChildGroup("*")
 class GParticleEmitter implements IGPrototypable
 {
 	@prototype
@@ -39,15 +44,18 @@ class GParticleEmitter implements IGPrototypable
 	@prototype
 	public var durationVariance:Float = 0;
 	private var g2d_currentDuration:Float = -1;
-	
+
+	@prototype
 	public var loop:Bool = false;
 	
 	@prototype
 	public var delay:Float = 0;
 	@prototype
 	public var delayVariance:Float = 0;
-	
+
+	@prototype
 	public var rate:GCurve;
+
 	@prototype
 	public var burstDistribution:Array<Float>;
 	
@@ -68,6 +76,10 @@ class GParticleEmitter implements IGPrototypable
 	}
 	
 	private var g2d_modules:Array<GParticleEmitterModule>;
+	public function getModules():Array<GParticleEmitterModule> {
+		return g2d_modules;
+	}
+
 	private var g2d_updateModules:Array<GParticleEmitterModule>;
 	
 	public function new(p_particlePool:GParticlePool = null) {
@@ -204,4 +216,26 @@ class GParticleEmitter implements IGPrototypable
         if (p_particle == g2d_firstParticle) g2d_firstParticle = g2d_firstParticle.g2d_next;
         p_particle.g2d_dispose();
     }
+
+	public function getPrototype(p_prototype:GPrototype = null):GPrototype {
+		p_prototype = getPrototypeDefault(p_prototype);
+
+		for (module in g2d_modules) {
+			p_prototype.addChild(module.getPrototype(), PROTOTYPE_DEFAULT_CHILD_GROUP);
+		}
+
+		return p_prototype;
+	}
+
+	public function bindPrototype(p_prototype:GPrototype):Void {
+		GPrototypeFactory.g2d_bindPrototype(this, p_prototype, PROTOTYPE_NAME);
+
+		var group:Array<GPrototype> = p_prototype.getGroup(PROTOTYPE_DEFAULT_CHILD_GROUP);
+		if (group != null) {
+			for (prototype in group) {
+				var prototype:IGPrototypable = GPrototypeFactory.createPrototype(prototype);
+				addModule(cast prototype);
+			}
+		}
+	}
 }

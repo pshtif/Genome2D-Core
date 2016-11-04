@@ -1,7 +1,6 @@
 package com.genome2d.particles.modules;
 import com.genome2d.particles.GParticleEmitter;
 import com.genome2d.particles.GParticle;
-import com.genome2d.particles.GParticleEmitterModule;
 import com.genome2d.particles.GParticleSystem;
 
 /**
