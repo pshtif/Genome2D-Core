@@ -145,12 +145,14 @@ class GPrototypeProperty {
 				value = p_value;
 			} else {
 				var split:Array<String> = type.split(":");
-				if (split.length == 2 && split[0] == "C") {
-					value = cast(p_value, IGPrototypable).getPrototype();
-				} else if (split.length == 2 && split[0] == "E") {
+				if (split.length == 2 && split[0] == "E") {
 					value = p_value;
 				} else {
-					MGDebug.ERROR("Invalid prototype property", name, type);
+					try {
+						value = cast(p_value, IGPrototypable).getPrototype();
+					} catch (e:Dynamic) {
+						MGDebug.ERROR("Invalid prototype property", name, type);
+					}
 				}
 			}
 		}
@@ -183,7 +185,7 @@ class GPrototypeProperty {
 					var split:Array<String> = type.split(":");
 					if (split.length == 2 && split[0] == "Array") {
 						// We need to strip the string of brackets before splitting
-						realValue = (p_value).substr(1,p_value.length-2).split(",");
+						realValue = p_value.split(",");//(p_value).substr(1,p_value.length-2).split(",");
 					} else if (split.length == 2 && split[0] == "E") {
 						try {
 							realValue = Type.createEnum(Type.resolveEnum(split[1]), Std.string(p_value));
