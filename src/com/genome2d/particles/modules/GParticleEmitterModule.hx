@@ -6,7 +6,7 @@
  *
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
-package com.genome2d.particles;
+package com.genome2d.particles.modules;
 import com.genome2d.proto.IGPrototypable;
 
 /**

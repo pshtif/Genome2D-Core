@@ -16,6 +16,33 @@ class GCurve implements IGPrototypable {
     private var g2d_pathLength:Int;
     private var g2d_totalStrength:Float;
 
+    @prototype
+    public var path(get,set):Array<Float>;
+    public function get_path():Array<Float> {
+        var p:Array<Float> = [start];
+        for (segment in g2d_segments) {
+            if (Std.is(segment,LinearSegment)) {
+                p = p.concat([1, segment.end, segment.strength]);
+            }
+        }
+        return p;
+    }
+    public function set_path(p_value:Array<Float>):Array<Float> {
+        trace(p_value);
+        clear();
+        start = p_value[0];
+        var i:Int = 1;
+        while (i<p_value.length) {
+            switch (p_value[i]) {
+                case 1:
+                    addSegment(new LinearSegment(p_value[i+1], p_value[i+2]));
+                    i+=3;
+                case _:
+                    trace("Not implemented");
+            }
+        }
+        return p_value;
+    }
 
     public function new(p_start:Float = 0) {
         start = p_start;
