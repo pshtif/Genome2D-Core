@@ -28,7 +28,6 @@ class GCurve implements IGPrototypable {
         return p;
     }
     public function set_path(p_value:Array<Float>):Array<Float> {
-        trace(p_value);
         clear();
         start = p_value[0];
         var i:Int = 1;
