@@ -40,6 +40,10 @@ class GPrototypeFactory {
 		
     }
 
+    static public function setPrototypeClass(p_prototypeName:String, p_class:Class<IGPrototypable>):Void {
+        g2d_lookups.set(p_prototypeName, p_class);
+    }
+
     static public function getPrototypeClass(p_prototypeName:String):Class<IGPrototypable> {
         return g2d_lookups.get(p_prototypeName);
     }
