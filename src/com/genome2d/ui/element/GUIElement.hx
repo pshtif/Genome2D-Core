@@ -20,7 +20,7 @@ import com.genome2d.geom.GRectangle;
 import com.genome2d.input.GFocusManager;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.input.GMouseInputType;
-import com.genome2d.input.IGInteractive;
+import com.genome2d.input.IGFocusable;
 import com.genome2d.proto.GPrototype;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
@@ -32,7 +32,7 @@ import com.genome2d.ui.skin.GUISkinManager;
 @:access(com.genome2d.ui.skin.GUISkin)
 @prototypeName("element")
 @prototypeDefaultChildGroup("element")
-class GUIElement implements IGPrototypable implements IGInteractive {
+class GUIElement implements IGPrototypable implements IGFocusable {
 	public var red:Float = 1;
 	public var green:Float = 1;
 	public var blue:Float = 1;

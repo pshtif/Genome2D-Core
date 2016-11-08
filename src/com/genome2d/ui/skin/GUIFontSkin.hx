@@ -1,5 +1,5 @@
 package com.genome2d.ui.skin;
-import com.genome2d.input.IGInteractive;
+import com.genome2d.input.IGFocusable;
 import com.genome2d.input.GFocusManager;
 import com.genome2d.input.GMouseInputType;
 import com.genome2d.input.GKeyboardInputType;
@@ -19,7 +19,7 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 
 @prototypeName("fontSkin")
-class GUIFontSkin extends GUISkin implements IGInteractive {
+class GUIFontSkin extends GUISkin implements IGFocusable {
 	
 	#if swc @:extern #end
     @prototype
