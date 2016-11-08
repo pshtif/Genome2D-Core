@@ -50,11 +50,11 @@ class GPrototype
 
 			if (extras & GPrototypeExtras.SETTER == 0) {
 				var value = Reflect.getProperty(p_instance, name);
-				if (value != null) {
+				//if (value != null) {
 				//if (value != propertyDefaults[i]) {
 					var property:GPrototypeProperty = createPrototypeProperty(name, propertyTypes[i], extras, meta, null);
 					property.setDynamicValue(value);
-				}
+				//}
 			}
 		}
 	}
@@ -89,7 +89,7 @@ class GPrototype
 		var split:Array<String> = p_name.split(".");
 		var lookupClass:Class<IGPrototypable> = prototypeClass;
 		var propertyNames:Array<String> = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
-		
+
 		while (propertyNames.indexOf(split[0]) == -1 && lookupClass != null) {
 			lookupClass = cast Type.getSuperClass(lookupClass);
 			if (lookupClass != null) {
@@ -139,7 +139,7 @@ class GPrototypeProperty {
 	
 	public function setDynamicValue(p_value:Dynamic):Void {
 		if ((extras & GPrototypeExtras.REFERENCE_GETTER) != 0) {
-			value = cast(p_value, IGPrototypable).toReference();
+			value = (p_value != null) ? cast(p_value, IGPrototypable).toReference() : null;
 		} else {
 			if (isBasicType()) {
 				value = p_value;
