@@ -8,11 +8,12 @@
  */
 package com.genome2d.node;
 
+import com.genome2d.components.renderable.IGInteractive;
 import com.genome2d.components.renderable.GSprite;
 import com.genome2d.callbacks.GCallback;
 import com.genome2d.geom.GPoint;
 import com.genome2d.context.filters.GFilter;
-import com.genome2d.input.IGInteractive;
+import com.genome2d.input.IGFocusable;
 import com.genome2d.proto.GPrototype;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
@@ -36,7 +37,7 @@ import com.genome2d.input.GMouseInput;
 @:access(com.genome2d.Genome2D)
 @:access(com.genome2d.node.GNodePool)
 @prototypeName("node")
-class GNode implements IGInteractive implements IGPrototypable
+class GNode implements IGFocusable implements IGPrototypable
 {
     /****************************************************************************************************
 	 * 	FACTORY METHODS
@@ -111,7 +112,7 @@ class GNode implements IGInteractive implements IGPrototypable
 	private var g2d_poolPrevious:GNode;
 
     /**
-	    Masking rectangle
+	    Masking _rectangle
 	**/
     public var maskRect:GRectangle;
 
@@ -520,7 +521,8 @@ class GNode implements IGInteractive implements IGPrototypable
 			
 			var previouslyCaptured:Bool = p_input.g2d_captured;
 			
-			if (g2d_renderable != null || g2d_defaultRenderable != null) {
+			//if (g2d_renderable != null || g2d_defaultRenderable != null) {
+			if (g2d_components != null) {
 				var tx:Float = p_input.worldX - g2d_worldX;
 				var ty:Float = p_input.worldY - g2d_worldY;
 
@@ -535,11 +537,18 @@ class GNode implements IGInteractive implements IGPrototypable
 				p_input.localX = (g2d_worldScaleX == 0) ? Math.POSITIVE_INFINITY : tx / g2d_worldScaleX;
 				p_input.localY = (g2d_worldScaleY == 0) ? Math.POSITIVE_INFINITY : ty / g2d_worldScaleY;
 
+				for (component in g2d_components) {
+					if (Std.is(component,IGInteractive)) {
+						cast (component,IGInteractive).captureMouseInput(p_input);
+					}
+				}
+				/*
 				if (g2d_defaultRenderable != null) {
 					g2d_defaultRenderable.captureMouseInput(p_input);
 				} else {
 					g2d_renderable.captureMouseInput(p_input);
 				}
+				/**/
 			}
 			
 			if (!previouslyCaptured && p_input.g2d_captured) {
@@ -1290,8 +1299,11 @@ class GNode implements IGInteractive implements IGPrototypable
     private var g2d_transformDirty:Bool = false;
     private var g2d_colorDirty:Bool = false;
 
+	@category("transform")
     @prototype
 	public var useWorldSpace:Bool = false;
+
+	@category("color")
     @prototype
 	public var useWorldColor:Bool = false;
 
@@ -1301,6 +1313,7 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldX:Float = 0;
     private var g2d_localX:Float = 0;
     #if swc @:extern #end
+	@category("transform")
     @prototype
 	public var x(get, set):Float;
     #if swc @:getter(x) #end
@@ -1317,6 +1330,7 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldY:Float = 0;
     private var g2d_localY:Float = 0;
     #if swc @:extern #end
+	@category("transform")
     @prototype
 	public var y(get, set):Float;
     #if swc @:getter(y) #end
@@ -1348,7 +1362,9 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldScaleX:Float = 1;
     private var g2d_localScaleX:Float = 1;
     #if swc @:extern #end
-    @prototype @default(1)
+	@category("transform")
+	@range(0,0,.01)
+    @prototype
 	public var scaleX(get, set):Float;
     #if swc @:getter(scaleX) #end
     inline private function get_scaleX():Float {
@@ -1367,7 +1383,9 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldScaleY:Float = 1;
     private var g2d_localScaleY:Float = 1;
     #if swc @:extern #end
-    @prototype @default(1)
+	@category("transform")
+	@range(0,0,.01)
+    @prototype
 	public var scaleY(get, set):Float;
     #if swc @:getter(scaleY) #end
     inline private function get_scaleY():Float {
@@ -1386,6 +1404,8 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldRotation:Float = 0;
     private var g2d_localRotation:Float = 0;
     #if swc @:extern #end
+	@category("transform")
+	@range(0,0,.01)
     @prototype
 	public var rotation(get, set):Float;
     #if swc @:getter(rotation) #end
@@ -1405,7 +1425,6 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldRed:Float = 1;
     private var g2d_localRed:Float = 1;
     #if swc @:extern #end
-    @prototype @default(1)
 	public var red(get, set):Float;
     #if swc @:getter(red) #end
     inline private function get_red():Float {
@@ -1421,7 +1440,6 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldGreen:Float = 1;
     private var g2d_localGreen:Float = 1;
     #if swc @:extern #end
-    @prototype @default(1)
 	public var green(get, set):Float;
     #if swc @:getter(green) #end
     inline private function get_green():Float {
@@ -1437,7 +1455,6 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldBlue:Float = 1;
     private var g2d_localBlue:Float = 1;
     #if swc @:extern #end
-	@prototype @default(1)
 	public var blue(get, set):Float;
     #if swc @:getter(blue) #end
     inline private function get_blue():Float {
@@ -1453,7 +1470,9 @@ class GNode implements IGInteractive implements IGPrototypable
     public var g2d_worldAlpha:Float = 1;
     private var g2d_localAlpha:Float = 1;
     #if swc @:extern #end
-    @prototype @default(1)
+	@category("color")
+	@range(0,1,.01)
+    @prototype
 	public var alpha(get, set):Float;
     #if swc @:getter(alpha) #end
     inline private function get_alpha():Float {
@@ -1465,8 +1484,18 @@ class GNode implements IGInteractive implements IGPrototypable
         return g2d_localAlpha = g2d_worldAlpha = p_value;
     }
 
+	@category("color")
+	@type("color")
+	@prototype
     #if swc @:extern #end
-    public var color(never, set):Int;
+    public var color(get, set):Int;
+	#if swc @:getter(color) #end
+	inline private function get_color():Int {
+		var red:Int = Std.int(red * 0xFF) << 16;
+		var green:Int = Std.int(green * 0xFF) << 8;
+		var blue:Int = Std.int(blue * 0xFF);
+		return red+green+blue;
+	}
     #if swc @:setter(color) #end
     inline private function set_color(p_value:Int):Int {
         red = (p_value >> 16 & 0xFF) / 0xFF;
