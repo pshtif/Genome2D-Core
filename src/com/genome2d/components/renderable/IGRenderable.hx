@@ -17,7 +17,7 @@ import com.genome2d.context.GCamera;
 
     Every `GNode` can have a single `IRenderable` components at any given time
 **/
-interface IGRenderable {
+interface IGRenderable extends IGInteractive {
 
     /**
      *  Render the components
@@ -28,11 +28,6 @@ interface IGRenderable {
      *  Get local bounds of the renderable components
      **/
     function getBounds(p_target:GRectangle = null):GRectangle;
-
-	/**
-     *  Capture mouse input
-     **/
-	function captureMouseInput(p_input:GMouseInput):Void;
 	
 	/**
      *  Check for hit test in local space
