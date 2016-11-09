@@ -82,7 +82,7 @@ class GShape extends GComponent implements IGRenderable
     }
 
     public function captureMouseInput(p_input:GMouseInput):Void {
-        p_input.g2d_captured = p_input.g2d_captured || hitTest(p_input.localX, p_input.localY);
+        p_input.captured = p_input.captured || hitTest(p_input.localX, p_input.localY);
     }
 	
 	public function hitTest(p_x:Float, p_y:Float):Bool {

@@ -91,7 +91,7 @@ class GTexturedQuad extends GComponent implements IGRenderable
     }
 
 	inline public function captureMouseInput(p_input:GMouseInput):Void {
-        p_input.g2d_captured = p_input.g2d_captured || hitTest(p_input.localX, p_input.localY);
+        p_input.captured = p_input.captured || hitTest(p_input.localX, p_input.localY);
 	}
 
 	/**

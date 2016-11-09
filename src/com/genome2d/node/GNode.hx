@@ -517,9 +517,9 @@ class GNode implements IGFocusable implements IGPrototypable
 		}
 		
 		if (mouseEnabled) {
-			if (p_input.g2d_captured && p_input.type == GMouseInputType.MOUSE_UP) g2d_mouseDownNode = null;
+			if (p_input.captured && p_input.type == GMouseInputType.MOUSE_UP) g2d_mouseDownNode = null;
 			
-			var previouslyCaptured:Bool = p_input.g2d_captured;
+			var previouslyCaptured:Bool = p_input.captured;
 			
 			//if (g2d_renderable != null || g2d_defaultRenderable != null) {
 			if (g2d_components != null) {
@@ -551,7 +551,7 @@ class GNode implements IGFocusable implements IGPrototypable
 				/**/
 			}
 			
-			if (!previouslyCaptured && p_input.g2d_captured) {
+			if (!previouslyCaptured && p_input.captured) {
 				g2d_dispatchMouseCallback(p_input.type, this, p_input);
 				if (g2d_mouseOverNode != this) {
 					g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, this, p_input);

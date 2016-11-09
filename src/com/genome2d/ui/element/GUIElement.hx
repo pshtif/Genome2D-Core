@@ -1235,16 +1235,16 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 			}
 
 			if (mouseEnabled) {
-				if (p_input.g2d_captured && p_input.type == GMouseInputType.MOUSE_UP) g2d_mouseDownElement = null;
+				if (p_input.captured && p_input.type == GMouseInputType.MOUSE_UP) g2d_mouseDownElement = null;
 
 				p_input.localX = p_input.worldX - g2d_worldLeft;
 				p_input.localY = p_input.worldY - g2d_worldTop;
 				
-				if (!p_input.g2d_captured && p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom) {
+				if (!p_input.captured && p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom) {
 					if (g2d_activeSkin != null) {
 						g2d_activeSkin.captureMouseInput(p_input);
 
-						p_input.g2d_captured = true;
+						p_input.captured = true;
 						g2d_dispatchMouseCallback(p_input.type, this, p_input);
 
 						if (g2d_mouseOverElement != this) {
