@@ -252,7 +252,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
 				renderable.setCharCode(currentCharCode);
 
-				if (!g2d_autoSize && offsetX + char.texture.width*g2d_fontScale > g2d_width) {
+				if (!g2d_autoSize && offsetX + (char.texture.width+g2d_tracking)*g2d_fontScale > g2d_width) {
 					lines.push(currentLine);
 					var backtrack:Int = i - whiteSpaceIndex - 1;
 					var currentCount:Int = currentLine.length;
