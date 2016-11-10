@@ -149,7 +149,7 @@ class GPrototypeProperty {
 					value = p_value;
 				} else {
 					try {
-						value = cast(p_value, IGPrototypable).getPrototype();
+						value = (p_value == null) ? null : cast(p_value, IGPrototypable).getPrototype();
 					} catch (e:Dynamic) {
 						MGDebug.ERROR("Invalid prototype property", name, type);
 					}
@@ -170,7 +170,7 @@ class GPrototypeProperty {
 	private function getRealValue(p_value:String):Dynamic {
 		var realValue:Dynamic = null;
 		if ((extras & GPrototypeExtras.REFERENCE_GETTER) != 0) {
-			realValue = p_value;
+			realValue = p_value == "null" ? null : p_value;
 		} else {
 			switch (type) {
 				case "Bool":
@@ -185,10 +185,10 @@ class GPrototypeProperty {
 					var split:Array<String> = type.split(":");
 					if (split.length == 2 && split[0] == "Array") {
 						// We need to strip the string of brackets before splitting
-						realValue = p_value.split(",");//(p_value).substr(1,p_value.length-2).split(",");
+						realValue = p_value == "null" ? null : p_value.split(",");//(p_value).substr(1,p_value.length-2).split(",");
 					} else if (split.length == 2 && split[0] == "E") {
 						try {
-							realValue = Type.createEnum(Type.resolveEnum(split[1]), Std.string(p_value));
+							realValue = p_value == "null" ? null : Type.createEnum(Type.resolveEnum(split[1]), Std.string(p_value));
 						} catch(e:String) {
 							MGDebug.ERROR("Cannot create prototype enum", e);
 						}
@@ -243,7 +243,7 @@ class GPrototypeProperty {
 	}
 	
 	inline public function isPrototype():Bool {
-		return Std.is(value, GPrototype);
+		return value == null || Std.is(value, GPrototype);
 	}
 
 	inline public function isEnum():Bool {

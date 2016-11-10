@@ -20,11 +20,11 @@ class GXmlPrototypeParser
 		var xml:Xml = Xml.createElement(p_prototype.prototypeName);
 		for (property in p_prototype.properties) {
 			if (property.isBasicType() || property.isReference() || property.isEnum()) {
-				xml.set(property.name, property.value);
+				xml.set(property.name, Std.string(property.value));
 			} else {
 				if (property.isPrototype()) {
 					var propertyXml:Xml = Xml.createElement("p:" + property.name);
-					propertyXml.addChild(toXml(property.value));
+					if (property.value != null) propertyXml.addChild(toXml(property.value));
 					xml.addChild(propertyXml);
 				} else {
 					GDebug.error("Error during prototype parsing unknown property type", property.type);
@@ -88,7 +88,11 @@ class GXmlPrototypeParser
 		for (element in p_xml.elements()) {
 			// We are adding a node refering to property
 			if (element.nodeName.indexOf("p:") == 0) {
-				setPropertyFromXml(prototype, element.nodeName.substr(2), element.firstElement());
+				if (element.firstElement() == null) {
+					prototype.setPropertyFromString(element.nodeName.substr(2), "null");
+				} else {
+					setPropertyFromXml(prototype, element.nodeName.substr(2), element.firstElement());
+				}
 				
 			// We are adding a default group node
 			} else if (element.nodeName == defaultChildGroup || defaultChildGroup == "*") {
