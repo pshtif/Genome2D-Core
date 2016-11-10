@@ -187,7 +187,7 @@ class GTextureTextRenderer extends GTextRenderer {
 		var lineWidth:Float = 0;
         var offsetX:Float = 0;
         var offsetY:Float = 0;//(g2d_textureFont.lineHeight - g2d_textureFont.base)*g2d_fontScale;
-        var renderable:GTextureCharRenderable;
+        var renderable:GTextureCharRenderable = null;
 		var previousRenderable:GTextureCharRenderable = null;
         var char:GTextureChar = null;
         var currentCharCode:Int = -1;
