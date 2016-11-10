@@ -184,13 +184,14 @@ class GTextureTextRenderer extends GTextRenderer {
             g2d_width = 0;
         }
 
+		var lineWidth:Float = 0;
         var offsetX:Float = 0;
         var offsetY:Float = 0;//(g2d_textureFont.lineHeight - g2d_textureFont.base)*g2d_fontScale;
         var renderable:GTextureCharRenderable;
+		var previousRenderable:GTextureCharRenderable = null;
         var char:GTextureChar = null;
         var currentCharCode:Int = -1;
         var previousCharCode:Int = -1;
-        var lastChar:Int = 0;
 
         var lines:Array<Array<GTextureCharRenderable>> = new Array<Array<GTextureCharRenderable>>();
         var currentLine:Array<GTextureCharRenderable> = new Array<GTextureCharRenderable>();
@@ -221,7 +222,9 @@ class GTextureTextRenderer extends GTextRenderer {
 					isAllVisible = false;
 					g2d_maxVisibleLine = lines.length - 1;
 				}
-				if (offsetX>maxLineWidth) maxLineWidth = offsetX;
+				if (previousRenderable != null && previousRenderable.x + previousRenderable.width > maxLineWidth) {
+					maxLineWidth = previousRenderable.x + previousRenderable.width;
+				}
                 offsetX = 0;
                 offsetY += (g2d_textureFont.lineHeight + g2d_lineSpace)*g2d_fontScale;
 				
@@ -252,7 +255,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
 				renderable.setCharCode(currentCharCode);
 
-				if (!g2d_autoSize && offsetX + (char.texture.width+g2d_tracking)*g2d_fontScale > g2d_width) {
+				if (!g2d_autoSize && offsetX + char.texture.width*g2d_fontScale > g2d_width) {
 					lines.push(currentLine);
 					var backtrack:Int = i - whiteSpaceIndex - 1;
 					var currentCount:Int = currentLine.length;
@@ -267,7 +270,9 @@ class GTextureTextRenderer extends GTextRenderer {
 					}
 
 					i = whiteSpaceIndex+1;
-					if (offsetX>maxLineWidth) maxLineWidth = offsetX;
+					if (previousRenderable != null && previousRenderable.x + previousRenderable.width > maxLineWidth) {
+						maxLineWidth = previousRenderable.x + previousRenderable.width;
+					}
 					offsetX = 0;
 					offsetY += (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale;
 					continue;
@@ -293,9 +298,12 @@ class GTextureTextRenderer extends GTextRenderer {
             }
 			
 			renderable.visible = true;
+			previousRenderable = renderable;
             ++i;
         }
-		if (offsetX>maxLineWidth) maxLineWidth = offsetX;
+		if (renderable != null && renderable.x + renderable.width > maxLineWidth) {
+			maxLineWidth = renderable.x + renderable.width;
+		}
         lines.push(currentLine);
 		g2d_lineCount = lines.length;
 
