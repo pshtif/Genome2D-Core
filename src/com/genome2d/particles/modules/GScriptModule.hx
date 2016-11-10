@@ -34,6 +34,7 @@ class GScriptModule extends GParticleEmitterModule
 		
 		var interp = new hscript.Interp();
 		interp.variables.set("Math", Math);
+		interp.variables.set("genome", Genome2D.getInstance());
 		var compiled:Bool = true;
 		try {
 			g2d_program = g2d_parser.parseString(g2d_script);
