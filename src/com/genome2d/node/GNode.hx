@@ -189,6 +189,7 @@ class GNode implements IGFocusable implements IGPrototypable
     /**
 	    Node postprocess
 	**/
+	@prototype
     public var postProcess:GPostProcess;
 
     /**

@@ -79,7 +79,7 @@ class GHDRPP extends GPostProcess
     }
 
     override public function render(p_source:GTexture, p_x:Float, p_y:Float, p_bounds:GRectangle = null, p_target:GTexture = null):Void {
-        var bounds:GRectangle = (p_bounds == null) ? g2d_definedBounds : p_bounds;
+        var bounds:GRectangle = (p_bounds == null) ? bounds : p_bounds;
         // Invalid bounds
         if (bounds.x > 4096) return;
 
@@ -103,7 +103,7 @@ class GHDRPP extends GPostProcess
     }
 
     override public function renderNode(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_node:GNode, p_bounds:GRectangle = null, p_source:GTexture = null, p_target:GTexture = null):Void {
-        var bounds:GRectangle = (g2d_definedBounds != null) ? g2d_definedBounds : p_node.getBounds(null, g2d_activeBounds);
+        var bounds:GRectangle = (bounds != null) ? bounds : p_node.getBounds(null, g2d_activeBounds);
 
         // Invalid bounds
         if (bounds.x > 4096) return;

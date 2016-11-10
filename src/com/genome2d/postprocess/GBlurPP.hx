@@ -93,6 +93,7 @@ class GBlurPP extends GPostProcess
     }
 
     private var g2d_blurX:Float = 0;
+    @prototype
     #if swc @:extern #end
     public var blurX(get, set):Int;
     #if swc @:getter(blurX) #end
@@ -106,6 +107,7 @@ class GBlurPP extends GPostProcess
         return p_value;
     }
     private var g2d_blurY:Float = 0;
+    @prototype
     #if swc @:extern #end
     public var blurY(get, set):Int;
     #if swc @:getter(blurY) #end
@@ -119,7 +121,7 @@ class GBlurPP extends GPostProcess
         return p_value;
     }
 
-    public function new(p_blurX:Int, p_blurY:Int, p_passes:Int = 1) {
+    public function new(p_blurX:Int = 4, p_blurY:Int = 4, p_passes:Int = 1) {
         // Double the passes since we need them for vertical and horizontal blur as well
         super(p_passes*2);
 
