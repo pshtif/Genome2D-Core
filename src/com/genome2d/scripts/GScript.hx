@@ -69,14 +69,36 @@ class GScript implements IGPrototypable
 		g2d_parser = new hscript.Parser();
 		g2d_parser.allowTypes = true;
 	}
+
+	private function preparseSource():String {
+		var e:EReg = ~/[\s\r\n]+/gim;
+		var preparsedSource:String = "";
+		var lines:Array<String> = g2d_source.split("\n");
+		for (line in lines) {
+			var regLine:String = e.replace(line,"");
+			if (regLine.indexOf("import") == 0) {
+				var className:String = regLine.substr(6);
+				if (className.lastIndexOf(";") == className.length-1) className = className.substr(0,-1);
+				var c:Class<Dynamic> = Type.resolveClass(className);
+				g2d_interpreter.variables.set(className.substr(className.lastIndexOf(".")+1), c);
+			} else {
+				preparsedSource += line + "\n";
+			}
+		}
+
+		return preparsedSource;
+	}
 	
 	public function recompile():Void {
 		g2d_interpreter = new hscript.Interp();
 		if (includeMath) g2d_interpreter.variables.set("Math", Math);
 		g2d_interpreter.variables.set("genome", Genome2D.getInstance());
+
+		var preparsedSource:String = preparseSource();
+
 		g2d_compiled = true;
 		try {
-			g2d_program = g2d_parser.parseString(g2d_source);
+			g2d_program = g2d_parser.parseString(preparsedSource);
 			g2d_interpreter.execute(g2d_program);
 		} catch (e:Dynamic) {
 			MGDebug.WARNING("Invalid script", e);
