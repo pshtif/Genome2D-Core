@@ -25,7 +25,7 @@ class GParameters {
         var lines:Array<String> = p_data.split("\n");
         for (line in lines) {
             line = e.replace(line,"");
-            if (line.indexOf("[") != 0) {
+            if (line.indexOf("#") != 0) {
                 var split:Array<String> = line.split("=");
                 if (split.length == 2) {
                     if (split[1].toLowerCase() == "true") {
@@ -35,6 +35,7 @@ class GParameters {
                     } else if (!Math.isNaN(Std.parseFloat(split[1]))) {
                         g2d_parameters.set(split[0], Std.parseFloat(split[1]));
                     } else {
+                        trace(split[0], split[1]);
                         g2d_parameters.set(split[0], split[1]);
                     }
                 }
