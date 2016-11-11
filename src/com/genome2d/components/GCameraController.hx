@@ -155,7 +155,7 @@ class GCameraController extends GComponent
 		p_input.worldY = ry + node.g2d_worldY;
 		p_input.camera = this;
 
-		if (g2d_onMouseInput != null) g2d_onMouseInput.dispatch(p_input);
+		if (!p_input.captured && g2d_onMouseInput != null) g2d_onMouseInput.dispatch(p_input);
 		
 		node.core.root.captureMouseInput(p_input);
 	}
