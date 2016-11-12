@@ -284,7 +284,9 @@ class GTextureTextRenderer extends GTextRenderer {
 				renderable.y = offsetY;
 				charIndex++;
 
-				if (currentCharCode == 32 || currentCharCode == 46) whiteSpaceIndex = i;
+				//if (currentCharCode == 32 || currentCharCode == 46) {
+					whiteSpaceIndex = i;
+				//}
 				
 				if (currentCharCode == 32) {
 					renderable.whiteSpace = true;
@@ -309,6 +311,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
 		if (isAllVisible) g2d_maxVisibleLine = lines.length - 1;
 
+		if (charIndex<0) charIndex = 0;
         var charCount:Int = g2d_chars.length;
         for (i in charIndex...charCount) {
             g2d_chars[i].visible = false;
