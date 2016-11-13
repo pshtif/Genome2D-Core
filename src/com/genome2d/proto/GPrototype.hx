@@ -209,7 +209,7 @@ class GPrototypeProperty {
 			mapValue = getRealValue(GPrototypeFactory.getParameters().getParameter(value));
 		}
 
-		if (isReference()) {
+		if (isReference() && mapValue != null) {
 			var c:Class<IGPrototypable> = GPrototypeFactory.getPrototypeClass(type);
 			realValue = Reflect.callMethod(c, Reflect.field(c,"fromReference"), [mapValue]);
 		} else if (isPrototype() && mapValue != null) {
