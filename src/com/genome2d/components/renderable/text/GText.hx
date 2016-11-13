@@ -223,7 +223,7 @@ class GText extends GComponent implements IGRenderable
 	
 	override public function getPrototype(p_prototype:GPrototype = null):GPrototype {
 		p_prototype = getPrototypeDefault(p_prototype);
-		p_prototype.createPrototypeProperty("font", "String", GPrototypeExtras.IGNORE_AUTO_BIND, null, renderer.textureFont.id);
+		p_prototype.createPrototypeProperty("font", "String", GPrototypeExtras.IGNORE_AUTO_BIND, null, renderer.textureFont != null ? renderer.textureFont.id : "");
 		
 		return p_prototype;
 	}
