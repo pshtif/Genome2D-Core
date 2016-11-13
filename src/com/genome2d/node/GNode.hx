@@ -230,9 +230,9 @@ class GNode implements IGFocusable implements IGPrototypable
 	 */
 	public function dispose():Void {
 		if (g2d_disposed) return;
-		
-		disposeChildren();
+
         disposeComponents();
+		disposeChildren();
 		
 		if (parent != null) {
 			parent.removeChild(this);
@@ -1298,6 +1298,7 @@ class GNode implements IGFocusable implements IGPrototypable
 
     private var g2d_matrixDirty:Bool = true;
     private var g2d_transformDirty:Bool = false;
+
     private var g2d_colorDirty:Bool = false;
 
 	@category("transform")
@@ -1595,7 +1596,7 @@ class GNode implements IGFocusable implements IGPrototypable
         g2d_localScaleY = g2d_worldScaleY = p_scaleY;
     }
 
-    inline private function invalidate(p_invalidateParentTransform:Bool, p_invalidateParentColor:Bool):Void {
+    inline private function invalidateTransform(p_invalidateParentTransform:Bool):Void {
         if (p_invalidateParentTransform && !useWorldSpace) {
             if (g2d_parent.g2d_worldRotation != 0) {
                 var cos:Float = Math.cos(g2d_parent.g2d_worldRotation);
@@ -1614,7 +1615,9 @@ class GNode implements IGFocusable implements IGPrototypable
 
             g2d_transformDirty = false;
         }
+	}
 
+	inline private function invalidateColor(p_invalidateParentColor:Bool):Void {
         if (p_invalidateParentColor && !useWorldColor) {
             g2d_worldRed = g2d_localRed * g2d_parent.g2d_worldRed;
             g2d_worldGreen = g2d_localGreen * g2d_parent.g2d_worldGreen;
@@ -1633,11 +1636,15 @@ class GNode implements IGFocusable implements IGPrototypable
     public function render(p_parentTransformUpdate:Bool, p_parentColorUpdate:Bool, p_camera:GCamera, p_renderAsMask:Bool, p_useMatrix:Bool):Void {
         if (g2d_active) {
             // Transform invalidation
-            var invalidateTransform:Bool = p_parentTransformUpdate || g2d_transformDirty;
-            var invalidateColor:Bool = p_parentColorUpdate || g2d_colorDirty;
+            var doInvalidateTransform:Bool = p_parentTransformUpdate || g2d_transformDirty;
+            var doInvalidateColor:Bool = p_parentColorUpdate || g2d_colorDirty;
 
-            if (invalidateTransform || invalidateColor) {
-                invalidate(p_parentTransformUpdate, p_parentColorUpdate);
+            if (doInvalidateTransform) {
+				invalidateTransform(p_parentTransformUpdate);
+			}
+
+			if (doInvalidateColor) {
+                invalidateColor(p_parentColorUpdate);
             }
 
             if (g2d_active && visible && ((cameraGroup & p_camera.group) != 0 || cameraGroup == 0) && (g2d_usedAsMask == 0 || p_renderAsMask)) {
@@ -1682,9 +1689,9 @@ class GNode implements IGFocusable implements IGPrototypable
                 while (child != null) {
                     var next:GNode = child.g2d_next;
                     if (child.postProcess != null) {
-                        child.postProcess.renderNode(invalidateTransform, invalidateColor, p_camera, child);
+                        child.postProcess.renderNode(doInvalidateTransform, doInvalidateColor, p_camera, child);
                     } else {
-                        child.render(invalidateTransform, invalidateColor, p_camera, p_renderAsMask, useMatrix);
+                        child.render(doInvalidateTransform, doInvalidateColor, p_camera, p_renderAsMask, useMatrix);
                     }
                     child = next;
                 }
