@@ -68,6 +68,15 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     @prototype 
 	public var mouseChildren:Bool = true;
 
+    private var g2d_onStateChanged:GCallback1<String>;
+    #if swc @:extern #end
+    public var onStateChanged(get,never):GCallback1<String>;
+    #if swc @:getter(onStateChanged) #end
+    inline private function get_onStateChanged():GCallback1<String> {
+        if (g2d_onStateChanged == null) g2d_onStateChanged = new GCallback1<String>(String);
+        return g2d_onStateChanged;
+    }
+
     private var g2d_visible:Bool = true;
     #if swc @:extern #end
 	@prototype
@@ -1344,6 +1353,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 				child.setState(p_stateName);
 			}
 		}
+        if (g2d_onStateChanged != null) g2d_onStateChanged.dispatch(p_stateName);
 	}
 	
 	public function getState():String {
