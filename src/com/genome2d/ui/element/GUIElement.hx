@@ -1236,11 +1236,13 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     public function captureMouseInput(p_input:GMouseInput):Void {
 		if (visible) {
 			if (mouseChildren) {
-				var i:Int = g2d_numChildren;
-				while (i>0) {
-					i--;
-					if (i<g2d_numChildren) g2d_children[i].captureMouseInput(p_input);
-				}
+                if (!useMask || (p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom)) {
+                    var i:Int = g2d_numChildren;
+                    while (i>0) {
+                        i--;
+                        if (i<g2d_numChildren) g2d_children[i].captureMouseInput(p_input);
+                    }
+                }
 			}
 
 			if (mouseEnabled) {
