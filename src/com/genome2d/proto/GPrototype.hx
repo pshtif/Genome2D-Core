@@ -193,7 +193,11 @@ class GPrototypeProperty {
 							MGDebug.ERROR("Cannot create prototype enum", e);
 						}
 					} else {
-						GDebug.error("Error during prototype binding invalid value for type: " + type);
+						if (p_value == "null") {
+							realValue = null;
+						} else {
+							GDebug.error("Error during prototype binding invalid value for type: " + type);
+						}
 					}
 			}
 		}
