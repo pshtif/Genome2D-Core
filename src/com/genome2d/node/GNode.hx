@@ -37,6 +37,7 @@ import com.genome2d.input.GMouseInput;
 @:access(com.genome2d.Genome2D)
 @:access(com.genome2d.node.GNodePool)
 @prototypeName("node")
+@:build(com.genome2d.macros.MGMouseCallbackBuild.build())
 class GNode implements IGFocusable implements IGPrototypable
 {
     /****************************************************************************************************
@@ -433,8 +434,10 @@ class GNode implements IGFocusable implements IGPrototypable
 	    Return if node is active
 	**/
     public var filter:GFilter;
-	
+
 	// Mouse callbacks
+    // Now generated in macro
+	/*
 	private var g2d_onMouseDown:GCallback1<GMouseInput>;
     #if swc @:extern #end
 	public var onMouseDown(get, never):GCallback1<GMouseInput>;
@@ -443,6 +446,7 @@ class GNode implements IGFocusable implements IGPrototypable
 		if (g2d_onMouseDown == null) g2d_onMouseDown = new GCallback1(GMouseInput);
 		return g2d_onMouseDown;
 	}
+
     private var g2d_onRightMouseDown:GCallback1<GMouseInput>;
     #if swc @:extern #end
     public var onRightMouseDown(get, never):GCallback1<GMouseInput>;
@@ -491,13 +495,13 @@ class GNode implements IGFocusable implements IGPrototypable
 		if (g2d_onMouseOut == null) g2d_onMouseOut = new GCallback1(GMouseInput);
 		return g2d_onMouseOut;
 	}
-
+	/*
     // TODO setup getter/setter
 	private var g2d_onRightMouseUp:GCallback1<GMouseInput>;
 	public var onRightMouseUp:GCallback1<GMouseInput>;
 	private var g2d_onRightMouseClick:GCallback1<GMouseInput>;
 	public var onRightMouseClick:GCallback1<GMouseInput>;
-
+	/**/
 	public var g2d_mouseDownNode:GNode;
 	public var g2d_mouseOverNode:GNode;
 	public var g2d_rightMouseDownNode:GNode;
