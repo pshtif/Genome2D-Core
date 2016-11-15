@@ -13,7 +13,7 @@ import com.genome2d.proto.IGPrototypable;
 class GXmlPrototypeParser
 {
 	static public function createPrototypeFromXmlString(p_xmlString:String):IGPrototypable {
-		return GPrototypeFactory.createPrototype(fromXml(Xml.parse(p_xmlString).firstElement()));
+		return GPrototypeFactory.createInstance(fromXml(Xml.parse(p_xmlString).firstElement()));
 	}
 
 	static public function toXml(p_prototype:GPrototype):Xml {

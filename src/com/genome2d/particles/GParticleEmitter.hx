@@ -233,7 +233,7 @@ class GParticleEmitter implements IGPrototypable
 		var group:Array<GPrototype> = p_prototype.getGroup(PROTOTYPE_DEFAULT_CHILD_GROUP);
 		if (group != null) {
 			for (prototype in group) {
-				var prototype:IGPrototypable = GPrototypeFactory.createPrototype(prototype);
+				var prototype:IGPrototypable = GPrototypeFactory.createInstance(prototype);
 				addModule(cast prototype);
 			}
 		}

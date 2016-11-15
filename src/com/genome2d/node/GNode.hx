@@ -45,17 +45,6 @@ class GNode implements IGFocusable implements IGPrototypable
 	 ****************************************************************************************************/
 
     /**
-	 * 	Create empty node instance
-	 *
-	 *	@param p_name optional name for the node
-	 */
-    static public function create(p_name:String = ""):GNode {
-        var node:GNode = new GNode();
-        if (p_name != "") node.name = p_name;
-        return node;
-    }
-
-    /**
 	 * 	Create node with a specific component
 	 *
 	 *	@param p_componentClass component type that should be instanced and attached to this node
@@ -68,23 +57,6 @@ class GNode implements IGFocusable implements IGPrototypable
 
         return node.addComponent(p_componentClass);
     }
-
-    /**
-	 * 	Create node from a prototype definition
-	 *
-	 *	@param p_prototype prototype definition
-	 */
-    static public function createFromPrototype(p_prototype:GPrototype):GNode {
-        if (p_prototype == null) GDebug.error("Null proto");
-
-        if (p_prototype.prototypeName != PROTOTYPE_NAME) GDebug.error("Incorrect GNode prototype", p_prototype.prototypeName);
-
-        var node:GNode = new GNode();
-		node.bindPrototype(p_prototype);
-
-        return node;
-    }
-
 
 
     static private var g2d_cachedArray:Array<GNode>;
@@ -215,9 +187,9 @@ class GNode implements IGFocusable implements IGPrototypable
 	static private var g2d_nodeCount:Int = 0;
 
 	@:dox(hide)
-	public function new() {
+	public function new(p_name:String = "") {
 		g2d_id = g2d_nodeCount++;
-		name = "node";//+g2d_id;
+		name = p_name == "" ? "node" : p_name;
         // Create cached instances
         if (g2d_cachedMatrix == null)  {
             g2d_cachedMatrix = new GMatrix();
@@ -246,60 +218,17 @@ class GNode implements IGFocusable implements IGPrototypable
 
     public function disposeCallbacks():Void {
         // Dispose callbacks
-        if (g2d_onAddedToStage != null) {
-            g2d_onAddedToStage.removeAll();
-            g2d_onAddedToStage = null;
-        }
-
-        if (g2d_onRemovedFromStage != null) {
-            g2d_onRemovedFromStage.removeAll();
-            g2d_onRemovedFromStage = null;
-        }
-
-        if (g2d_onMouseClick != null) {
-            g2d_onMouseClick.removeAll();
-            g2d_onMouseClick = null;
-        }
-
-        if (g2d_onMouseDown != null) {
-            g2d_onMouseDown.removeAll();
-            g2d_onMouseDown = null;
-        }
-
-        if (g2d_onMouseMove != null) {
-            g2d_onMouseMove.removeAll();
-            g2d_onMouseMove = null;
-        }
-
-        if (g2d_onMouseOut != null) {
-            g2d_onMouseOut.removeAll();
-            g2d_onMouseOut = null;
-        }
-
-        if (g2d_onMouseOver != null) {
-            g2d_onMouseOver.removeAll();
-            g2d_onMouseOver = null;
-        }
-
-        if (g2d_onMouseUp != null) {
-            g2d_onMouseUp.removeAll();
-            g2d_onMouseUp = null;
-        }
-
-        if (g2d_onRightMouseClick != null) {
-            g2d_onRightMouseClick.removeAll();
-            g2d_onRightMouseClick = null;
-        }
-
-        if (g2d_onRightMouseDown != null) {
-            g2d_onRightMouseDown.removeAll();
-            g2d_onRightMouseDown = null;
-        }
-
-        if (g2d_onRightMouseUp != null) {
-            g2d_onRightMouseUp.removeAll();
-            g2d_onRightMouseUp = null;
-        }
+        if (g2d_onAddedToStage != null) { g2d_onAddedToStage.removeAll(); g2d_onAddedToStage = null; }
+        if (g2d_onRemovedFromStage != null) { g2d_onRemovedFromStage.removeAll(); g2d_onRemovedFromStage = null; }
+        if (g2d_onMouseClick != null) { g2d_onMouseClick.removeAll(); g2d_onMouseClick = null; }
+        if (g2d_onMouseDown != null) { g2d_onMouseDown.removeAll(); g2d_onMouseDown = null; }
+        if (g2d_onMouseMove != null) { g2d_onMouseMove.removeAll(); g2d_onMouseMove = null; }
+        if (g2d_onMouseOut != null) { g2d_onMouseOut.removeAll(); g2d_onMouseOut = null; }
+        if (g2d_onMouseOver != null) { g2d_onMouseOver.removeAll(); g2d_onMouseOver = null; }
+        if (g2d_onMouseUp != null) { g2d_onMouseUp.removeAll(); g2d_onMouseUp = null; }
+        if (g2d_onRightMouseClick != null) { g2d_onRightMouseClick.removeAll(); g2d_onRightMouseClick = null; }
+        if (g2d_onRightMouseDown != null) { g2d_onRightMouseDown.removeAll(); g2d_onRightMouseDown = null; }
+        if (g2d_onRightMouseUp != null) { g2d_onRightMouseUp.removeAll(); g2d_onRightMouseUp = null; }
     }
 	
 	public function hitTest(p_x:Float, p_y:Float, p_hierarchy:Bool = false):Bool {
@@ -404,7 +333,7 @@ class GNode implements IGFocusable implements IGPrototypable
 		var children:Array<GPrototype> = p_prototype.getGroup("children");
 		if (children != null) {
 			for (child in children) {
-				addChild(cast GPrototypeFactory.createPrototype(child));
+				addChild(cast GPrototypeFactory.createInstance(child));
 			}
 		}
 	}
@@ -421,19 +350,6 @@ class GNode implements IGFocusable implements IGPrototypable
 	    True if node should process mouse callbacks
 	**/
 	public var mouseEnabled:Bool = false;
-
-    /**
-	    True if mouse callbacks should use pixel perfect check (needs to have texture in memory)
-	**/
-    public var mousePixelEnabled:Bool = false;
-    /**
-	    Used when mousePixelEnabled is true for alpha treshold
-	**/
-    public var mousePixelTreshold:Int = 0;
-    /**
-	    Return if node is active
-	**/
-    public var filter:GFilter;
 
 	// Mouse callbacks
     // Now generated in macro
@@ -813,7 +729,7 @@ class GNode implements IGFocusable implements IGPrototypable
 		g2d_childCount++;
         if (g2d_childCount == 1 && hasUniformRotation()) g2d_useMatrix++;
 		
-		if (isOnStage()) p_child.g2d_addedToStage();
+		if (isOnStage()) p_child.addedToStage();
         return p_child;
 	}
 
@@ -976,7 +892,7 @@ class GNode implements IGFocusable implements IGPrototypable
 		g2d_childCount--;
         if (g2d_childCount == 0 && hasUniformRotation()) g2d_useMatrix--;
 
-		if (isOnStage()) p_child.g2d_removedFromStage();
+		if (isOnStage()) p_child.removedFromStage();
         return p_child;
 	}
 
@@ -1010,26 +926,26 @@ class GNode implements IGFocusable implements IGPrototypable
 		}
 	}
 
-	inline private function g2d_addedToStage():Void {
+	inline private function addedToStage():Void {
 		if (g2d_onAddedToStage != null) g2d_onAddedToStage.dispatch();
         GStats.nodeCount++;
 
         var child:GNode = g2d_firstChild;
         while (child != null) {
             var next:GNode = child.g2d_next;
-			child.g2d_addedToStage();
+			child.addedToStage();
             child = next;
 		}
 	}
 
-	inline private function g2d_removedFromStage():Void {
+	inline private function removedFromStage():Void {
 		if (g2d_onRemovedFromStage != null) g2d_onRemovedFromStage.dispatch();
         GStats.nodeCount--;
 
         var child:GNode = g2d_firstChild;
         while (child != null) {
             var next:GNode = child.g2d_next;
-			child.g2d_removedFromStage();
+			child.removedFromStage();
             child = next;
 		}
 	}

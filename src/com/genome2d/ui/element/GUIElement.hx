@@ -1092,7 +1092,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
             var group:Array<GPrototype> = p_prototype.getGroup(PROTOTYPE_DEFAULT_CHILD_GROUP);
             if (group != null) {
                 for (prototype in group) {
-                    var prototype:IGPrototypable = GPrototypeFactory.createPrototype(prototype);
+                    var prototype:IGPrototypable = GPrototypeFactory.createInstance(prototype);
                     if (Std.is(prototype,GUIElement)) addChild(cast prototype);
                 }
             }

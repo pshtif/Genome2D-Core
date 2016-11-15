@@ -258,7 +258,7 @@ class Genome2D implements IGDebuggableInternal
 	public function init(p_config:GContextConfig):Void {
         // Initialize root
         if (g2d_root != null) g2d_root.dispose();
-        g2d_root = GNode.create("root");
+        g2d_root = new GNode("root");
 
         // Initialize camera controller array
         g2d_cameras = new Array<GCameraController>();

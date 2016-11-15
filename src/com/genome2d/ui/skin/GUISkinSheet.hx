@@ -20,7 +20,7 @@ class GUISkinSheet implements IGPrototypable
 		var skinPrototypes:Array<GPrototype> = p_prototype.getGroup("*");
 		
 		for (skinPrototype in skinPrototypes) {
-			var skin:GUISkin = cast GPrototypeFactory.createPrototype(skinPrototype);
+			var skin:GUISkin = cast GPrototypeFactory.createInstance(skinPrototype);
 		}
 	}
 }

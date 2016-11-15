@@ -48,7 +48,7 @@ class GPrototypeFactory {
         return g2d_lookups.get(p_prototypeName);
     }
 
-    static public function createPrototype<T:IGPrototypable>(p_prototype:GPrototype, p_args:Array<Dynamic> = null):T {
+    static public function createInstance<T:IGPrototypable>(p_prototype:GPrototype, p_args:Array<Dynamic> = null):T {
         if (p_prototype.prototypeClass == null) {
             GDebug.error("Non existing prototype class "+p_prototype.prototypeName);
         }
@@ -65,7 +65,7 @@ class GPrototypeFactory {
     static public function createPrototypes(p_prototypes:Array<GPrototype>):Array<IGPrototypable> {
         var prototypeInstances:Array<IGPrototypable> = new Array<IGPrototypable>();
         for (prototype in p_prototypes) {
-            prototypeInstances.push(createPrototype(prototype));
+            prototypeInstances.push(createInstance(prototype));
         }
         return prototypeInstances;
     }
