@@ -17,7 +17,7 @@ class GProject {
 
         g2d_genome.onFailed.addOnce(genomeFailed_handler);
         g2d_genome.onInitialized.addOnce(genomeInitialized_handler);
-        g2d_genome.init(new GContextConfig());
+        //g2d_genome.init(new GContextConfig());
     }
 
     private function genomeFailed_handler(p_msg:String):Void {
