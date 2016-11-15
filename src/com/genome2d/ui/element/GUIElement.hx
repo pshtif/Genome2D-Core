@@ -32,6 +32,7 @@ import com.genome2d.ui.skin.GUISkinManager;
 @:access(com.genome2d.ui.skin.GUISkin)
 @prototypeName("element")
 @prototypeDefaultChildGroup("element")
+@:build(com.genome2d.macros.MGMouseCallbackBuild.build())
 class GUIElement implements IGPrototypable implements IGFocusable {
 	public var red:Float = 1;
 	public var green:Float = 1;
@@ -1121,6 +1122,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     /*******************************************************************************************************************
     *   MOUSE CODE
     *******************************************************************************************************************/
+    // Callbacks are now macro generated
+    /*
     private var g2d_onMouseDown:GCallback1<GMouseInput>;
     #if swc @:extern #end
     public var onMouseDown(get, never):GCallback1<GMouseInput>;
@@ -1219,7 +1222,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         if (g2d_onRightMouseClick == null) g2d_onRightMouseClick = new GCallback1(GMouseInput);
         return g2d_onRightMouseClick;
     }
-
+    /**/
     private var g2d_onInvalidate:GCallback0;
     #if swc @:extern #end
     public var onInvalidate(get, never):GCallback0;

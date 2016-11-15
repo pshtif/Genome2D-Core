@@ -17,7 +17,7 @@ class MGMouseCallbackBuild {
         var fields = Context.getBuildFields();
 
         var pos = Context.currentPos();
-        var fieldNames = ["onMouseDown", "onMouseUp", "onMouseMove", "onMouseOver", "onMouseOut", "onRightMouseDown", "onRightMouseUp", "onMouseClick", "onRightMouseClick"];
+        var fieldNames = ["onMouseWheel", "onDoubleMouseClick", "onMouseDown", "onMouseUp", "onMouseMove", "onMouseOver", "onMouseOut", "onRightMouseDown", "onRightMouseUp", "onMouseClick", "onRightMouseClick"];
 
         for (fieldName in fieldNames) {
 

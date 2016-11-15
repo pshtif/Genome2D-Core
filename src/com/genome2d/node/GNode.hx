@@ -483,6 +483,7 @@ class GNode implements IGFocusable implements IGPrototypable
 		}
 	}
 
+    private var g2d_lastClickTime:Float = -1;
 	/**
      *  Dispatch node mouse callbacks
      **/
@@ -491,6 +492,8 @@ class GNode implements IGFocusable implements IGPrototypable
 			var mouseInput:GMouseInput = p_input.clone(this, p_object, p_type);
 
             switch (p_type) {
+                case GMouseInputType.MOUSE_WHEEL:
+                    if (g2d_onMouseWheel != null) g2d_onMouseWheel.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_DOWN:
                     g2d_mouseDownNode = p_object;
                     if (g2d_onMouseDown != null) g2d_onMouseDown.dispatch(mouseInput);
@@ -502,7 +505,13 @@ class GNode implements IGFocusable implements IGPrototypable
                 case GMouseInputType.MOUSE_UP:
                     if (g2d_mouseDownNode == p_object && g2d_onMouseClick != null) {
                         var mouseClickInput:GMouseInput = p_input.clone(this, p_object, GMouseInputType.MOUSE_UP);
-                        g2d_onMouseClick.dispatch(mouseClickInput);
+                        if (g2d_onMouseClick != null) g2d_onMouseClick.dispatch(mouseClickInput);
+                        if (g2d_lastClickTime>0 && p_input.time-g2d_lastClickTime<GMouseInput.DOUBLE_CLICK_TIME) {
+                            if (g2d_onDoubleMouseClick != null) g2d_onDoubleMouseClick.dispatch(mouseClickInput);
+                            g2d_lastClickTime = -1;
+                        } else {
+                            g2d_lastClickTime = p_input.time;
+                        }
                     }
                     g2d_mouseDownNode = null;
                     if (g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseInput);
