@@ -76,7 +76,7 @@ class GCurve implements IGPrototypable {
         return (g2d_pathLength>0) ? g2d_segments[g2d_pathLength-1].end : Math.NaN;
     }
 
-    public function calculate(k:Float):Float {
+    inline public function calculate(k:Float):Float {
         if (g2d_pathLength == 0) {
             return start;
         } else if (g2d_pathLength == 1) {
