@@ -53,8 +53,24 @@ class GParticleEmitter implements IGPrototypable
 	@prototype
 	public var delayVariance:Float = 0;
 
-	@prototype
-	public var rate:GCurve;
+	private var g2d_rate:GCurve;
+	@prototype#if swc @:extern #end
+	public var rate(get, set):GCurve;
+	#if swc @:getter(rate) #end
+	inline private function get_rate():GCurve {
+		return g2d_rate;
+	}
+	#if swc @:setter(rate) #end
+	inline private function set_rate(p_value:GCurve):GCurve {
+		g2d_rate = p_value;
+		g2d_useConstantRate = g2d_rate.isConstant();
+		if (g2d_useConstantRate) g2d_constantRate = g2d_rate.start;
+
+		return p_value;
+	}
+
+	private var g2d_useConstantRate:Bool = false;
+	private var g2d_constantRate:Float;
 
 	@prototype
 	public var burstDistribution:Array<Float>;
@@ -144,10 +160,13 @@ class GParticleEmitter implements IGPrototypable
 				emit = false;
 			// If we are within current duration
 			} else {
-				if (rate != null) {
+				if (g2d_rate != null) {
 					// Calculate current rate and emit particles
-					var currentRate:Float = rate.calculate(g2d_accumulatedTime / g2d_currentDuration);
-					g2d_accumulatedEmission += currentRate * p_deltaTime * .001;
+					if (g2d_useConstantRate) {
+						g2d_accumulatedEmission += g2d_constantRate * p_deltaTime * .001;
+					} else {
+						g2d_accumulatedEmission += rate.calculate(g2d_accumulatedTime / g2d_currentDuration) * p_deltaTime * .001;
+					}
 				}
 				
 				if (burstDistribution != null) {
