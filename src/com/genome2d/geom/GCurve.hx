@@ -50,6 +50,10 @@ class GCurve implements IGPrototypable {
         g2d_totalStrength = 0;
     }
 
+    public function isConstant():Bool {
+        return g2d_pathLength == 0;
+    }
+
     private function addSegment (p_segment:Segment):Void {
         g2d_segments.push(p_segment);
         g2d_totalStrength += p_segment.strength;
