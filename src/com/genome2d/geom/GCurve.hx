@@ -77,11 +77,10 @@ class GCurve implements IGPrototypable {
     }
 
     inline public function calculate(k:Float):Float {
-        if (g2d_pathLength == 0) {
-            return start;
-        } else if (g2d_pathLength == 1) {
-            return g2d_segments[0].calculate(start, k);
-        } else {
+        var r:Float = start;
+        if (g2d_pathLength == 1) {
+            r = g2d_segments[0].calculate(start, k);
+        } else if (g2d_pathLength > 1) {
             var ratio:Float = k * g2d_totalStrength;
             var lastEnd:Float = start;
 
@@ -91,12 +90,12 @@ class GCurve implements IGPrototypable {
                     ratio -= path.strength;
                     lastEnd = path.end;
                 } else {
-                    return path.calculate(lastEnd, ratio / path.strength);
+                    r = path.calculate(lastEnd, ratio / path.strength);
                 }
             }
         }
 
-        return 0;
+        return r;
     }
 
     static public function createLine(p_end:Float, p_strength:Float = 1):GCurve {
