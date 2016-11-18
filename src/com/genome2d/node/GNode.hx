@@ -78,6 +78,7 @@ class GNode implements IGFocusable implements IGPrototypable
 	/**
 	    Camera group this node belongs to, a node is rendered through this camera if camera.mask&node.cameraGroup != 0
 	**/
+    @prototype
 	public var cameraGroup:Int = 0;
 
 	private var g2d_pool:GNodePool;
@@ -87,6 +88,7 @@ class GNode implements IGFocusable implements IGPrototypable
     /**
 	    Masking _rectangle
 	**/
+    @prototype
     public var maskRect:GRectangle;
 
     /**
@@ -158,6 +160,9 @@ class GNode implements IGFocusable implements IGPrototypable
 	**/
 	@prototype
 	public var name:String;
+
+    @prototype
+    public var sameNameChildren:Bool = true;
 
     /**
 	    Node postprocess
@@ -333,7 +338,9 @@ class GNode implements IGFocusable implements IGPrototypable
 		var children:Array<GPrototype> = p_prototype.getGroup("children");
 		if (children != null) {
 			for (child in children) {
-				addChild(cast GPrototypeFactory.createInstance(child));
+                if (sameNameChildren || getChildByName(child.getProperty("name").value) != null) {
+				    addChild(cast GPrototypeFactory.createInstance(child));
+                }
 			}
 		}
 	}
@@ -764,6 +771,15 @@ class GNode implements IGFocusable implements IGPrototypable
         }
 		return child;
 	}
+
+    public function getChildByName(p_name:String):GNode {
+        var child:GNode = g2d_firstChild;
+        while (child != null) {
+            if (child.name == p_name) return child;
+            child = child.g2d_next;
+        }
+        return child;
+    }
 
     public function getChildIndex(p_child:GNode):Int {
         if (p_child.parent != this) return -1;
@@ -1575,7 +1591,7 @@ class GNode implements IGFocusable implements IGPrototypable
 			if (doInvalidateColor) {
                 invalidateColor(p_parentColorUpdate);
             }
-
+            trace(name, cameraGroup, p_camera.group);
             if (g2d_active && visible && ((cameraGroup & p_camera.group) != 0 || cameraGroup == 0) && (g2d_usedAsMask == 0 || p_renderAsMask)) {
 				// Rectangle masking
 				var hasMask:Bool = false;
