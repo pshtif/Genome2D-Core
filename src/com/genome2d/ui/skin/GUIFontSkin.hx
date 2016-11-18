@@ -1,5 +1,7 @@
 package com.genome2d.ui.skin;
 import com.genome2d.input.IGFocusable;
+import com.genome2d.callbacks.GCallback.GCallback0;
+import com.genome2d.input.IGFocusable;
 import com.genome2d.input.GFocusManager;
 import com.genome2d.input.GMouseInputType;
 import com.genome2d.input.GKeyboardInputType;
@@ -20,10 +22,19 @@ import com.genome2d.textures.GTextureManager;
 
 @prototypeName("fontSkin")
 class GUIFontSkin extends GUISkin implements IGFocusable {
-	
-	#if swc @:extern #end
+
+    private var g2d_onEnter:GCallback0;
+    #if swc @:extern #end
+    public var onEnter(get, null):GCallback0;
+    #if swc @:getter(onEnter) #end
+    inline private function get_onEnter():GCallback0 {
+    if (g2d_onEnter == null) g2d_onEnter = new GCallback0();
+    return g2d_onEnter;
+    }
+
+    #if swc @:extern #end
     @prototype
-	public var vAlign(get, set):GVAlignType;
+    public var vAlign(get, set):GVAlignType;
     #if swc @:getter(vAlign) #end
     inline private function get_vAlign():GVAlignType {
         return g2d_textRenderer.vAlign;
@@ -33,10 +44,10 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
         g2d_textRenderer.vAlign = p_value;
         return p_value;
     }
-	
-	#if swc @:extern #end
+
+    #if swc @:extern #end
     @prototype
-	public var hAlign(get, set):GHAlignType;
+    public var hAlign(get, set):GHAlignType;
     #if swc @:getter(hAlign) #end
     inline private function get_hAlign():GHAlignType {
         return g2d_textRenderer.hAlign;
@@ -46,11 +57,11 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
         g2d_textRenderer.hAlign = p_value;
         return p_value;
     }
-	
-	public var format:GTextFormat;
-	
+
+    public var format:GTextFormat;
+
     #if swc @:extern #end
-	public var text(get, set):String;
+    public var text(get, set):String;
     #if swc @:getter(text) #end
     inline private function get_text():String {
         return g2d_textRenderer.text;
@@ -63,7 +74,7 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
 
     #if swc @:extern #end
     @prototype
-	public var autoSize(get, set):Bool;
+    public var autoSize(get, set):Bool;
     #if swc @:getter(autoSize) #end
     inline private function get_autoSize():Bool {
         return g2d_textRenderer.autoSize;
@@ -83,8 +94,8 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
     }
 
     #if swc @:extern #end
-    @prototype 
-	public var fontScale(get, set):Float;
+    @prototype
+    public var fontScale(get, set):Float;
     #if swc @:getter(fontScale) #end
     inline private function get_fontScale():Float {
         return g2d_textRenderer.fontScale;
@@ -94,10 +105,10 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
         g2d_textRenderer.fontScale = p_value;
         return p_value;
     }
-	
-	#if swc @:extern #end
+
+    #if swc @:extern #end
     @prototype("getReference")
-	public var font(get, set):GTextureFont;
+    public var font(get, set):GTextureFont;
     #if swc @:getter(font) #end
     inline private function get_font():GTextureFont {
         return g2d_textRenderer.textureFont;
@@ -107,8 +118,8 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
         g2d_textRenderer.textureFont = p_value;
         return p_value;
     }
-	
-	#if swc @:extern #end
+
+    #if swc @:extern #end
     public var cursorStartIndex(get, set):Int;
     #if swc @:getter(cursorStartIndex) #end
     inline private function get_cursorStartIndex():Int {
@@ -120,8 +131,8 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
 
         return p_value;
     }
-	
-	#if swc @:extern #end
+
+    #if swc @:extern #end
     public var cursorEndIndex(get, set):Int;
     #if swc @:getter(cursorEndIndex) #end
     inline private function get_cursorEndIndex():Int {
@@ -163,7 +174,7 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
     }
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Bool {
-		g2d_textRenderer.format = format;
+        g2d_textRenderer.format = format;
 
         if (forcePixelAccuracy) {
             p_left = Math.round(p_left);
@@ -174,11 +185,11 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
 
         var rendered:Bool = false;
         if (super.render(p_left, p_top, p_right, p_bottom, p_red, p_green, p_blue, p_alpha)) {
-			g2d_textRenderer.red = red * p_red;
-			g2d_textRenderer.green = green * p_green;
-			g2d_textRenderer.blue = blue * p_blue;
-			g2d_textRenderer.alpha = alpha * p_alpha;
-			
+            g2d_textRenderer.red = red * p_red;
+            g2d_textRenderer.green = green * p_green;
+            g2d_textRenderer.blue = blue * p_blue;
+            g2d_textRenderer.alpha = alpha * p_alpha;
+
             g2d_textRenderer.width = p_right - p_left;
             g2d_textRenderer.height = p_bottom - p_top;
             g2d_textRenderer.render(p_left, p_top, 1, 1, 0, 1, 1, 1, 1);
@@ -193,35 +204,35 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
 
     override public function clone():GUISkin {
         var clone:GUIFontSkin = new GUIFontSkin("", g2d_textRenderer.textureFont, fontScale, autoSize, (g2d_origin == null)?this:cast g2d_origin);
-		clone.red = red;
-		clone.green = green;
-		clone.blue = blue;
-		clone.alpha = alpha;
-		clone.color = color;
-		clone.vAlign = vAlign;
-		clone.hAlign = hAlign;
+        clone.red = red;
+        clone.green = green;
+        clone.blue = blue;
+        clone.alpha = alpha;
+        clone.color = color;
+        clone.vAlign = vAlign;
+        clone.hAlign = hAlign;
         clone.inputEnabled = inputEnabled;
         return clone;
     }
-	
-	override public function captureMouseInput(p_input:GMouseInput):Void {
+
+    override public function captureMouseInput(p_input:GMouseInput):Void {
         if (inputEnabled && p_input.type == GMouseInputType.MOUSE_UP) GFocusManager.setFocus(this);
 
-		g2d_textRenderer.captureMouseInput(p_input);
-	}
-	
-	override public function bindPrototype(p_prototype:GPrototype):Void {
-		bindPrototypeDefault(p_prototype);
-		
-		if (g2d_origin == null) {
-			if (p_prototype.getProperty("id").value != "") {
-				g2d_id = p_prototype.getProperty("id").value;
-				GUISkinManager.g2d_addSkin(g2d_id, this);
-			}
-		}
-	}
+        g2d_textRenderer.captureMouseInput(p_input);
+    }
 
-    public var restrictedChars:Array<String> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
+    override public function bindPrototype(p_prototype:GPrototype):Void {
+        bindPrototypeDefault(p_prototype);
+
+        if (g2d_origin == null) {
+            if (p_prototype.getProperty("id").value != "") {
+                g2d_id = p_prototype.getProperty("id").value;
+                GUISkinManager.g2d_addSkin(g2d_id, this);
+            }
+        }
+    }
+
+    public var restrictedChars:Array<String> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
     private function keyboard_handler(input:GKeyboardInput):Void {
         if (!GFocusManager.hasFocus(this) || input.type != GKeyboardInputType.KEY_DOWN) return;
@@ -251,9 +262,10 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
                     text = text.substr(0,cursorStartIndex) + text.substr(cursorStartIndex+1);
                 }
             case 13:
-
+                if (g2d_onEnter != null) g2d_onEnter.dispatch();
             case _:
                 var char:String = String.fromCharCode(input.charCode);
+                trace(restrictedChars.indexOf(char));
                 if (restrictedChars.indexOf(char) != -1) {
                     text = text.substr(0,cursorStartIndex) + char + text.substr(cursorStartIndex);
                     cursorStartIndex = cursorEndIndex = cursorEndIndex+1;
