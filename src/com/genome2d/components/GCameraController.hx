@@ -123,8 +123,14 @@ class GCameraController extends GComponent
 		if (g2d_contextCamera.normalizedViewWidth <= 0 || g2d_contextCamera.normalizedViewHeight <= 0) return;
 
 		node.core.getContext().setActiveCamera(g2d_contextCamera);
-        node.core.getContext().setRenderTarget(renderTarget);
-		node.core.root.render(false, false, g2d_contextCamera, false, false);
+		if (renderTarget != null) {
+			var previousRenderTarget:GTexture = node.core.getContext().getRenderTarget();
+			node.core.getContext().setRenderTarget(renderTarget);
+			node.core.root.render(false, false, g2d_contextCamera, false, false);
+			node.core.getContext().setRenderTarget(previousRenderTarget);
+		} else {
+			node.core.root.render(false, false, g2d_contextCamera, false, false);
+		}
 	}
 
 	public function captureMouseInput(p_input:GMouseInput):Void {
