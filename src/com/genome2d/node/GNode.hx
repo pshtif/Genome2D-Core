@@ -338,7 +338,7 @@ class GNode implements IGFocusable implements IGPrototypable
 		var children:Array<GPrototype> = p_prototype.getGroup("children");
 		if (children != null) {
 			for (child in children) {
-                if (sameNameChildren || getChildByName(child.getProperty("name").value) != null) {
+                if (sameNameChildren || getChildByName(child.getProperty("name").value) == null) {
 				    addChild(cast GPrototypeFactory.createInstance(child));
                 }
 			}
@@ -1254,6 +1254,7 @@ class GNode implements IGFocusable implements IGPrototypable
     @prototype
 	public var useWorldColor:Bool = false;
 
+    @prototype
     public var visible:Bool = true;
 
     @:dox(hide)
@@ -1591,7 +1592,7 @@ class GNode implements IGFocusable implements IGPrototypable
 			if (doInvalidateColor) {
                 invalidateColor(p_parentColorUpdate);
             }
-            trace(name, cameraGroup, p_camera.group);
+
             if (g2d_active && visible && ((cameraGroup & p_camera.group) != 0 || cameraGroup == 0) && (g2d_usedAsMask == 0 || p_renderAsMask)) {
 				// Rectangle masking
 				var hasMask:Bool = false;
