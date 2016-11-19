@@ -434,7 +434,7 @@ class Genome2D implements IGDebuggableInternal
 			}
             var i:Int = g2d_cameras.length-1;
             while (i>=0) {
-                g2d_cameras[i].captureMouseInput(p_input);
+                if (g2d_cameras[i].mouseEnabled) g2d_cameras[i].captureMouseInput(p_input);
                 i--;
             }
 		}

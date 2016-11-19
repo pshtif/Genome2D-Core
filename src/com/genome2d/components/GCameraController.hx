@@ -25,6 +25,9 @@ class GCameraController extends GComponent
     private var g2d_viewRectangle:GRectangle;
     private var g2d_capturedThisFrame:Bool = false;
     private var g2d_renderedNodesCount:Int;
+
+	@prototype
+	public var mouseEnabled:Bool = true;
 	
 	private var g2d_onMouseInput:GCallback1<GMouseInput>;
     #if swc @:extern #end
