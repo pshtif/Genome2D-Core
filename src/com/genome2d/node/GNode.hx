@@ -338,8 +338,15 @@ class GNode implements IGFocusable implements IGPrototypable
 		var children:Array<GPrototype> = p_prototype.getGroup("children");
 		if (children != null) {
 			for (child in children) {
-                if (sameNameChildren || getChildByName(child.getProperty("name").value) == null) {
+                if (sameNameChildren) {
 				    addChild(cast GPrototypeFactory.createInstance(child));
+                } else {
+                    var childNode:GNode = getChildByName(child.getProperty("name").value);
+                    if (childNode == null) {
+                        addChild(cast GPrototypeFactory.createInstance(child));
+                    } else {
+                        childNode.bindPrototype(child);
+                    }
                 }
 			}
 		}
