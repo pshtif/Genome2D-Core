@@ -185,7 +185,7 @@ class GPrototypeProperty {
 					var split:Array<String> = type.split(":");
 					if (split.length == 2 && split[0] == "Array") {
 						// We need to strip the string of brackets before splitting
-						realValue = p_value == "null" ? null : p_value.split(",");//(p_value).substr(1,p_value.length-2).split(",");
+						realValue = p_value == "null" ? null : p_value.substr(1,p_value.length-2).split(",");
 					} else if (split.length == 2 && split[0] == "E") {
 						try {
 							realValue = p_value == "null" ? null : Type.createEnum(Type.resolveEnum(split[1]), Std.string(p_value));
