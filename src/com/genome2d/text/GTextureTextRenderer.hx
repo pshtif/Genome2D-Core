@@ -222,8 +222,8 @@ class GTextureTextRenderer extends GTextRenderer {
 					isAllVisible = false;
 					g2d_maxVisibleLine = lines.length - 1;
 				}
-				if (previousRenderable != null && previousRenderable.x + previousRenderable.width > maxLineWidth) {
-					maxLineWidth = previousRenderable.x + previousRenderable.width;
+				if (previousRenderable != null && previousRenderable.x + (previousRenderable.width * fontScale) > maxLineWidth) {
+					maxLineWidth = previousRenderable.x + (previousRenderable.width * fontScale);
 				}
                 offsetX = 0;
                 offsetY += (g2d_textureFont.lineHeight + g2d_lineSpace)*g2d_fontScale;
@@ -270,8 +270,8 @@ class GTextureTextRenderer extends GTextRenderer {
 					}
 
 					i = whiteSpaceIndex+1;
-					if (previousRenderable != null && previousRenderable.x + previousRenderable.width > maxLineWidth) {
-						maxLineWidth = previousRenderable.x + previousRenderable.width;
+					if (previousRenderable != null && previousRenderable.x + (previousRenderable.width * fontScale) > maxLineWidth) {
+						maxLineWidth = previousRenderable.x + (previousRenderable.width * fontScale);
 					}
 					offsetX = 0;
 					offsetY += (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale;
@@ -303,8 +303,8 @@ class GTextureTextRenderer extends GTextRenderer {
 			previousRenderable = renderable;
             ++i;
         }
-		if (renderable != null && renderable.x + renderable.width > maxLineWidth) {
-			maxLineWidth = renderable.x + renderable.width;
+		if (renderable != null && renderable.x + (renderable.width * fontScale) > maxLineWidth) {
+			maxLineWidth = renderable.x + (renderable.width * fontScale);
 		}
         lines.push(currentLine);
 		g2d_lineCount = lines.length;
