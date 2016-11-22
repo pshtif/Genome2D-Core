@@ -8,27 +8,49 @@
  */
 package com.genome2d.particles;
 
+import com.genome2d.proto.GPrototypeFactory;
+import com.genome2d.proto.GPrototype;
+import com.genome2d.proto.IGPrototypable;
 import com.genome2d.context.IGContext;
 import com.genome2d.geom.GRectangle;
 
 @:access(com.genome2d.particles.GParticle)
 @:access(com.genome2d.particles.GParticleEmitter)
-class GParticleSystem
+@prototypeName("particle_system")
+@prototypeDefaultChildGroup("particle_emitter")
+class GParticleSystem implements IGPrototypable
 {
+	@prototype
     public var timeDilation:Float = 1;
+
+	@prototype
 	public var enableSph:Bool = false;
 	
 	private var g2d_emitters:Array<GParticleEmitter>;
+	public function getEmitters():Array<GParticleEmitter> {
+		return g2d_emitters;
+	}
+
 	private var g2d_emitterCount:Int = 0;
-	
+
+	@prototype
 	public var x:Float = 0;
+
+	@prototype
 	public var y:Float = 0;
+
+	@prototype
 	public var scaleX:Float = 1;
+
+	@prototype
 	public var scaleY:Float = 1;
+
 	public var red:Float = 1;
 	public var green:Float = 1;
 	public var blue:Float = 1;
 	public var alpha:Float = 1;
+
+	@prototype
 	public var enabled:Bool = true;
 	
 	/**
@@ -227,6 +249,32 @@ class GParticleSystem
 			}
         }
     }
+
+	/****************************************************************************************************
+	 * 	PROTOTYPE CODE
+	 ****************************************************************************************************/
+
+	public function getPrototype(p_prototype:GPrototype = null):GPrototype {
+		p_prototype = getPrototypeDefault(p_prototype);
+
+		for (emitter in g2d_emitters) {
+			p_prototype.addChild(emitter.getPrototype(), PROTOTYPE_DEFAULT_CHILD_GROUP);
+		}
+
+		return p_prototype;
+	}
+
+	public function bindPrototype(p_prototype:GPrototype):Void {
+		bindPrototypeDefault(p_prototype);
+
+		var group:Array<GPrototype> = p_prototype.getGroup(PROTOTYPE_DEFAULT_CHILD_GROUP);
+		if (group != null) {
+			for (prototype in group) {
+				var prototype:IGPrototypable = GPrototypeFactory.createInstance(prototype);
+				addEmitter(cast prototype);
+			}
+		}
+	}
 }
 
 class GSPHNeighbor
