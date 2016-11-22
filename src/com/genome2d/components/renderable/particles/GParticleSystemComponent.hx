@@ -24,37 +24,27 @@ import com.genome2d.particles.GParticleSystem;
  */
 class GParticleSystemComponent extends GComponent implements IGRenderable
 {
-	private var g2d_particleSystem:GParticleSystem;
-	public function getParticleSystem():GParticleSystem {
-		return g2d_particleSystem;
-	}
-	
-	public function addEmitter(p_emitter:GParticleEmitter):Void {
-		g2d_particleSystem.addEmitter(p_emitter);
-	}
-	
-	public function getEmitter(p_index:Int):GParticleEmitter {
-		return g2d_particleSystem.getEmitter(p_index);
-	}
+	@prototype
+	public var particleSystem:GParticleSystem;
 	
 	override public function init():Void {
-		g2d_particleSystem = new GParticleSystem();
+		particleSystem = new GParticleSystem();
 		
 		node.core.onUpdate.add(update);
 	}
 	
 	private function update(p_deltaTime:Float):Void {
-		g2d_particleSystem.x = node.x;
-		g2d_particleSystem.y = node.y;
+		particleSystem.x = node.x;
+		particleSystem.y = node.y;
 		
-		g2d_particleSystem.update(p_deltaTime);
+		particleSystem.update(p_deltaTime);
 	}
 
 	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
-		g2d_particleSystem.x = node.x;
-		g2d_particleSystem.y = node.y;
+		particleSystem.x = node.x;
+		particleSystem.y = node.y;
 		
-		g2d_particleSystem.render(node.core.getContext());
+		particleSystem.render(node.core.getContext());
 	}
 
     public function getBounds(p_target:GRectangle = null):GRectangle {
