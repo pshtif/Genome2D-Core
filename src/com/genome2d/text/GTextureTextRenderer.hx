@@ -43,6 +43,21 @@ class GTextureTextRenderer extends GTextRenderer {
         return g2d_textureFont;
     }
 
+	private var g2d_wordWrap:Bool = false;
+	#if swc @:extern #end
+	public var wordWrap(get, set):Bool;
+	#if swc @:getter(wordWrap) #end
+	inline private function get_wordWrap():Bool {
+		return g2d_wordWrap;
+	}
+	#if swc @:setter(wordWrap) #end
+	inline private function set_wordWrap(p_value:Bool):Bool {
+		g2d_wordWrap = p_value;
+		g2d_dirty = true;
+		return g2d_wordWrap;
+	}
+
+
     private var g2d_chars:Array<GTextureCharRenderable>;
 	
 	private var g2d_cursorBlinkCount:Int = 0;
@@ -256,6 +271,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				renderable.setCharCode(currentCharCode);
 
 				if (!g2d_autoSize && offsetX + char.texture.width*g2d_fontScale > g2d_width) {
+					if (!wordWrap) break;
 					lines.push(currentLine);
 					var backtrack:Int = i - whiteSpaceIndex - 1;
 					var currentCount:Int = currentLine.length;
@@ -284,9 +300,9 @@ class GTextureTextRenderer extends GTextRenderer {
 				renderable.y = offsetY;
 				charIndex++;
 
-				//if (currentCharCode == 32 || currentCharCode == 46) {
+				if (currentCharCode == 32 || currentCharCode == 46) {
 					whiteSpaceIndex = i;
-				//}
+				}
 				
 				if (currentCharCode == 32) {
 					renderable.whiteSpace = true;
@@ -408,9 +424,19 @@ class GTextureTextRenderer extends GTextRenderer {
 class GTextureCharRenderable
 {
 	private var renderer:GTextureTextRenderer;
-	
+
+	private var g2d_charCode:Int;
+	#if swc @:extern #end
+	public var charCode(get, null):Int;
+	#if swc @:getter(charCode) #end
+	inline private function get_charCode():Int {
+		return g2d_charCode;
+	}
+
 	private var fontChar:GTextureChar;
     inline private function setCharCode(p_value:Int):Void {
+		charCode = p_value;
+
 		fontChar = renderer.textureFont.getChar(Std.string(p_value));
 
         if (fontChar == null) GDebug.warning("Texture for character " + Std.string(p_value) + " with code " + p_value + " not found!");
