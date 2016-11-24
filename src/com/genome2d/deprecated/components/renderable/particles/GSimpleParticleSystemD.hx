@@ -71,12 +71,12 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 	public var energyVariance:Float = 0;
 
 	@category("emission")
-	@range(0, 10000, 1)
+	@range(0, 1024, 1)
 	@prototype
 	public var emission:Int = 1;
 
 	@category("emission")
-	@range(0, 10000, 1)
+	@range(0, 1024, 1)
 	@prototype
 	public var emissionVariance:Int = 0;
 
@@ -188,19 +188,23 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 
 	public var endGreen:Float = 1;
 	@category("color")
+	@range(0,1,.01)
 	@prototype
 	public var endGreenVariance:Float = 0;
 
 	public var endBlue:Float = 1;
 	@category("color")
+	@range(0,1,.01)
 	@prototype
 	public var endBlueVariance:Float = 0;
 
 	@category("color")
+	@range(0,1,.01)
 	@prototype
 	public var endAlpha:Float = 1;
 
 	@category("color")
+	@range(0,1,.01)
 	@prototype
 	public var endAlphaVariance:Float = 0;
 	
