@@ -48,7 +48,7 @@ class GSprite extends GTexturedQuad
 			texture = frameAnimation.currentFrameTexture;
 		}
 
-        if (texture != null && (texture.sourceType != GTextureSourceType.RENDER_TARGET || texture.isRenderTargetInitialized())) {
+        if (texture != null && (texture.getSourceType() != GTextureSourceType.RENDER_TARGET || texture.isRenderTargetInitialized())) {
             if (p_useMatrix && !ignoreMatrix) {
                 var matrix:GMatrix = node.core.g2d_renderMatrix;
                 node.core.getContext().drawMatrix(texture, blendMode, matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, filter);
