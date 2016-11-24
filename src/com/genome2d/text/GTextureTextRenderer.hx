@@ -435,7 +435,7 @@ class GTextureCharRenderable
 
 	private var fontChar:GTextureChar;
     inline private function setCharCode(p_value:Int):Void {
-		charCode = p_value;
+		g2d_charCode = p_value;
 
 		fontChar = renderer.textureFont.getChar(Std.string(p_value));
 
