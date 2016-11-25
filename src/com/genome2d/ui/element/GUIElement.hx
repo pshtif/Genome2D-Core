@@ -1240,6 +1240,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     public function captureMouseInput(p_input:GMouseInput):Void {
 		if (visible) {
+
 			if (mouseChildren) {
                 if (!useMask || (p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom)) {
                     var i:Int = g2d_numChildren;
@@ -1261,15 +1262,19 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 						g2d_activeSkin.captureMouseInput(p_input);
 
 						p_input.captured = mouseCapture;
-						g2d_dispatchMouseCallback(p_input.type, this, p_input);
+						g2d_dispatchMouseCallback(p_input.type, this, p_input, true, false);
 
 						if (g2d_mouseOverElement != this) {
-							g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, this, p_input);
+							g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, this, p_input, true, false);
 						}
 					}
 				} else {
-					if (g2d_mouseOverElement == this) {
-						g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, this, p_input);
+                    if (g2d_mouseDownElement == this && p_input.type == GMouseInputType.MOUSE_UP) {
+                        g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, this, p_input, false, false);
+                    }
+
+                    if (g2d_mouseOverElement == this) {
+						g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, this, p_input, false, false);
 					}
 				}
 			}
@@ -1280,7 +1285,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         var found:Bool = false;
         if (g2d_mouseOverElement != null) {
             var input:GMouseInput = new GMouseInput(g2d_mouseOverElement, g2d_mouseOverElement, GMouseInputType.fromNative(GMouseInputType.MOUSE_OUT),0, 0);
-            g2d_mouseOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_mouseOverElement, input);
+            g2d_mouseOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_mouseOverElement, input, false, false);
             found = true;
         } else {
             if (g2d_children != null) {
@@ -1294,7 +1299,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_lastClickTime:Float = -1;
-    private function g2d_dispatchMouseCallback(p_type:String, p_element:GUIElement, p_input:GMouseInput):Void {
+    private function g2d_dispatchMouseCallback(p_type:String, p_element:GUIElement, p_input:GMouseInput, p_captured:Bool, p_bubbling:Bool):Void {
         if (mouseEnabled && (isVisible() || p_type == GMouseInputType.MOUSE_OUT)) {
             var mouseInput:GMouseInput = p_input.clone(this, p_element, p_type);
 
@@ -1311,7 +1316,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                     if (g2d_onMouseMove != null) g2d_onMouseMove.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_UP:
                     if (g2d_mouseDownElement != null) {
-                        if (g2d_mouseDownElement == p_element && (g2d_onMouseClick != null || g2d_onDoubleMouseClick != null)) {
+                        if (p_captured && (g2d_onMouseClick != null || g2d_onDoubleMouseClick != null)) {
                             var mouseClickInput:GMouseInput = p_input.clone(this, p_element, GMouseInputType.MOUSE_UP);
                             if (g2d_onMouseClick != null) g2d_onMouseClick.dispatch(mouseClickInput);
                             if (g2d_lastClickTime>0 && p_input.time-g2d_lastClickTime<GMouseInput.DOUBLE_CLICK_TIME) {
@@ -1321,7 +1326,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                                 g2d_lastClickTime = p_input.time;
                             }
                         }
-                        g2d_mouseDownElement = null;
+                        if (!p_bubbling) g2d_mouseDownElement = null;
                         if (g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseInput);
                     }
                 case GMouseInputType.RIGHT_MOUSE_UP:
@@ -1349,7 +1354,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         }
 
         if (parent != null) {
-            parent.g2d_dispatchMouseCallback(p_type, p_element, p_input);
+            parent.g2d_dispatchMouseCallback(p_type, p_element, p_input, p_captured, true);
         }
     }
 	
