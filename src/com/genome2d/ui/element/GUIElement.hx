@@ -1238,6 +1238,23 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     private var g2d_rightMouseDownElement:GUIElement;
     private var g2d_mouseOverElement:GUIElement;
 
+    private function dispatchHidden():Bool {
+        var found:Bool = false;
+        if (g2d_mouseOverElement != null) {
+            var input:GMouseInput = new GMouseInput(g2d_mouseOverElement, g2d_mouseOverElement, GMouseInputType.fromNative(GMouseInputType.MOUSE_OUT),0, 0);
+            g2d_mouseOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_mouseOverElement, input, false, false);
+            found = true;
+        } else {
+            if (g2d_children != null) {
+                for (child in g2d_children) {
+                    found = found || child.dispatchHidden();
+                    if (found) break;
+                }
+            }
+        }
+        return found;
+    }
+
     public function captureMouseInput(p_input:GMouseInput):Void {
 		if (visible) {
 
@@ -1252,13 +1269,12 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 			}
 
 			if (mouseEnabled) {
-				if (p_input.captured && p_input.type == GMouseInputType.MOUSE_UP) g2d_mouseDownElement = null;
-
 				p_input.localX = p_input.worldX - g2d_worldLeft;
 				p_input.localY = p_input.worldY - g2d_worldTop;
 				
 				if (!p_input.captured && p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom) {
 					if (g2d_activeSkin != null) {
+                        // TODO add capture info in the actual skin
 						g2d_activeSkin.captureMouseInput(p_input);
 
 						p_input.captured = mouseCapture;
@@ -1281,39 +1297,33 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 		}
     }
 
-    private function dispatchHidden():Bool {
-        var found:Bool = false;
-        if (g2d_mouseOverElement != null) {
-            var input:GMouseInput = new GMouseInput(g2d_mouseOverElement, g2d_mouseOverElement, GMouseInputType.fromNative(GMouseInputType.MOUSE_OUT),0, 0);
-            g2d_mouseOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_mouseOverElement, input, false, false);
-            found = true;
-        } else {
-            if (g2d_children != null) {
-                for (child in g2d_children) {
-                    found = found || child.dispatchHidden();
-                    if (found) break;
-                }
-            }
-        }
-        return found;
-    }
-
     private var g2d_lastClickTime:Float = -1;
     private function g2d_dispatchMouseCallback(p_type:String, p_element:GUIElement, p_input:GMouseInput, p_captured:Bool, p_bubbling:Bool):Void {
-        if (mouseEnabled && (isVisible() || p_type == GMouseInputType.MOUSE_OUT)) {
+        if (isVisible() || p_type == GMouseInputType.MOUSE_OUT) {
             var mouseInput:GMouseInput = p_input.clone(this, p_element, p_type);
 
             switch (p_type) {
-                case GMouseInputType.MOUSE_WHEEL:
-                    if (g2d_onMouseWheel != null) g2d_onMouseWheel.dispatch(mouseInput);
-                case GMouseInputType.RIGHT_MOUSE_DOWN:
-                    g2d_rightMouseDownElement = p_element;
-                    if (g2d_onRightMouseDown != null) g2d_onRightMouseDown.dispatch(mouseInput);
+
+                // MOVEMENT
+                case GMouseInputType.MOUSE_MOVE:
+                    if (mouseEnabled && g2d_onMouseMove != null) g2d_onMouseMove.dispatch(mouseInput);
+                case GMouseInputType.MOUSE_OVER:
+                    if (g2d_mouseOverElement != p_element) {
+                        g2d_mouseOverElement = p_element;
+                        if (hasState("mouseOver")) setState("mouseOver");
+                        if (mouseEnabled && g2d_onMouseOver != null) g2d_onMouseOver.dispatch(mouseInput);
+                    }
+                case GMouseInputType.MOUSE_OUT:
+                    if (g2d_mouseOverElement != null) {
+                        g2d_mouseOverElement = null;
+                        if (hasState("mouseOut")) setState("mouseOut");
+                        if (mouseEnabled && g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseInput);
+                    }
+
+                // MAIN BUTTON
                 case GMouseInputType.MOUSE_DOWN:
                     g2d_mouseDownElement = p_element;
-                    if (g2d_onMouseDown != null) g2d_onMouseDown.dispatch(mouseInput);
-                case GMouseInputType.MOUSE_MOVE:
-                    if (g2d_onMouseMove != null) g2d_onMouseMove.dispatch(mouseInput);
+                    if (mouseEnabled && g2d_onMouseDown != null) g2d_onMouseDown.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_UP:
                     if (g2d_mouseDownElement != null) {
                         if (p_captured && (g2d_onMouseClick != null || g2d_onDoubleMouseClick != null)) {
@@ -1327,8 +1337,13 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                             }
                         }
                         if (!p_bubbling) g2d_mouseDownElement = null;
-                        if (g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseInput);
+                        if (mouseEnabled && g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseInput);
                     }
+
+                // RIGHT BUTTON
+                case GMouseInputType.RIGHT_MOUSE_DOWN:
+                    g2d_rightMouseDownElement = p_element;
+                    if (g2d_onRightMouseDown != null) g2d_onRightMouseDown.dispatch(mouseInput);
                 case GMouseInputType.RIGHT_MOUSE_UP:
                     if (g2d_rightMouseDownElement != null) {
                         if (g2d_rightMouseDownElement == p_element && g2d_onRightMouseClick != null) {
@@ -1338,18 +1353,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                         g2d_rightMouseDownElement = null;
                         if (g2d_onRightMouseUp != null) g2d_onRightMouseUp.dispatch(mouseInput);
                     }
-                case GMouseInputType.MOUSE_OVER:
-                    if (g2d_mouseOverElement != p_element) {
-                        g2d_mouseOverElement = p_element;
-                        if (hasState("mouseOver")) setState("mouseOver");
-                        if (g2d_onMouseOver != null) g2d_onMouseOver.dispatch(mouseInput);
-                    }
-                case GMouseInputType.MOUSE_OUT:
-                    if (g2d_mouseOverElement != null) {
-                        g2d_mouseOverElement = null;
-                        if (hasState("mouseOut")) setState("mouseOut");
-                        if (g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseInput);
-                    }
+
+                // WHEEL
+                case GMouseInputType.MOUSE_WHEEL:
+                    if (mouseEnabled && g2d_onMouseWheel != null) g2d_onMouseWheel.dispatch(mouseInput);
             }
         }
 
