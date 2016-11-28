@@ -95,14 +95,18 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         return g2d_visible;
     }
 
+    inline public function isRoot():Bool {
+        return g2d_root == this;
+    }
+
     public function isInHierarchy():Bool {
         if (parent != null) return parent.isInHierarchy();
-        return g2d_isRoot;
+        return g2d_root == this;
     }
 
     public function isVisible():Bool {
         if (parent != null) return visible && parent.isVisible();
-        return g2d_isRoot && visible;
+        return g2d_root == this && visible;
     }
 
     @prototype 
@@ -111,7 +115,14 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     @prototype 
 	public var name:String = "";
 
-    private var g2d_isRoot:Bool = false;
+    private var g2d_root:GUIElement;
+    #if swc @:extern #end
+    @prototype
+    public var root(get,never):GUIElement;
+    #if swc @:getter(root) #end
+    inline private function get_root():GUIElement {
+        return g2d_root;
+    }
 	
 	static public var dragSensitivity:Float = 0;
 	
@@ -875,6 +886,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         if (p_child.g2d_parent != null) p_child.g2d_parent.removeChild(p_child);
         g2d_children.push(p_child);
         g2d_numChildren++;
+        p_child.g2d_root = g2d_root;
         p_child.g2d_parent = this;
         p_child.invalidateController();
         setDirty();
@@ -885,6 +897,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         if (p_child.g2d_parent != null) p_child.g2d_parent.removeChild(p_child);
         g2d_children.insert(p_index,p_child);
         g2d_numChildren++;
+        p_child.g2d_root = g2d_root;
         p_child.g2d_parent = this;
         p_child.invalidateController();
         setDirty();
@@ -894,6 +907,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         if (p_child.g2d_parent != this) return;
         g2d_children.remove(p_child);
         g2d_numChildren--;
+        p_child.g2d_root = null;
         p_child.g2d_parent = null;
         p_child.invalidateController();
         setDirty();
@@ -1242,7 +1256,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         var found:Bool = false;
         if (g2d_mouseOverElement != null) {
             var input:GMouseInput = new GMouseInput(g2d_mouseOverElement, g2d_mouseOverElement, GMouseInputType.fromNative(GMouseInputType.MOUSE_OUT),0, 0);
-            g2d_mouseOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_mouseOverElement, input, false, false);
+            g2d_mouseOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_mouseOverElement, g2d_mouseOverElement, input, false);
             found = true;
         } else {
             if (g2d_children != null) {
@@ -1255,9 +1269,74 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         return found;
     }
 
-    public function captureMouseInput(p_input:GMouseInput):Void {
-		if (visible) {
+    static private var g2d_foundMouseDisabled:Bool = true;
+    static private var g2d_lastMouseEnabled:GUIElement;
+    private function getLastMouseEnabled():GUIElement {
+        if (g2d_foundMouseDisabled && mouseEnabled) {
+            g2d_foundMouseDisabled = false;
+            g2d_lastMouseEnabled = this;
+        }
+        if (!mouseEnabled) g2d_foundMouseDisabled = true;
 
+        if (parent != null) return parent.getLastMouseEnabled();
+        g2d_foundMouseDisabled = true;
+        return g2d_lastMouseEnabled;
+    }
+
+    private var g2d_mouseOverFound:Bool = false;
+    private var g2d_mouseOverElement2:GUIElement;
+    private function isMouseOverElement(p_element:GUIElement):Bool {
+        return g2d_root.g2d_mouseOverElement2 == p_element;
+    }
+    private function setMouseOverElement(p_element:GUIElement, p_input:GMouseInput):Void {
+        g2d_root.g2d_mouseOverFound = true;
+        if (p_element != null) {
+            p_element = p_element.getLastMouseEnabled();
+            p_element.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_MOVE, p_element, p_element, p_input, false);
+        }
+
+        if (g2d_root.g2d_mouseOverElement2 != p_element) {
+            if (g2d_root.g2d_mouseOverElement2 != null) {
+                g2d_root.g2d_mouseOverElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_root.g2d_mouseOverElement2, g2d_root.g2d_mouseOverElement2, p_input, false);
+            }
+            g2d_root.g2d_mouseOverElement2 = p_element;
+            if (g2d_root.g2d_mouseOverElement2 != null) {
+                g2d_root.g2d_mouseOverElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, g2d_root.g2d_mouseOverElement2, g2d_root.g2d_mouseOverElement2, p_input, false);
+            }
+        }
+    }
+
+    private var g2d_mouseDownElement2:GUIElement;
+    private function isMouseDownElement(p_element:GUIElement):Bool {
+        return g2d_root.g2d_mouseDownElement2 == p_element;
+    }
+    private function setMouseDownElement(p_element:GUIElement, p_input:GMouseInput):Void {
+        if (p_element != null) p_element = p_element.getLastMouseEnabled();
+
+        if (g2d_root.g2d_mouseDownElement2 != p_element) {
+            g2d_root.g2d_mouseDownElement2 = p_element;
+            g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_DOWN, g2d_root.g2d_mouseOverElement2, g2d_root.g2d_mouseOverElement2, p_input, false);
+        }
+    }
+    private function resetMouseDownElement(p_element:GUIElement, p_input:GMouseInput):Void {
+        if (p_element != null) p_element = p_element.getLastMouseEnabled();
+
+        if (g2d_root.g2d_mouseDownElement2 != null) {
+            if (g2d_root.g2d_mouseDownElement2 == p_element) {
+                g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement2, g2d_root.g2d_mouseDownElement2, p_input, false);
+                g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.CLICK, g2d_root.g2d_mouseDownElement2, g2d_root.g2d_mouseDownElement2, p_input, false);
+            } else {
+                g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement2, g2d_root.g2d_mouseDownElement2, p_input, false);
+            }
+        }
+
+        g2d_root.g2d_mouseDownElement2 = null;
+    }
+
+    public function captureMouseInput(p_input:GMouseInput):Void {
+        if (isRoot() && p_input.type == GMouseInputType.MOUSE_MOVE) g2d_mouseOverFound = false;
+
+		if (visible) {
 			if (mouseChildren) {
                 if (!useMask || (p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom)) {
                     var i:Int = g2d_numChildren;
@@ -1268,39 +1347,40 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                 }
 			}
 
-			if (mouseEnabled) {
-				p_input.localX = p_input.worldX - g2d_worldLeft;
-				p_input.localY = p_input.worldY - g2d_worldTop;
-				
-				if (!p_input.captured && p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom) {
-					if (g2d_activeSkin != null) {
-                        // TODO add capture info in the actual skin
-						g2d_activeSkin.captureMouseInput(p_input);
+            p_input.localX = p_input.worldX - g2d_worldLeft;
+            p_input.localY = p_input.worldY - g2d_worldTop;
 
-						p_input.captured = mouseCapture;
-						g2d_dispatchMouseCallback(p_input.type, this, p_input, true, false);
+            if (!p_input.captured && p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom) {
+                if (g2d_activeSkin != null) {
+                    // TODO add capture info in the actual skin
+                    g2d_activeSkin.captureMouseInput(p_input);
 
-						if (g2d_mouseOverElement != this) {
-							g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, this, p_input, true, false);
-						}
-					}
-				} else {
-                    if (g2d_mouseDownElement == this && p_input.type == GMouseInputType.MOUSE_UP) {
-                        g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, this, p_input, false, false);
-                    }
+                    p_input.captured = mouseCapture;
 
-                    if (g2d_mouseOverElement == this) {
-						g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, this, p_input, false, false);
-					}
-				}
-			}
+                    if (p_input.type == GMouseInputType.MOUSE_MOVE) setMouseOverElement(this, p_input);
+
+                    if (p_input.type == GMouseInputType.MOUSE_DOWN) setMouseDownElement(this, p_input);
+
+                    if (p_input.type == GMouseInputType.MOUSE_UP) resetMouseDownElement(this, p_input);
+
+                    //g2d_dispatchMouseCallback(p_input.type, this, this, p_input, false);
+                }
+            } else {
+                if (g2d_root.g2d_mouseDownElement2 == this && p_input.type == GMouseInputType.MOUSE_UP) {
+                    resetMouseDownElement(null, p_input);
+                }
+            }
+
+            if (isRoot() && p_input.type == GMouseInputType.MOUSE_MOVE && g2d_mouseOverFound == false && g2d_mouseOverElement2 != null) {
+                setMouseOverElement(null, p_input);
+            }
 		}
     }
 
     private var g2d_lastClickTime:Float = -1;
-    private function g2d_dispatchMouseCallback(p_type:String, p_element:GUIElement, p_input:GMouseInput, p_captured:Bool, p_bubbling:Bool):Void {
+    private function g2d_dispatchMouseCallback(p_type:String, p_target:GUIElement, p_dispatcher:GUIElement, p_input:GMouseInput, p_bubbling:Bool):Void {
         if (isVisible() || p_type == GMouseInputType.MOUSE_OUT) {
-            var mouseInput:GMouseInput = p_input.clone(this, p_element, p_type);
+            var mouseInput:GMouseInput = p_input.clone(this, p_target, p_type);
 
             switch (p_type) {
 
@@ -1308,52 +1388,49 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                 case GMouseInputType.MOUSE_MOVE:
                     if (mouseEnabled && g2d_onMouseMove != null) g2d_onMouseMove.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_OVER:
-                    if (g2d_mouseOverElement != p_element) {
-                        g2d_mouseOverElement = p_element;
+                    if (mouseEnabled) {
                         if (hasState("mouseOver")) setState("mouseOver");
-                        if (mouseEnabled && g2d_onMouseOver != null) g2d_onMouseOver.dispatch(mouseInput);
+                        if (g2d_onMouseOver != null) g2d_onMouseOver.dispatch(mouseInput);
                     }
                 case GMouseInputType.MOUSE_OUT:
-                    if (g2d_mouseOverElement != null) {
-                        g2d_mouseOverElement = null;
+                    if (mouseEnabled) {
                         if (hasState("mouseOut")) setState("mouseOut");
-                        if (mouseEnabled && g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseInput);
+                        if (g2d_onMouseOut != null) g2d_onMouseOut.dispatch(mouseInput);
                     }
 
-                // MAIN BUTTON
+                // BUTTON
                 case GMouseInputType.MOUSE_DOWN:
-                    g2d_mouseDownElement = p_element;
                     if (mouseEnabled && g2d_onMouseDown != null) g2d_onMouseDown.dispatch(mouseInput);
                 case GMouseInputType.MOUSE_UP:
-                    if (g2d_mouseDownElement != null) {
-                        if (p_captured && (g2d_onMouseClick != null || g2d_onDoubleMouseClick != null)) {
-                            var mouseClickInput:GMouseInput = p_input.clone(this, p_element, GMouseInputType.MOUSE_UP);
-                            if (g2d_onMouseClick != null) g2d_onMouseClick.dispatch(mouseClickInput);
-                            if (g2d_lastClickTime>0 && p_input.time-g2d_lastClickTime<GMouseInput.DOUBLE_CLICK_TIME) {
-                                if (g2d_onDoubleMouseClick != null) g2d_onDoubleMouseClick.dispatch(mouseClickInput);
-                                g2d_lastClickTime = -1;
-                            } else {
-                                g2d_lastClickTime = p_input.time;
-                            }
+                    if (mouseEnabled && g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseInput);
+                case GMouseInputType.CLICK:
+                    if (g2d_onMouseClick != null || g2d_onDoubleMouseClick != null) {
+                        if (g2d_onMouseClick != null) g2d_onMouseClick.dispatch(mouseInput);
+                        if (g2d_lastClickTime>0 && p_input.time-g2d_lastClickTime<GMouseInput.DOUBLE_CLICK_TIME) {
+                            if (g2d_onDoubleMouseClick != null) g2d_onDoubleMouseClick.dispatch(mouseInput);
+                            g2d_lastClickTime = -1;
+                        } else {
+                            g2d_lastClickTime = p_input.time;
                         }
-                        if (!p_bubbling) g2d_mouseDownElement = null;
-                        if (mouseEnabled && g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseInput);
                     }
 
                 // RIGHT BUTTON
+                /*
                 case GMouseInputType.RIGHT_MOUSE_DOWN:
-                    g2d_rightMouseDownElement = p_element;
-                    if (g2d_onRightMouseDown != null) g2d_onRightMouseDown.dispatch(mouseInput);
+                    if (mouseEnabled) {
+                        g2d_rightMouseDownElement = p_dispatcher;
+                        if (g2d_onRightMouseDown != null) g2d_onRightMouseDown.dispatch(mouseInput);
+                    }
                 case GMouseInputType.RIGHT_MOUSE_UP:
-                    if (g2d_rightMouseDownElement != null) {
+                    if (g2d_rightMouseDownElement == this) {
                         if (g2d_rightMouseDownElement == p_element && g2d_onRightMouseClick != null) {
-                            var mouseClickInput:GMouseInput = p_input.clone(this, p_element, GMouseInputType.RIGHT_MOUSE_UP);
+                            var mouseClickInput:GMouseInput = p_input.clone(this, p_target, GMouseInputType.RIGHT_MOUSE_UP);
                             if (g2d_onRightMouseClick != null) g2d_onRightMouseClick.dispatch(mouseClickInput);
                         }
                         g2d_rightMouseDownElement = null;
                         if (g2d_onRightMouseUp != null) g2d_onRightMouseUp.dispatch(mouseInput);
                     }
-
+                /**/
                 // WHEEL
                 case GMouseInputType.MOUSE_WHEEL:
                     if (mouseEnabled && g2d_onMouseWheel != null) g2d_onMouseWheel.dispatch(mouseInput);
@@ -1361,7 +1438,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         }
 
         if (parent != null) {
-            parent.g2d_dispatchMouseCallback(p_type, p_element, p_input, p_captured, true);
+            parent.g2d_dispatchMouseCallback(p_type, mouseEnabled?p_target:parent, p_dispatcher, p_input, true);
         }
     }
 	

@@ -18,7 +18,7 @@ class GUI extends GComponent implements IGRenderable {
     override public function init():Void {
         root = new GUIElement();
 		root.name = "root";
-        root.g2d_isRoot = true;
+        root.g2d_root = root;
         root.mouseEnabled = false;
 		
 		setBounds(new GRectangle(0, 0, node.core.getContext().getStageViewRect().width, node.core.getContext().getStageViewRect().height));
