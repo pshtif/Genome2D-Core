@@ -91,7 +91,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     #if swc @:setter(visible) #end
     inline private function set_visible(p_value:Bool):Bool {
         g2d_visible = p_value;
-        dispatchHidden();
+        //dispatchHidden();
         return g2d_visible;
     }
 
@@ -127,26 +127,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 	static public var dragSensitivity:Float = 0;
 	
 	public var userData:Dynamic;
-	/*
-	private var g2d_scrollable:Bool = false;
-	#if swc @:extern #end
-    @prototype 
-	public var scrollable(get,set):Bool;
-    #if swc @:getter(scrollable) #end
-    inline private function get_scrollable():Bool {
-        return g2d_scrollable;
-    }
-    #if swc @:setter(scrollable) #end
-    inline private function set_scrollable(p_value:Bool):Bool {
-		if (!g2d_scrollable && p_value) {
-			onMouseDown.add(mouseDown_handler);
-		} else if (g2d_scrollable && !p_value) {
-			onMouseDown.remove(mouseDown_handler);
-		}
-		g2d_scrollable = p_value;
-        return g2d_scrollable;
-    }
-	/**/
+
 	private var g2d_dragging:Bool = false;
 	private var g2d_previousMouseX:Float;
 	private var g2d_previousMouseY:Float;
@@ -1248,10 +1229,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         return g2d_onInvalidate;
     }
 
-    private var g2d_mouseDownElement:GUIElement;
     private var g2d_rightMouseDownElement:GUIElement;
-    private var g2d_mouseOverElement:GUIElement;
-
+    /*
     private function dispatchHidden():Bool {
         var found:Bool = false;
         if (g2d_mouseOverElement != null) {
@@ -1268,7 +1247,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         }
         return found;
     }
-
+    /**/
     static private var g2d_foundMouseDisabled:Bool = true;
     static private var g2d_lastMouseEnabled:GUIElement;
     private function getLastMouseEnabled():GUIElement {
@@ -1332,7 +1311,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         var captured:Bool = false;
         if (isRoot()) {
             switch (p_input.type) {
-                case GMouseInputType.MOUSE_MOVE:
+                case GMouseInputType.MOUSE_MOVE | GMouseInputType.MOUSE_STILL:
                     g2d_mouseOverFound = false;
             }
         }
@@ -1359,20 +1338,19 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
                     p_input.captured = mouseEnabled;
                     captured = true;
+                    if (p_input.type == GMouseInputType.MOUSE_MOVE || p_input.type == GMouseInputType.MOUSE_STILL) setMouseOverElement(this, p_input);
 
-                    if (p_input.type == GMouseInputType.MOUSE_MOVE) setMouseOverElement(this, p_input);
+                    else if (p_input.type == GMouseInputType.MOUSE_DOWN) setMouseDownElement(this, p_input);
 
-                    if (p_input.type == GMouseInputType.MOUSE_DOWN) setMouseDownElement(this, p_input);
+                    else if (p_input.type == GMouseInputType.MOUSE_UP) setMouseUpElement(this, p_input);
 
-                    if (p_input.type == GMouseInputType.MOUSE_UP) setMouseUpElement(this, p_input);
-
-                    //g2d_dispatchMouseCallback(p_input.type, this, this, p_input, false);
+                    else g2d_dispatchMouseCallback(p_input.type, this, this, p_input, false);
                 }
             }
 
             if (isRoot()) {
                 switch (p_input.type) {
-                    case GMouseInputType.MOUSE_MOVE:
+                    case GMouseInputType.MOUSE_MOVE | GMouseInputType.MOUSE_STILL:
                         if (g2d_root.g2d_mouseOverElement2 != g2d_root.g2d_previousOverElement) {
                             if (g2d_root.g2d_previousOverElement != null) {
                                 g2d_root.g2d_previousOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_root.g2d_previousOverElement, g2d_root.g2d_previousOverElement, p_input, false);

@@ -8,6 +8,7 @@
  */
 package com.genome2d;
 
+import com.genome2d.input.GMouseInputType;
 import com.genome2d.globals.GParameters;
 import com.genome2d.debug.GDebug;
 import com.genome2d.assets.GStaticAssetManager;
@@ -181,6 +182,10 @@ class Genome2D implements IGDebuggableInternal
     inline public function getRunTime():Float {
         return g2d_runTime;
     }
+
+    private var g2d_mouseMoveInputDetected:Bool = false;
+    private var g2d_lastMouseX:Float = Math.NaN;
+    private var g2d_lastMouseY:Float = Math.NaN;
 
     private var g2d_accumulatedDeltaTime:Float = 0;
     private var g2d_currentFrameDeltaTime:Float;
@@ -383,6 +388,15 @@ class Genome2D implements IGDebuggableInternal
             update(p_deltaTime);
             render();
         }
+
+        // If there was no mouse move dispatch a still event this handles static mouse OVER/OUT for moving/hiding objects
+        if (!g2d_mouseMoveInputDetected && !Math.isNaN(g2d_lastMouseX)) {
+            var input:GMouseInput = new GMouseInput(g2d_context, g2d_context, GMouseInputType.MOUSE_STILL, g2d_lastMouseX, g2d_lastMouseY);
+            input.worldX = input.contextX = g2d_lastMouseX;
+            input.worldY = input.contextY = g2d_lastMouseY;
+            g2d_contextMouseInput_handler(input);
+        }
+        g2d_mouseMoveInputDetected = false;
     }
 
     public function getCameraCount():Int {
@@ -424,6 +438,13 @@ class Genome2D implements IGDebuggableInternal
     @:access(com.genome2d.components.GCameraController)
 	private function g2d_contextMouseInput_handler(p_input:GMouseInput):Void {
         p_input.time = g2d_accumulatedDeltaTime;
+
+        if (p_input.type == GMouseInputType.MOUSE_MOVE) {
+            g2d_mouseMoveInputDetected = true;
+            g2d_lastMouseX = p_input.contextX;
+            g2d_lastMouseY = p_input.contextY;
+        }
+
         // If there is no camera process the callbacks directly by root node
 		if (g2d_cameras.length == 0) {
             root.captureMouseInput(p_input);
