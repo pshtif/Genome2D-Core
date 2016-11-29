@@ -1285,6 +1285,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     private var g2d_mouseOverFound:Bool = false;
     private var g2d_mouseOverElement2:GUIElement;
+    private var g2d_previousOverElement:GUIElement;
     private function isMouseOverElement(p_element:GUIElement):Bool {
         return g2d_root.g2d_mouseOverElement2 == p_element;
     }
@@ -1292,18 +1293,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         g2d_root.g2d_mouseOverFound = true;
         if (p_element != null) {
             p_element = p_element.getLastMouseEnabled();
-            p_element.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_MOVE, p_element, p_element, p_input, false);
         }
-
-        if (g2d_root.g2d_mouseOverElement2 != p_element) {
-            if (g2d_root.g2d_mouseOverElement2 != null) {
-                g2d_root.g2d_mouseOverElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_root.g2d_mouseOverElement2, g2d_root.g2d_mouseOverElement2, p_input, false);
-            }
-            g2d_root.g2d_mouseOverElement2 = p_element;
-            if (g2d_root.g2d_mouseOverElement2 != null) {
-                g2d_root.g2d_mouseOverElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, g2d_root.g2d_mouseOverElement2, g2d_root.g2d_mouseOverElement2, p_input, false);
-            }
-        }
+        g2d_root.g2d_mouseOverElement2 = p_element;
     }
 
     private var g2d_mouseDownElement2:GUIElement;
@@ -1315,12 +1306,15 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
         if (g2d_root.g2d_mouseDownElement2 != p_element) {
             g2d_root.g2d_mouseDownElement2 = p_element;
-            g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_DOWN, g2d_root.g2d_mouseOverElement2, g2d_root.g2d_mouseOverElement2, p_input, false);
         }
     }
-    private function resetMouseDownElement(p_element:GUIElement, p_input:GMouseInput):Void {
+
+    private var g2d_mouseUpElement:GUIElement;
+    private function setMouseUpElement(p_element:GUIElement, p_input:GMouseInput):Void {
         if (p_element != null) p_element = p_element.getLastMouseEnabled();
 
+        g2d_root.g2d_mouseUpElement = p_element;
+        /*
         if (g2d_root.g2d_mouseDownElement2 != null) {
             if (g2d_root.g2d_mouseDownElement2 == p_element) {
                 g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement2, g2d_root.g2d_mouseDownElement2, p_input, false);
@@ -1331,10 +1325,17 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         }
 
         g2d_root.g2d_mouseDownElement2 = null;
+        /**/
     }
 
-    public function captureMouseInput(p_input:GMouseInput):Void {
-        if (isRoot() && p_input.type == GMouseInputType.MOUSE_MOVE) g2d_mouseOverFound = false;
+    public function captureMouseInput(p_input:GMouseInput):Bool {
+        var captured:Bool = false;
+        if (isRoot()) {
+            switch (p_input.type) {
+                case GMouseInputType.MOUSE_MOVE:
+                    g2d_mouseOverFound = false;
+            }
+        }
 
 		if (visible) {
 			if (mouseChildren) {
@@ -1342,7 +1343,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                     var i:Int = g2d_numChildren;
                     while (i>0) {
                         i--;
-                        if (i<g2d_numChildren) g2d_children[i].captureMouseInput(p_input);
+                        if (i<g2d_numChildren) captured = captured || g2d_children[i].captureMouseInput(p_input);
+                        if (mouseEnabled && captured) p_input.captured = captured;
                     }
                 }
 			}
@@ -1355,26 +1357,55 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                     // TODO add capture info in the actual skin
                     g2d_activeSkin.captureMouseInput(p_input);
 
-                    p_input.captured = mouseCapture;
+                    p_input.captured = mouseEnabled;
+                    captured = true;
 
                     if (p_input.type == GMouseInputType.MOUSE_MOVE) setMouseOverElement(this, p_input);
 
                     if (p_input.type == GMouseInputType.MOUSE_DOWN) setMouseDownElement(this, p_input);
 
-                    if (p_input.type == GMouseInputType.MOUSE_UP) resetMouseDownElement(this, p_input);
+                    if (p_input.type == GMouseInputType.MOUSE_UP) setMouseUpElement(this, p_input);
 
                     //g2d_dispatchMouseCallback(p_input.type, this, this, p_input, false);
                 }
-            } else {
-                if (g2d_root.g2d_mouseDownElement2 == this && p_input.type == GMouseInputType.MOUSE_UP) {
-                    resetMouseDownElement(null, p_input);
-                }
             }
 
-            if (isRoot() && p_input.type == GMouseInputType.MOUSE_MOVE && g2d_mouseOverFound == false && g2d_mouseOverElement2 != null) {
-                setMouseOverElement(null, p_input);
+            if (isRoot()) {
+                switch (p_input.type) {
+                    case GMouseInputType.MOUSE_MOVE:
+                        if (g2d_root.g2d_mouseOverElement2 != g2d_root.g2d_previousOverElement) {
+                            if (g2d_root.g2d_previousOverElement != null) {
+                                g2d_root.g2d_previousOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_root.g2d_previousOverElement, g2d_root.g2d_previousOverElement, p_input, false);
+                            }
+                            g2d_root.g2d_previousOverElement = g2d_root.g2d_mouseOverElement2;
+                            if (g2d_root.g2d_mouseOverElement2 != null) {
+                                g2d_root.g2d_mouseOverElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, g2d_root.g2d_mouseOverElement2, g2d_root.g2d_mouseOverElement2, p_input, false);
+                            }
+                        } else if (g2d_root.g2d_previousOverElement != null && g2d_mouseOverFound == false) {
+                            g2d_root.g2d_mouseOverElement2 = null;
+                            g2d_root.g2d_previousOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_root.g2d_previousOverElement, g2d_root.g2d_previousOverElement, p_input, false);
+                            g2d_root.g2d_previousOverElement = null;
+                        }
+                    case GMouseInputType.MOUSE_DOWN:
+                        if (g2d_root.g2d_mouseDownElement2 != null) {
+                            g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_DOWN, g2d_root.g2d_mouseOverElement2, g2d_root.g2d_mouseOverElement2, p_input, false);
+                            g2d_root.g2d_mouseDownElement2 == null;
+                        }
+                    case GMouseInputType.MOUSE_UP:
+                        if (g2d_root.g2d_mouseUpElement == null && g2d_root.g2d_mouseDownElement2 != null) {
+                            g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement2, g2d_root.g2d_mouseDownElement2, p_input, false);
+                        } else if (g2d_root.g2d_mouseUpElement != null && g2d_root.g2d_mouseDownElement2 == g2d_root.g2d_mouseUpElement) {
+                            g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement2, g2d_root.g2d_mouseDownElement2, p_input, false);
+                            g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.CLICK, g2d_root.g2d_mouseDownElement2, g2d_root.g2d_mouseDownElement2, p_input, false);
+                        } else if (g2d_root.g2d_mouseUpElement != null) {
+                            g2d_root.g2d_mouseUpElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseUpElement, g2d_root.g2d_mouseUpElement, p_input, false);
+                        }
+                        g2d_root.g2d_mouseUpElement = g2d_root.g2d_mouseDownElement2 = null;
+                }
             }
 		}
+
+        return captured;
     }
 
     private var g2d_lastClickTime:Float = -1;
