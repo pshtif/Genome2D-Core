@@ -184,8 +184,8 @@ class Genome2D implements IGDebuggableInternal
     }
 
     private var g2d_mouseMoveInputDetected:Bool = false;
-    private var g2d_lastMouseX:Float = Math.NaN;
-    private var g2d_lastMouseY:Float = Math.NaN;
+    private var g2d_lastMouseX:Float = -1000000;
+    private var g2d_lastMouseY:Float = -1000000;
 
     private var g2d_accumulatedDeltaTime:Float = 0;
     private var g2d_currentFrameDeltaTime:Float;
@@ -390,7 +390,7 @@ class Genome2D implements IGDebuggableInternal
         }
 
         // If there was no mouse move dispatch a still event this handles static mouse OVER/OUT for moving/hiding objects
-        if (!g2d_mouseMoveInputDetected && !Math.isNaN(g2d_lastMouseX)) {
+        if (!g2d_mouseMoveInputDetected && g2d_lastMouseX != -1000000) {
             var input:GMouseInput = new GMouseInput(g2d_context, g2d_context, GMouseInputType.MOUSE_STILL, g2d_lastMouseX, g2d_lastMouseY);
             input.worldX = input.contextX = g2d_lastMouseX;
             input.worldY = input.contextY = g2d_lastMouseY;
