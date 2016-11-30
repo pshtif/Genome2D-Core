@@ -1128,8 +1128,6 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         return g2d_onInvalidate;
     }
 
-    private var g2d_rightMouseDownElement:GUIElement;
-
     static private var g2d_foundMouseDisabled:Bool = true;
     static private var g2d_lastMouseEnabled:GUIElement;
     private function getLastMouseEnabled():GUIElement {
@@ -1145,48 +1143,53 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_mouseOverFound:Bool = false;
-    private var g2d_mouseOverElement2:GUIElement;
+    private var g2d_mouseOverElement:GUIElement;
     private var g2d_previousOverElement:GUIElement;
     private function isMouseOverElement(p_element:GUIElement):Bool {
-        return g2d_root.g2d_mouseOverElement2 == p_element;
+        return g2d_root.g2d_mouseOverElement == p_element;
     }
     private function setMouseOverElement(p_element:GUIElement, p_input:GMouseInput):Void {
         g2d_root.g2d_mouseOverFound = true;
         if (p_element != null) {
             p_element = p_element.getLastMouseEnabled();
         }
-        g2d_root.g2d_mouseOverElement2 = p_element;
+        g2d_root.g2d_mouseOverElement = p_element;
     }
 
-    private var g2d_mouseDownElement2:GUIElement;
+    private var g2d_mouseDownElement:GUIElement;
     private function isMouseDownElement(p_element:GUIElement):Bool {
-        return g2d_root.g2d_mouseDownElement2 == p_element;
+        return g2d_root.g2d_mouseDownElement == p_element;
     }
     private function setMouseDownElement(p_element:GUIElement, p_input:GMouseInput):Void {
         if (p_element != null) p_element = p_element.getLastMouseEnabled();
 
-        if (g2d_root.g2d_mouseDownElement2 != p_element) {
-            g2d_root.g2d_mouseDownElement2 = p_element;
+        if (g2d_root.g2d_mouseDownElement != p_element) {
+            g2d_root.g2d_mouseDownElement = p_element;
         }
     }
-
     private var g2d_mouseUpElement:GUIElement;
     private function setMouseUpElement(p_element:GUIElement, p_input:GMouseInput):Void {
         if (p_element != null) p_element = p_element.getLastMouseEnabled();
 
         g2d_root.g2d_mouseUpElement = p_element;
-        /*
-        if (g2d_root.g2d_mouseDownElement2 != null) {
-            if (g2d_root.g2d_mouseDownElement2 == p_element) {
-                g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement2, g2d_root.g2d_mouseDownElement2, p_input, false);
-                g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.CLICK, g2d_root.g2d_mouseDownElement2, g2d_root.g2d_mouseDownElement2, p_input, false);
-            } else {
-                g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement2, g2d_root.g2d_mouseDownElement2, p_input, false);
-            }
-        }
+    }
 
-        g2d_root.g2d_mouseDownElement2 = null;
-        /**/
+    private var g2d_rightMouseDownElement:GUIElement;
+    private function isRightMouseDownElement(p_element:GUIElement):Bool {
+        return g2d_root.g2d_rightMouseDownElement == p_element;
+    }
+    private function setRightMouseDownElement(p_element:GUIElement, p_input:GMouseInput):Void {
+        if (p_element != null) p_element = p_element.getLastMouseEnabled();
+
+        if (g2d_root.g2d_rightMouseDownElement != p_element) {
+            g2d_root.g2d_rightMouseDownElement = p_element;
+        }
+    }
+    private var g2d_rightMouseUpElement:GUIElement;
+    private function setRightMouseUpElement(p_element:GUIElement, p_input:GMouseInput):Void {
+        if (p_element != null) p_element = p_element.getLastMouseEnabled();
+
+        g2d_root.g2d_rightMouseUpElement = p_element;
     }
 
     public function captureMouseInput(p_input:GMouseInput):Bool {
@@ -1233,34 +1236,50 @@ class GUIElement implements IGPrototypable implements IGFocusable {
             if (isRoot()) {
                 switch (p_input.type) {
                     case GMouseInputType.MOUSE_MOVE | GMouseInputType.MOUSE_STILL:
-                        if (g2d_root.g2d_mouseOverElement2 != g2d_root.g2d_previousOverElement) {
+                        if (g2d_root.g2d_mouseOverElement != g2d_root.g2d_previousOverElement) {
                             if (g2d_root.g2d_previousOverElement != null) {
                                 g2d_root.g2d_previousOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_root.g2d_previousOverElement, g2d_root.g2d_previousOverElement, p_input, false);
                             }
-                            g2d_root.g2d_previousOverElement = g2d_root.g2d_mouseOverElement2;
-                            if (g2d_root.g2d_mouseOverElement2 != null) {
-                                g2d_root.g2d_mouseOverElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, g2d_root.g2d_mouseOverElement2, g2d_root.g2d_mouseOverElement2, p_input, false);
+                            g2d_root.g2d_previousOverElement = g2d_root.g2d_mouseOverElement;
+                            if (g2d_root.g2d_mouseOverElement != null) {
+                                g2d_root.g2d_mouseOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, g2d_root.g2d_mouseOverElement, g2d_root.g2d_mouseOverElement, p_input, false);
                             }
                         } else if (g2d_root.g2d_previousOverElement != null && g2d_mouseOverFound == false) {
-                            g2d_root.g2d_mouseOverElement2 = null;
+                            g2d_root.g2d_mouseOverElement = null;
                             g2d_root.g2d_previousOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_root.g2d_previousOverElement, g2d_root.g2d_previousOverElement, p_input, false);
                             g2d_root.g2d_previousOverElement = null;
                         }
                     case GMouseInputType.MOUSE_DOWN:
-                        if (g2d_root.g2d_mouseDownElement2 != null) {
-                            g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_DOWN, g2d_root.g2d_mouseOverElement2, g2d_root.g2d_mouseOverElement2, p_input, false);
-                            g2d_root.g2d_mouseDownElement2 == null;
+                        if (g2d_root.g2d_mouseDownElement != null) {
+                            g2d_root.g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_DOWN, g2d_root.g2d_mouseDownElement, g2d_root.g2d_mouseDownElement, p_input, false);
+                            g2d_root.g2d_mouseDownElement == null;
                         }
                     case GMouseInputType.MOUSE_UP:
-                        if (g2d_root.g2d_mouseUpElement == null && g2d_root.g2d_mouseDownElement2 != null) {
-                            g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement2, g2d_root.g2d_mouseDownElement2, p_input, false);
-                        } else if (g2d_root.g2d_mouseUpElement != null && g2d_root.g2d_mouseDownElement2 == g2d_root.g2d_mouseUpElement) {
-                            g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement2, g2d_root.g2d_mouseDownElement2, p_input, false);
-                            g2d_root.g2d_mouseDownElement2.g2d_dispatchMouseCallback(GMouseInputType.CLICK, g2d_root.g2d_mouseDownElement2, g2d_root.g2d_mouseDownElement2, p_input, false);
+                        if (g2d_root.g2d_mouseUpElement == null && g2d_root.g2d_mouseDownElement != null) {
+                            g2d_root.g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement, g2d_root.g2d_mouseDownElement, p_input, false);
+                        } else if (g2d_root.g2d_mouseUpElement != null && g2d_root.g2d_mouseDownElement == g2d_root.g2d_mouseUpElement) {
+                            g2d_root.g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement, g2d_root.g2d_mouseDownElement, p_input, false);
+                            g2d_root.g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.CLICK, g2d_root.g2d_mouseDownElement, g2d_root.g2d_mouseDownElement, p_input, false);
                         } else if (g2d_root.g2d_mouseUpElement != null) {
                             g2d_root.g2d_mouseUpElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseUpElement, g2d_root.g2d_mouseUpElement, p_input, false);
                         }
-                        g2d_root.g2d_mouseUpElement = g2d_root.g2d_mouseDownElement2 = null;
+                        g2d_root.g2d_mouseUpElement = g2d_root.g2d_mouseDownElement = null;
+
+                    case GMouseInputType.RIGHT_MOUSE_DOWN:
+                        if (g2d_root.g2d_rightMouseDownElement != null) {
+                            g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_DOWN, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
+                            g2d_root.g2d_rightMouseDownElement == null;
+                        }
+                    case GMouseInputType.MOUSE_UP:
+                        if (g2d_root.g2d_rightMouseUpElement == null && g2d_root.g2d_rightMouseDownElement != null) {
+                            g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
+                        } else if (g2d_root.g2d_rightMouseUpElement != null && g2d_root.g2d_rightMouseDownElement == g2d_root.g2d_rightMouseUpElement) {
+                            g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
+                            g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.CLICK, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
+                        } else if (g2d_root.g2d_mouseUpElement != null) {
+                            g2d_root.g2d_rightMouseUpElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_rightMouseUpElement, g2d_root.g2d_rightMouseUpElement, p_input, false);
+                        }
+                        g2d_root.g2d_rightMouseUpElement = g2d_root.g2d_rightMouseDownElement = null;
                 }
             }
 		}
@@ -1295,7 +1314,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                 case GMouseInputType.MOUSE_UP:
                     if (mouseEnabled && g2d_onMouseUp != null) g2d_onMouseUp.dispatch(mouseInput);
                 case GMouseInputType.CLICK:
-                    if (g2d_onMouseClick != null || g2d_onDoubleMouseClick != null) {
+                    if (mouseEnabled && (g2d_onMouseClick != null || g2d_onDoubleMouseClick != null)) {
                         if (g2d_onMouseClick != null) g2d_onMouseClick.dispatch(mouseInput);
                         if (g2d_lastClickTime>0 && p_input.time-g2d_lastClickTime<GMouseInput.DOUBLE_CLICK_TIME) {
                             if (g2d_onDoubleMouseClick != null) g2d_onDoubleMouseClick.dispatch(mouseInput);
@@ -1306,20 +1325,14 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                     }
 
                 // RIGHT BUTTON
-                /*
                 case GMouseInputType.RIGHT_MOUSE_DOWN:
-                    if (mouseEnabled) {
-                        g2d_rightMouseDownElement = p_dispatcher;
-                        if (g2d_onRightMouseDown != null) g2d_onRightMouseDown.dispatch(mouseInput);
-                    }
+                    if (mouseEnabled && g2d_onRightMouseDown != null) g2d_onRightMouseDown.dispatch(mouseInput);
                 case GMouseInputType.RIGHT_MOUSE_UP:
-                    if (g2d_rightMouseDownElement == this) {
-                        if (g2d_rightMouseDownElement == p_element && g2d_onRightMouseClick != null) {
-                            var mouseClickInput:GMouseInput = p_input.clone(this, p_target, GMouseInputType.RIGHT_MOUSE_UP);
-                            if (g2d_onRightMouseClick != null) g2d_onRightMouseClick.dispatch(mouseClickInput);
-                        }
-                        g2d_rightMouseDownElement = null;
-                        if (g2d_onRightMouseUp != null) g2d_onRightMouseUp.dispatch(mouseInput);
+                    if (mouseEnabled && g2d_onRightMouseUp != null) g2d_onRightMouseUp.dispatch(mouseInput);
+                case GMouseInputType.RIGHT_CLICK:
+                    // TODO double right click?
+                    if (mouseEnabled && g2d_onRightMouseClick != null) {
+                        if (g2d_onRightMouseClick != null) g2d_onRightMouseClick.dispatch(mouseInput);
                     }
                 /**/
                 // WHEEL
