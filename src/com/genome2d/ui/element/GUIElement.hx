@@ -867,7 +867,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         if (p_child.g2d_parent != null) p_child.g2d_parent.removeChild(p_child);
         g2d_children.push(p_child);
         g2d_numChildren++;
-        p_child.g2d_root = g2d_root;
+        p_child.setRoot(g2d_root);
         p_child.g2d_parent = this;
         p_child.invalidateController();
         setDirty();
@@ -878,17 +878,22 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         if (p_child.g2d_parent != null) p_child.g2d_parent.removeChild(p_child);
         g2d_children.insert(p_index,p_child);
         g2d_numChildren++;
-        p_child.g2d_root = g2d_root;
+        p_child.setRoot(g2d_root);
         p_child.g2d_parent = this;
         p_child.invalidateController();
         setDirty();
+    }
+
+    private function setRoot(p_rootElement:GUIElement):Void {
+        g2d_root = p_rootElement;
+        for (i in 0...g2d_numChildren) g2d_children[i].setRoot(p_rootElement);
     }
 
     public function removeChild(p_child:GUIElement):Void {
         if (p_child.g2d_parent != this) return;
         g2d_children.remove(p_child);
         g2d_numChildren--;
-        p_child.g2d_root = null;
+        p_child.setRoot(null);
         p_child.g2d_parent = null;
         p_child.invalidateController();
         setDirty();
