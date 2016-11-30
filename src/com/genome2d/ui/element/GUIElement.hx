@@ -1119,107 +1119,6 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     /*******************************************************************************************************************
     *   MOUSE CODE
     *******************************************************************************************************************/
-    // Callbacks are now macro generated
-    /*
-    private var g2d_onMouseDown:GCallback1<GMouseInput>;
-    #if swc @:extern #end
-    public var onMouseDown(get, never):GCallback1<GMouseInput>;
-    #if swc @:getter(onMouseDown) #end
-    inline private function get_onMouseDown():GCallback1<GMouseInput> {
-        if (g2d_onMouseDown == null) g2d_onMouseDown = new GCallback1(GMouseInput);
-        return g2d_onMouseDown;
-    }
-
-    private var g2d_onRightMouseDown:GCallback1<GMouseInput>;
-    #if swc @:extern #end
-    public var onRightMouseDown(get, never):GCallback1<GMouseInput>;
-    #if swc @:getter(onRightMouseDown) #end
-    inline private function get_onRightMouseDown():GCallback1<GMouseInput> {
-        if (g2d_onRightMouseDown == null) g2d_onRightMouseDown = new GCallback1(GMouseInput);
-        return g2d_onRightMouseDown;
-    }
-
-    private var g2d_onMouseUp:GCallback1<GMouseInput>;
-    #if swc @:extern #end
-    public var onMouseUp(get, never):GCallback1<GMouseInput>;
-    #if swc @:getter(onMouseUp) #end
-    inline private function get_onMouseUp():GCallback1<GMouseInput> {
-        if (g2d_onMouseUp == null) g2d_onMouseUp = new GCallback1(GMouseInput);
-        return g2d_onMouseUp;
-    }
-
-    private var g2d_onRightMouseUp:GCallback1<GMouseInput>;
-    #if swc @:extern #end
-    public var onRightMouseUp(get, never):GCallback1<GMouseInput>;
-    #if swc @:getter(onRightMouseUp) #end
-    inline private function get_onRightMouseUp():GCallback1<GMouseInput> {
-        if (g2d_onRightMouseUp == null) g2d_onRightMouseUp = new GCallback1(GMouseInput);
-        return g2d_onRightMouseUp;
-    }
-
-    private var g2d_onMouseMove:GCallback1<GMouseInput>;
-    #if swc @:extern #end
-    public var onMouseMove(get, never):GCallback1<GMouseInput>;
-    #if swc @:getter(onMouseMove) #end
-    inline private function get_onMouseMove():GCallback1<GMouseInput> {
-        if (g2d_onMouseMove == null) g2d_onMouseMove = new GCallback1(GMouseInput);
-        return g2d_onMouseMove;
-    }
-
-    private var g2d_onMouseOver:GCallback1<GMouseInput>;
-    #if swc @:extern #end
-    public var onMouseOver(get, never):GCallback1<GMouseInput>;
-    #if swc @:getter(onMouseOver) #end
-    inline private function get_onMouseOver():GCallback1<GMouseInput> {
-        if (g2d_onMouseOver == null) g2d_onMouseOver = new GCallback1(GMouseInput);
-        return g2d_onMouseOver;
-    }
-
-    private var g2d_onMouseOut:GCallback1<GMouseInput>;
-    #if swc @:extern #end
-    public var onMouseOut(get, never):GCallback1<GMouseInput>;
-    #if swc @:getter(onMouseOut) #end
-    inline private function get_onMouseOut():GCallback1<GMouseInput> {
-        if (g2d_onMouseOut == null) g2d_onMouseOut = new GCallback1(GMouseInput);
-        return g2d_onMouseOut;
-    }
-
-    private var g2d_onMouseWheel:GCallback1<GMouseInput>;
-    #if swc @:extern #end
-    public var onMouseWheel(get, never):GCallback1<GMouseInput>;
-        #if swc @:getter(onMouseWheel) #end
-    inline private function get_onMouseWheel():GCallback1<GMouseInput> {
-        if (g2d_onMouseWheel == null) g2d_onMouseWheel = new GCallback1(GMouseInput);
-        return g2d_onMouseWheel;
-    }
-
-    private var g2d_onDoubleMouseClick:GCallback1<GMouseInput>;
-    #if swc @:extern #end
-    public var onDoubleMouseClick(get, never):GCallback1<GMouseInput>;
-        #if swc @:getter(onDoubleMouseClick) #end
-    inline private function get_onDoubleMouseClick():GCallback1<GMouseInput> {
-        if (g2d_onDoubleMouseClick == null) g2d_onDoubleMouseClick = new GCallback1(GMouseInput);
-        return g2d_onDoubleMouseClick;
-    }
-
-    private var g2d_onMouseClick:GCallback1<GMouseInput>;
-    #if swc @:extern #end
-    public var onMouseClick(get, never):GCallback1<GMouseInput>;
-    #if swc @:getter(onMouseClick) #end
-    inline private function get_onMouseClick():GCallback1<GMouseInput> {
-        if (g2d_onMouseClick == null) g2d_onMouseClick = new GCallback1(GMouseInput);
-        return g2d_onMouseClick;
-    }
-
-    private var g2d_onRightMouseClick:GCallback1<GMouseInput>;
-    #if swc @:extern #end
-    public var onRightMouseClick(get, never):GCallback1<GMouseInput>;
-        #if swc @:getter(onRightMouseClick) #end
-    inline private function get_onRightMouseClick():GCallback1<GMouseInput> {
-        if (g2d_onRightMouseClick == null) g2d_onRightMouseClick = new GCallback1(GMouseInput);
-        return g2d_onRightMouseClick;
-    }
-    /**/
     private var g2d_onInvalidate:GCallback0;
     #if swc @:extern #end
     public var onInvalidate(get, never):GCallback0;
@@ -1230,24 +1129,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_rightMouseDownElement:GUIElement;
-    /*
-    private function dispatchHidden():Bool {
-        var found:Bool = false;
-        if (g2d_mouseOverElement != null) {
-            var input:GMouseInput = new GMouseInput(g2d_mouseOverElement, g2d_mouseOverElement, GMouseInputType.fromNative(GMouseInputType.MOUSE_OUT),0, 0);
-            g2d_mouseOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_mouseOverElement, g2d_mouseOverElement, input, false);
-            found = true;
-        } else {
-            if (g2d_children != null) {
-                for (child in g2d_children) {
-                    found = found || child.dispatchHidden();
-                    if (found) break;
-                }
-            }
-        }
-        return found;
-    }
-    /**/
+
     static private var g2d_foundMouseDisabled:Bool = true;
     static private var g2d_lastMouseEnabled:GUIElement;
     private function getLastMouseEnabled():GUIElement {
