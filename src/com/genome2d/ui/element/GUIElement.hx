@@ -68,8 +68,6 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 	public var mouseEnabled:Bool = true;
     @prototype 
 	public var mouseChildren:Bool = true;
-    @prototype
-    public var mouseCapture:Bool = true;
 
     private var g2d_onStateChanged:GCallback1<String>;
     #if swc @:extern #end
