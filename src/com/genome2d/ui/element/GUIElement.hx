@@ -820,45 +820,6 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         return g2d_parent.isParent(p_element);
     }
 
-	/*
-    public function setRect(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float):Void {
-        var w:Float = p_right-p_left;
-        var h:Float = p_bottom-p_top;
-
-        if (g2d_parent != null) {
-            var worldAnchorLeft:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorLeft;
-            var worldAnchorRight:Float = g2d_parent.g2d_worldLeft + g2d_parent.g2d_finalWidth * g2d_anchorRight;
-            var worldAnchorTop:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorTop;
-            var worldAnchorBottom:Float = g2d_parent.g2d_worldTop + g2d_parent.g2d_finalHeight * g2d_anchorBottom;
-
-            if (g2d_anchorLeft != g2d_anchorRight) {
-                g2d_left = p_left - worldAnchorLeft;
-                g2d_right = worldAnchorRight - p_right;
-            } else {
-                g2d_anchorX = p_left - worldAnchorLeft + w*g2d_pivotX;
-            }
-
-            if (g2d_anchorTop != g2d_anchorBottom) {
-                g2d_top = p_top - worldAnchorTop;
-                g2d_bottom = worldAnchorBottom - p_bottom;
-            } else {
-                g2d_anchorY = p_top - worldAnchorTop + h*g2d_pivotY;
-            }
-        } else {
-            g2d_worldLeft = p_left;
-            g2d_worldTop = p_top;
-            g2d_worldRight = p_right;
-            g2d_worldBottom = p_bottom;
-            g2d_finalWidth = w;
-            g2d_finalHeight = h;
-        }
-
-        g2d_preferredWidth = w;
-        g2d_preferredHeight = h;
-
-        setDirty();
-    }
-	/**/
     public function addChild(p_child:GUIElement):Void {
         if (p_child.g2d_parent == this) return;
         if (g2d_children == null) g2d_children = new Array<GUIElement>();
@@ -1235,57 +1196,57 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                     else g2d_dispatchMouseCallback(p_input.type, this, this, p_input, false);
                 }
             }
-
-            if (isRoot()) {
-                switch (p_input.type) {
-                    case GMouseInputType.MOUSE_MOVE | GMouseInputType.MOUSE_STILL:
-                        if (g2d_root.g2d_mouseOverElement != g2d_root.g2d_previousOverElement) {
-                            if (g2d_root.g2d_previousOverElement != null) {
-                                g2d_root.g2d_previousOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_root.g2d_previousOverElement, g2d_root.g2d_previousOverElement, p_input, false);
-                            }
-                            g2d_root.g2d_previousOverElement = g2d_root.g2d_mouseOverElement;
-                            if (g2d_root.g2d_mouseOverElement != null) {
-                                g2d_root.g2d_mouseOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, g2d_root.g2d_mouseOverElement, g2d_root.g2d_mouseOverElement, p_input, false);
-                            }
-                        } else if (g2d_root.g2d_previousOverElement != null && g2d_mouseOverFound == false) {
-                            g2d_root.g2d_mouseOverElement = null;
-                            g2d_root.g2d_previousOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_root.g2d_previousOverElement, g2d_root.g2d_previousOverElement, p_input, false);
-                            g2d_root.g2d_previousOverElement = null;
-                        }
-                    case GMouseInputType.MOUSE_DOWN:
-                        if (g2d_root.g2d_mouseDownElement != null) {
-                            g2d_root.g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_DOWN, g2d_root.g2d_mouseDownElement, g2d_root.g2d_mouseDownElement, p_input, false);
-                            g2d_root.g2d_mouseDownElement == null;
-                        }
-                    case GMouseInputType.MOUSE_UP:
-                        if (g2d_root.g2d_mouseUpElement == null && g2d_root.g2d_mouseDownElement != null) {
-                            g2d_root.g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement, g2d_root.g2d_mouseDownElement, p_input, false);
-                        } else if (g2d_root.g2d_mouseUpElement != null && g2d_root.g2d_mouseDownElement == g2d_root.g2d_mouseUpElement) {
-                            g2d_root.g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement, g2d_root.g2d_mouseDownElement, p_input, false);
-                            g2d_root.g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.CLICK, g2d_root.g2d_mouseDownElement, g2d_root.g2d_mouseDownElement, p_input, false);
-                        } else if (g2d_root.g2d_mouseUpElement != null) {
-                            g2d_root.g2d_mouseUpElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseUpElement, g2d_root.g2d_mouseUpElement, p_input, false);
-                        }
-                        g2d_root.g2d_mouseUpElement = g2d_root.g2d_mouseDownElement = null;
-
-                    case GMouseInputType.RIGHT_MOUSE_DOWN:
-                        if (g2d_root.g2d_rightMouseDownElement != null) {
-                            g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_DOWN, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
-                            g2d_root.g2d_rightMouseDownElement == null;
-                        }
-                    case GMouseInputType.MOUSE_UP:
-                        if (g2d_root.g2d_rightMouseUpElement == null && g2d_root.g2d_rightMouseDownElement != null) {
-                            g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
-                        } else if (g2d_root.g2d_rightMouseUpElement != null && g2d_root.g2d_rightMouseDownElement == g2d_root.g2d_rightMouseUpElement) {
-                            g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
-                            g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.CLICK, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
-                        } else if (g2d_root.g2d_mouseUpElement != null) {
-                            g2d_root.g2d_rightMouseUpElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_rightMouseUpElement, g2d_root.g2d_rightMouseUpElement, p_input, false);
-                        }
-                        g2d_root.g2d_rightMouseUpElement = g2d_root.g2d_rightMouseDownElement = null;
-                }
-            }
 		}
+
+        if (isRoot()) {
+            switch (p_input.type) {
+                case GMouseInputType.MOUSE_MOVE | GMouseInputType.MOUSE_STILL:
+                    if (g2d_root.g2d_mouseOverElement != g2d_root.g2d_previousOverElement) {
+                        if (g2d_root.g2d_previousOverElement != null) {
+                            g2d_root.g2d_previousOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_root.g2d_previousOverElement, g2d_root.g2d_previousOverElement, p_input, false);
+                        }
+                        g2d_root.g2d_previousOverElement = g2d_root.g2d_mouseOverElement;
+                        if (g2d_root.g2d_mouseOverElement != null) {
+                            g2d_root.g2d_mouseOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OVER, g2d_root.g2d_mouseOverElement, g2d_root.g2d_mouseOverElement, p_input, false);
+                        }
+                    } else if (g2d_root.g2d_previousOverElement != null && g2d_mouseOverFound == false) {
+                        g2d_root.g2d_mouseOverElement = null;
+                        g2d_root.g2d_previousOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_root.g2d_previousOverElement, g2d_root.g2d_previousOverElement, p_input, false);
+                        g2d_root.g2d_previousOverElement = null;
+                    }
+                case GMouseInputType.MOUSE_DOWN:
+                    if (g2d_root.g2d_mouseDownElement != null) {
+                        g2d_root.g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_DOWN, g2d_root.g2d_mouseDownElement, g2d_root.g2d_mouseDownElement, p_input, false);
+                        g2d_root.g2d_mouseDownElement == null;
+                    }
+                case GMouseInputType.MOUSE_UP:
+                    if (g2d_root.g2d_mouseUpElement == null && g2d_root.g2d_mouseDownElement != null) {
+                        g2d_root.g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement, g2d_root.g2d_mouseDownElement, p_input, false);
+                    } else if (g2d_root.g2d_mouseUpElement != null && g2d_root.g2d_mouseDownElement == g2d_root.g2d_mouseUpElement) {
+                        g2d_root.g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseDownElement, g2d_root.g2d_mouseDownElement, p_input, false);
+                        g2d_root.g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.CLICK, g2d_root.g2d_mouseDownElement, g2d_root.g2d_mouseDownElement, p_input, false);
+                    } else if (g2d_root.g2d_mouseUpElement != null) {
+                        g2d_root.g2d_mouseUpElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_mouseUpElement, g2d_root.g2d_mouseUpElement, p_input, false);
+                    }
+                    g2d_root.g2d_mouseUpElement = g2d_root.g2d_mouseDownElement = null;
+
+                case GMouseInputType.RIGHT_MOUSE_DOWN:
+                    if (g2d_root.g2d_rightMouseDownElement != null) {
+                        g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_DOWN, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
+                        g2d_root.g2d_rightMouseDownElement == null;
+                    }
+                case GMouseInputType.MOUSE_UP:
+                    if (g2d_root.g2d_rightMouseUpElement == null && g2d_root.g2d_rightMouseDownElement != null) {
+                        g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
+                    } else if (g2d_root.g2d_rightMouseUpElement != null && g2d_root.g2d_rightMouseDownElement == g2d_root.g2d_rightMouseUpElement) {
+                        g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
+                        g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.CLICK, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
+                    } else if (g2d_root.g2d_mouseUpElement != null) {
+                        g2d_root.g2d_rightMouseUpElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_rightMouseUpElement, g2d_root.g2d_rightMouseUpElement, p_input, false);
+                    }
+                    g2d_root.g2d_rightMouseUpElement = g2d_root.g2d_rightMouseDownElement = null;
+            }
+        }
 
         return captured;
     }
