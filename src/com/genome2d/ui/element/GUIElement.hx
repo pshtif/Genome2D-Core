@@ -1095,6 +1095,9 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     static private var g2d_foundMouseDisabled:Bool = true;
     static private var g2d_lastMouseEnabled:GUIElement;
     private function getLastMouseEnabled():GUIElement {
+        if (!mouseEnabled && parent!=null) return parent.getLastMouseEnabled();
+        return this;
+
         if (g2d_foundMouseDisabled && mouseEnabled) {
             g2d_foundMouseDisabled = false;
             g2d_lastMouseEnabled = this;
@@ -1186,7 +1189,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                     g2d_activeSkin.captureMouseInput(p_input);
 
                     p_input.captured = mouseEnabled;
-                    captured = true;
+                    captured = mouseEnabled;
                     if (p_input.type == GMouseInputType.MOUSE_MOVE || p_input.type == GMouseInputType.MOUSE_STILL) setMouseOverElement(this, p_input);
 
                     else if (p_input.type == GMouseInputType.MOUSE_DOWN) setMouseDownElement(this, p_input);
@@ -1306,7 +1309,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         }
 
         if (parent != null) {
-            parent.g2d_dispatchMouseCallback(p_type, mouseEnabled?p_target:parent, p_dispatcher, p_input, true);
+            parent.g2d_dispatchMouseCallback(p_type, (mouseEnabled||p_target!=this)?p_target:parent, p_dispatcher, p_input, true);
         }
     }
 	
