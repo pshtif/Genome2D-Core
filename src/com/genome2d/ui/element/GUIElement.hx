@@ -1094,8 +1094,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     static private var g2d_foundMouseDisabled:Bool = true;
     static private var g2d_lastMouseEnabled:GUIElement;
-    private function getLastMouseEnabled():GUIElement {
-        if (!mouseEnabled && parent!=null) return parent.getLastMouseEnabled();
+    private function getNearestMouseEnabled():GUIElement {
+        if (!mouseEnabled && parent!=null) return parent.getNearestMouseEnabled();
         return this;
 
         if (g2d_foundMouseDisabled && mouseEnabled) {
@@ -1104,7 +1104,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         }
         if (!mouseEnabled) g2d_foundMouseDisabled = true;
 
-        if (parent != null) return parent.getLastMouseEnabled();
+        if (parent != null) return parent.getNearestMouseEnabled();
         g2d_foundMouseDisabled = true;
         return g2d_lastMouseEnabled;
     }
@@ -1117,9 +1117,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
     private function setMouseOverElement(p_element:GUIElement, p_input:GMouseInput):Void {
         g2d_root.g2d_mouseOverFound = true;
-        if (p_element != null) {
-            p_element = p_element.getLastMouseEnabled();
-        }
+        if (p_element != null) p_element = p_element.getNearestMouseEnabled();
         g2d_root.g2d_mouseOverElement = p_element;
     }
 
@@ -1128,7 +1126,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         return g2d_root.g2d_mouseDownElement == p_element;
     }
     private function setMouseDownElement(p_element:GUIElement, p_input:GMouseInput):Void {
-        if (p_element != null) p_element = p_element.getLastMouseEnabled();
+        if (p_element != null) p_element = p_element.getNearestMouseEnabled();
 
         if (g2d_root.g2d_mouseDownElement != p_element) {
             g2d_root.g2d_mouseDownElement = p_element;
@@ -1136,7 +1134,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
     private var g2d_mouseUpElement:GUIElement;
     private function setMouseUpElement(p_element:GUIElement, p_input:GMouseInput):Void {
-        if (p_element != null) p_element = p_element.getLastMouseEnabled();
+        if (p_element != null) p_element = p_element.getNearestMouseEnabled();
 
         g2d_root.g2d_mouseUpElement = p_element;
     }
@@ -1146,7 +1144,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         return g2d_root.g2d_rightMouseDownElement == p_element;
     }
     private function setRightMouseDownElement(p_element:GUIElement, p_input:GMouseInput):Void {
-        if (p_element != null) p_element = p_element.getLastMouseEnabled();
+        if (p_element != null) p_element = p_element.getNearestMouseEnabled();
 
         if (g2d_root.g2d_rightMouseDownElement != p_element) {
             g2d_root.g2d_rightMouseDownElement = p_element;
@@ -1154,7 +1152,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
     private var g2d_rightMouseUpElement:GUIElement;
     private function setRightMouseUpElement(p_element:GUIElement, p_input:GMouseInput):Void {
-        if (p_element != null) p_element = p_element.getLastMouseEnabled();
+        if (p_element != null) p_element = p_element.getNearestMouseEnabled();
 
         g2d_root.g2d_rightMouseUpElement = p_element;
     }
