@@ -23,6 +23,9 @@ import com.genome2d.textures.GTextureManager;
 @prototypeName("fontSkin")
 class GUIFontSkin extends GUISkin implements IGFocusable {
 
+    @prototype
+    public var rotation:Float = 0;
+
     private var g2d_onEnter:GCallback0;
     #if swc @:extern #end
     public var onEnter(get, null):GCallback0;
@@ -192,7 +195,7 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
 
             g2d_textRenderer.width = p_right - p_left;
             g2d_textRenderer.height = p_bottom - p_top;
-            g2d_textRenderer.render(p_left, p_top, 1, 1, 0, 1, 1, 1, 1);
+            g2d_textRenderer.render(p_left, p_top, 1, 1, rotation, 1, 1, 1, 1);
             rendered = true;
         }
         return rendered;
@@ -211,6 +214,7 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
         clone.color = color;
         clone.vAlign = vAlign;
         clone.hAlign = hAlign;
+        clone.rotation = rotation;
         clone.inputEnabled = inputEnabled;
         return clone;
     }
