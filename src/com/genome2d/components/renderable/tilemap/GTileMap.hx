@@ -161,8 +161,8 @@ class GTileMap extends GComponent implements IGRenderable
         var firstX:Float = -mapHalfWidth + (g2d_iso ? (g2d_tileWidth * p_camera.scaleX) / 2 : 0);
         var firstY:Float = -mapHalfHeight + (g2d_iso ? (g2d_tileHeight * p_camera.scaleY) / 2 : 0);
 
-        var tx:Float = p_camera.x - g2d_node.g2d_worldX + p_x;
-        var ty:Float = p_camera.y - g2d_node.g2d_worldY + p_y;
+        var tx:Float = p_camera.x*p_camera.scaleX - g2d_node.g2d_worldX + p_x;
+        var ty:Float = p_camera.y*p_camera.scaleY - g2d_node.g2d_worldY + p_y;
 
         var indexX:Int = Math.floor((tx - firstX) / (g2d_tileWidth * p_camera.scaleX));
         var indexY:Int = Math.floor((ty - firstY) / (g2d_tileHeight * p_camera.scaleY));
