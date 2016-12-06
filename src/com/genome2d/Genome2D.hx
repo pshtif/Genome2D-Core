@@ -167,7 +167,19 @@ class Genome2D implements IGDebuggableInternal
         return g2d_onKeyboardInput;
     }
 
-	private var g2d_currentFrameId:Int = 0;
+    private var g2d_onMouseInput:GCallback1<GMouseInput>;
+    /**
+        Callback dispatched when Genome2D processes mouse callbacks
+    **/
+    #if swc @:extern #end
+    public var onMouseInput(get, never):GCallback1<GMouseInput>;
+        #if swc @:getter(onMouseInput) #end
+    inline private function get_onMouseInput():GCallback1<GMouseInput> {
+        return g2d_onMouseInput;
+    }
+
+
+    private var g2d_currentFrameId:Int = 0;
     /**
         Return current Genome2D frame Id
     **/
@@ -249,6 +261,7 @@ class Genome2D implements IGDebuggableInternal
         g2d_onPreRender = new GCallback0();
         g2d_onPostRender = new GCallback0();
         g2d_onKeyboardInput = new GCallback1<GKeyboardInput>();
+        g2d_onMouseInput = new GCallback1<GMouseInput>();
         g2d_onCameraAdded = new GCallback1<GCameraController>();
 
         g2d_parameters = new GParameters();
@@ -358,6 +371,8 @@ class Genome2D implements IGDebuggableInternal
         g2d_onUpdate.removeAll();
         g2d_onInvalidated.removeAll();
         g2d_onKeyboardInput.removeAll();
+        g2d_onMouseInput.removeAll();
+        g2d_onCameraAdded.removeAll();
 
         if (g2d_context != null) g2d_context.dispose();
         g2d_context = null;
@@ -459,6 +474,8 @@ class Genome2D implements IGDebuggableInternal
                 i--;
             }
 		}
+
+        if (g2d_onMouseInput != null) g2d_onMouseInput.dispatch(p_input);
 	}
 
     private function g2d_contextKeyboardInput_handler(p_input:GKeyboardInput):Void {
