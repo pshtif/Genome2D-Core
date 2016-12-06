@@ -23,7 +23,7 @@ class GAStar
 	
 	private var g2d_nodeArray:Array<Array<GAStarNode>>;
 
-	private function new(p_map:IGAStarClient) {
+	public function new(p_map:IGAStarClient) {
 		g2d_map = p_map;
 
 		g2d_width = g2d_map.sizeY;
@@ -64,7 +64,7 @@ class GAStar
 		return searchPath();
 	}
 	
-	private function getPath():Array<GIntPoint> {
+	inline private function getPath():Array<GIntPoint> {
 		var path:Array<GIntPoint> = new Array<GIntPoint>();
 		
 		var node:GAStarNode = g2d_destNode;
@@ -107,13 +107,14 @@ class GAStar
 					
 					cost = ADJANCED_COST;
 					if (!(currentNode.x == nextNode.x || currentNode.y == nextNode.y)) {
+						continue;
 						cost = DIAGONAL_COST;
 					}
 					
 					g = currentNode.g + cost;
 					f = g + g2d_heuristic.getCost(nextNode, g2d_destNode);
 					
-					if (Lambda.indexOf(g2d_openList, nextNode) != -1 || Lambda.indexOf(g2d_closedList, nextNode) != -1)	{
+					if (g2d_openList.indexOf(nextNode) != -1 || g2d_closedList.indexOf(nextNode) != -1)	{
 						if (nextNode.f > f)	{
 							nextNode.f = f;
 							nextNode.g = g;
