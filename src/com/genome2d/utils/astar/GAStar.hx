@@ -19,7 +19,7 @@ class GAStar
 	private var g2d_openList:Array<GAStarNode>;
 	private var g2d_closedList:Array<GAStarNode>;
 
-	private var g2d_heuristic:IGAStarHeuristic;
+	private var g2d_heuristic:GAStarManhattan;//IGAStarHeuristic;
 	
 	private var g2d_nodeArray:Array<Array<GAStarNode>>;
 
@@ -58,7 +58,8 @@ class GAStar
 		
 		g2d_startNode.g = 0;
 		g2d_startNode.f = g2d_heuristic.getCost(g2d_startNode, g2d_destNode);
-		
+
+		g2d_startNode.inOpen = true;
 		g2d_openList.push(g2d_startNode);
 		
 		return searchPath();
@@ -104,17 +105,19 @@ class GAStar
 					nextNode = g2d_nodeArray[x][y];
 					
 					if (nextNode == currentNode || !nextNode.walkable) continue;
-					
-					cost = ADJANCED_COST;
+
 					if (!(currentNode.x == nextNode.x || currentNode.y == nextNode.y)) {
 						continue;
 						cost = DIAGONAL_COST;
+					} else {
+						cost = ADJANCED_COST;
 					}
 					
 					g = currentNode.g + cost;
 					f = g + g2d_heuristic.getCost(nextNode, g2d_destNode);
 					
-					if (g2d_openList.indexOf(nextNode) != -1 || g2d_closedList.indexOf(nextNode) != -1)	{
+					//if (g2d_openList.indexOf(nextNode) != -1 || g2d_closedList.indexOf(nextNode) != -1)	{
+					if (nextNode.inOpen || nextNode.inClosed)	{
 						if (nextNode.f > f)	{
 							nextNode.f = f;
 							nextNode.g = g;
@@ -124,20 +127,24 @@ class GAStar
 						nextNode.f = f;
 						nextNode.g = g;
 						nextNode.parent = currentNode;
-						
+
+						nextNode.inOpen = true;
 						g2d_openList.push(nextNode);
 					}
 				}
 			}
-			
+
+			currentNode.inClosed = true;
 			g2d_closedList.push(currentNode);
 			
 			if (g2d_openList.length == 0) {
 				return null;
 			}
 			
-			g2d_openList.sort(sort);
-			currentNode = g2d_openList.shift();
+			//g2d_openList.sort(sort);
+			//currentNode = g2d_openList.shift();
+			currentNode = getWithLeastCost();
+			currentNode.inOpen = false;
 			
 			if (currentNode == g2d_destNode) {
 				completed = true;
@@ -147,7 +154,104 @@ class GAStar
 		return getPath();
 	}
 
+	inline private function getWithLeastCost():GAStarNode {
+		var min:GAStarNode = g2d_openList[0];
+		for (i in 1...g2d_openList.length) {
+			if (min.f > g2d_openList[i].f) {
+				min = g2d_openList[i];
+				trace(i);
+			}
+		}
+
+		g2d_openList.remove(min);
+		return min;
+	}
+
 	private function sort(x:GAStarNode, y:GAStarNode):Int {
 		return Std.int(x.f - y.f);
 	}
+	/*
+	public function sortChildrenOnY(p_ascending:Bool = true):Void {
+		if (g2d_firstChild == null) return;
+
+		var insize:Int = 1;
+		var psize:Int;
+		var qsize:Int;
+		var nmerges:Int;
+		var p:GNode;
+		var q:GNode;
+		var e:GNode;
+
+		while (true) {
+			p = g2d_firstChild;
+			g2d_firstChild = null;
+			g2d_lastChild = null;
+
+			nmerges = 0;
+
+			while (p != null) {
+				nmerges++;
+				q = p;
+				psize = 0;
+				for (i in 0...insize) {
+					psize++;
+					q = q.g2d_next;
+					if (q == null) break;
+				}
+
+				qsize = insize;
+
+				while (psize > 0 || (qsize > 0 && q != null)) {
+					if (psize == 0) {
+						e = q;
+						q = q.g2d_next;
+						qsize--;
+					} else if (qsize == 0 || q == null) {
+						e = p;
+						p = p.g2d_next;
+						psize--;
+					} else if (p_ascending) {
+						if (p.y >= q.y) {
+							e = p;
+							p = p.g2d_next;
+							psize--;
+						} else {
+							e = q;
+							q = q.g2d_next;
+							qsize--;
+						}
+					} else {
+						if (p.y <= q.y) {
+							e = p;
+							p = p.g2d_next;
+							psize--;
+						} else {
+							e = q;
+							q = q.g2d_next;
+							qsize--;
+						}
+					}
+
+					if (g2d_lastChild != null) {
+						g2d_lastChild.g2d_next = e;
+					} else {
+						g2d_firstChild = e;
+					}
+
+					e.g2d_previous = g2d_lastChild;
+
+					g2d_lastChild = e;
+				}
+
+				p = q;
+			}
+
+			g2d_lastChild.g2d_next = null;
+
+			if (nmerges <= 1) return;
+
+			insize *= 2;
+		}
+	}
+	/**/
 }

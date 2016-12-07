@@ -6,25 +6,14 @@ class GAStarNode extends GIntPoint {
 	public var parent:GAStarNode;
 	
 	public var walkable:Bool;
-	
+
+	public var inClosed:Bool = false;
+	public var inOpen:Bool = false;
+
 	public var f:Float;
 	public var g:Float;
 	
-	public function toString():String {
-		var result:String;
-		result = "[Node(" + this.x + "," + this.y + ")";
-		if (parent != null)
-		{
-			result += ", parent=(" + parent.x + "," + parent.y + ")";
-		}
-		result += (walkable ? ", W" : ", X");
-		result += ", f=" + f;
-		result += "]";
-		
-		return result;
-	}
-	
-	public function toPoint():GIntPoint {
+	inline public function toPoint():GIntPoint {
 		return new GIntPoint(x, y);
 	}
 }
