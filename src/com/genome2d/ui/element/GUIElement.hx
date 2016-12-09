@@ -1116,29 +1116,40 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         return g2d_root.g2d_mouseOverElement == p_element;
     }
     private function setMouseOverElement(p_element:GUIElement, p_input:GMouseInput):Void {
-        g2d_root.g2d_mouseOverFound = true;
         if (p_element != null) p_element = p_element.getNearestMouseEnabled();
-        g2d_root.g2d_mouseOverElement = p_element;
+        if (!g2d_root.g2d_mouseOverFound || g2d_root.g2d_mouseOverElement == null || !g2d_root.g2d_mouseOverElement.isParent(p_element)) {
+            g2d_root.g2d_mouseOverElement = p_element;
+        }
+        g2d_root.g2d_mouseOverFound = true;
     }
 
+    private var g2d_mouseDownFound:Bool = false;
     private var g2d_mouseDownElement:GUIElement;
     private function isMouseDownElement(p_element:GUIElement):Bool {
         return g2d_root.g2d_mouseDownElement == p_element;
     }
     private function setMouseDownElement(p_element:GUIElement, p_input:GMouseInput):Void {
         if (p_element != null) p_element = p_element.getNearestMouseEnabled();
-
-        if (g2d_root.g2d_mouseDownElement != p_element) {
-            g2d_root.g2d_mouseDownElement = p_element;
+        if (!g2d_root.g2d_mouseDownFound || g2d_root.g2d_mouseDownElement == null || !g2d_root.g2d_mouseDownElement.isParent(p_element)) {
+            if (g2d_root.g2d_mouseDownElement != p_element) {
+                g2d_root.g2d_mouseDownElement = p_element;
+            }
         }
+        g2d_root.g2d_mouseDownFound = true;
     }
+
+    private var g2d_mouseUpFound:Bool = false;
     private var g2d_mouseUpElement:GUIElement;
     private function setMouseUpElement(p_element:GUIElement, p_input:GMouseInput):Void {
         if (p_element != null) p_element = p_element.getNearestMouseEnabled();
 
-        g2d_root.g2d_mouseUpElement = p_element;
+        if (!g2d_root.g2d_mouseUpFound || g2d_root.g2d_mouseUpElement == null || !g2d_root.g2d_mouseUpElement.isParent(p_element)) {
+            g2d_root.g2d_mouseUpElement = p_element;
+        }
+        g2d_root.g2d_mouseUpFound = true;
     }
 
+    private var g2d_rightMouseDownFound:Bool = false;
     private var g2d_rightMouseDownElement:GUIElement;
     private function isRightMouseDownElement(p_element:GUIElement):Bool {
         return g2d_root.g2d_rightMouseDownElement == p_element;
@@ -1146,15 +1157,23 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     private function setRightMouseDownElement(p_element:GUIElement, p_input:GMouseInput):Void {
         if (p_element != null) p_element = p_element.getNearestMouseEnabled();
 
-        if (g2d_root.g2d_rightMouseDownElement != p_element) {
-            g2d_root.g2d_rightMouseDownElement = p_element;
+        if (!g2d_root.g2d_rightMouseDownFound || g2d_root.g2d_rightMouseDownElement == null || !g2d_root.g2d_rightMouseDownElement.isParent(p_element)) {
+            if (g2d_root.g2d_rightMouseDownElement != p_element) {
+                g2d_root.g2d_rightMouseDownElement = p_element;
+            }
         }
+        g2d_root.g2d_rightMouseDownFound = true;
     }
+
+    private var g2d_rightMouseUpFound:Bool = false;
     private var g2d_rightMouseUpElement:GUIElement;
     private function setRightMouseUpElement(p_element:GUIElement, p_input:GMouseInput):Void {
         if (p_element != null) p_element = p_element.getNearestMouseEnabled();
 
-        g2d_root.g2d_rightMouseUpElement = p_element;
+        if (!g2d_root.g2d_rightMouseUpFound || g2d_root.g2d_rightMouseUpElement == null || !g2d_root.g2d_rightMouseUpElement.isParent(p_element)) {
+            g2d_root.g2d_rightMouseUpElement = p_element;
+        }
+        g2d_root.g2d_rightMouseUpFound = true;
     }
 
     public function captureMouseInput(p_input:GMouseInput):Bool {
@@ -1163,6 +1182,14 @@ class GUIElement implements IGPrototypable implements IGFocusable {
             switch (p_input.type) {
                 case GMouseInputType.MOUSE_MOVE | GMouseInputType.MOUSE_STILL:
                     g2d_mouseOverFound = false;
+                case GMouseInputType.MOUSE_DOWN:
+                    g2d_mouseDownFound = false;
+                case GMouseInputType.MOUSE_UP:
+                    g2d_mouseUpFound = false;
+                case GMouseInputType.RIGHT_MOUSE_DOWN:
+                    g2d_rightMouseDownFound = false;
+                case GMouseInputType.RIGHT_MOUSE_UP:
+                    g2d_rightMouseUpFound = false;
             }
         }
 
@@ -1188,6 +1215,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
                     p_input.captured = mouseEnabled;
                     captured = mouseEnabled;
+
                     if (p_input.type == GMouseInputType.MOUSE_MOVE || p_input.type == GMouseInputType.MOUSE_STILL) setMouseOverElement(this, p_input);
 
                     else if (p_input.type == GMouseInputType.MOUSE_DOWN) setMouseDownElement(this, p_input);
