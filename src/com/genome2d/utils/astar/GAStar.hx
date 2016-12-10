@@ -22,9 +22,11 @@ class GAStar
 	private var g2d_heuristic:GAStarManhattan;//IGAStarHeuristic;
 	
 	private var g2d_nodeArray:Array<Array<GAStarNode>>;
+	private var g2d_walker:Int;
 
-	public function new(p_map:IGAStarClient) {
+	public function new(p_map:IGAStarClient, p_walker:Int) {
 		g2d_map = p_map;
+		g2d_walker = p_walker;
 
 		g2d_width = g2d_map.sizeY;
 		g2d_height = g2d_map.sizeX;
@@ -36,14 +38,14 @@ class GAStar
 				var node = line[i] = new GAStarNode();
 				node.x = j;
 				node.y = i;
-				node.walkable = g2d_map.isWalkable(j, i);
+				node.walkable = g2d_map.isWalkable(j, i, g2d_walker);
 			}
 		}
 	}
 	
 	public function findPath(p_start:GIntPoint, p_dest:GIntPoint):Array<GIntPoint> {
-		if (!g2d_map.isWalkable(p_start.x, p_start.y)
-			|| !g2d_map.isWalkable(p_dest.x, p_dest.y)
+		if (!g2d_map.isWalkable(p_start.x, p_start.y, g2d_walker)
+			|| !g2d_map.isWalkable(p_dest.x, p_dest.y, g2d_walker)
 			|| p_start.equals(p_dest)) {
 			return null;
 		}

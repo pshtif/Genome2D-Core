@@ -5,6 +5,6 @@ interface IGAStarClient {
 	
 	var sizeY(default, never):Int;
 	
-	function isWalkable(p_x:Int, p_y:Int):Bool;
-	function getCost(p_x:Int, p_y:Int):Int;
+	function isWalkable(p_x:Int, p_y:Int, p_walker:Int):Bool;
+	function getCost(p_x:Int, p_y:Int, p_walker:Int):Int;
 }
