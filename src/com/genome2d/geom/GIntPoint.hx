@@ -1,5 +1,6 @@
 package com.genome2d.geom;
-class GIntPoint {
+import com.genome2d.proto.IGPrototypable;
+class GIntPoint implements IGPrototypable {
     public var x:Int = 0;
     public var y:Int = 0;
 
