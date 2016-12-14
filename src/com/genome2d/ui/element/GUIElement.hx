@@ -1205,13 +1205,13 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                 }
 			}
 
-            p_input.localX = p_input.worldX - g2d_worldLeft;
-            p_input.localY = p_input.worldY - g2d_worldTop;
-
             if (!p_input.captured && p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom) {
                 if (g2d_activeSkin != null) {
                     // TODO add capture info in the actual skin
                     g2d_activeSkin.captureMouseInput(p_input);
+
+                    p_input.localX = p_input.worldX - g2d_worldLeft;
+                    p_input.localY = p_input.worldY - g2d_worldTop;
 
                     p_input.captured = mouseEnabled;
                     captured = mouseEnabled;
@@ -1222,6 +1222,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
                     else if (p_input.type == GMouseInputType.MOUSE_UP) setMouseUpElement(this, p_input);
 
+                    else if (p_input.type == GMouseInputType.RIGHT_MOUSE_DOWN) setRightMouseDownElement(this, p_input);
+
+                    else if (p_input.type == GMouseInputType.RIGHT_MOUSE_UP) setRightMouseUpElement(this, p_input);
+
                     else g2d_dispatchMouseCallback(p_input.type, this, this, p_input, false);
                 }
             }
@@ -1230,6 +1234,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         if (isRoot()) {
             switch (p_input.type) {
                 case GMouseInputType.MOUSE_MOVE | GMouseInputType.MOUSE_STILL:
+                    if (g2d_root.g2d_mouseOverElement != null) g2d_root.g2d_mouseOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_MOVE, g2d_root.g2d_mouseOverElement, g2d_root.g2d_mouseOverElement, p_input, false);
+
                     if (g2d_root.g2d_mouseOverElement != g2d_root.g2d_previousOverElement) {
                         if (g2d_root.g2d_previousOverElement != null) {
                             g2d_root.g2d_previousOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_OUT, g2d_root.g2d_previousOverElement, g2d_root.g2d_previousOverElement, p_input, false);
@@ -1261,17 +1267,17 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
                 case GMouseInputType.RIGHT_MOUSE_DOWN:
                     if (g2d_root.g2d_rightMouseDownElement != null) {
-                        g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_DOWN, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
+                        g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.RIGHT_MOUSE_DOWN, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
                         g2d_root.g2d_rightMouseDownElement == null;
                     }
-                case GMouseInputType.MOUSE_UP:
+                case GMouseInputType.RIGHT_MOUSE_UP:
                     if (g2d_root.g2d_rightMouseUpElement == null && g2d_root.g2d_rightMouseDownElement != null) {
-                        g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
+                        g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.RIGHT_MOUSE_UP, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
                     } else if (g2d_root.g2d_rightMouseUpElement != null && g2d_root.g2d_rightMouseDownElement == g2d_root.g2d_rightMouseUpElement) {
-                        g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
-                        g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.CLICK, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
+                        g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.RIGHT_MOUSE_UP, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
+                        g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.RIGHT_CLICK, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
                     } else if (g2d_root.g2d_mouseUpElement != null) {
-                        g2d_root.g2d_rightMouseUpElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_UP, g2d_root.g2d_rightMouseUpElement, g2d_root.g2d_rightMouseUpElement, p_input, false);
+                        g2d_root.g2d_rightMouseUpElement.g2d_dispatchMouseCallback(GMouseInputType.RIGHT_MOUSE_UP, g2d_root.g2d_rightMouseUpElement, g2d_root.g2d_rightMouseUpElement, p_input, false);
                     }
                     g2d_root.g2d_rightMouseUpElement = g2d_root.g2d_rightMouseDownElement = null;
             }
