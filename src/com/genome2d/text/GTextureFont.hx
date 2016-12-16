@@ -14,7 +14,7 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 
 class GTextureFont implements IGPrototypable {
-	@prototype
+	@prototype("getReference")
 	public var texture:GTexture;
 	
 	@prototype
@@ -39,9 +39,7 @@ class GTextureFont implements IGPrototypable {
 	
     public var kerning:Map<Int,Map<Int,Int>>;
 	
-	public function new(p_id:String, p_texture:GTexture):Void {
-		id = p_id;
-		texture = p_texture;
+	public function new():Void {
 		g2d_chars = new Map<String,GTextureChar>();
 	}
 
