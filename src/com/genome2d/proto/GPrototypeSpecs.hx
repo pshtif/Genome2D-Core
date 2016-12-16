@@ -6,6 +6,10 @@ package com.genome2d.proto;
  */
 class GPrototypeSpecs
 {
+	#if genome_editor
+	inline static public var PROTOTYPE_EDITOR:String = "PROTOTYPE_EDITOR";
+	#end
+
 	inline static public var PROTOTYPE_NAME:String = "PROTOTYPE_NAME";
 	inline static public var PROTOTYPE_PROPERTY_NAMES:String = "PROTOTYPE_PROPERTY_NAMES";
 	inline static public var PROTOTYPE_PROPERTY_TYPES:String = "PROTOTYPE_PROPERTY_TYPES";
