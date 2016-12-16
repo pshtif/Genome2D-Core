@@ -13,6 +13,17 @@ class GUISkinSheet implements IGPrototypable
 	private var g2d_skins:Array<GUISkin>;
 
 	public function new() {
+		g2d_skins = new Array<GUISkin>();
+	}
+
+	public function getPrototype(p_prototype:GPrototype = null):GPrototype {
+		p_prototype = getPrototypeDefault(p_prototype);
+
+		for (skin in g2d_skins) {
+			p_prototype.addChild(skin.getPrototype(), "*");
+		}
+
+		return p_prototype;
 	}
 
 	public function bindPrototype(p_prototype:GPrototype):Void {
@@ -21,6 +32,7 @@ class GUISkinSheet implements IGPrototypable
 		
 		for (skinPrototype in skinPrototypes) {
 			var skin:GUISkin = cast GPrototypeFactory.createInstance(skinPrototype);
+			g2d_skins.push(skin);
 		}
 	}
 }
