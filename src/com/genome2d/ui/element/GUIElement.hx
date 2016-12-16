@@ -34,6 +34,10 @@ import com.genome2d.ui.skin.GUISkinManager;
 @prototypeDefaultChildGroup("element")
 @:build(com.genome2d.macros.MGMouseCallbackBuild.build())
 class GUIElement implements IGPrototypable implements IGFocusable {
+    #if genome_editor
+    static public var PROTOTYPE_EDITOR:String = "GEUIUiEditor";
+    #end
+
 	public var red:Float = 1;
 	public var green:Float = 1;
 	public var blue:Float = 1;
@@ -115,7 +119,6 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     private var g2d_root:GUIElement;
     #if swc @:extern #end
-    @prototype
     public var root(get,never):GUIElement;
     #if swc @:getter(root) #end
     inline private function get_root():GUIElement {
