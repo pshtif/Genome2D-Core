@@ -44,12 +44,15 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 	@prototype
 	public var alpha:Float = 1;
 
+    @category("color")
     @prototype
     public var useMask:Bool = false;
 	
 	static public var setModelHook:Dynamic->Dynamic;
 	
 	#if swc @:extern #end
+    @category("color")
+    @type("color")
     @prototype
 	public var color(get, set):Int;
 	#if swc @:getter(color) #end
@@ -255,8 +258,11 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
 
     private var g2d_mouseDown:String = "";
+
+    @editable(false)
+    @prototype
     #if swc @:extern #end
-    @prototype public var mouseDown(get,set):String;
+    public var mouseDown(get,set):String;
     #if swc @:getter(mouseDown) #end
     inline private function get_mouseDown():String {
         return g2d_mouseDown;
@@ -278,13 +284,16 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_rightMouseDown:String = "";
+
+    @editable(false)
+    @prototype
     #if swc @:extern #end
-    @prototype public var rightMouseDown(get,set):String;
-        #if swc @:getter(rightMouseDown) #end
+    public var rightMouseDown(get,set):String;
+    #if swc @:getter(rightMouseDown) #end
     inline private function get_rightMouseDown():String {
         return g2d_rightMouseDown;
     }
-        #if swc @:setter(rightMouseDown) #end
+    #if swc @:setter(rightMouseDown) #end
     inline private function set_rightMouseDown(p_value:String):String {
         if (g2d_rightMouseDown != p_value) {
             if (g2d_rightMouseDown != "" && g2d_currentController != null) {
@@ -301,8 +310,11 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_mouseUp:String = "";
+
+    @editable(false)
+    @prototype
     #if swc @:extern #end
-    @prototype public var mouseUp(get,set):String;
+    public var mouseUp(get,set):String;
     #if swc @:getter(mouseUp) #end
     inline private function get_mouseUp():String {
         return g2d_mouseUp;
@@ -324,13 +336,16 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_rightMouseUp:String = "";
+
+    @editable(false)
+    @prototype
     #if swc @:extern #end
-    @prototype public var rightMouseUp(get,set):String;
-        #if swc @:getter(rightMouseUp) #end
+    public var rightMouseUp(get,set):String;
+    #if swc @:getter(rightMouseUp) #end
     inline private function get_rightMouseUp():String {
         return g2d_rightMouseUp;
     }
-        #if swc @:setter(rightMouseUp) #end
+    #if swc @:setter(rightMouseUp) #end
     inline private function set_rightMouseUp(p_value:String):String {
         if (g2d_rightMouseUp != p_value) {
             if (g2d_rightMouseUp != "" && g2d_currentController != null) {
@@ -347,13 +362,16 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_mouseWheel:String = "";
+
+    @editable(false)
+    @prototype
     #if swc @:extern #end
-    @prototype public var mouseWheel(get,set):String;
-        #if swc @:getter(mouseWheel) #end
+    public var mouseWheel(get,set):String;
+    #if swc @:getter(mouseWheel) #end
     inline private function get_mouseWheel():String {
         return g2d_mouseWheel;
     }
-        #if swc @:setter(mouseWheel) #end
+    #if swc @:setter(mouseWheel) #end
     inline private function set_mouseWheel(p_value:String):String {
         if (g2d_mouseWheel != p_value) {
             if (g2d_mouseWheel != "" && g2d_currentController != null) {
@@ -370,8 +388,11 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_mouseClick:String = "";
+
+    @editable(false)
+    @prototype
     #if swc @:extern #end
-    @prototype public var mouseClick(get,set):String;
+    public var mouseClick(get,set):String;
     #if swc @:getter(mouseClick) #end
     inline private function get_mouseClick():String {
         return g2d_mouseClick;
@@ -393,13 +414,16 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_rightMouseClick:String = "";
+
+    @editable(false)
+    @prototype
     #if swc @:extern #end
-    @prototype public var rightMouseClick(get,set):String;
-        #if swc @:getter(rightMouseClick) #end
+    public var rightMouseClick(get,set):String;
+    #if swc @:getter(rightMouseClick) #end
     inline private function get_rightMouseClick():String {
         return g2d_rightMouseClick;
     }
-        #if swc @:setter(rightMouseClick) #end
+    #if swc @:setter(rightMouseClick) #end
     inline private function set_rightMouseClick(p_value:String):String {
         if (g2d_rightMouseClick != p_value) {
             if (g2d_rightMouseClick != "" && g2d_currentController != null) {
@@ -416,8 +440,11 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_mouseOver:String = "";
+
+    @editable(false)
+    @prototype
     #if swc @:extern #end
-    @prototype public var mouseOver(get,set):String;
+    public var mouseOver(get,set):String;
     #if swc @:getter(mouseOver) #end
     inline private function get_mouseOver():String {
         return g2d_mouseOver;
@@ -439,8 +466,11 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_mouseOut:String = "";
+
+    @editable(false)
+    @prototype
     #if swc @:extern #end
-    @prototype public var mouseOut(get,set):String;
+    public var mouseOut(get,set):String;
     #if swc @:getter(mouseOut) #end
     inline private function get_mouseOut():String {
         return g2d_mouseOut;
@@ -462,8 +492,11 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_mouseMove:String = "";
+
+    @editable(false)
+    @prototype
     #if swc @:extern #end
-    @prototype public var mouseMove(get,set):String;
+    public var mouseMove(get,set):String;
     #if swc @:getter(mouseMove) #end
     inline private function get_mouseMove():String {
         return g2d_mouseMove;
@@ -1021,6 +1054,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                 var maskRect:GRectangle = new GRectangle(g2d_worldLeft*camera.scaleX, g2d_worldTop*camera.scaleY, w, h);
                 var intersection:GRectangle = (previousMask == null) ? maskRect : previousMask.intersection(maskRect);
                 if (intersection.width <= 0 || intersection.height <= 0) return;
+                trace("intersection", intersection.x, intersection.y, intersection.width, intersection.height);
 				context.setMaskRect(intersection);
 			}
 
