@@ -20,6 +20,10 @@ import com.genome2d.geom.GRectangle;
 @prototypeDefaultChildGroup("particle_emitter")
 class GParticleSystem implements IGPrototypable
 {
+	#if genome_editor
+	static public var PROTOTYPE_EDITOR:String = "GEUIParticleSystemEditor";
+	#end
+
 	@prototype
     public var timeDilation:Float = 1;
 
