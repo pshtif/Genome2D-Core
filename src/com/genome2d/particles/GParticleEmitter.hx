@@ -43,6 +43,7 @@ class GParticleEmitter implements IGPrototypable
 	public var duration:Float = 0;
 	@prototype
 	public var durationVariance:Float = 0;
+
 	private var g2d_currentDuration:Float = -1;
 
 	@prototype
@@ -96,7 +97,7 @@ class GParticleEmitter implements IGPrototypable
 		return g2d_modules;
 	}
 
-	private var g2d_updateModules:Array<GParticleEmitterModule>;
+	private var g2d_updateParticleModules:Array<GParticleEmitterModule>;
 	
 	public function new(p_particlePool:GParticlePool = null) {
 		g2d_particlePool = (p_particlePool == null) ? GParticlePool.g2d_defaultPool : p_particlePool;
@@ -105,16 +106,18 @@ class GParticleEmitter implements IGPrototypable
 	
 	public function addModule(p_module:GParticleEmitterModule):Void {
 		g2d_modules.push(p_module);
+		p_module.addedToEmitter(this);
 	}
 	
 	public function removeModule(p_module:GParticleEmitterModule):Void {
 		g2d_modules.remove(p_module);
+		p_module.removedFromEmitter(this);
 	}
 	
 	private function invalidateUpdateModules():Void {
-		g2d_updateModules = new Array<GParticleEmitterModule>();
+		g2d_updateParticleModules = new Array<GParticleEmitterModule>();
 		for (module in g2d_modules) {
-			if (module.updateModule) g2d_updateModules.push(module);
+			if (module.updateParticleModule && module.enabled) g2d_updateParticleModules.push(module);
 		}
 	}
 	
@@ -131,15 +134,19 @@ class GParticleEmitter implements IGPrototypable
 			//g2d_currentDuration = duration + Math.random() * durationVariance;
 			g2d_accumulatedTime%=g2d_currentDuration;
 		}
+
+		for (module in g2d_modules) {
+			if (module.updateEmitterModule && module.enabled) module.updateEmitter(this, p_deltaTime);
+		}
 		
-		g2d_doEmission(p_deltaTime);
+		doEmission(p_deltaTime);
 
 		var particle:GParticle = g2d_firstParticle;
-		if (particle != null && g2d_updateModules.length>0) {
+		if (particle != null && g2d_updateParticleModules.length>0) {
 			while (particle != null) {
 				var next:GParticle = particle.g2d_next;
-				for (module in g2d_updateModules) {
-					if (module.updateModule && module.enabled) module.update(this, particle, p_deltaTime);
+				for (module in g2d_updateParticleModules) {
+					module.updateParticle(this, particle, p_deltaTime);
 				}
 				particle = next;
 			}
@@ -153,7 +160,7 @@ class GParticleEmitter implements IGPrototypable
         }
 	}
 	
-	inline private function g2d_doEmission(p_deltaTime:Float):Void {
+	inline private function doEmission(p_deltaTime:Float):Void {
 		if (emit) {
 			// If we passed duration and not looping stop the emitter
 			if (g2d_accumulatedTime > g2d_currentDuration) {
@@ -224,7 +231,7 @@ class GParticleEmitter implements IGPrototypable
         particle.g2d_spawn(this);
 		
 		for (module in g2d_modules) {
-			if (module.spawnModule && module.enabled) module.spawn(this, particle);
+			if (module.spawnParticleModule && module.enabled) module.spawnParticle(this, particle);
 		}
 		
 		return particle;

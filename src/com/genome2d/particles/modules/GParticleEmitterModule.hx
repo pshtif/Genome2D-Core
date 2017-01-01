@@ -15,17 +15,26 @@ import com.genome2d.proto.IGPrototypable;
 class GParticleEmitterModule implements IGPrototypable
 {
 	@prototype
-	public var spawnModule:Bool = false;
+	public var spawnParticleModule:Bool = false;
 
 	@prototype
-	public var updateModule:Bool = false;
+	public var updateParticleModule:Bool = false;
+
+	@prototype
+	public var updateEmitterModule:Bool = false;
 
 	@prototype
 	public var enabled:Bool = true;
 	
 	public function new() {}
 	
-	public function spawn(p_emitter:GParticleEmitter, p_particle:GParticle):Void {}
+	public function spawnParticle(p_emitter:GParticleEmitter, p_particle:GParticle):Void {}
 	
-	public function update(p_emitter:GParticleEmitter, p_particle:GParticle, p_deltaTime:Float):Void {}
+	public function updateParticle(p_emitter:GParticleEmitter, p_particle:GParticle, p_deltaTime:Float):Void {}
+
+	public function updateEmitter(p_emitter:GParticleEmitter, p_deltaTime:Float):Void {}
+
+	public function addedToEmitter(p_emitter:GParticleEmitter):Void {}
+
+	public function removedFromEmitter(p_emitter:GParticleEmitter):Void {}
 }
