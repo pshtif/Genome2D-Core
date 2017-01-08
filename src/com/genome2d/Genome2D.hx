@@ -8,6 +8,8 @@
  */
 package com.genome2d;
 
+import com.genome2d.tween.GTween;
+import com.genome2d.tween.GTweenStep;
 import com.genome2d.input.GMouseInputType;
 import com.genome2d.globals.GParameters;
 import com.genome2d.debug.GDebug;
@@ -314,6 +316,7 @@ class Genome2D implements IGDebuggableInternal
 	public function update(p_deltaTime:Float):Void {
         g2d_currentFrameDeltaTime = p_deltaTime;
         g2d_accumulatedDeltaTime += g2d_currentFrameDeltaTime;
+        GTween.update(p_deltaTime);
         onUpdate.dispatch(g2d_currentFrameDeltaTime);
 	}
 
