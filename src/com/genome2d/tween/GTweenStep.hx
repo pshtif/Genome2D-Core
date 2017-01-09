@@ -1,5 +1,7 @@
 package com.genome2d.tween;
 
+import com.genome2d.tween.interp.GCurveInterp;
+import com.genome2d.geom.GCurve;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.tween.interp.GFloatInterp;
 import com.genome2d.tween.easing.GLinear;
@@ -78,7 +80,7 @@ class GTweenStep {
     }
 
     public function skip():Void {
-        for (interp in g2d_interps) interp.set(interp.to);
+        for (interp in g2d_interps) interp.set(interp.getFinalValue());
         finish();
     }
 
@@ -128,7 +130,11 @@ class GTweenStep {
         return g2d_sequence.addStep(getPoolInstance());
     }
 
-    public function prop(p_property:String, p_value:Float, p_duration:Float):GTweenStep {
+    public function propF(p_property:String, p_value:Float, p_duration:Float):GTweenStep {
         return addInterp(p_property, p_duration, new GFloatInterp(this, p_property, p_value, p_duration));
+    }
+
+    public function propC(p_property:String, p_value:GCurve, p_duration:Float):GTweenStep {
+        return addInterp(p_property, p_duration, new GCurveInterp(this, p_property, p_value, p_duration));
     }
 }

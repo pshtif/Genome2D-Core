@@ -7,11 +7,11 @@ interface IGInterp {
     public var name:String;
     public var ease:GEase;
     public var from:Float;
-    public var to:Float;
     var hasUpdated:Bool;
 
     public function update(delta:Float):Void;
     public function set(val:Float):Void;
+    public function getFinalValue():Dynamic;
 
     function check():Void;
 }

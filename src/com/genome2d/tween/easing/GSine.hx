@@ -2,16 +2,17 @@
 	
 	
 class GSine {
-	
-	
-	public static inline function easeIn(start:Float, delta:Float, t:Float):Float {
-		return -delta * Math.cos(t * (Math.PI / 2)) + delta + start;
+
+	inline static public function easeIn(p_t:Float):Float {
+		return -Math.cos(p_t * (Math.PI / 2));
 	}
-	public static inline function easeOut(start:Float, delta:Float, t:Float):Float {
-		return delta * Math.sin(t * (Math.PI / 2)) + start;
+
+	inline static public function easeOut(p_t:Float):Float {
+		return Math.sin(p_t * (Math.PI / 2));
 	}
-	public static inline function easeInOut(start:Float, delta:Float, t:Float):Float {
-		return (-delta * 0.5) * (Math.cos(Math.PI * t) - 1) + start;
+
+	inline static public function easeInOut(p_t:Float):Float {
+		return -0.5 * (Math.cos(Math.PI * p_t) - 1);
 	}
 		
 }

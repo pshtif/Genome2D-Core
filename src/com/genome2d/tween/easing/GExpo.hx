@@ -2,22 +2,20 @@
 
 class GExpo {
 	
-	public static inline function easeIn(start:Float, delta:Float, t:Float):Float {
-		return t == 0 ? start : delta * Math.pow(2, 10 * (t - 1)) + start;
+	inline static public function easeIn(p_t:Float):Float {
+		return p_t == 0 ? 0 : Math.pow(2, 10 * (p_t - 1));
 	}
-	public static inline function easeOut(start:Float, delta:Float, t:Float):Float {
-		return t == 1 ? start + delta : delta * (1 - Math.pow(2, -10 * t)) + start;
+
+	inline static public function easeOut(p_t:Float):Float {
+		return p_t == 1 ? 1 : (1 - Math.pow(2, -10 * p_t));
 	}
-	public static inline function easeInOut(start:Float, delta:Float, t:Float):Float {
-		if (t == 0) {
-			return start;
+
+	inline static public function easeInOut(p_t:Float):Float {
+		if (p_t == 0 || p_t == 1) return p_t;
+
+		if ((p_t *= 2.0) < 1.0) {
+			return 0.5 * Math.pow(2, 10 * (p_t - 1));
 		}
-		if (t == 1) {
-			return start + delta;
-		}
-		if ((t *= 2.0) < 1.0) {
-			return delta / 2 * Math.pow(2, 10 * (t - 1)) + start;
-		}
-		return delta / 2 * (2 - Math.pow(2, -10 * --t)) + start;
+		return 0.5 * (2 - Math.pow(2, -10 * --p_t));
 	}	
 }

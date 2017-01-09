@@ -2,25 +2,25 @@ package com.genome2d.tween.easing;
 
 class GBounce {
 
-	public static inline function easeIn(start:Float, delta:Float, t:Float):Float {
-		return delta - easeOut(0, delta, 1 - t) + start;
+	inline static public function easeIn(p_t:Float):Float {
+		return -easeOut(1 - p_t);
 	}
-	public static inline function easeOut(start:Float, delta:Float, t:Float):Float {
-		if (t < (1/2.75)) {
-			return delta * (7.5625 * t * t) + start;
-		} else if (t < (2/2.75)) {
-			return delta * (7.5625 * (t -= (1.5 / 2.75)) * t + .75) + start;
-		} else if (t < (2.5/2.75)) {
-			return delta * (7.5625 * (t -= (2.25 / 2.75)) * t + .9375) + start;
+	inline static public function easeOut(p_t:Float):Float {
+		if (p_t < (1/2.75)) {
+			return (7.5625 * p_t * p_t);
+		} else if (p_t < (2/2.75)) {
+			return (7.5625 * (p_t -= (1.5 / 2.75)) * p_t + .75);
+		} else if (p_t < (2.5/2.75)) {
+			return (7.5625 * (p_t -= (2.25 / 2.75)) * p_t + .9375);
 		} else {
-			return delta * (7.5625 * (t -= (2.625 / 2.75)) * t + .984375) + start;
+			return (7.5625 * (p_t -= (2.625 / 2.75)) * p_t + .984375);
 		}
 	}
-	public static inline function easeInOut(start:Float, delta:Float, t:Float):Float {
-		if (t < 0.5) {
-			return easeIn(0, delta, t*2) * .5 + start;
+	inline static public function easeInOut(p_t:Float):Float {
+		if (p_t < 0.5) {
+			return easeIn(p_t*2) * .5;
 		} else {
-			return easeOut(0, delta, t*2-1) * .5 + delta *.5 + start; 
+			return easeOut(p_t*2-1) * .5 + .5;
 		}
 	}
 		

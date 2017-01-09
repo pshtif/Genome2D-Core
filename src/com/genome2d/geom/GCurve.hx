@@ -54,7 +54,7 @@ class GCurve implements IGPrototypable {
         return g2d_pathLength == 0;
     }
 
-    private function addSegment (p_segment:Segment):Void {
+    private function addSegment(p_segment:Segment):Void {
         g2d_segments.push(p_segment);
         g2d_totalStrength += p_segment.strength;
         g2d_pathLength++;
@@ -76,12 +76,12 @@ class GCurve implements IGPrototypable {
         return (g2d_pathLength>0) ? g2d_segments[g2d_pathLength-1].end : Math.NaN;
     }
 
-    public function calculate(k:Float):Float {
+    public function calculate(p_delta:Float):Float {
         var r:Float = start;
         if (g2d_pathLength == 1) {
-            r = g2d_segments[0].calculate(start, k);
+            r = g2d_segments[0].calculate(start, p_delta);
         } else if (g2d_pathLength > 1) {
-            var ratio:Float = k * g2d_totalStrength;
+            var ratio:Float = p_delta * g2d_totalStrength;
             var lastEnd:Float = start;
 
             for (i in 0...g2d_pathLength) {
@@ -93,6 +93,7 @@ class GCurve implements IGPrototypable {
                     r = path.calculate(lastEnd, ratio / path.strength);
                 }
             }
+            trace(lastEnd, p_delta, ratio, g2d_totalStrength, r);
         }
 
         return r;
@@ -132,8 +133,8 @@ class LinearSegment extends Segment {
         super (p_end, p_strength);
     }
 
-    override public function calculate (p_start:Float, p_d:Float):Float {
-        return p_start + p_d * (end - p_start);
+    override public function calculate (p_start:Float, p_delta:Float):Float {
+        return p_start + p_delta * (end - p_start);
     }
 }
 
@@ -147,9 +148,9 @@ class QuadraticBezierSegment extends Segment {
     }
 
 
-    override public function calculate (p_start:Float, p_d:Float):Float {
-        var inv:Float = (1 - p_d);
-        return inv * inv * p_start + 2 * inv * p_d * control + p_d * p_d * end;
+    override public function calculate (p_start:Float, p_delta:Float):Float {
+        var inv:Float = (1 - p_delta);
+        return inv * inv * p_start + 2 * inv * p_delta * control + p_delta * p_delta * end;
     }
 }
 
@@ -166,10 +167,10 @@ class CubicBezierSegment extends Segment {
     }
 
 
-    override public function calculate (p_start:Float, p_d:Float):Float {
-        var inv:Float = (1 - p_d);
+    override public function calculate (p_start:Float, p_delta:Float):Float {
+        var inv:Float = (1 - p_delta);
         var inv2:Float = inv*inv;
-        var d2:Float = p_d*p_d;
-        return inv2 * inv * p_start + 3 * inv2 * p_d * control1 + 3 * inv * d2 * control2 + d2 * p_d * end;
+        var d2:Float = p_delta*p_delta;
+        return inv2 * inv * p_start + 3 * inv2 * p_delta * control1 + 3 * inv * d2 * control2 + d2 * p_delta * end;
     }
 }

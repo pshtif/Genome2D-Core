@@ -2,18 +2,20 @@ package com.genome2d.tween.easing;
 
 class GQuad {
 	
-	public static inline function easeIn(start:Float, delta:Float, t:Float):Float {
-		return delta * t * t + start;
+	inline static public function easeIn(p_t:Float):Float {
+		return p_t * p_t;
 	}
-	public static inline function easeOut(start:Float, delta:Float, t:Float):Float {
-		return -delta * t * (t - 2) + start;
+
+	inline static public function easeOut(p_t:Float):Float {
+		return -p_t * (p_t - 2);
 	}
-	public static inline function easeInOut(start:Float, delta:Float, t:Float):Float {
-		t *= 2;
-		if (t < 1) {
-			return delta / 2 * t * t + start;
+
+	inline static public function easeInOut(p_t:Float):Float {
+		p_t *= 2;
+		if (p_t < 1) {
+			return .5 * p_t * p_t;
 		}
-		return -delta / 2 * ((t - 1) * (t - 3) - 1) + start;
+		return -.5 * ((p_t - 1) * (p_t - 3) - 1);
 	}
 	
 }
