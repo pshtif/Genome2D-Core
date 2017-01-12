@@ -51,7 +51,7 @@ class GUI extends GComponent implements IGRenderable {
 	}
 
     public function getBounds(p_target:GRectangle = null):GRectangle {
-        return null;
+        return g2d_bounds;
     }
 
     public function captureMouseInput(p_input:GMouseInput):Void {
