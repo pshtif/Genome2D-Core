@@ -276,7 +276,7 @@ class GUITextureSkin extends GUISkin {
 	
 	override private function elementModelChanged_handler(p_element:GUIElement):Void {
 		if (bindTextureToModel) {
-			texture =  (p_element.getModel() != null) ? GTextureManager.getTexture(p_element.getModel().toString()) : null;
+			texture =  (p_element.model != null) ? GTextureManager.getTexture(p_element.model) : null;
 		}
     }
 	

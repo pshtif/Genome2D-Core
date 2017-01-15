@@ -233,29 +233,41 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         }
     }
 
-	@prototype
-    public function setAlign(p_align:Int):Void {
-		g2d_anchorLeft = g2d_anchorRight = ((p_align - 1) % 3) * 0.5;
-		g2d_anchorTop = g2d_anchorBottom = Std.int((p_align - 1) / 3) * 0.5;
-		g2d_pivotX = ((p_align - 1) % 3) * 0.5;		
-		g2d_pivotY = Std.int((p_align - 1) / 3) * 0.5;		
-        setDirty();
+    private var g2d_anchorAlign:Int;
+    #if swc @:extern #end
+    public var anchorAlign(get,set):Int;
+    #if swc @:getter(anchorAlign) #end
+    inline private function get_anchorAlign():Int {
+        return g2d_anchorAlign;
     }
-	
-	@prototype
-    public function setAnchorAlign(p_align:Int):Void {
-		g2d_anchorLeft = g2d_anchorRight = ((p_align - 1) % 3) * 0.5;
-		g2d_anchorTop = g2d_anchorBottom = Std.int((p_align - 1) / 3) * 0.5;
-        setDirty();
-    }
-	
-	@prototype
-    public function setPivotAlign(p_align:Int):Void {
-		g2d_pivotX = ((p_align - 1) % 3) * 0.5;		
-		g2d_pivotY = Std.int((p_align - 1) / 3) * 0.5;
-        setDirty();
+    #if swc @:setter(anchorAlign) #end
+    inline private function set_anchorAlign(p_value:Int):Int {
+        if (p_value != g2d_anchorAlign) {
+            g2d_anchorAlign = p_value;
+            g2d_anchorLeft = g2d_anchorRight = ((g2d_anchorAlign - 1) % 3) * 0.5;
+            g2d_anchorTop = g2d_anchorBottom = Std.int((g2d_anchorAlign - 1) / 3) * 0.5;
+            setDirty();
+        }
+        return g2d_anchorAlign;
     }
 
+    private var g2d_pivotAlign:Int;
+    #if swc @:extern #end
+    public var pivotAlign(get,set):Int;
+    #if swc @:getter(pivotAlign) #end
+    inline private function get_pivotAlign():Int {
+        return g2d_pivotAlign;
+    }
+    #if swc @:setter(pivotAlign) #end
+    inline private function set_pivotAlign(p_value:Int):Int {
+        if (p_value != g2d_pivotAlign) {
+            g2d_pivotAlign = p_value;
+            g2d_pivotX = ((g2d_pivotAlign - 1) % 3) * 0.5;
+            g2d_pivotY = Std.int((g2d_pivotAlign - 1) / 3) * 0.5;
+            setDirty();
+        }
+        return g2d_anchorAlign;
+    }
 
     private var g2d_mouseDown:String = "";
 
@@ -518,13 +530,18 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_model:String = "";
-    public function getModel():String {
+    @prototype
+    #if swc @:extern #end
+    public var model(get,set):String;
+    #if swc @:getter(model) #end
+    public function get_model():String {
         return g2d_model;
     }
-	@prototype
-    public function setModel(p_value:Dynamic):Void {
+    #if swc @:setter(model) #end
+    public function set_model(p_value:String):String {
 		if (setModelHook != null) p_value = setModelHook(p_value);
-		
+        g2d_model = p_value;
+        /*
 		// Xml assignment
         if (Std.is(p_value, Xml)) {
             var xml:Xml = cast (p_value, Xml);
@@ -554,7 +571,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                 if (child != null) child.setModel(Reflect.field(p_value, it));
             }
         }
+        /**/
         onModelChanged.dispatch(this);
+
+        return g2d_model;
     }
 	
     private var g2d_onModelChanged:GCallback1<GUIElement>;
@@ -644,8 +664,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
     #if swc @:setter(anchorLeft) #end
     inline private function set_anchorLeft(p_value:Float):Float {
-        g2d_anchorLeft = p_value;
-        setDirty();
+        if (g2d_anchorAlign == 0) {
+            g2d_anchorLeft = p_value;
+            setDirty();
+        }
         return g2d_anchorLeft;
     }
 
@@ -658,8 +680,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
     #if swc @:setter(anchorTop) #end
     inline private function set_anchorTop(p_value:Float):Float {
-        g2d_anchorTop = p_value;
-        setDirty();
+        if (g2d_anchorAlign == 0) {
+            g2d_anchorTop = p_value;
+            setDirty();
+        }
         return g2d_anchorTop;
     }
 
@@ -672,8 +696,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
     #if swc @:setter(anchorRight) #end
     inline private function set_anchorRight(p_value:Float):Float {
-        g2d_anchorRight = p_value;
-        setDirty();
+        if (g2d_anchorAlign == 0) {
+            g2d_anchorRight = p_value;
+            setDirty();
+        }
         return g2d_anchorRight;
     }
 
@@ -686,8 +712,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
     #if swc @:setter(anchorBottom) #end
     inline private function set_anchorBottom(p_value:Float):Float {
-        g2d_anchorBottom = p_value;
-        setDirty();
+        if (g2d_anchorAlign == 0) {
+            g2d_anchorBottom = p_value;
+            setDirty();
+        }
         return g2d_anchorBottom;
     }
 

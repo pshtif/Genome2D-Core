@@ -31,18 +31,18 @@ class GUIInputField extends GUIElement
 					var newValue:String = g2d_model.substring(0, skin.cursorStartIndex);
 					newValue += String.fromCharCode(input.charCode);
 					newValue += g2d_model.substring(skin.cursorEndIndex, g2d_model.length);
-					setModel(newValue);
+					model = newValue;
 				// BACKSPACE
 				case 8:
 					if (skin.cursorStartIndex != skin.cursorEndIndex) {
 						var newValue:String = g2d_model.substring(0, skin.cursorStartIndex);
 						newValue += g2d_model.substring(skin.cursorEndIndex, g2d_model.length);
-						setModel(newValue);
+						model = newValue;
 						skin.cursorStartIndex = skin.cursorEndIndex = skin.cursorStartIndex;
 					} else {
 						var newValue:String = g2d_model.substring(0, skin.cursorStartIndex-1);
 						newValue += g2d_model.substring(skin.cursorEndIndex, g2d_model.length);
-						setModel(newValue);
+						model = newValue;
 						skin.cursorStartIndex = skin.cursorEndIndex = skin.cursorStartIndex>0?skin.cursorStartIndex-1:0;
 					}
 				// DELETE
@@ -50,12 +50,12 @@ class GUIInputField extends GUIElement
 					if (skin.cursorStartIndex != skin.cursorEndIndex) {
 						var newValue:String = g2d_model.substring(0, skin.cursorStartIndex);
 						newValue += g2d_model.substring(skin.cursorEndIndex, g2d_model.length);
-						setModel(newValue);
+						model = newValue;
 						skin.cursorStartIndex = skin.cursorEndIndex = skin.cursorStartIndex;
 					} else {
 						var newValue:String = g2d_model.substring(0, skin.cursorStartIndex);
 						newValue += g2d_model.substring(skin.cursorEndIndex+1, g2d_model.length);
-						setModel(newValue);
+						model = newValue;
 					}
 				// RIGHT ARROW
 				case 39:
@@ -77,7 +77,7 @@ class GUIInputField extends GUIElement
 						var newValue:String = g2d_model.substring(0, skin.cursorStartIndex);
 						newValue += String.fromCharCode(input.charCode);
 						newValue += g2d_model.substring(skin.cursorEndIndex, g2d_model.length);
-						setModel(newValue);
+						model = newValue;
 						skin.cursorStartIndex = skin.cursorEndIndex = skin.cursorStartIndex + 1;
 					}
 			}

@@ -202,7 +202,7 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
     }
 
     override private function elementModelChanged_handler(p_element:GUIElement):Void {
-        text =  (p_element.getModel() != null) ? p_element.getModel().toString() : "";
+        text = (p_element.model != null) ? p_element.model : "";
     }
 
     override public function clone():GUISkin {
@@ -276,7 +276,7 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
                 }
         }
 
-        g2d_element.setModel(text);
+        g2d_element.model = text;
     }
 
     private function gotFocus():Void {
