@@ -1,5 +1,8 @@
 package com.genome2d.tween;
 
+import com.genome2d.proto.GPrototypeFactory;
+import com.genome2d.proto.GPrototype;
+import com.genome2d.proto.IGPrototypable;
 import com.genome2d.tween.interp.GCurveInterp;
 import com.genome2d.geom.GCurve;
 import com.genome2d.macros.MGDebug;
@@ -7,8 +10,13 @@ import com.genome2d.tween.interp.GFloatInterp;
 import com.genome2d.tween.easing.GLinear;
 import com.genome2d.tween.easing.GEase;
 
+@prototypeName("tweenStep")
 @:access(com.genome2d.tween.GTweenSequence)
-class GTweenStep {
+class GTweenStep implements IGPrototypable {
+
+    /****************************************************************************************************
+	 * 	POOLING CODE
+	 ****************************************************************************************************/
     private var g2d_poolNext:GTweenStep;
     static private var g2d_poolFirst:GTweenStep;
     static public function getPoolInstance():GTweenStep {
@@ -27,10 +35,26 @@ class GTweenStep {
     private var g2d_sequence:GTweenSequence;
     private var g2d_previous:GTweenStep;
     private var g2d_next:GTweenStep;
-    private var g2d_interps:Map<String,IGInterp>;
+    private var g2d_interps:Array<IGInterp>;
     private var g2d_time:Float;
+
     private var g2d_duration:Float;
+    @prototype
+    public var duration(get, set):Float;
+    #if swc @:getter(duration) #end
+    inline private function get_duration():Float {
+        return g2d_duration;
+    }
+    #if swc @:setter(duration) #end
+    inline public function set_duration(p_value:Float):Float {
+        return g2d_duration = p_value;
+    }
+
     private var g2d_lastInterp:IGInterp;
+    private var g2d_target:Dynamic;
+
+    @prototype
+    public var targetId:String;
 
     private var g2d_onComplete:Void->Void;
     private var g2d_onUpdate:Float->Void;
@@ -38,7 +62,7 @@ class GTweenStep {
     private var g2d_empty:Bool;
 
     inline public function getTarget():Dynamic {
-        return g2d_sequence.g2d_target;
+        return g2d_target;
     }
 
     inline public function getSequence():GTweenSequence {
@@ -50,12 +74,11 @@ class GTweenStep {
         g2d_empty = true;
     }
 
-    private function addInterp(p_property:String, p_duration:Float, p_interp:IGInterp):GTweenStep {
-        if(g2d_interps == null) g2d_interps = new Map<String,IGInterp>();
-        g2d_duration = Math.max(g2d_duration, p_duration);
+    private function addInterp(p_interp:IGInterp):GTweenStep {
+        if(g2d_interps == null) g2d_interps = new Array<IGInterp>();
+        g2d_duration = Math.max(g2d_duration, p_interp.duration);
         g2d_lastInterp = p_interp;
-        if (g2d_interps.exists(p_property)) MGDebug.WARNING("Property interpolator already in sequence", p_property);
-        g2d_interps.set(p_property, p_interp);
+        g2d_interps.push(p_interp);
         g2d_empty = false;
         return this;
     }
@@ -72,7 +95,7 @@ class GTweenStep {
 
     inline public function ease(p_ease:GEase, p_all:Bool = true):GTweenStep {
         if (p_all) {
-            if(g2d_interps != null) for (interp in g2d_interps) interp.ease = p_ease;
+            if (g2d_interps != null) for (interp in g2d_interps) interp.ease = p_ease;
         } else {
             if (g2d_lastInterp != null ) g2d_lastInterp.ease = p_ease;
         }
@@ -86,11 +109,12 @@ class GTweenStep {
 
     inline private function finish():Void {
         if (g2d_onComplete != null) g2d_onComplete();
-        g2d_sequence.removeStep(this);
-        dispose();
+        g2d_sequence.nextStep();
+        g2d_time = 0;
+        if (g2d_interps != null) for (interp in g2d_interps) interp.reset();
     }
 
-    inline private function dispose():Void {
+    private function dispose():Void {
         g2d_sequence = null;
         g2d_previous = null;
         g2d_next = null;
@@ -103,17 +127,21 @@ class GTweenStep {
         g2d_poolFirst = this;
     }
 
-    public function update(p_delta:Float):Void {
-        if (g2d_duration == -1) return;
-
+    public function update(p_delta:Float):Float {
+        var rest:Float = 0;
         if (g2d_interps != null) {
-            for (interpolator in g2d_interps) {
-                if(!interpolator.hasUpdated) interpolator.check();
-                interpolator.update(p_delta);
+            for (interp in g2d_interps) {
+                if(!interp.hasUpdated) interp.check();
+                interp.update(p_delta);
             }
         }
 
         g2d_time += p_delta;
+        if (g2d_time >= g2d_duration) {
+            rest = g2d_time-g2d_duration;
+            g2d_time = g2d_duration;
+        }
+
         if (g2d_onUpdate != null) {
             g2d_onUpdate(g2d_time / g2d_duration);
         }
@@ -121,20 +149,69 @@ class GTweenStep {
         if (g2d_time >= g2d_duration) {
             finish();
         }
+
+        return rest;
     }
 
     inline public function delay(p_duration:Float):GTweenStep {
         var step:GTweenStep = (g2d_empty) ? this : g2d_sequence.addStep(getPoolInstance());
         step.g2d_duration = p_duration;
         g2d_empty = false;
-        return g2d_sequence.addStep(getPoolInstance());
+        step = g2d_sequence.addStep(getPoolInstance());
+        step.g2d_target = g2d_target;
+        step.targetId = targetId;
+        return step;
     }
 
-    public function propF(p_property:String, p_value:Float, p_duration:Float):GTweenStep {
-        return addInterp(p_property, p_duration, new GFloatInterp(this, p_property, p_value, p_duration));
+    public function propF(p_property:String, p_to:Float, p_duration:Float):GTweenStep {
+        var interp:GFloatInterp = new GFloatInterp(this);
+        interp.property = p_property;
+        interp.duration = p_duration;
+        interp.to = p_to;
+        return addInterp(interp);
     }
 
     public function propC(p_property:String, p_value:GCurve, p_duration:Float):GTweenStep {
-        return addInterp(p_property, p_duration, new GCurveInterp(this, p_property, p_value, p_duration));
+        return addInterp(new GCurveInterp(this, p_property, p_value, p_duration));
+    }
+
+    inline public function create(p_target:Dynamic):GTweenStep {
+        var step:GTweenStep = g2d_sequence.addStep(getPoolInstance());
+        if (Std.is(p_target,String)) {
+            step.targetId = p_target;
+        } else {
+            step.g2d_target = p_target;
+        }
+        return step;
+    }
+
+    /****************************************************************************************************
+	 * 	PROTOTYPE CODE
+	 ****************************************************************************************************/
+
+    public function getPrototype(p_prototype:GPrototype = null):GPrototype {
+        p_prototype = getPrototypeDefault(p_prototype);
+
+        if (g2d_interps != null) {
+            for (interp in g2d_interps) {
+                if (Std.is(interp,IGPrototypable)) {
+                    p_prototype.addChild(cast (interp, IGPrototypable).getPrototype(), "tweenProps");
+                }
+            }
+        }
+
+        return p_prototype;
+    }
+
+    public function bindPrototype(p_prototype:GPrototype):Void {
+        bindPrototypeDefault(p_prototype);
+
+        var interpPrototypes:Array<GPrototype> = p_prototype.getGroup("tweenProps");
+        if (interpPrototypes != null) {
+            for (interpPrototype in interpPrototypes) {
+                var interp:IGInterp = cast GPrototypeFactory.createInstance(interpPrototype, [this]);
+                addInterp(interp);
+            }
+        }
     }
 }

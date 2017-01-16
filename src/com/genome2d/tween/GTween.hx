@@ -1,4 +1,6 @@
 package com.genome2d.tween;
+import com.genome2d.proto.GPrototype;
+import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.tween.easing.GLinear;
 import com.genome2d.tween.easing.GEase;
 
@@ -11,14 +13,29 @@ class GTween {
     
     static private var g2d_sequences:Array<GTweenSequence> = [];
 
-    inline static private function createSequence(p_target:Dynamic):GTweenSequence {
-        var sequence:GTweenSequence = GTweenSequence.getPoolInstance(p_target);
+    inline static private function createSequence():GTweenSequence {
+        var sequence:GTweenSequence = GTweenSequence.getPoolInstance();
         g2d_sequences.push(sequence);
         return sequence;
     }
 
+    inline static private function addSequence(p_sequence:GTweenSequence):Void {
+        g2d_sequences.push(p_sequence);
+    }
+
+    static public function createFromPrototype(p_prototype:GPrototype):GTweenStep {
+        var sequence:GTweenSequence = cast GPrototypeFactory.createInstance(p_prototype);
+        return sequence.getLastStep();
+    }
+
     static public function create(p_target:Dynamic):GTweenStep {
-        return createSequence(p_target).addStep(GTweenStep.getPoolInstance());
+        var step:GTweenStep = createSequence().addStep(GTweenStep.getPoolInstance());
+        if (Std.is(p_target,String)) {
+            step.targetId = p_target;
+        } else {
+            step.g2d_target = p_target;
+        }
+        return step;
     }
 
     static public function delay(p_callback:Void->Void, p_interval:Float):GTweenStep {
