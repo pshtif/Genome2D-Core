@@ -234,6 +234,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_anchorAlign:Int;
+    @prototype
     #if swc @:extern #end
     public var anchorAlign(get,set):Int;
     #if swc @:getter(anchorAlign) #end
@@ -252,6 +253,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_pivotAlign:Int;
+    @prototype
     #if swc @:extern #end
     public var pivotAlign(get,set):Int;
     #if swc @:getter(pivotAlign) #end
