@@ -6,21 +6,18 @@ import com.genome2d.tween.easing.GEase;
 
 @:access(com.genome2d.tween.GTweenStep)
 @:access(com.genome2d.tween.GTweenSequence)
+@:access(com.genome2d.tween.GTweenTimeline)
 class GTween {
-    static private var g2d_dirty:Bool = false;
     static public var timeScale:Float = 1.0;
     static public var defaultEase:GEase = GLinear.none;
-    
-    static private var g2d_sequences:Array<GTweenSequence> = [];
 
-    inline static private function createSequence():GTweenSequence {
-        var sequence:GTweenSequence = GTweenSequence.getPoolInstance();
-        g2d_sequences.push(sequence);
-        return sequence;
-    }
+    static private var g2d_currentTimeline:GTweenTimeline;
+    static private var g2d_timelines:Array<GTweenTimeline>;
 
-    inline static private function addSequence(p_sequence:GTweenSequence):Void {
-        g2d_sequences.push(p_sequence);
+    inline static private function addTimeline(p_timeline:GTweenTimeline, p_setCurrent:Bool = false):Void {
+        if (p_setCurrent) g2d_currentTimeline = p_timeline;
+        if (g2d_timelines == null) g2d_timelines = new Array<GTweenTimeline>();
+        g2d_timelines.push(p_timeline);
     }
 
     static public function createFromPrototype(p_prototype:GPrototype):GTweenStep {
@@ -29,33 +26,32 @@ class GTween {
     }
 
     static public function create(p_target:Dynamic):GTweenStep {
-        var step:GTweenStep = createSequence().addStep(GTweenStep.getPoolInstance());
+        var sequence:GTweenSequence = GTweenSequence.getPoolInstance();
+
+        if (g2d_currentTimeline == null) addTimeline(new GTweenTimeline(), true);
+        g2d_currentTimeline.addSequence(sequence);
+
+        var step:GTweenStep = sequence.addStep(GTweenStep.getPoolInstance());
         if (Std.is(p_target,String)) {
             step.targetId = p_target;
         } else {
             step.g2d_target = p_target;
         }
+
+        sequence.run();
+
         return step;
     }
 
-    static public function delay(p_callback:Void->Void, p_interval:Float):GTweenStep {
-        return create(null).delay(p_interval).onComplete(p_callback);
+    static public function delay(p_time:Float, p_callback:Array<Dynamic>->Void, p_args:Array<Dynamic> = null):GTweenStep {
+        return create(null).delay(p_time).onComplete(p_callback, p_args);
     }
 
-    static public function update(p_delta:Float) {
+    static public function update(p_delta:Float):Void {
         p_delta *= timeScale/1000;
-        for (sequence in g2d_sequences) {
-            sequence.update(p_delta);
-        }
-
-        if (g2d_dirty) {
-            var count:Int = g2d_sequences.length;
-            while (count-->0) {
-                var sequence:GTweenSequence = g2d_sequences[count];
-                if (sequence.isComplete()) {
-                    g2d_sequences.splice(count, 1);
-                    sequence.dispose();
-                }
+        if (g2d_timelines != null) {
+            for (timeline in g2d_timelines) {
+                timeline.update(p_delta);
             }
         }
     }

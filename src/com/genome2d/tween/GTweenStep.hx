@@ -56,7 +56,8 @@ class GTweenStep implements IGPrototypable {
     @prototype
     public var targetId:String;
 
-    private var g2d_onComplete:Void->Void;
+    private var g2d_onComplete:Array<Dynamic>->Void;
+    private var g2d_onCompleteArgs:Array<Dynamic>;
     private var g2d_onUpdate:Float->Void;
 
     private var g2d_empty:Bool;
@@ -88,7 +89,8 @@ class GTweenStep implements IGPrototypable {
         return this;
     }
 
-    inline public function onComplete(p_callback:Void->Void):GTweenStep {
+    inline public function onComplete(p_callback:Array<Dynamic>->Void, p_args:Array<Dynamic> = null):GTweenStep {
+        g2d_onCompleteArgs = p_args;
         g2d_onComplete = p_callback;
         return this;
     }
@@ -108,9 +110,8 @@ class GTweenStep implements IGPrototypable {
     }
 
     inline private function finish():Void {
-        if (g2d_onComplete != null) g2d_onComplete();
+        if (g2d_onComplete != null) g2d_onComplete(g2d_onCompleteArgs);
         g2d_sequence.nextStep();
-        g2d_time = 0;
         if (g2d_interps != null) for (interp in g2d_interps) interp.reset();
     }
 
@@ -131,7 +132,6 @@ class GTweenStep implements IGPrototypable {
         var rest:Float = 0;
         if (g2d_interps != null) {
             for (interp in g2d_interps) {
-                if(!interp.hasUpdated) interp.check();
                 interp.update(p_delta);
             }
         }
@@ -153,7 +153,7 @@ class GTweenStep implements IGPrototypable {
         return rest;
     }
 
-    inline public function delay(p_duration:Float):GTweenStep {
+    public function delay(p_duration:Float):GTweenStep {
         var step:GTweenStep = (g2d_empty) ? this : g2d_sequence.addStep(getPoolInstance());
         step.g2d_duration = p_duration;
         g2d_empty = false;
@@ -175,7 +175,7 @@ class GTweenStep implements IGPrototypable {
         return addInterp(new GCurveInterp(this, p_property, p_value, p_duration));
     }
 
-    inline public function create(p_target:Dynamic):GTweenStep {
+    public function create(p_target:Dynamic):GTweenStep {
         var step:GTweenStep = g2d_sequence.addStep(getPoolInstance());
         if (Std.is(p_target,String)) {
             step.targetId = p_target;

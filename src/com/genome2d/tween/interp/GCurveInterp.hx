@@ -25,6 +25,7 @@ class GCurveInterp implements IGInterp {
     }
 
     private var g2d_time:Float;
+
     public var from:Float;
     public var to:GCurve;
     public var current:Float;
@@ -32,7 +33,7 @@ class GCurveInterp implements IGInterp {
     public var complete:Bool;
     public var property:String;
 
-    public var hasUpdated:Bool;
+    public var hasInitialized:Bool = false;
 
     public function getFinalValue():Float {
         return from + to.calculate(1);
@@ -47,15 +48,14 @@ class GCurveInterp implements IGInterp {
         g2d_time = 0.0;
     }
 
-    inline function init(p_from:Float) {
-        if(!hasUpdated){
-            this.from = p_from;
-            hasUpdated = true;
-        }
+    inline function init():Void {
+        from = Reflect.getProperty(tween.getTarget(), property);
+        hasInitialized = true;
     }
 
     public function reset():Void {
         g2d_time = 0;
+        hasInitialized = false;
     }
 
     inline public function update(p_delta:Float) {
@@ -79,12 +79,7 @@ class GCurveInterp implements IGInterp {
         }
     }
 
-    inline public function check() {
-        init( Reflect.getProperty(tween.getTarget(), property) );
-    }
-
     inline private function apply(val:Float) {
         Reflect.setProperty(tween.getTarget(), property, val);
     }
-
 }

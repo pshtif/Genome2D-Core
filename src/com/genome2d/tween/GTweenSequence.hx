@@ -10,6 +10,7 @@ import com.genome2d.callbacks.GCallback.GCallback0;
 @prototypeName("tweenSequence")
 @:access(com.genome2d.tween.GTween)
 @:access(com.genome2d.tween.GTweenStep)
+@:access(com.genome2d.tween.GTweenTimeline)
 class GTweenSequence implements IGPrototypable {
     private var g2d_poolNext:GTweenSequence;
     static private var g2d_poolFirst:GTweenSequence;
@@ -38,9 +39,7 @@ class GTweenSequence implements IGPrototypable {
 
     private var g2d_running:Bool = false;
 
-    private var g2d_currentRepeat:Int = 0;
-
-    public var repeatCount:Int = 0;
+    private var g2d_timeline:GTweenTimeline;
 
     private var g2d_complete:Bool;
     inline public function isComplete():Bool {
@@ -60,24 +59,29 @@ class GTweenSequence implements IGPrototypable {
         g2d_poolFirst = this;
     }
 
-    public function update(p_delta:Float):Void {
-        if (g2d_complete || !g2d_running) return;
+    public function update(p_delta:Float):Float {
+        if (!g2d_running) return p_delta;
 
-        if (g2d_currentStep == null) {
-            if (++g2d_currentRepeat<repeatCount || repeatCount == 0) {
-                g2d_currentStep = g2d_firstStep;
-                update(p_delta);
-            } else {
-                finish();
-            }
-        } else {
-            var rest:Float = g2d_currentStep.update(p_delta);
-            if (rest>0) update(rest);
+        var rest:Float = p_delta;
+        while (rest>0 && g2d_currentStep != null) {
+            rest = updateCurrentStep(rest);
         }
+
+        return rest;
+    }
+
+    private function updateCurrentStep(p_delta:Float):Float {
+        var rest:Float = p_delta;
+        if (g2d_currentStep == null) {
+            finish();
+        } else {
+            rest = g2d_currentStep.update(p_delta);
+        }
+        return rest;
     }
 
     inline private function finish():Void {
-        GTween.g2d_dirty = true;
+        g2d_timeline.g2d_dirty = true;
         g2d_complete = true;
     }
 

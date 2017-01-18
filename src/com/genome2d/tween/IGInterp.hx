@@ -10,12 +10,9 @@ interface IGInterp {
     public var property:String;
     public var ease:GEase;
     public var from:Float;
-    var hasUpdated:Bool;
 
     public function update(delta:Float):Void;
     public function set(val:Float):Void;
     public function getFinalValue():Dynamic;
     public function reset():Void;
-
-    function check():Void;
 }

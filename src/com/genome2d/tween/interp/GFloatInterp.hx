@@ -39,7 +39,7 @@ class GFloatInterp implements IGInterp implements IGPrototypable {
     @prototype
     public var property:String;
 
-    public var hasUpdated:Bool;
+    public var hasInitialized:Bool;
 
     public function getFinalValue():Float {
         return from + difference;
@@ -51,20 +51,20 @@ class GFloatInterp implements IGInterp implements IGPrototypable {
         g2d_time = 0;
     }
 
-    inline private function init(p_from:Float) {
-        if(!hasUpdated){
-            this.from = p_from;
-            difference = to - p_from;
-            hasUpdated = true;
-        }
+    inline private function init() {
+        from = Reflect.getProperty(g2d_tween.getTarget(), property);
+        difference = to - from;
+        hasInitialized = true;
     }
 
     inline public function reset():Void {
         g2d_time = 0;
-        hasUpdated = false;
+        hasInitialized = false;
     }
 
     inline public function update(p_delta:Float) {
+        if(!hasInitialized) init();
+
         g2d_time += p_delta;
         var c:Float;
         if (g2d_time > g2d_duration) {
@@ -79,12 +79,6 @@ class GFloatInterp implements IGInterp implements IGPrototypable {
     }
 
     inline public function set(p_value:Float) {
-        if (p_value != current) {
-            Reflect.setProperty(g2d_tween.getTarget(), property, p_value);
-        }
-    }
-
-    inline public function check() {
-        init( Reflect.getProperty(g2d_tween.getTarget(), property) );
+        if (p_value != current) Reflect.setProperty(g2d_tween.getTarget(), property, p_value);
     }
 }
