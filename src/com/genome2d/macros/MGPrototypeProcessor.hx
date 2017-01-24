@@ -34,6 +34,7 @@ class MGPrototypeProcessor {
 	static public var helperIndex:Int = 0;
     static public var prototypes = [];
     static public var previous:String = "com.genome2d.proto.GPrototypeHelper";
+	static public var classFlags:Map<String,Int>;
 
     public static function build() : Array<Field> {
         var pos = Context.currentPos();
@@ -46,7 +47,11 @@ class MGPrototypeProcessor {
 
         var localClass = Context.getLocalClass().get();
 
+		if (classFlags == null) classFlags = new Map<String,Int>();
+		classFlags.set(localClass.name,0);
+
         var prototypeName:String = localClass.name;
+
         var prototypeNameOverride:Bool = false;
 		var prototypeDefaultChildGroup:String = "default";
 
@@ -61,7 +66,7 @@ class MGPrototypeProcessor {
 			}
         }
 
-        var superClass = localClass.superClass;
+		var superClass = localClass.superClass;
         var superPrototype = superClass != null;
 		
 		var hasGetPrototypeDefault = false;
@@ -72,32 +77,34 @@ class MGPrototypeProcessor {
 
         while (superClass != null) {
             var c = superClass.t.get();
-			
+
+			// Using flags otherwise haxe compiler freezes up when requesting fields of super class
+			hasGetPrototypeDefault = hasGetPrototypeDefault || ((classFlags.get(c.name) & 1) == 1);
+			hasBindPrototypeDefault = hasBindPrototypeDefault || ((classFlags.get(c.name) & 2) == 2);
+			hasToReference = hasToReference || ((classFlags.get(c.name) & 4) == 4);
+			hasPrototypeStates = hasPrototypeStates || ((classFlags.get(c.name) & 8) == 8);
+
+			/*
 			for (i in c.fields.get()) {
 				if (i.name == "getPrototypeDefault") hasGetPrototypeDefault = true;
-				if (i.name == "bindPrototypeDefault") hasBindPrototypeDefault = true;
-				if (i.name == "toReference") hasToReference = true;
-				if (i.name == "g2d_prototypeStates") hasPrototypeStates = true;
+				else if (i.name == "bindPrototypeDefault") hasBindPrototypeDefault = true;
+				else if (i.name == "toReference") hasToReference = true;
+				else if (i.name == "g2d_prototypeStates") hasPrototypeStates = true;
 			}
-			/*
-            if (prototypeNameOverride) {
-                for (meta in localClass.meta.get()) {
-                    if (meta.name == 'prototypeName' && meta.params != null) prototypeName = ExprTools.getValue(meta.params[0]);
-                }
-            }
 			/**/
+
             superClass = c.superClass;
         }
-		
+
         var hasGetPrototype = false;
         var hasBindPrototype = false;
 
         for (i in fields) {
             // Check if we need proto methods
             if (i.name == "getPrototype") hasGetPrototype = true;
-            if (i.name == "bindPrototype") hasBindPrototype = true;
-			if (i.name == "toReference") hasToReference = true;
-			if (i.name == "g2d_prototypeStates") hasPrototypeStates = true;
+            else if (i.name == "bindPrototype") hasBindPrototype = true;
+			else if (i.name == "toReference") hasToReference = true;
+			else if (i.name == "g2d_prototypeStates") hasPrototypeStates = true;
 
             if (i.meta.length == 0 || i.access.indexOf(APublic) == -1) continue;
 			
@@ -114,6 +121,7 @@ class MGPrototypeProcessor {
 					var param:String = (meta.params.length > 0) ? ExprTools.getValue(meta.params[0]) : "";
 					if (param == "getReference") extras += GPrototypeExtras.REFERENCE_GETTER;
                     switch (i.kind) {
+						/* NO LONGER SUPPORT FOR ONE WAY SETTER FUNCTIONS
 						case FFun(f):
 							if (i.name.indexOf("set") != 0) throw "Error invalid prototypable function (needs to start with set*).";
 							if (f.args.length != 1) throw "Error invalid prototypable function (needs to have single parameter).";
@@ -126,6 +134,7 @@ class MGPrototypeProcessor {
 									prototypePropertyExtras.push(GPrototypeExtras.SETTER);
                                 case _:
 							}
+						/**/
                         case FVar(t, e):							
                             switch (t) {
                                 case TPath(p):
@@ -169,6 +178,7 @@ class MGPrototypeProcessor {
 				}
 				if (hasGetPrototype) {
 					f[0].name = "getPrototypeDefault";
+					classFlags.set(localClass.name,classFlags.get(localClass.name)+1);
 					if (hasGetPrototypeDefault) f[0].access.push(AOverride);
 				}
 				fields = fields.concat(f);
@@ -195,6 +205,7 @@ class MGPrototypeProcessor {
 				}
 				if (hasBindPrototype) {
 					f[0].name = "bindPrototypeDefault";
+					classFlags.set(localClass.name,classFlags.get(localClass.name)+2);
 					if (hasBindPrototypeDefault) f[0].access.push(AOverride);
 				}
 				fields = fields.concat(f);
@@ -210,6 +221,11 @@ class MGPrototypeProcessor {
 				default:
 			}
 		}
+
+		// Set toReference flag for all IGPrototypable
+		classFlags.set(localClass.name,classFlags.get(localClass.name)+4);
+		// Set prototypeStates flag for all IGPrototypable
+		classFlags.set(localClass.name,classFlags.get(localClass.name)+8);
 
         var declPropertyNames:Array<Expr> = [];
         for (i in prototypePropertyNames) {
@@ -299,13 +315,14 @@ class MGPrototypeProcessor {
 	inline static private function extractType(typePath) {
         var typeName = typePath.name;
 		// If we getType String it ends up in infinite loop for some reason
-		if (typeName != "String") {
+		if (typeName != "String" && typeName != "Bool" && typeName != "Float" && typeName != "Array" && typeName != "Int") {
 			var type = Context.getType(typeName);
 			switch (type) {
 				case TEnum(t,p):
 					typeName = "E:"+t;
 				case _:
 			}
+			/**/
 		}
 
 		if (typeName == "Array") {

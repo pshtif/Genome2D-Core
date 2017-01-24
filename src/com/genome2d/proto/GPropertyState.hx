@@ -24,21 +24,13 @@ class GPropertyState
 	public function bind(p_instance:Dynamic):Void {
 		if (g2d_transition != "") {
 			var transition:IGTransition = GTransitionManager.getTransition(g2d_transition);
-			if (transition != null && (g2d_extras & GPrototypeExtras.SETTER) == 0) {
+			if (transition != null) {
 				transition.apply(p_instance, g2d_name, g2d_value);
-			} else {
-				if ((g2d_extras & GPrototypeExtras.SETTER) != 0) {
-					Reflect.callMethod(p_instance, Reflect.field(p_instance, g2d_name), [g2d_value]);
-				} else {
-					Reflect.setProperty(p_instance, g2d_name, g2d_value);
-				}
-			}
-		} else {
-			if ((g2d_extras & GPrototypeExtras.SETTER) != 0) {
-				Reflect.callMethod(p_instance, Reflect.field(p_instance, g2d_name), [g2d_value]);
 			} else {
 				Reflect.setProperty(p_instance, g2d_name, g2d_value);
 			}
+		} else {
+			Reflect.setProperty(p_instance, g2d_name, g2d_value);
 		}
 	}
 	

@@ -48,14 +48,12 @@ class GPrototype
 				}
 			}
 
-			if (extras & GPrototypeExtras.SETTER == 0) {
-				var value = Reflect.getProperty(p_instance, name);
-				//if (value != null) {
-				//if (value != propertyDefaults[i]) {
-					var property:GPrototypeProperty = createPrototypeProperty(name, propertyTypes[i], extras, meta, null);
-					property.setDynamicValue(value);
-				//}
-			}
+			var value = Reflect.getProperty(p_instance, name);
+			//if (value != null) {
+			//if (value != propertyDefaults[i]) {
+				var property:GPrototypeProperty = createPrototypeProperty(name, propertyTypes[i], extras, meta, null);
+				property.setDynamicValue(value);
+			//}
 		}
 	}
 	
@@ -225,11 +223,7 @@ class GPrototypeProperty {
 		var split:Array<String> = name.split(".");
 		if (split.length == 1 || split[1].split("-").indexOf("default") != -1) {
 			try {
-				if ((extras & GPrototypeExtras.SETTER) != 0) {
-					Reflect.callMethod(p_instance, Reflect.field(p_instance, split[0]), [realValue]);
-				} else {
-					Reflect.setProperty(p_instance, split[0], realValue);
-				}
+				Reflect.setProperty(p_instance, split[0], realValue);
 			} catch (e:Dynamic) {
 				//GDebug.error("Error during prototype binding: ", e);
 			}
