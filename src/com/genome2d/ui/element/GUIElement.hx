@@ -233,39 +233,39 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         }
     }
 
-    private var g2d_anchorAlign:Int;
+    private var g2d_anchorAlign:GUIAlignType = GUIAlignType.NONE;
     @prototype
     #if swc @:extern #end
-    public var anchorAlign(get,set):Int;
+    public var anchorAlign(get,set):GUIAlignType;
     #if swc @:getter(anchorAlign) #end
-    inline private function get_anchorAlign():Int {
+    inline private function get_anchorAlign():GUIAlignType {
         return g2d_anchorAlign;
     }
     #if swc @:setter(anchorAlign) #end
-    inline private function set_anchorAlign(p_value:Int):Int {
+    inline private function set_anchorAlign(p_value:GUIAlignType):GUIAlignType {
         if (p_value != g2d_anchorAlign) {
             g2d_anchorAlign = p_value;
-            g2d_anchorLeft = g2d_anchorRight = ((g2d_anchorAlign - 1) % 3) * 0.5;
-            g2d_anchorTop = g2d_anchorBottom = Std.int((g2d_anchorAlign - 1) / 3) * 0.5;
+            g2d_anchorLeft = g2d_anchorRight = ((Type.enumIndex(g2d_anchorAlign)-1) % 3) * 0.5;
+            g2d_anchorTop = g2d_anchorBottom = Std.int((Type.enumIndex(g2d_anchorAlign)-1) / 3) * 0.5;
             setDirty();
         }
         return g2d_anchorAlign;
     }
 
-    private var g2d_pivotAlign:Int;
+    private var g2d_pivotAlign:GUIAlignType = GUIAlignType.NONE;
     @prototype
     #if swc @:extern #end
-    public var pivotAlign(get,set):Int;
+    public var pivotAlign(get,set):GUIAlignType;
     #if swc @:getter(pivotAlign) #end
-    inline private function get_pivotAlign():Int {
+    inline private function get_pivotAlign():GUIAlignType {
         return g2d_pivotAlign;
     }
     #if swc @:setter(pivotAlign) #end
-    inline private function set_pivotAlign(p_value:Int):Int {
+    inline private function set_pivotAlign(p_value:GUIAlignType):GUIAlignType {
         if (p_value != g2d_pivotAlign) {
             g2d_pivotAlign = p_value;
-            g2d_pivotX = ((g2d_pivotAlign - 1) % 3) * 0.5;
-            g2d_pivotY = Std.int((g2d_pivotAlign - 1) / 3) * 0.5;
+            g2d_pivotX = ((Type.enumIndex(g2d_pivotAlign)-1) % 3) * 0.5;
+            g2d_pivotY = Std.int((Type.enumIndex(g2d_pivotAlign)-1) / 3) * 0.5;
             setDirty();
         }
         return g2d_anchorAlign;
@@ -631,7 +631,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     private var g2d_anchorX:Float = 0;
     #if swc @:extern #end
-    @prototype public var anchorX(get, set):Float;
+    @prototype
+    public var anchorX(get, set):Float;
     #if swc @:getter(anchorX) #end
     inline private function get_anchorX():Float {
         return g2d_anchorX;
@@ -645,7 +646,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     private var g2d_anchorY:Float = 0;
     #if swc @:extern #end
-    @prototype public var anchorY(get, set):Float;
+    @prototype
+    public var anchorY(get, set):Float;
     #if swc @:getter(anchorY) #end
     inline private function get_anchorY():Float {
         return g2d_anchorY;
@@ -659,14 +661,16 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     private var g2d_anchorLeft:Float = 0;
     #if swc @:extern #end
-    @prototype public var anchorLeft(get, set):Float;
+    @range(0, 1, .01)
+    @prototype
+    public var anchorLeft(get, set):Float;
     #if swc @:getter(anchorLeft) #end
     inline private function get_anchorLeft():Float {
         return g2d_anchorLeft;
     }
     #if swc @:setter(anchorLeft) #end
     inline private function set_anchorLeft(p_value:Float):Float {
-        if (g2d_anchorAlign == 0) {
+        if (g2d_anchorAlign == GUIAlignType.NONE) {
             g2d_anchorLeft = p_value;
             setDirty();
         }
@@ -675,14 +679,16 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     private var g2d_anchorTop:Float = 0;
     #if swc @:extern #end
-    @prototype public var anchorTop(get, set):Float;
+    @range(0, 1, .01)
+    @prototype
+    public var anchorTop(get, set):Float;
     #if swc @:getter(anchorTop) #end
     inline private function get_anchorTop():Float {
         return g2d_anchorTop;
     }
     #if swc @:setter(anchorTop) #end
     inline private function set_anchorTop(p_value:Float):Float {
-        if (g2d_anchorAlign == 0) {
+        if (g2d_anchorAlign == GUIAlignType.NONE) {
             g2d_anchorTop = p_value;
             setDirty();
         }
@@ -691,14 +697,16 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     private var g2d_anchorRight:Float = 0;
     #if swc @:extern #end
-    @prototype public var anchorRight(get, set):Float;
+    @range(0, 1, .01)
+    @prototype
+    public var anchorRight(get, set):Float;
     #if swc @:getter(anchorRight) #end
     inline private function get_anchorRight():Float {
         return g2d_anchorRight;
     }
     #if swc @:setter(anchorRight) #end
     inline private function set_anchorRight(p_value:Float):Float {
-        if (g2d_anchorAlign == 0) {
+        if (g2d_anchorAlign == GUIAlignType.NONE) {
             g2d_anchorRight = p_value;
             setDirty();
         }
@@ -707,14 +715,16 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     private var g2d_anchorBottom:Float = 0;
     #if swc @:extern #end
-    @prototype public var anchorBottom(get, set):Float;
+    @range(0, 1, .01)
+    @prototype
+    public var anchorBottom(get, set):Float;
     #if swc @:getter(anchorBottom) #end
     inline private function get_anchorBottom():Float {
         return g2d_anchorBottom;
     }
     #if swc @:setter(anchorBottom) #end
     inline private function set_anchorBottom(p_value:Float):Float {
-        if (g2d_anchorAlign == 0) {
+        if (g2d_anchorAlign == GUIAlignType.NONE) {
             g2d_anchorBottom = p_value;
             setDirty();
         }
@@ -723,7 +733,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     private var g2d_left:Float = 0;
     #if swc @:extern #end
-    @prototype public var left(get, set):Float;
+    @prototype
+    public var left(get, set):Float;
     #if swc @:getter(left) #end
     inline private function get_left():Float {
         return g2d_left;
@@ -737,7 +748,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     private var g2d_top:Float = 0;
     #if swc @:extern #end
-    @prototype public var top(get, set):Float;
+    @prototype
+    public var top(get, set):Float;
     #if swc @:getter(top) #end
     inline private function get_top():Float {
         return g2d_top;
@@ -751,7 +763,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     private var g2d_right:Float = 0;
     #if swc @:extern #end
-    @prototype public var right(get, set):Float;
+    @prototype
+    public var right(get, set):Float;
     #if swc @:getter(right) #end
     inline private function get_right():Float {
         return g2d_right;
@@ -765,7 +778,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     public var g2d_bottom:Float = 0;
     #if swc @:extern #end
-    @prototype public var bottom(get, set):Float;
+    @prototype
+    public var bottom(get, set):Float;
     #if swc @:getter(bottom) #end
     inline private function get_bottom():Float {
         return g2d_bottom;
@@ -779,7 +793,9 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     public var g2d_pivotX:Float = 0;
     #if swc @:extern #end
-    @prototype public var pivotX(get, set):Float;
+    @range(0, 1, .01)
+    @prototype
+    public var pivotX(get, set):Float;
     #if swc @:getter(pivotX) #end
     inline private function get_pivotX():Float {
         return g2d_pivotX;
@@ -793,7 +809,9 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     public var g2d_pivotY:Float = 0;
     #if swc @:extern #end
-    @prototype public var pivotY(get, set):Float;
+    @range(0, 1, .01)
+    @prototype
+    public var pivotY(get, set):Float;
     #if swc @:getter(pivotY) #end
     inline private function get_pivotY():Float {
         return g2d_pivotY;
@@ -836,7 +854,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     private var g2d_preferredHeight:Float = 0;
     #if swc @:extern #end
-    @prototype public var preferredHeight(get, set):Float;
+    @prototype
+    public var preferredHeight(get, set):Float;
     #if swc @:getter(preferredHeight) #end
     inline private function get_preferredHeight():Float {
         return g2d_preferredHeight;
