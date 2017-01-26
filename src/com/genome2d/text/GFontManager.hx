@@ -25,7 +25,7 @@ class GFontManager
 		return g2d_fonts.get(p_id);
 	}
 	
-	static public function createTextureFont(p_id:String, p_texture:GTexture, p_fontXml:Xml):GTextureFont {
+	static public function createTextureFont(p_id:String, p_texture:GTexture, p_fontXml:Xml, p_regionOffsetX:Int = 0, p_regionOffsetY:Int = 0):GTextureFont {
         var textureFont:GTextureFont = new GTextureFont();
         textureFont.id = p_id;
         textureFont.texture = p_texture;
@@ -48,7 +48,7 @@ class GFontManager
             var node:Xml = it.next();
             var w:Int = Std.parseInt(node.get("width"));
             var h:Int = Std.parseInt(node.get("height"));
-            var region:GRectangle = new GRectangle(Std.parseInt(node.get("x")), Std.parseInt(node.get("y")), w, h);
+            var region:GRectangle = new GRectangle(Std.parseInt(node.get("x"))+p_regionOffsetX, Std.parseInt(node.get("y")+p_regionOffsetY), w, h);
 
             var char:GTextureChar = textureFont.addChar(node.get("id"), region, Std.parseFloat(node.get("xoffset")), Std.parseFloat(node.get("yoffset")), Std.parseFloat(node.get("xadvance")));
         }
