@@ -48,7 +48,7 @@ class GFontManager
             var node:Xml = it.next();
             var w:Int = Std.parseInt(node.get("width"));
             var h:Int = Std.parseInt(node.get("height"));
-            var region:GRectangle = new GRectangle(Std.parseInt(node.get("x"))+p_regionOffsetX, Std.parseInt(node.get("y")+p_regionOffsetY), w, h);
+            var region:GRectangle = new GRectangle(Std.parseInt(node.get("x"))+p_regionOffsetX, Std.parseInt(node.get("y"))+p_regionOffsetY, w, h);
 
             var char:GTextureChar = textureFont.addChar(node.get("id"), region, Std.parseFloat(node.get("xoffset")), Std.parseFloat(node.get("yoffset")), Std.parseFloat(node.get("xadvance")));
         }
