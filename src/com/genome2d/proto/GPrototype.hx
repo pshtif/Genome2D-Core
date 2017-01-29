@@ -1,4 +1,5 @@
 package com.genome2d.proto;
+
 import haxe.rtti.Meta;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.debug.GDebug;
@@ -8,6 +9,9 @@ import com.genome2d.debug.GDebug;
  */
 class GPrototype
 {
+	static public var resolveEnum:String->Enum<Dynamic> = null;
+	static public var getClass:Dynamic->Class<Dynamic> = null;
+
 	public var prototypeName:String;
 	public var prototypeClass:Class<IGPrototypable>;
 	
@@ -186,7 +190,15 @@ class GPrototypeProperty {
 						realValue = p_value == "null" ? null : p_value.substr(1,p_value.length-2).split(",");
 					} else if (split.length == 2 && split[0] == "E") {
 						try {
-							realValue = p_value == "null" ? null : Type.createEnum(Type.resolveEnum(split[1]), Std.string(p_value));
+							if (p_value != "null") {
+								if (GPrototype.resolveEnum != null) {
+									realValue = Type.createEnum(GPrototype.resolveEnum(split[1]), Std.string(p_value));
+								} else {
+									realValue = Type.createEnum(Type.resolveEnum(split[1]), Std.string(p_value));
+								}
+							} else {
+								realValue = null;
+							}
 						} catch(e:String) {
 							MGDebug.ERROR("Cannot create prototype enum", e);
 						}
