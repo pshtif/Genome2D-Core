@@ -536,11 +536,11 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     #if swc @:extern #end
     public var model(get,set):String;
     #if swc @:getter(model) #end
-    public function get_model():String {
+    inline private function get_model():String {
         return g2d_model;
     }
     #if swc @:setter(model) #end
-    public function set_model(p_value:String):String {
+    inline private function set_model(p_value:String):String {
 		if (setModelHook != null) p_value = setModelHook(p_value);
         g2d_model = p_value;
         /*
