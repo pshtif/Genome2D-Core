@@ -543,37 +543,6 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     inline private function set_model(p_value:String):String {
 		if (setModelHook != null) p_value = setModelHook(p_value);
         g2d_model = p_value;
-        /*
-		// Xml assignment
-        if (Std.is(p_value, Xml)) {
-            var xml:Xml = cast (p_value, Xml);
-            var it:Iterator<Xml> = xml.elements();
-            if (!it.hasNext()) {
-                if (xml.firstChild() != null && xml.firstChild().nodeType == Xml.PCData) {
-                    g2d_model = xml.firstChild().nodeValue;
-                } else {
-                    g2d_model = "";
-                }
-            } else {
-                while (it.hasNext()) {
-                    var childXml:Xml = it.next();
-                    var child:GUIElement = getChildByName(childXml.nodeName,true);
-                    if (child != null) {
-                        child.setModel(childXml);
-                    }
-                }
-            }
-		// Just direct string assignment
-        } else if (Std.is(p_value,String)) {
-            g2d_model = p_value;
-		// Dynamic object lookup for public fields
-        } else {
-            for (it in Reflect.fields(p_value)) {
-                var child:GUIElement = getChildByName(it);
-                if (child != null) child.setModel(Reflect.field(p_value, it));
-            }
-        }
-        /**/
         onModelChanged.dispatch(this);
 
         return g2d_model;
