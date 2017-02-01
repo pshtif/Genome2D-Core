@@ -7,21 +7,32 @@
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
 package com.genome2d.text;
+import com.genome2d.debug.GDebug;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.textures.GTexture;
 
 class GFontManager
 {
-	static private var g2d_fonts:Map<String,GTextureFont>;
-	static public function getAllFonts():Map<String,GTextureFont> {
+    static private function g2d_addFont(p_font:GFont):Void {
+        if (p_font.id == null || p_font.id.length == 0) GDebug.error("Invalid font id");
+        if (g2d_fonts.exists(p_font.id)) GDebug.error("Duplicate textures id: "+p_font.id);
+        g2d_fonts.set(p_font.id, p_font);
+    }
+
+    static private function g2d_removeFont(p_font:GFont):Void {
+        g2d_fonts.remove(p_font.id);
+    }
+
+	static private var g2d_fonts:Map<String,GFont>;
+	static public function getAllFonts():Map<String,GFont> {
 		return g2d_fonts;
 	}
 	
 	static public function init():Void {
-        g2d_fonts = new Map<String,GTextureFont>();
+        g2d_fonts = new Map<String,GFont>();
     }
 	
-	static public function getFont(p_id:String):GTextureFont {
+	static public function getFont(p_id:String):GFont {
 		return g2d_fonts.get(p_id);
 	}
 	
@@ -70,8 +81,6 @@ class GFontManager
                 map.set(second, Std.parseInt(node.get("amount")));
             }
         }
-		
-		g2d_fonts.set(p_id, textureFont);
 		
         return textureFont;
     }

@@ -62,4 +62,8 @@ class GTextureChar {
 	public function new(p_texture:GTexture):Void {
 		g2d_texture = p_texture;
 	}
+
+    public function dispose():Void {
+        g2d_texture = null;
+    }
 }

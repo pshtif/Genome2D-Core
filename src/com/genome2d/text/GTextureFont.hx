@@ -13,12 +13,9 @@ import com.genome2d.proto.IGPrototypable;
 import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 
-class GTextureFont implements IGPrototypable {
+class GTextureFont extends GFont {
 	@prototype("getReference")
 	public var texture:GTexture;
-	
-	@prototype
-	public var id:String;
 	
 	@prototype
     public var lineHeight:Int = 0;
@@ -70,18 +67,17 @@ class GTextureFont implements IGPrototypable {
 				return map.get(p_second)*texture.scaleFactor;
 			}
         }
-		/**/
+
         return 0;
     }
 
-	/*
-	 *	Get a reference value
-	 */
-	public function toReference():String {
-		return "@"+id;
+	public function dispose():Void {
+		for (char in g2d_chars) char.dispose();
+		g2d_chars = null;
+		texture = null;
 	}
-	
-	static public function fromReference(p_reference:String) {
-		return GFontManager.getFont(p_reference.substr(1));
+
+	static public function fromReference(p_reference:String):GTextureFont {
+		return cast GFontManager.getFont(p_reference.substr(1));
 	}
 }
