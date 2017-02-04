@@ -64,7 +64,12 @@ class GXmlPrototypeParser
 			p_prototype.createPrototypeProperty(p_name, propertyTypes[propertyIndex], propertyExtras[propertyIndex], meta, fromXml(p_value));
 		}
 	}
-	
+
+	static public function getPrototypeName(p_xml:Xml):String {
+		if (p_xml.nodeType == Xml.Document) p_xml = p_xml.firstElement();
+		return p_xml.nodeName;
+	}
+
 	static public function fromXml(p_xml:Xml):GPrototype {
 		if (p_xml.nodeType == Xml.Document) p_xml = p_xml.firstElement();
 		

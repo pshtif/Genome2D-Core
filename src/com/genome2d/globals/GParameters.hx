@@ -35,7 +35,6 @@ class GParameters {
                     } else if (!Math.isNaN(Std.parseFloat(split[1]))) {
                         g2d_parameters.set(split[0], Std.parseFloat(split[1]));
                     } else {
-                        trace(split[0], split[1]);
                         g2d_parameters.set(split[0], split[1]);
                     }
                 }

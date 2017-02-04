@@ -7,6 +7,7 @@ class GFont implements IGPrototypable {
     /**
 	 * 	Id
 	 */
+    @prototype
     #if swc @:extern #end
     public var id(get,set):String;
     #if swc @:getter(id) #end
