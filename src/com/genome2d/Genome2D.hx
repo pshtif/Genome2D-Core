@@ -40,7 +40,7 @@ class Genome2D implements IGDebuggableInternal
 {    /**
         Genome2D Version
     **/
-	inline static public var VERSION:String = "1.1"; //MGBuildID.getBuildVersion();
+	inline static public var VERSION:String = "1.2"; //MGBuildID.getBuildVersion();
     inline static public var BUILD:String = MGBuildID.getBuildId();
     inline static public var DATE:String = MGBuildID.getBuildDate();
 
