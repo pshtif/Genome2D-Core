@@ -191,6 +191,17 @@ class GNode implements IGFocusable implements IGPrototypable
 
 	static private var g2d_nodeCount:Int = 0;
 
+    #if genome_editor
+    public var onHierarchyChanged:GCallback0;
+
+    private function dispatchHierarchyChange():Void {
+        if (!g2d_disposed) {
+            onHierarchyChanged.dispatch();
+            if (parent != null) parent.dispatchHierarchyChange();
+        }
+    }
+    #end
+
 	@:dox(hide)
 	public function new(p_name:String = "") {
 		g2d_id = g2d_nodeCount++;
@@ -201,6 +212,10 @@ class GNode implements IGFocusable implements IGPrototypable
             g2d_cachedTransformMatrix = new GMatrix();
             g2d_activeMasks = new Array<GNode>();
         }
+
+        #if genome_editor
+        onHierarchyChanged = new GCallback0();
+        #end
 	}
 	
 	/**
@@ -234,6 +249,9 @@ class GNode implements IGFocusable implements IGPrototypable
         if (g2d_onRightMouseClick != null) { g2d_onRightMouseClick.removeAll(); g2d_onRightMouseClick = null; }
         if (g2d_onRightMouseDown != null) { g2d_onRightMouseDown.removeAll(); g2d_onRightMouseDown = null; }
         if (g2d_onRightMouseUp != null) { g2d_onRightMouseUp.removeAll(); g2d_onRightMouseUp = null; }
+        #if genome_editor
+        if (onHierarchyChanged != null) { onHierarchyChanged.removeAll(); onHierarchyChanged = null; }
+        #end
     }
 	
 	public function hitTest(p_x:Float, p_y:Float, p_hierarchy:Bool = false):Bool {
@@ -612,6 +630,9 @@ class GNode implements IGFocusable implements IGPrototypable
 		g2d_componentCount++;
 
         component.init();
+        #if genome_editor
+        dispatchHierarchyChange();
+        #end
 		return component;
 	}
 
@@ -647,6 +668,10 @@ class GNode implements IGFocusable implements IGPrototypable
         }
 		
 		component.g2d_dispose();
+
+        #if genome_editor
+        dispatchHierarchyChange();
+        #end
 	}
 
     public function disposeComponents():Void {
@@ -657,6 +682,10 @@ class GNode implements IGFocusable implements IGPrototypable
 
         g2d_defaultRenderable = null;
         g2d_renderable = null;
+
+        #if genome_editor
+        dispatchHierarchyChange();
+        #end
     }
 	
 	/****************************************************************************************************
@@ -753,6 +782,9 @@ class GNode implements IGFocusable implements IGPrototypable
         if (g2d_childCount == 1 && hasUniformRotation()) g2d_useMatrix++;
 		
 		if (isOnStage()) p_child.addedToStage();
+        #if genome_editor
+        dispatchHierarchyChange();
+        #end
         return p_child;
 	}
 
@@ -925,6 +957,9 @@ class GNode implements IGFocusable implements IGPrototypable
         if (g2d_childCount == 0 && hasUniformRotation()) g2d_useMatrix--;
 
 		if (isOnStage()) p_child.removedFromStage();
+        #if genome_editor
+        dispatchHierarchyChange();
+        #end
         return p_child;
 	}
 
@@ -947,6 +982,9 @@ class GNode implements IGFocusable implements IGPrototypable
         while (g2d_firstChild != null) {
             g2d_firstChild.dispose();
         }
+        #if genome_editor
+        dispatchHierarchyChange();
+        #end
     }
 	
 	public function callOnChild(p_function:GNode->Void):Void {
