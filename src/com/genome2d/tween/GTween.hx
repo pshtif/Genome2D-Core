@@ -43,7 +43,7 @@ class GTween {
         return step;
     }
 
-    static public function delay(p_time:Float, p_callback:Array<Dynamic>->Void, p_args:Array<Dynamic> = null):GTweenStep {
+    static public function delay(p_time:Float, p_callback:Dynamic, p_args:Array<Dynamic> = null):GTweenStep {
         return create(null).delay(p_time).onComplete(p_callback, p_args);
     }
 

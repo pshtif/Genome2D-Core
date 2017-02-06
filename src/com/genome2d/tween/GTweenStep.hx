@@ -89,8 +89,8 @@ class GTweenStep implements IGPrototypable {
         return this;
     }
 
-    inline public function onComplete(p_callback:Array<Dynamic>->Void, p_args:Array<Dynamic> = null):GTweenStep {
-        g2d_onCompleteArgs = p_args;
+    inline public function onComplete(p_callback:Dynamic, p_args:Array<Dynamic> = null):GTweenStep {
+        g2d_onCompleteArgs = p_args == null ? [] : p_args;
         g2d_onComplete = p_callback;
         return this;
     }
@@ -110,7 +110,7 @@ class GTweenStep implements IGPrototypable {
     }
 
     inline private function finish():Void {
-        if (g2d_onComplete != null) g2d_onComplete(g2d_onCompleteArgs);
+        if (g2d_onComplete != null) Reflect.callMethod(g2d_onComplete, g2d_onComplete, g2d_onCompleteArgs);
         g2d_sequence.nextStep();
         if (g2d_interps != null) for (interp in g2d_interps) interp.reset();
     }
