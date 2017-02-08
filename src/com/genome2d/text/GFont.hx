@@ -16,9 +16,11 @@ class GFont implements IGPrototypable {
     }
     #if swc @:setter(id) #end
     inline private function set_id(p_value:String):String {
-        GFontManager.g2d_removeFont(cast this);
-        g2d_id = p_value;
-        GFontManager.g2d_addFont(cast this);
+        if (p_value != g2d_id) {
+            GFontManager.g2d_removeFont(cast this);
+            g2d_id = p_value;
+            GFontManager.g2d_addFont(cast this);
+        }
         return g2d_id;
     }
 

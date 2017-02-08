@@ -31,10 +31,16 @@ class GTextureFont extends GFont {
 
 	@prototype
 	public var bold:Bool = false;
-	
+
+	@prototype
+	public var regionOffsetX:Int = 0;
+
+	@prototype
+	public var regionOffsetY:Int = 0;
+
+	public var kerning:Map<Int,Map<Int,Int>>;
+
 	private var g2d_chars:Map<String,GTextureChar>;
-	
-    public var kerning:Map<Int,Map<Int,Int>>;
 	
 	public function new():Void {
 		g2d_chars = new Map<String,GTextureChar>();
@@ -43,6 +49,49 @@ class GTextureFont extends GFont {
     public function getChar(p_subId:String):GTextureChar {
         return cast g2d_chars.get(p_subId);
     }
+
+	public function addCharsFromXml(p_xml:Xml):Void {
+		var root:Xml = p_xml.firstElement();
+
+		var info:Xml = root.elementsNamed("info").next();
+		face = info.get("face");
+		italic = (info.get("italic") == "1")?true:false;
+		bold = (info.get("bold") == "1")?true:false;
+
+		var common:Xml = root.elementsNamed("common").next();
+		lineHeight = Std.parseInt(common.get("lineHeight"));
+		base = Std.parseInt(common.get("base"));
+
+		var it:Iterator<Xml> = root.elementsNamed("chars");
+		it = it.next().elements();
+
+		while(it.hasNext()) {
+			var node:Xml = it.next();
+			var w:Int = Std.parseInt(node.get("width"));
+			var h:Int = Std.parseInt(node.get("height"));
+			var region:GRectangle = new GRectangle(Std.parseInt(node.get("x")) + regionOffsetX, Std.parseInt(node.get("y")) + regionOffsetY, w, h);
+
+			var char:GTextureChar = addChar(node.get("id"), region, Std.parseFloat(node.get("xoffset")), Std.parseFloat(node.get("yoffset")), Std.parseFloat(node.get("xadvance")));
+		}
+
+		var kernings:Xml = root.elementsNamed("kernings").next();
+		if (kernings != null) {
+			it = kernings.elements();
+			kerning = new Map<Int,Map<Int,Int>>();
+
+			while(it.hasNext()) {
+				var node:Xml = it.next();
+				var first:Int = Std.parseInt(node.get("first"));
+				var map:Map<Int,Int> = kerning.get(first);
+				if (map == null) {
+					map = new Map<Int,Int>();
+					kerning.set(first, map);
+				}
+				var second:Int = Std.parseInt(node.get("second"));
+				map.set(second, Std.parseInt(node.get("amount")));
+			}
+		}
+	}
 
     public function addChar(p_charId:String, p_region:GRectangle, p_xoffset:Float, p_yoffset:Float, p_xadvance:Float):GTextureChar {
         var charTexture:GTexture = GTextureManager.createSubTexture(id+"_"+p_charId, texture, p_region);

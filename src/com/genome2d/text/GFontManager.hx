@@ -15,7 +15,7 @@ class GFontManager
 {
     static private function g2d_addFont(p_font:GFont):Void {
         if (p_font.id == null || p_font.id.length == 0) GDebug.error("Invalid font id");
-        if (g2d_fonts.exists(p_font.id)) GDebug.error("Duplicate textures id: "+p_font.id);
+        if (g2d_fonts.exists(p_font.id)) GDebug.error("Duplicate font id: "+p_font.id);
         g2d_fonts.set(p_font.id, p_font);
     }
 
@@ -40,47 +40,10 @@ class GFontManager
         var textureFont:GTextureFont = new GTextureFont();
         textureFont.id = p_id;
         textureFont.texture = p_texture;
+        textureFont.regionOffsetX = p_regionOffsetX;
+        textureFont.regionOffsetY = p_regionOffsetY;
 
-        var root:Xml = p_fontXml.firstElement();
-
-        var info:Xml = root.elementsNamed("info").next();
-        textureFont.face = info.get("face");
-        textureFont.italic = (info.get("italic") == "1")?true:false;
-        textureFont.bold = (info.get("bold") == "1")?true:false;
-
-        var common:Xml = root.elementsNamed("common").next();
-        textureFont.lineHeight = Std.parseInt(common.get("lineHeight"));
-        textureFont.base = Std.parseInt(common.get("base"));
-
-        var it:Iterator<Xml> = root.elementsNamed("chars");
-        it = it.next().elements();
-
-        while(it.hasNext()) {
-            var node:Xml = it.next();
-            var w:Int = Std.parseInt(node.get("width"));
-            var h:Int = Std.parseInt(node.get("height"));
-            var region:GRectangle = new GRectangle(Std.parseInt(node.get("x"))+p_regionOffsetX, Std.parseInt(node.get("y"))+p_regionOffsetY, w, h);
-
-            var char:GTextureChar = textureFont.addChar(node.get("id"), region, Std.parseFloat(node.get("xoffset")), Std.parseFloat(node.get("yoffset")), Std.parseFloat(node.get("xadvance")));
-        }
-
-        var kernings:Xml = root.elementsNamed("kernings").next();
-        if (kernings != null) {
-            it = kernings.elements();
-            textureFont.kerning = new Map<Int,Map<Int,Int>>();
-
-            while(it.hasNext()) {
-                var node:Xml = it.next();
-                var first:Int = Std.parseInt(node.get("first"));
-                var map:Map<Int,Int> = textureFont.kerning.get(first);
-                if (map == null) {
-                    map = new Map<Int,Int>();
-                    textureFont.kerning.set(first, map);
-                }
-                var second:Int = Std.parseInt(node.get("second"));
-                map.set(second, Std.parseInt(node.get("amount")));
-            }
-        }
+        textureFont.addCharsFromXml(p_fontXml);
 		
         return textureFont;
     }
