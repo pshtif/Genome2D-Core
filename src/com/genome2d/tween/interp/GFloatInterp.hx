@@ -7,7 +7,7 @@ import com.genome2d.tween.IGInterp;
 
 @prototypeName("tweenFloat")
 @:access(com.genome2d.create.GTweenStep)
-class GFloatInterp implements IGInterp {//} implements IGPrototypable {
+class GFloatInterp implements IGInterp implements IGPrototypable {
 
     private var g2d_tween:GTweenStep;
 
