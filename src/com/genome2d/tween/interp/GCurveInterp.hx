@@ -10,19 +10,8 @@ class GCurveInterp implements IGInterp {
 
     public var tween:GTweenStep;
 
-    private var g2d_duration:Float;
-    private var g2d_durationR:Float;
     @prototype
-    public var duration(get,set):Float;
-    #if swc @:getter(duration) #end
-    inline private function get_duration():Float {
-        return g2d_duration;
-    }
-    #if swc @:setter(duration) #end
-    inline public function set_duration(p_value:Float):Float {
-        g2d_durationR = 1/p_value;
-        return g2d_duration = p_value;
-    }
+    public var duration:Float;
 
     private var g2d_time:Float;
 
@@ -39,7 +28,7 @@ class GCurveInterp implements IGInterp {
         return from + to.calculate(1);
     }
 
-    inline public function new(p_tween:GTweenStep, p_name:String, p_to:GCurve, p_duration:Float) {
+    public function new(p_tween:GTweenStep, p_name:String, p_to:GCurve, p_duration:Float) {
         ease = GTween.defaultEase;
         this.duration = p_duration;
         this.tween = p_tween;
@@ -61,19 +50,18 @@ class GCurveInterp implements IGInterp {
     inline public function update(p_delta:Float) {
         g2d_time += p_delta;
         var c = current;
-        if (g2d_time > g2d_duration) {
-            g2d_time = g2d_duration;
+        if (g2d_time > duration) {
+            g2d_time = duration;
             c = from + to.calculate(1);
             complete = true;
         }else {
             var rt = Math.max(0, g2d_time);
-            c = from + to.calculate(ease(g2d_time * g2d_durationR));
-            trace(ease(g2d_time * g2d_durationR), c-from);
+            c = from + to.calculate(ease(g2d_time/duration));
         }
-        set(c);
+        setValue(c);
     }
 
-    inline public function set(p_value:Float) {
+    inline public function setValue(p_value:Float) {
         if (p_value != current) {
             apply(current = p_value);
         }

@@ -7,23 +7,12 @@ import com.genome2d.tween.IGInterp;
 
 @prototypeName("tweenFloat")
 @:access(com.genome2d.create.GTweenStep)
-class GFloatInterp implements IGInterp implements IGPrototypable {
+class GFloatInterp implements IGInterp {//} implements IGPrototypable {
 
     private var g2d_tween:GTweenStep;
 
-    private var g2d_duration:Float;
-    private var g2d_durationR:Float;
     @prototype
-    public var duration(get,set):Float;
-    #if swc @:getter(duration) #end
-    inline private function get_duration():Float {
-        return g2d_duration;
-    }
-    #if swc @:setter(duration) #end
-    inline public function set_duration(p_value:Float):Float {
-        g2d_durationR = 1/p_value;
-        return g2d_duration = p_value;
-    }
+    public var duration:Float;
 
     @prototype
     public var to:Float;
@@ -45,7 +34,7 @@ class GFloatInterp implements IGInterp implements IGPrototypable {
         return from + difference;
     }
 
-    inline public function new(p_tween:GTweenStep) {
+    public function new(p_tween:GTweenStep) {
         g2d_tween = p_tween;
         ease = GTween.defaultEase;
         g2d_time = 0;
@@ -67,18 +56,18 @@ class GFloatInterp implements IGInterp implements IGPrototypable {
 
         g2d_time += p_delta;
         var c:Float;
-        if (g2d_time > g2d_duration) {
-            g2d_time = g2d_duration;
+        if (g2d_time > duration) {
+            g2d_time = duration;
             c = from + difference;
             complete = true;
         } else {
-            c = from + ease(g2d_time * g2d_durationR) * difference;
+            c = from + ease(g2d_time/duration) * difference;
         }
 
-        set(c);
+        setValue(c);
     }
 
-    inline public function set(p_value:Float) {
+    inline public function setValue(p_value:Float) {
         if (p_value != current) Reflect.setProperty(g2d_tween.getTarget(), property, p_value);
     }
 }
