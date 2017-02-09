@@ -121,21 +121,7 @@ class MGPrototypeProcessor {
 					var param:String = (meta.params.length > 0) ? ExprTools.getValue(meta.params[0]) : "";
 					if (param == "getReference") extras += GPrototypeExtras.REFERENCE_GETTER;
                     switch (i.kind) {
-						/* NO LONGER SUPPORT FOR ONE WAY SETTER FUNCTIONS
-						case FFun(f):
-							if (i.name.indexOf("set") != 0) throw "Error invalid prototypable function (needs to start with set*).";
-							if (f.args.length != 1) throw "Error invalid prototypable function (needs to have single parameter).";
-							switch (f.args[0].type) {
-								case TPath(p):
-									prototypePropertyDefaults.push(defaultValue == null?extractDefault("setter", null, pos):defaultValue);
-                                    prototypePropertyNames.push(i.name);
-									prototypePropertyTypes.push(extractType(p));
-									extras += GPrototypeExtras.SETTER;
-									prototypePropertyExtras.push(GPrototypeExtras.SETTER);
-                                case _:
-							}
-						/**/
-                        case FVar(t, e):							
+                        case FVar(t, e):
                             switch (t) {
                                 case TPath(p):
 									prototypePropertyDefaults.push(defaultValue == null?extractDefault(p.name, e, pos):defaultValue);
