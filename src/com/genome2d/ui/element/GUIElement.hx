@@ -27,6 +27,7 @@ import com.genome2d.proto.IGPrototypable;
 import com.genome2d.ui.layout.GUILayout;
 import com.genome2d.ui.skin.GUISkin;
 import com.genome2d.ui.skin.GUISkinManager;
+import com.genome2d.ui.GUIAlignType;
 
 @:access(com.genome2d.ui.layout.GUILayout)
 @:access(com.genome2d.ui.skin.GUISkin)

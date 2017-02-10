@@ -15,6 +15,8 @@ import com.genome2d.proto.GPrototypeStates;
 import com.genome2d.proto.IGPrototypable;
 import haxe.macro.PositionTools;
 import haxe.macro.Type.ClassType;
+import haxe.macro.Type.BaseType;
+import haxe.macro.Type;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.ExprTools;
@@ -39,6 +41,9 @@ class MGPrototypeProcessor {
     public static function build() : Array<Field> {
         var pos = Context.currentPos();
         var fields = Context.getBuildFields();
+		var imports = Context.getLocalImports();
+		var localModule = Context.getLocalModule();
+		localModule = localModule.substr(0,localModule.lastIndexOf("."));
 
         var prototypePropertyNames:Array<String> = [];
         var prototypePropertyTypes:Array<String> = [];
@@ -46,6 +51,7 @@ class MGPrototypeProcessor {
 		var prototypePropertyDefaults:Array<Expr> = [];
 
         var localClass = Context.getLocalClass().get();
+		trace("Building", localClass.name);
 
 		if (classFlags == null) classFlags = new Map<String,Int>();
 		classFlags.set(localClass.name,0);
@@ -126,7 +132,7 @@ class MGPrototypeProcessor {
                                 case TPath(p):
 									prototypePropertyDefaults.push(defaultValue == null?extractDefault(p.name, e, pos):defaultValue);
                                     prototypePropertyNames.push(i.name);
-									prototypePropertyTypes.push(extractType(p));
+									prototypePropertyTypes.push(extractType(p, imports, localModule));
 									prototypePropertyExtras.push(extras);
                                 case _:
                             }
@@ -136,7 +142,7 @@ class MGPrototypeProcessor {
 									prototypePropertyDefaults.push(defaultValue == null?extractDefault(p.name, e, pos):defaultValue);
                                     prototypePropertyNames.push(i.name);
 									//var fileName:String = PositionTools.getInfos(i.pos).file;
-									prototypePropertyTypes.push(extractType(p));
+									prototypePropertyTypes.push(extractType(p, imports, localModule));
 									prototypePropertyExtras.push(extras);
                                 case _:
                             }
@@ -254,6 +260,8 @@ class MGPrototypeProcessor {
 		//var kind = TPath( { pack : [], name : "Class", params : [TPType(TPath( { name : localClass.name, pack : localClass.pack, params : [] } ))] } );
 		var field = { name : localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
 		prototypes.push(field);
+		var field = { name : localModule+"."+localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
+		prototypes.push(field);
 		// We have a custom prototype name lookup as well
 		if (prototypeName != localClass.name) {
 			var field = { name : prototypeName, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
@@ -297,30 +305,44 @@ class MGPrototypeProcessor {
 		return e;
     }
 
-	
-	inline static private function extractType(typePath) {
-        var typeName = typePath.name;
-		// If we getType String it ends up in infinite loop for some reason
-		if (typeName != "String" && typeName != "Bool" && typeName != "Float" && typeName != "Array" && typeName != "Int") {
-			var type = Context.getType(typeName);
-			switch (type) {
-				case TEnum(t,p):
-					typeName = "E:"+t;
-				case _:
-			}
-			/**/
+	inline static private function extractPackage(imp:ImportExpr):String {
+		var p:String = "";
+		for (sub in imp.path) {
+			p += sub.name+".";
 		}
+		p = p.substr(0,-1);
+		return p;
+	}
+
+	
+	inline static private function extractType(p_path:TypePath, p_imports:Array<ImportExpr>, p_localModule:String) {
+		var typeName:String = p_path.name;
+		if (typeName == "String" || typeName == "Bool" || typeName == "Float" || typeName == "Int") return typeName;
 
 		if (typeName == "Array") {
-			var param = typePath.params[0];
+			var param = p_path.params[0];
 			switch (param) {
 				case TPType(t):
 					switch (t) {
 						case TPath(p):
+							// TODO extract subtype to support non basic types
 							typeName += ":" + p.name;
 						case _:
 					}
 				case _:
+			}
+		} else {
+			var found:Bool = false;
+			for (imp in p_imports) {
+				var name:String = imp.path[imp.path.length-1].name;
+				if (name == typeName) {
+					found = true;
+					typeName = extractPackage(imp);
+				}
+			}
+			if (!found) {
+				typeName = p_localModule+"."+typeName;
+				//trace(Context.getModule(typeName);
 			}
 		}
 

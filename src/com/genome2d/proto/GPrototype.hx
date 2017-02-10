@@ -31,6 +31,8 @@ class GPrototype
 			prototypeName = p_prototypeName;
 			prototypeClass = currentPrototypeClass;
 		}
+
+		if (prototypeClass == null) MGDebug.ERROR("Unknown class for prototype", p_prototypeName);
 		
 		var propertyNames:Array<String> = Reflect.field(currentPrototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
 		var propertyDefaults:Array<Dynamic> = Reflect.field(currentPrototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_DEFAULTS);
@@ -130,6 +132,7 @@ class GPrototypeProperty {
 	public var type:String;
 	public var extras:Int;
 	public var isParameter:Bool = false;
+	public var isEnum:Bool = false;
 	public var meta:Dynamic;
 	
 	public function new(p_name:String, p_type:String, p_extras:Int, p_meta:Dynamic):Void {
@@ -146,15 +149,25 @@ class GPrototypeProperty {
 			if (isBasicType()) {
 				value = p_value;
 			} else {
-				var split:Array<String> = type.split(":");
-				if (split.length == 2 && split[0] == "E") {
-					value = p_value;
-				} else {
-					try {
-						value = (p_value == null) ? null : cast(p_value, IGPrototypable).getPrototype();
-					} catch (e:Dynamic) {
-						MGDebug.ERROR("Invalid prototype property", name, type);
+				try {
+					switch (Type.typeof(p_value)) {
+						case TEnum(e):
+							if (p_value != "null") {
+								if (GPrototype.resolveEnum != null) {
+									value = Type.createEnum(GPrototype.resolveEnum(type), Std.string(p_value));
+								} else {
+									value = Type.createEnum(Type.resolveEnum(type), Std.string(p_value));
+								}
+								isEnum = true;
+							} else {
+								value = null;
+							}
+						case TClass(c):
+							value = (p_value == null) ? null : cast(p_value, IGPrototypable).getPrototype();
+						case _:
 					}
+				} catch (e:Dynamic) {
+					MGDebug.ERROR("Invalid prototype property", name, type);
 				}
 			}
 		}
@@ -188,25 +201,20 @@ class GPrototypeProperty {
 					if (split.length == 2 && split[0] == "Array") {
 						// We need to strip the string of brackets before splitting
 						realValue = p_value == "null" ? null : p_value.substr(1,p_value.length-2).split(",");
-					} else if (split.length == 2 && split[0] == "E") {
+					} else {
 						try {
 							if (p_value != "null") {
 								if (GPrototype.resolveEnum != null) {
-									realValue = Type.createEnum(GPrototype.resolveEnum(split[1]), Std.string(p_value));
+									realValue = Type.createEnum(GPrototype.resolveEnum(type), Std.string(p_value));
 								} else {
-									realValue = Type.createEnum(Type.resolveEnum(split[1]), Std.string(p_value));
+									realValue = Type.createEnum(Type.resolveEnum(type), Std.string(p_value));
 								}
+								isEnum = true;
 							} else {
 								realValue = null;
 							}
 						} catch(e:String) {
-							MGDebug.ERROR("Cannot create prototype enum", e);
-						}
-					} else {
-						if (p_value == "null") {
-							realValue = null;
-						} else {
-							GDebug.error("Error during prototype binding invalid value for type: " + type);
+							MGDebug.ERROR("Error during prototype binding invalid value for type: " + type);
 						}
 					}
 			}
@@ -254,9 +262,5 @@ class GPrototypeProperty {
 	
 	inline public function isPrototype():Bool {
 		return value == null || Std.is(value, GPrototype);
-	}
-
-	inline public function isEnum():Bool {
-		return type.indexOf("E:") == 0;
 	}
 }
