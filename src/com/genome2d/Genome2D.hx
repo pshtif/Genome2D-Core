@@ -8,6 +8,7 @@
  */
 package com.genome2d;
 
+import com.genome2d.macros.MGBuild;
 import com.genome2d.tween.GTween;
 import com.genome2d.tween.GTweenStep;
 import com.genome2d.input.GMouseInputType;
@@ -17,7 +18,6 @@ import com.genome2d.assets.GStaticAssetManager;
 import com.genome2d.callbacks.GCallback;
 import com.genome2d.debug.IGDebuggableInternal;
 import com.genome2d.macros.MGDebug;
-import com.genome2d.macros.MGBuildID;
 import com.genome2d.text.GFontManager;
 import com.genome2d.transitions.GTransitionManager;
 import com.genome2d.ui.skin.GUISkinManager;
@@ -41,8 +41,8 @@ class Genome2D implements IGDebuggableInternal
         Genome2D Version
     **/
 	inline static public var VERSION:String = "1.2"; //MGBuildID.getBuildVersion();
-    inline static public var BUILD:String = MGBuildID.getBuildId();
-    inline static public var DATE:String = MGBuildID.getBuildDate();
+    inline static public var BUILD:String = MGBuild.getBuildId();
+    inline static public var DATE:String = MGBuild.getBuildDate();
 
 	static private var g2d_instance:Genome2D;
 	static private var g2d_instantiable:Bool = false;
