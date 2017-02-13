@@ -70,8 +70,22 @@ class GTextureTextRenderer extends GTextRenderer {
     public var forcePixelAccuracy:Bool = true;
 
 	private var g2d_lineCount:Int = 0;
+	#if swc @:extern #end
+	public var lineCount(get, never):Int;
+	#if swc @:getter(lineCount) #end
+	inline private function get_lineCount():Int {
+		return g2d_lineCount;
+	}
+
 	private var g2d_cursorCurrentIndex:Int = 0;
+
 	private var g2d_maxVisibleLine:Int = 0;
+	#if swc @:extern #end
+	public var maxVisibleLine(get, never):Int;
+	#if swc @:getter(maxVisibleLine) #end
+	inline private function get_maxVisibleLine():Int {
+		return g2d_maxVisibleLine;
+	}
 	
 	public var format:GTextFormat;
 	
