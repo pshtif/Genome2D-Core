@@ -42,6 +42,9 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 	public var red:Float = 1;
 	public var green:Float = 1;
 	public var blue:Float = 1;
+
+    @category("color")
+    @range(0, 1, .01)
 	@prototype
 	public var alpha:Float = 1;
 

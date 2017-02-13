@@ -51,7 +51,7 @@ class MGPrototypeProcessor {
 		var prototypePropertyDefaults:Array<Expr> = [];
 
         var localClass = Context.getLocalClass().get();
-		trace("Building prototypable type "+localClass.name);
+		//trace("Building prototypable type "+localClass.name);
 
 		if (classFlags == null) classFlags = new Map<String,Int>();
 		classFlags.set(localClass.name,0);
