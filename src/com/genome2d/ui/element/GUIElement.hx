@@ -123,8 +123,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     inline private function set_anchorAlign(p_value:GUIAlignType):GUIAlignType {
         if (p_value != g2d_anchorAlign) {
             g2d_anchorAlign = p_value;
-            g2d_anchorLeft = g2d_anchorRight = ((Type.enumIndex(g2d_anchorAlign)-1) % 3) * 0.5;
-            g2d_anchorTop = g2d_anchorBottom = Std.int((Type.enumIndex(g2d_anchorAlign)-1) / 3) * 0.5;
+            if (g2d_anchorAlign != GUIAlignType.NONE) {
+                g2d_anchorLeft = g2d_anchorRight = ((Type.enumIndex(g2d_anchorAlign)-1) % 3) * 0.5;
+                g2d_anchorTop = g2d_anchorBottom = Std.int((Type.enumIndex(g2d_anchorAlign)-1) / 3) * 0.5;
+            }
             setDirty();
         }
         return g2d_anchorAlign;
@@ -142,8 +144,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     inline private function set_pivotAlign(p_value:GUIAlignType):GUIAlignType {
         if (p_value != g2d_pivotAlign) {
             g2d_pivotAlign = p_value;
-            g2d_pivotX = ((Type.enumIndex(g2d_pivotAlign)-1) % 3) * 0.5;
-            g2d_pivotY = Std.int((Type.enumIndex(g2d_pivotAlign)-1) / 3) * 0.5;
+            if (g2d_pivotAlign != GUIAlignType.NONE) {
+                g2d_pivotX = ((Type.enumIndex(g2d_pivotAlign)-1) % 3) * 0.5;
+                g2d_pivotY = Std.int((Type.enumIndex(g2d_pivotAlign)-1) / 3) * 0.5;
+            }
             setDirty();
         }
         return g2d_anchorAlign;
@@ -247,6 +251,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     inline private function set_anchorLeft(p_value:Float):Float {
         if (g2d_anchorAlign == GUIAlignType.NONE) {
             g2d_anchorLeft = p_value;
+            if (g2d_anchorLeft > g2d_anchorRight) g2d_anchorRight = g2d_anchorLeft;
             setDirty();
         }
         return g2d_anchorLeft;
@@ -265,6 +270,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     inline private function set_anchorTop(p_value:Float):Float {
         if (g2d_anchorAlign == GUIAlignType.NONE) {
             g2d_anchorTop = p_value;
+            if (g2d_anchorTop > g2d_anchorBottom) g2d_anchorBottom = g2d_anchorTop;
             setDirty();
         }
         return g2d_anchorTop;
@@ -283,6 +289,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     inline private function set_anchorRight(p_value:Float):Float {
         if (g2d_anchorAlign == GUIAlignType.NONE) {
             g2d_anchorRight = p_value;
+            if (g2d_anchorRight < g2d_anchorLeft) g2d_anchorLeft = g2d_anchorRight;
             setDirty();
         }
         return g2d_anchorRight;
@@ -301,6 +308,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     inline private function set_anchorBottom(p_value:Float):Float {
         if (g2d_anchorAlign == GUIAlignType.NONE) {
             g2d_anchorBottom = p_value;
+            if (g2d_anchorBottom < g2d_anchorTop) g2d_anchorTop = g2d_anchorBottom;
             setDirty();
         }
         return g2d_anchorBottom;
@@ -402,6 +410,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     public var expand:Bool = true;
 
     private var g2d_minWidth:Float = 0;
+    public function getMinWidth():Float {
+        return g2d_minWidth;
+    }
+
     public var g2d_finalWidth:Float = 0;
 
     private var g2d_preferredWidth:Float = 0;
@@ -420,6 +432,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_minHeight:Float = 0;
+    public function getMinHeight():Float {
+        return g2d_minHeight;
+    }
+
     public var g2d_finalHeight:Float = 0;
 
     private var g2d_preferredHeight:Float = 0;
