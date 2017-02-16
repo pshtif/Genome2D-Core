@@ -5,9 +5,7 @@ import com.genome2d.proto.GPrototype;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.tween.interp.GCurveInterp;
 import com.genome2d.geom.GCurve;
-import com.genome2d.macros.MGDebug;
 import com.genome2d.tween.interp.GFloatInterp;
-import com.genome2d.tween.easing.GLinear;
 import com.genome2d.tween.easing.GEase;
 
 @prototypeName("tweenStep")

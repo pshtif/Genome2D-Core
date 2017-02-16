@@ -9,7 +9,6 @@
 package com.genome2d.text;
 
 import com.genome2d.geom.GRectangle;
-import com.genome2d.proto.IGPrototypable;
 import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 
@@ -71,7 +70,7 @@ class GTextureFont extends GFont {
 			var h:Int = Std.parseInt(node.get("height"));
 			var region:GRectangle = new GRectangle(Std.parseInt(node.get("x")) + regionOffsetX, Std.parseInt(node.get("y")) + regionOffsetY, w, h);
 
-			var char:GTextureChar = addChar(node.get("id"), region, Std.parseFloat(node.get("xoffset")), Std.parseFloat(node.get("yoffset")), Std.parseFloat(node.get("xadvance")));
+			addChar(node.get("id"), region, Std.parseFloat(node.get("xoffset")), Std.parseFloat(node.get("yoffset")), Std.parseFloat(node.get("xadvance")));
 		}
 
 		var kernings:Xml = root.elementsNamed("kernings").next();

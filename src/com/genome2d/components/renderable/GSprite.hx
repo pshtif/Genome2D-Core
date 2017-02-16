@@ -10,14 +10,9 @@ package com.genome2d.components.renderable;
 
 import com.genome2d.textures.GTextureSourceType;
 import com.genome2d.animation.GFrameAnimation;
-import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GMatrix;
-import com.genome2d.context.filters.GFilter;
 import com.genome2d.context.GCamera;
-import com.genome2d.input.GMouseInputType;
 import com.genome2d.node.GNode;
-import com.genome2d.components.GComponent;
-import com.genome2d.input.GMouseInput;
 import com.genome2d.textures.GTexture;
 
 /**

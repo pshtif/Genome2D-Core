@@ -3,9 +3,7 @@ package com.genome2d.tween;
 import com.genome2d.ui.element.GUIElement;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
-import com.genome2d.proto.GPrototypeExtras;
 import com.genome2d.proto.GPrototype;
-import com.genome2d.callbacks.GCallback.GCallback0;
 
 @prototypeName("tweenSequence")
 @:access(com.genome2d.tween.GTween)

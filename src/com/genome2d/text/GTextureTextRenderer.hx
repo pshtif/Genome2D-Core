@@ -8,7 +8,6 @@
  */
 package com.genome2d.text;
 import com.genome2d.context.GBlendMode;
-import com.genome2d.components.renderable.text.GText;
 import com.genome2d.debug.GDebug;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.input.GMouseInputType;
@@ -16,8 +15,6 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.utils.GHAlignType;
 import com.genome2d.utils.GVAlignType;
-import com.genome2d.context.IGContext;
-import com.genome2d.context.GCamera;
 import flash.display.BitmapData;
 
 class GTextureTextRenderer extends GTextRenderer {
@@ -122,7 +119,6 @@ class GTextureTextRenderer extends GTextRenderer {
 		var tx:Float;
         var ty:Float;
 		
-		var renderColor:Int = 0xFFFFFF;
 		var lastRenderColor:Int = 0xFFFFFF;
 		var charRed:Float = 1;
 		var charGreen:Float = 1;
@@ -213,7 +209,6 @@ class GTextureTextRenderer extends GTextRenderer {
             g2d_width = 0;
         }
 
-		var lineWidth:Float = 0;
         var offsetX:Float = 0;
         var offsetY:Float = 0;//(g2d_textureFont.lineHeight - g2d_textureFont.base)*g2d_fontScale;
         var renderable:GTextureCharRenderable = null;

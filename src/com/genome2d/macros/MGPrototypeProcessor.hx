@@ -8,7 +8,6 @@
  */
 package com.genome2d.macros;
 
-import com.genome2d.proto.GPropertyState;
 import com.genome2d.proto.GPrototypeExtras;
 import com.genome2d.proto.GPrototypeSpecs;
 import com.genome2d.proto.GPrototypeStates;

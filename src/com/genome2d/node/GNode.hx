@@ -12,12 +12,10 @@ import com.genome2d.components.renderable.IGInteractive;
 import com.genome2d.components.renderable.GSprite;
 import com.genome2d.callbacks.GCallback;
 import com.genome2d.geom.GPoint;
-import com.genome2d.context.filters.GFilter;
 import com.genome2d.input.IGFocusable;
 import com.genome2d.proto.GPrototype;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
-import com.genome2d.node.GNode;
 import com.genome2d.components.GComponent;
 import com.genome2d.context.GContextFeature;
 import com.genome2d.context.stats.GStats;
@@ -1051,7 +1049,7 @@ class GNode implements IGFocusable implements IGPrototypable
         }
 		
         if (aabb.width != 0 && aabb.height != 0) {
-            var m:GMatrix = getTransformationMatrix(p_targetSpace, g2d_cachedMatrix);
+            getTransformationMatrix(p_targetSpace, g2d_cachedMatrix);
 
             var tx1:Float = g2d_cachedMatrix.a * aabb.x + g2d_cachedMatrix.c * aabb.y + g2d_cachedMatrix.tx;
             var ty1:Float = g2d_cachedMatrix.d * aabb.y + g2d_cachedMatrix.b * aabb.x + g2d_cachedMatrix.ty;

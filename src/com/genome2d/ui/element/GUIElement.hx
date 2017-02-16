@@ -8,16 +8,12 @@
  */
 package com.genome2d.ui.element;
 
-import com.genome2d.input.GMouseInput;
-import com.genome2d.input.GMouseInputType;
-import com.genome2d.geom.GRectangle;
 import com.genome2d.context.IGContext;
 import com.genome2d.Genome2D;
 import com.genome2d.callbacks.GCallback.GCallback0;
 import com.genome2d.callbacks.GCallback.GCallback1;
 import com.genome2d.context.GCamera;
 import com.genome2d.geom.GRectangle;
-import com.genome2d.input.GFocusManager;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.input.GMouseInputType;
 import com.genome2d.input.IGFocusable;
@@ -1449,7 +1445,6 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 	
 	private function skinChanged_handler(p_skinId:String):Void {
 		if (g2d_skin != null && g2d_skin.id == p_skinId) {
-			var t = GUISkinManager.getSkin(p_skinId);
 			skin = GUISkinManager.getSkin(p_skinId);
 		}
 	}

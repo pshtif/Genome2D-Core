@@ -1,7 +1,6 @@
 package com.genome2d.ui.skin;
+
 import com.genome2d.callbacks.GCallback.GCallback1;
-import com.genome2d.proto.GPrototype;
-import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.ui.skin.GUISkin;
 
 class GUISkinManager {

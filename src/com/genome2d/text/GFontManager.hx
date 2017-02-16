@@ -8,7 +8,6 @@
  */
 package com.genome2d.text;
 import com.genome2d.debug.GDebug;
-import com.genome2d.geom.GRectangle;
 import com.genome2d.textures.GTexture;
 
 class GFontManager

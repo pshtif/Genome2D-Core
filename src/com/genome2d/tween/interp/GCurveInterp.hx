@@ -55,7 +55,6 @@ class GCurveInterp implements IGInterp {
             c = from + to.calculate(1);
             complete = true;
         }else {
-            var rt = Math.max(0, g2d_time);
             c = from + to.calculate(ease(g2d_time/duration));
         }
         setValue(c);

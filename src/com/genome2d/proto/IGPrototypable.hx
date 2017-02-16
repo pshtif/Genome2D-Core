@@ -8,8 +8,6 @@
  */
 package com.genome2d.proto;
 
-import com.genome2d.macros.MGPrototypeProcessor;
-
 /**
     Prototypable interface
 **/

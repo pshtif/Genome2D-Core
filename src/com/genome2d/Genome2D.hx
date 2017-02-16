@@ -10,7 +10,6 @@ package com.genome2d;
 
 import com.genome2d.macros.MGBuild;
 import com.genome2d.tween.GTween;
-import com.genome2d.tween.GTweenStep;
 import com.genome2d.input.GMouseInputType;
 import com.genome2d.globals.GParameters;
 import com.genome2d.debug.GDebug;

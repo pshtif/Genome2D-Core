@@ -16,7 +16,8 @@ class GRenderTargetStack {
     }
 
     static public function popRenderTarget(p_context:IGContext):Void {
-        if (g2d_stack == null) return null;
-        p_context.setRenderTarget(g2d_stack.pop(), g2d_transforms.pop(), false);
+        if (g2d_stack != null) {
+            p_context.setRenderTarget(g2d_stack.pop(), g2d_transforms.pop(), false);
+        }
     }
 }

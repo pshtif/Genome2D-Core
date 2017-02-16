@@ -11,10 +11,8 @@ package com.genome2d.components;
 import com.genome2d.callbacks.GCallback.GCallback1;
 import com.genome2d.context.GViewport;
 import com.genome2d.textures.GTexture;
-import com.genome2d.context.IGContext;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GCamera;
-import com.genome2d.node.GNode;
 import com.genome2d.input.GMouseInput;
 
 /**

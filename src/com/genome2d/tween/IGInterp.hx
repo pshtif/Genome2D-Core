@@ -1,5 +1,5 @@
 package com.genome2d.tween;
-import com.genome2d.proto.IGPrototypable;
+
 import com.genome2d.tween.easing.GEase;
 
 @:allow(com.genome2d.tween.GTweenStep)
