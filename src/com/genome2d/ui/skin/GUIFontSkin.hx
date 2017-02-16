@@ -1,5 +1,4 @@
 package com.genome2d.ui.skin;
-import com.genome2d.input.IGFocusable;
 import com.genome2d.callbacks.GCallback.GCallback0;
 import com.genome2d.input.IGFocusable;
 import com.genome2d.input.GFocusManager;
@@ -10,15 +9,11 @@ import com.genome2d.utils.GHAlignType;
 import com.genome2d.utils.GVAlignType;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.proto.GPrototype;
-import com.genome2d.text.GFontManager;
 import com.genome2d.text.GTextFormat;
 import com.genome2d.text.GTextureFont;
 import com.genome2d.ui.element.GUIElement;
-import com.genome2d.ui.skin.GUIFontSkin;
-import com.genome2d.context.IGContext;
 import com.genome2d.text.GTextureTextRenderer;
 import com.genome2d.textures.GTexture;
-import com.genome2d.textures.GTextureManager;
 
 @prototypeName("fontSkin")
 class GUIFontSkin extends GUISkin implements IGFocusable {
@@ -269,7 +264,6 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
                 if (g2d_onEnter != null) g2d_onEnter.dispatch();
             case _:
                 var char:String = String.fromCharCode(input.charCode);
-                trace(restrictedChars.indexOf(char));
                 if (restrictedChars.indexOf(char) != -1) {
                     text = text.substr(0,cursorStartIndex) + char + text.substr(cursorStartIndex);
                     cursorStartIndex = cursorEndIndex = cursorEndIndex+1;

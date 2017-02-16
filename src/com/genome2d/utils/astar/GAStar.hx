@@ -2,7 +2,6 @@ package com.genome2d.utils.astar;
 
 import com.genome2d.utils.astar.heuristics.GAStarManhattan;
 import com.genome2d.geom.GIntPoint;
-import com.genome2d.utils.astar.heuristics.IGAStarHeuristic;
 
 class GAStar
 {

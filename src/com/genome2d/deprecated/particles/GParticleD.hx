@@ -10,7 +10,6 @@ package com.genome2d.deprecated.particles;
 
 import com.genome2d.deprecated.components.renderable.particles.GParticleSystemD;
 import com.genome2d.context.GCamera;
-import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 
 /**

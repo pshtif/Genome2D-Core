@@ -79,10 +79,10 @@ class GXmlPrototypeParser
 		prototype.prototypeClass = GPrototypeFactory.getPrototypeClass(prototype.prototypeName);
 		if (prototype.prototypeClass == null) MGDebug.ERROR("Invalid prototype type", prototype.prototypeName);
 
-		var propertyNames:Array<String> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
-		var propertyDefaults:Array<Dynamic> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_DEFAULTS);
-		var propertyTypes:Array<String> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES);
-		var propertyExtras:Array<Int> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
+		//var propertyNames:Array<String> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
+		//var propertyDefaults:Array<Dynamic> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_DEFAULTS);
+		//var propertyTypes:Array<String> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES);
+		//var propertyExtras:Array<Int> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
 		var defaultChildGroup:String = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_DEFAULT_CHILD_GROUP);
 		
 		// We are adding properties on attributes

@@ -1,7 +1,6 @@
 package com.genome2d.g3d.importers;
+
 import com.genome2d.g3d.G3DScene;
-import haxe.io.Bytes;
-import haxe.io.BytesBuffer;
 import haxe.io.BytesData;
 
 /**

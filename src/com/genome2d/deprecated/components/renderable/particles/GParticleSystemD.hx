@@ -11,7 +11,6 @@ package com.genome2d.deprecated.components.renderable.particles;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.components.renderable.IGRenderable;
 import com.genome2d.input.GMouseInput;
-import com.genome2d.textures.GTextureManager;
 import com.genome2d.deprecated.particles.GParticlePoolD;
 import com.genome2d.deprecated.particles.IGInitializerD;
 import com.genome2d.deprecated.particles.IGAffectorD;
@@ -19,7 +18,6 @@ import com.genome2d.deprecated.particles.GParticleD;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.geom.GCurve;
 import com.genome2d.components.GComponent;
-import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.GCamera;
 

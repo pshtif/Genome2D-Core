@@ -14,7 +14,6 @@ import com.genome2d.debug.GDebug;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.context.GCamera;
-import com.genome2d.node.GNode;
 import com.genome2d.textures.GTexture;
 
 /**

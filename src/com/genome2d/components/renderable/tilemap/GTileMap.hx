@@ -2,13 +2,10 @@ package com.genome2d.components.renderable.tilemap;
 
 import com.genome2d.tilemap.GTile;
 import com.genome2d.input.GMouseInput;
-import com.genome2d.input.GMouseInputType;
 import com.genome2d.context.GBlendMode;
-import com.genome2d.textures.GTexture;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GCamera;
 import com.genome2d.debug.GDebug;
-import com.genome2d.node.GNode;
 
 class GTileMap extends GComponent implements IGRenderable
 {

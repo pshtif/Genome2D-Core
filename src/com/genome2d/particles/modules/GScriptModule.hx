@@ -1,13 +1,9 @@
 package com.genome2d.particles.modules;
+
 import com.genome2d.scripts.GScript;
 import com.genome2d.particles.GParticleEmitter;
 import com.genome2d.particles.GParticle;
-import com.genome2d.particles.GParticleSystem;
 
-/**
- * ...
- * @author Peter @sHTiF Stefcek
- */
 class GScriptModule extends GParticleEmitterModule
 {
 	private var g2d_script:GScript = null;

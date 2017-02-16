@@ -8,20 +8,12 @@
  */
 package com.genome2d.macros;
 
+#if macro
 import com.genome2d.proto.GPrototypeExtras;
 import com.genome2d.proto.GPrototypeSpecs;
-import com.genome2d.proto.GPrototypeStates;
-import com.genome2d.proto.IGPrototypable;
-import haxe.macro.PositionTools;
-import haxe.macro.Type.ClassType;
-import haxe.macro.Type.BaseType;
-import haxe.macro.Type;
-import haxe.macro.Context;
 import haxe.macro.Expr;
 import haxe.macro.ExprTools;
 import haxe.macro.Context;
-import haxe.macro.TypeTools;
-import haxe.macro.ComplexTypeTools;
 import haxe.macro.Compiler;
 
 /**
@@ -29,20 +21,18 @@ import haxe.macro.Compiler;
 
     Not used by user
 **/
-class MGPrototypeProcessor {
-    #if macro
-		
+class MGPrototypeProcessor {		
 	static public var helperIndex:Int = 0;
     static public var prototypes = [];
     static public var previous:String = "com.genome2d.proto.GPrototypeHelper";
 	static public var classFlags:Map<String,Int>;
 
     public static function build() : Array<Field> {
-        var pos = Context.currentPos();
-        var fields = Context.getBuildFields();
-		var imports = Context.getLocalImports();
-		var localModule = Context.getLocalModule();
-		localModule = localModule.substr(0,localModule.lastIndexOf("."));
+        var pos:Position = Context.currentPos();
+        var fields:Array<Field> = Context.getBuildFields();
+		var imports:Array<ImportExpr> = Context.getLocalImports();
+		var localModule:String = Context.getLocalModule();
+		localModule = localModule.substr(0, localModule.lastIndexOf("."));
 
         var prototypePropertyNames:Array<String> = [];
         var prototypePropertyTypes:Array<String> = [];
@@ -313,7 +303,6 @@ class MGPrototypeProcessor {
 		return p;
 	}
 
-	
 	inline static private function extractType(p_path:TypePath, p_imports:Array<ImportExpr>, p_localModule:String) {
 		var typeName:String = p_path.name;
 		if (typeName == "String" || typeName == "Bool" || typeName == "Float" || typeName == "Int") return typeName;
@@ -397,5 +386,5 @@ class MGPrototypeProcessor {
             }
         }
     }
-    #end
 }
+#end

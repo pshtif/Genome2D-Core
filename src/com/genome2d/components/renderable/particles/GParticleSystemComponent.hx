@@ -14,7 +14,6 @@ import com.genome2d.components.renderable.IGRenderable;
 import com.genome2d.context.GCamera;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.input.GMouseInput;
-import com.genome2d.particles.GParticleEmitter;
 import com.genome2d.particles.GParticleSystem;
 
 /**

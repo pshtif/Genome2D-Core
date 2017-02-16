@@ -1,5 +1,5 @@
 package com.genome2d.fbx;
-import com.genome2d.fbx.GFbxTools;
+
 import com.genome2d.fbx.GFbxParserNode;
 
 class GFbxMaterial extends GFbxNode {

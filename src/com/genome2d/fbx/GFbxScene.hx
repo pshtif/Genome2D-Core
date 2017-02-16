@@ -1,14 +1,11 @@
 package com.genome2d.fbx;
 
-import com.genome2d.assets.GAssetManager;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.context.GProjectionMatrix;
 import com.genome2d.context.renderers.G3DRenderer;
 import com.genome2d.debug.GDebug;
 import com.genome2d.fbx.GFbxParserNode;
 import com.genome2d.fbx.GFbxTools;
-import com.genome2d.macros.MGDebug;
-
 import com.genome2d.geom.GFloat4;
 import com.genome2d.geom.GMatrix3D;
 import com.genome2d.Genome2D;

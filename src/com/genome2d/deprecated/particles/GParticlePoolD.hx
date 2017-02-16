@@ -12,7 +12,6 @@ package com.genome2d.deprecated.particles;
     Particle pool management class, used for pooling `GParticle` instances for `GParticleSystem` components instances
 **/
 import com.genome2d.deprecated.particles.GParticleD;
-import com.genome2d.deprecated.components.renderable.particles.GParticleSystemD;
 
 @:allow(com.genome2d.deprecated.particles.GParticleD)
 @:allow(com.genome2d.deprecated.components.renderable.particles.GParticleSystemD)

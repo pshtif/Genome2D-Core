@@ -1,6 +1,7 @@
 package com.genome2d;
+
 import com.genome2d.assets.GAsset;
-import com.genome2d.context.GContextConfig;
+
 class GProject {
     private var g2d_genome:Genome2D;
     private var g2d_assets:Array<GAsset>;

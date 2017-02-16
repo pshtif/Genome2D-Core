@@ -1,6 +1,4 @@
 package com.genome2d.g3d;
-import com.genome2d.fbx.GFbxTools;
-import com.genome2d.fbx.GFbxParserNode;
 
 class G3DNode {
     public var id:String;

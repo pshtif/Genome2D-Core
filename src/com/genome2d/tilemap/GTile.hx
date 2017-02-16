@@ -1,7 +1,6 @@
 package com.genome2d.tilemap;
 
 import com.genome2d.context.GBlendMode;
-import com.genome2d.textures.GTextureManager;
 import com.genome2d.context.IGContext;
 import com.genome2d.textures.GTexture;
 import com.genome2d.debug.GDebug;

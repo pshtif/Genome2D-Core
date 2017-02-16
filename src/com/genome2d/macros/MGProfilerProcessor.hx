@@ -1,21 +1,10 @@
 package com.genome2d.macros;
 
-import com.genome2d.debug.GProfiler;
-import haxe.macro.ExprTools;
-import haxe.macro.Type.ClassType;
-import haxe.macro.Context;
-import haxe.macro.Expr;
-import haxe.macro.ExprTools;
-import haxe.macro.Context;
-import haxe.macro.TypeTools;
-import haxe.macro.ComplexTypeTools;
-import haxe.macro.Compiler;
-
+#if macro
 class MGProfilerProcessor {
-    #if macro
     static private var hasReturn:Bool;
 
-    static public function build() : Array<Field> {
+    macro static public function build() : Array<Field> {
         var pos = Context.currentPos();
         var fields = Context.getBuildFields();
 
@@ -96,5 +85,5 @@ class MGProfilerProcessor {
 
         return 0;
     }
-    #end
 }
+#end

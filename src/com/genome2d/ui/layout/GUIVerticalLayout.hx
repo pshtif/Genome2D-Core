@@ -8,7 +8,6 @@
  */
 package com.genome2d.ui.layout;
 
-import com.genome2d.proto.IGPrototypable;
 import com.genome2d.ui.element.GUIElement;
 
 @:access(com.genome2d.ui.element.GUIElement)
@@ -35,7 +34,6 @@ class GUIVerticalLayout extends GUILayout {
     }
 
     override private function invalidateWidth(p_element:GUIElement):Void {
-        var offsetX:Float = 0;
         var rest:Float = p_element.g2d_finalWidth - p_element.g2d_minWidth;
         if (rest<0) rest = 0;
         for (i in 0...p_element.g2d_numChildren) {

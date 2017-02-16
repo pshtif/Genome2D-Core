@@ -1,9 +1,7 @@
 package com.genome2d.macros;
 
-import com.genome2d.debug.GDebug;
+#if macro
 import haxe.PosInfos;
-import haxe.macro.Expr;
-import haxe.macro.Context;
 
 class MGProfiler {
     macro static public function PROFILE(expr) {
@@ -19,3 +17,4 @@ class MGProfiler {
         com.genome2d.debug.GDebug.trace("PROFILE BLOCK ["+pos.className+":"+pos.methodName+"] END Elapsed: "+p_time+"ms");
     }
 }
+#end

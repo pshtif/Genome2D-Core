@@ -14,7 +14,6 @@ import com.genome2d.context.IGContext;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.node.GNode;
 import com.genome2d.context.GCamera;
-import com.genome2d.context.filters.GFilter;
 import com.genome2d.context.filters.GHDRPassFilter;
 import com.genome2d.textures.GTexture;
 

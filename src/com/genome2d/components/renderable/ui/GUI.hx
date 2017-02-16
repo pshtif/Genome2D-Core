@@ -1,8 +1,8 @@
 package com.genome2d.components.renderable.ui;
+
 import com.genome2d.ui.skin.GUISkin;
 import com.genome2d.ui.element.GUIElement;
 import com.genome2d.input.GMouseInput;
-import com.genome2d.input.GMouseInputType;
 import com.genome2d.geom.GRectangle;
 import com.genome2d.context.GCamera;
 import com.genome2d.components.renderable.IGRenderable;

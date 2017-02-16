@@ -1,12 +1,11 @@
 package com.genome2d.ui.skin;
+
 import com.genome2d.context.GBlendMode;
 import com.genome2d.context.filters.GFilter;
-import com.genome2d.geom.GRectangle;
 import com.genome2d.proto.GPrototype;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.textures.GTexture;
 import com.genome2d.context.IGContext;
-import com.genome2d.textures.GTexture;
 import com.genome2d.ui.element.GUIElement;
 
 @prototypeName("textureSkin")

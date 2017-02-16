@@ -8,12 +8,12 @@
  */
 package com.genome2d.macros;
 
-import haxe.macro.Context;
+#if macro
 import haxe.macro.Expr;
+import haxe.macro.Context;
 
 class MGMouseCallbackBuild {
-    #if macro
-    public static function build():Array<Field> {
+    macro public static function build():Array<Field> {
         var fields = Context.getBuildFields();
 
         var pos = Context.currentPos();
@@ -64,17 +64,5 @@ class MGMouseCallbackBuild {
 
         return fields;
     }
-    #end
 }
-
-/*
-	// Mouse callbacks
-	private var g2d_onMouseDown:GCallback1<GMouseInput>;
-    #if swc @:extern #end
-	public var onMouseDown(get, never):GCallback1<GMouseInput>;
-    #if swc @:getter(onMouseDown) #end
-	private function get_onMouseDown():GCallback1<GMouseInput> {
-		if (g2d_onMouseDown == null) g2d_onMouseDown = new GCallback1(GMouseInput);
-		return g2d_onMouseDown;
-	}
-*/
+#end

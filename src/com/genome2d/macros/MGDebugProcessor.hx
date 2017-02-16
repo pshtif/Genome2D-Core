@@ -1,20 +1,12 @@
 package com.genome2d.macros;
 
-import com.genome2d.debug.GDebug;
 import com.genome2d.debug.GDebugPriority;
-import haxe.macro.ExprTools;
-import haxe.macro.Type.ClassType;
-import haxe.macro.Context;
 import haxe.macro.Expr;
-import haxe.macro.ExprTools;
 import haxe.macro.Context;
-import haxe.macro.TypeTools;
-import haxe.macro.ComplexTypeTools;
-import haxe.macro.Compiler;
 
 class MGDebugProcessor {
     #if macro
-    static public function build() : Array<Field> {
+    macro static public function build() : Array<Field> {
         var pos = Context.currentPos();
         var fields = Context.getBuildFields();
         //var interfaces = Context.getLocalClass().get().interfaces

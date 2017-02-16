@@ -1,11 +1,10 @@
 package com.genome2d.g3d.importers;
+
 import com.genome2d.fbx.GFbxParser;
 import com.genome2d.fbx.GFbxParserNode;
-import com.genome2d.fbx.GFbxScene;
 import com.genome2d.fbx.GFbxTools;
 import com.genome2d.g3d.G3DScene;
 import com.genome2d.g3d.G3DTexture;
-import com.genome2d.macros.MGDebug;
 import haxe.io.BytesData;
 
 /**
@@ -72,13 +71,14 @@ class G3DFbxImporter extends G3DAbstractImporter
 			var vertexNode:GFbxParserNode = GFbxTools.getAll(node,"Vertices")[0];
 			var vertexIndexNode:GFbxParserNode = GFbxTools.getAll(node,"PolygonVertexIndex")[0];
 
-			var normalsNode:GFbxParserNode = GFbxTools.getAll(node, "LayerElementNormal.Normals")[0];
-
 			var uvNode:GFbxParserNode = GFbxTools.getAll(node,"LayerElementUV.UV")[0];
 			var uvIndexNode:GFbxParserNode = GFbxTools.getAll(node, "LayerElementUV.UVIndex")[0];
 			
 			var vertices:Array<Float> = GFbxTools.getFloats(vertexNode);
-			var normals:Array<Float> = GFbxTools.getFloats(normalsNode);
+			
+			// TODO normal usage?
+			//var normalsNode:GFbxParserNode = GFbxTools.getAll(node, "LayerElementNormal.Normals")[0];
+			//var normals:Array<Float> = GFbxTools.getFloats(normalsNode);
 			
 			var indices:Array<UInt> = cast GFbxTools.getInts(vertexIndexNode);
 			var uvs:Array<Float> = GFbxTools.getFloats(uvNode);

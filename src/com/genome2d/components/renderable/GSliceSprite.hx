@@ -4,7 +4,6 @@ import com.genome2d.context.GBlendMode;
 import com.genome2d.context.IGContext;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.geom.GRectangle;
-import com.genome2d.geom.GMatrix;
 import com.genome2d.context.GCamera;
 import com.genome2d.context.filters.GFilter;
 import com.genome2d.textures.GTexture;
@@ -116,8 +115,6 @@ class GSliceSprite extends GComponent implements IGRenderable {
     }
 	/**/
 	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
-        var rendered:Bool = false;
-
         if (texture != null) {
             var context:IGContext = node.core.getContext();
 
@@ -131,7 +128,6 @@ class GSliceSprite extends GComponent implements IGRenderable {
 			var red:Float = node.g2d_worldRed;
 			var green:Float = node.g2d_worldGreen;
 			var blue:Float = node.g2d_worldBlue;
-			var green:Float = node.g2d_worldGreen;
 			var alpha:Float = node.g2d_worldAlpha;
 
             var sl:Float = sliceLeft > texture.nativeWidth ? texture.nativeWidth : sliceLeft < 0 ? 0 : sliceLeft;
