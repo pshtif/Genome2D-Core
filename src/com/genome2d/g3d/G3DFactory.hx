@@ -11,7 +11,7 @@ class G3DFactory
 	static public function createBox(p_width:Float, p_height:Float, p_depth:Float, p_texture:GTexture):G3DScene {
 		var id:String = Std.string(g2d_ids++);
 		var scene:G3DScene = new G3DScene();
-		
+
 		var texture:G3DTexture = new G3DTexture("gte"+id, p_texture.id);
 		scene.addNode(texture.id, texture);
 		
