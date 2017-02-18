@@ -24,6 +24,9 @@ import com.genome2d.ui.layout.GUILayout;
 import com.genome2d.ui.skin.GUISkin;
 import com.genome2d.ui.skin.GUISkinManager;
 import com.genome2d.ui.GUIAlignType;
+import com.genome2d.ui.layout.GUIHorizontalLayout;
+import com.genome2d.ui.layout.GUIVerticalLayout;
+import com.genome2d.ui.layout.GUILayoutType;
 
 @:access(com.genome2d.ui.layout.GUILayout)
 @:access(com.genome2d.ui.skin.GUISkin)

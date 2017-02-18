@@ -233,7 +233,8 @@ class GPrototypeProperty {
 
 		if (isReference() && mapValue != null) {
 			var c:Class<IGPrototypable> = GPrototypeFactory.getPrototypeClass(type);
-			realValue = Reflect.callMethod(c, Reflect.field(c,"fromReference"), [mapValue]);
+			// TODO check if the class has fromReference!
+			realValue = (c != null) ? Reflect.callMethod(c, Reflect.field(c,"fromReference"), [mapValue]) : null;
 		} else if (isPrototype() && mapValue != null) {
 			realValue = GPrototypeFactory.createInstance(mapValue);
 		} else {

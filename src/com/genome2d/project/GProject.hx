@@ -16,7 +16,6 @@ class GProject {
     private var g2d_assetManager:GAssetManager;
 
     public function new(p_config:GProjectConfig) {
-        MGDebug.INFO();
         g2d_config = p_config;
 
         g2d_genome = Genome2D.getInstance();
@@ -31,8 +30,6 @@ class GProject {
      *  Initialize Genome2D
      **/
     private function initGenome():Void {
-        MGDebug.INFO();
-
         g2d_genome.onFailed.addOnce(genomeFailed_handler);
         g2d_genome.onInitialized.addOnce(genomeInitialized_handler);
         g2d_genome.init(g2d_config.contextConfig);

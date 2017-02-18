@@ -15,7 +15,9 @@ import com.genome2d.textures.GTexture;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.utils.GHAlignType;
 import com.genome2d.utils.GVAlignType;
+#if flash
 import flash.display.BitmapData;
+#end
 
 class GTextureTextRenderer extends GTextRenderer {
 	

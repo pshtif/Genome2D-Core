@@ -28,14 +28,14 @@ class GPrototypeFactory {
 		#else
 		var fields:Array<String> = Type.getClassFields(GPrototypeHelper);
 		#end
-		for (i in fields) {
-			if (i.indexOf("g2d_") == 0) continue;
+		for (field in fields) {
+			if (field.indexOf("g2d_") == 0) continue;
 			#if js
-			var cls:Class<IGPrototypable> = cast Type.resolveClass(Reflect.field(untyped com_genome2d_proto_GPrototypeHelper, i));
+			var cls:Class<IGPrototypable> = cast Type.resolveClass(Reflect.field(untyped com_genome2d_proto_GPrototypeHelper, field));
 			#else
-			var cls:Class<IGPrototypable> = cast Type.resolveClass(Reflect.field(GPrototypeHelper, i));
+			var cls:Class<IGPrototypable> = cast Type.resolveClass(Reflect.field(GPrototypeHelper, field));
 			#end
-            if (cls != null) g2d_lookups.set(i, cls);
+            if (cls != null) g2d_lookups.set(field, cls);
 		}
 		
     }

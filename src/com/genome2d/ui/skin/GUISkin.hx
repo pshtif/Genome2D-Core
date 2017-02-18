@@ -6,6 +6,9 @@ import com.genome2d.ui.element.GUIElement;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.textures.GTexture;
 import com.genome2d.debug.GDebug;
+import com.genome2d.ui.skin.GUISkinSheet;
+import com.genome2d.ui.skin.GUITextureSkin;
+import com.genome2d.ui.skin.GUIFontSkin;
 
 @:access(com.genome2d.ui.skin.GUISkinManager)
 @:allow(com.genome2d.ui.skin.GUISkinManager)

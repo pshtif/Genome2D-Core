@@ -253,7 +253,9 @@ class Genome2D implements IGDebuggableInternal
 
 		g2d_instance = this;
 
+        #if flash
         haxe.Log.trace = GDebug.traceRedirect;
+        #end
 
         g2d_onInitialized = new GCallback0();
         g2d_onFailed = new GCallback1<String>();
