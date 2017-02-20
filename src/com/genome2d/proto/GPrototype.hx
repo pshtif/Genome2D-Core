@@ -84,6 +84,10 @@ class GPrototype
 	public function getGroup(p_groupName:String):Array<GPrototype> {
 		return children.get(p_groupName);
 	}
+
+	public function hasProperty(p_propertyName:String):Bool {
+		return properties.exists(p_propertyName);
+	}
 	
 	public function getProperty(p_propertyName:String):GPrototypeProperty {
 		return properties.get(p_propertyName);
