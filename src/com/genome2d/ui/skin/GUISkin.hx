@@ -15,16 +15,20 @@ import com.genome2d.ui.skin.GUIFontSkin;
 class GUISkin implements IGPrototypable {
 
     static private var g2d_batchQueue:Array<GUISkin>;
+	static private var g2d_texturePriorities:Array<GTexture>;
+	static private var g2d_currentPriorityTexture:GTexture;
     static private var g2d_currentBatchTexture:GTexture;
 	static private var g2d_currentBatchFilter:GFilter;
 	static public var useBatch:Bool = true;
 
     static private function batchRender(p_skin:GUISkin):Bool {
         var batched:Bool = false;
-        if (g2d_currentBatchTexture != null &&
-			p_skin.getTexture() != null && !p_skin.getTexture().hasSameGPUTexture(g2d_currentBatchTexture) &&
-			p_skin.getFilter() == g2d_currentBatchFilter) {
-            g2d_batchQueue.push(p_skin);
+		if (p_skin.getTexture() == null) {
+		} else if ((p_skin.getTexture() != g2d_currentPriorityTexture && g2d_currentPriorityTexture != null) ||
+		           (g2d_currentBatchTexture != null &&
+		  		   !p_skin.getTexture().hasSameGPUTexture(g2d_currentBatchTexture) &&
+					p_skin.getFilter() == g2d_currentBatchFilter)) {
+			g2d_batchQueue.push(p_skin);
             batched = true;
         } else if (g2d_currentBatchTexture == null &&
 				   p_skin.getTexture() != null) {
@@ -36,6 +40,11 @@ class GUISkin implements IGPrototypable {
 
     static private function flushBatch():Void {
 		if (useBatch) {
+			if (g2d_texturePriorities != null && g2d_texturePriorities.length>0) {
+				g2d_currentPriorityTexture = g2d_texturePriorities.shift();
+			} else {
+				g2d_currentPriorityTexture = null;
+			}
 			g2d_currentBatchTexture = null;
 			g2d_currentBatchFilter = null;
 			var queueLength:Int = g2d_batchQueue.length;
@@ -47,6 +56,15 @@ class GUISkin implements IGPrototypable {
 			g2d_currentBatchFilter = null;
 		}
     }
+
+	static private function setBatchTexturePriority(p_flushPriority:Array<GTexture>):Void {
+		g2d_texturePriorities = p_flushPriority.concat(null);
+		if (g2d_texturePriorities != null && g2d_texturePriorities.length>0) {
+			g2d_currentPriorityTexture = g2d_texturePriorities.shift();
+		} else {
+			g2d_currentPriorityTexture = null;
+		}
+	}
 
     private var g2d_id:String;
     #if swc @:extern #end

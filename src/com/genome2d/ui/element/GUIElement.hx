@@ -8,6 +8,9 @@
  */
 package com.genome2d.ui.element;
 
+import com.genome2d.textures.GTextureManager;
+import com.genome2d.textures.GTexture;
+import com.genome2d.proto.GPrototypeExtras;
 import com.genome2d.context.IGContext;
 import com.genome2d.Genome2D;
 import com.genome2d.callbacks.GCallback.GCallback0;
@@ -106,6 +109,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     @prototype 
 	public var flushBatch:Bool = false;
+
+    public var batchPriority:Array<GTexture>;
 
     @prototype 
 	public var name:String = "";
@@ -1084,7 +1089,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 			var previousMask:GRectangle = context.getMaskRect();
 			var camera:GCamera = context.getActiveCamera();
 
-            if (flushBatch || useMask) GUISkin.flushBatch();
+            if (flushBatch || useMask) {
+                GUISkin.flushBatch();
+                if (batchPriority != null) GUISkin.setBatchTexturePriority(batchPriority);
+            }
 			if (useMask) {
                 var w:Float = (g2d_worldRight - g2d_worldLeft) * camera.scaleX;
                 var h:Float = (g2d_worldBottom - g2d_worldTop) * camera.scaleY;
@@ -1107,31 +1115,6 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 				GUISkin.flushBatch();
 				context.setMaskRect(previousMask);
 			}
-        }
-    }
-
-    public function getPrototype(p_prototype:GPrototype = null):GPrototype {		
-		p_prototype = getPrototypeDefault(p_prototype);
-		
-        for (i in 0...g2d_numChildren) {
-            p_prototype.addChild(g2d_children[i].getPrototype(), PROTOTYPE_DEFAULT_CHILD_GROUP);
-        }
-
-        return p_prototype;
-    }
-/**/
-    private var g2d_useCustomChildPrototypeBinding:Bool = false;
-    public function bindPrototype(p_prototype:GPrototype):Void {
-        GPrototypeFactory.g2d_bindPrototype(this, p_prototype, PROTOTYPE_NAME);
-
-        if (!g2d_useCustomChildPrototypeBinding) {
-            var group:Array<GPrototype> = p_prototype.getGroup(PROTOTYPE_DEFAULT_CHILD_GROUP);
-            if (group != null) {
-                for (prototype in group) {
-                    var prototype:IGPrototypable = GPrototypeFactory.createInstance(prototype);
-                    if (Std.is(prototype,GUIElement)) addChild(cast prototype);
-                }
-            }
         }
     }
 
@@ -1451,4 +1434,59 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 			skin = GUISkinManager.getSkin(p_skinId);
 		}
 	}
+
+
+    /*******************************************************************************************************************
+    *   PROTOTYPE CODE
+    *******************************************************************************************************************/
+
+    public function getPrototype(p_prototype:GPrototype = null):GPrototype {
+        p_prototype = getPrototypeDefault(p_prototype);
+        if (batchPriority != null && batchPriority.length > 0) {
+            var textureIds:String = "@"+batchPriority[0].id;
+            for (i in 1...batchPriority.length) {
+                textureIds += ",@" + batchPriority[i].id;
+            }
+            p_prototype.createPrototypeProperty("batchPriority", "String", GPrototypeExtras.IGNORE_AUTO_BIND, null, textureIds);
+        } else {
+            p_prototype.createPrototypeProperty("batchPriority", "String", GPrototypeExtras.IGNORE_AUTO_BIND, null, "");
+        }
+
+        for (i in 0...g2d_numChildren) {
+            p_prototype.addChild(g2d_children[i].getPrototype(), PROTOTYPE_DEFAULT_CHILD_GROUP);
+        }
+
+        return p_prototype;
+    }
+
+    private var g2d_useCustomChildPrototypeBinding:Bool = false;
+    public function bindPrototype(p_prototype:GPrototype):Void {
+        GPrototypeFactory.g2d_bindPrototype(this, p_prototype, PROTOTYPE_NAME);
+
+        // TODO backward compatibility ENFORCE later
+        if (p_prototype.hasProperty("batchPriority")) {
+            var textureString:String = p_prototype.getProperty("batchPriority").value;
+            if (textureString != "") {
+                var textureIds:Array<String> = textureString.split(",");
+                flushBatch = true;
+                batchPriority = new Array<GTexture>();
+                for (textureId in textureIds) {
+                    var texture:GTexture = GTextureManager.getTexture(textureId.substr(1));
+                    if (texture != null) batchPriority.push(texture);
+                }
+            } else {
+                batchPriority = null;
+            }
+        }
+
+        if (!g2d_useCustomChildPrototypeBinding) {
+            var group:Array<GPrototype> = p_prototype.getGroup(PROTOTYPE_DEFAULT_CHILD_GROUP);
+            if (group != null) {
+                for (prototype in group) {
+                    var prototype:IGPrototypable = GPrototypeFactory.createInstance(prototype);
+                    if (Std.is(prototype,GUIElement)) addChild(cast prototype);
+                }
+            }
+        }
+    }
 }
