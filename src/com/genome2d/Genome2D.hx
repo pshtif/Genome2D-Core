@@ -277,6 +277,7 @@ class Genome2D implements IGDebuggableInternal
     **/
     @:access(com.genome2d.proto.GPrototypeFactory)
 	public function init(p_config:GContextConfig):Void {
+        if (p_config == null) MGDebug.ERROR("Invalid or null config specified.");
         // Initialize root
         if (g2d_root != null) g2d_root.dispose();
         g2d_root = new GNode("root");

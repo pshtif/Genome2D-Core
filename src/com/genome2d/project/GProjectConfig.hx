@@ -6,5 +6,8 @@ class GProjectConfig {
     public var contextConfig:GContextConfig;
 
     public function new() {
+        #if !swc
+        contextConfig = new GContextConfig();
+        #end
     }
 }
