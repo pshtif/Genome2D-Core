@@ -119,7 +119,9 @@ class GTextureFont extends GFont {
         return 0;
     }
 
-	public function dispose():Void {
+	override public function dispose():Void {
+		super.dispose();
+
 		for (char in g2d_chars) char.dispose();
 		g2d_chars = null;
 		texture = null;

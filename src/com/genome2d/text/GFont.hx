@@ -24,6 +24,10 @@ class GFont implements IGPrototypable {
         return g2d_id;
     }
 
+    public function dispose():Void {
+        GFontManager.g2d_removeFont(cast this);
+    }
+
     /*
 	 *	Get a reference value
 	 */
