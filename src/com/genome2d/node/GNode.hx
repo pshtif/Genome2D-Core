@@ -598,15 +598,9 @@ class GNode implements IGFocusable implements IGPrototypable
 		if (g2d_disposed) GDebug.error("Node already disposed.");
         return getComponent(p_componentLookupClass) != null;
 	}
-	
-	/**
-	 * 	Add a components of specified type to this node, node can always have only a single components of a specific class to avoid redundancy
-	 * 
-	 *	@param p_componentClass Component type that should be instanced and attached to this node
-	 */
-	public function addComponent<T:GComponent>(p_componentClass:Class<GComponent>):T {
-		if (g2d_disposed) GDebug.error("Node already disposed.");
 
+	private function g2d_addComponent<T:GComponent>(p_componentClass:Class<GComponent>):T {
+		if (g2d_disposed) GDebug.error("Node already disposed.");
 
         var lookup:T = getComponent(p_componentClass);
 		if (lookup != null) return lookup;
@@ -627,20 +621,35 @@ class GNode implements IGFocusable implements IGPrototypable
 		g2d_components.push(component);
 		g2d_componentCount++;
 
+		return component;
+	}
+
+    /**
+	 * 	Add a components of specified type to this node, node can always have only a single components of a specific class to avoid redundancy
+	 *
+	 *	@param p_componentClass Component type that should be instanced and attached to this node
+	 */
+    public function addComponent<T:GComponent>(p_componentClass:Class<GComponent>):T {
+        var component:T = g2d_addComponent(p_componentClass);
+
         component.init();
+        component.g2d_start();
         #if genome_editor
         dispatchHierarchyChange();
         #end
-		return component;
-	}
+        return component;
+    }
 
     public function addComponentPrototype<T:GComponent>(p_prototype:GPrototype):T {
         if (g2d_disposed) GDebug.error("Node already disposed.");
 
-        var component:T = addComponent(cast p_prototype.prototypeClass);
+        var component:T = g2d_addComponent(cast p_prototype.prototypeClass);
 
         component.bindPrototype(p_prototype);
-
+        component.g2d_start();
+        #if genome_editor
+        dispatchHierarchyChange();
+        #end
         return component;
     }
 

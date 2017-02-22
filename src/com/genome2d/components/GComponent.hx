@@ -17,8 +17,6 @@ import com.genome2d.node.GNode;
 @:allow(com.genome2d.node.GNode)
 class GComponent implements IGPrototypable
 {
-	private var g2d_active:Bool = true;
-
     /**
 	    Abstract reference to user defined data, if you want keep some custom data binded to component instance use it.
 	**/
@@ -31,12 +29,29 @@ class GComponent implements IGPrototypable
         return g2d_userData;
     }
 
+	private var g2d_active:Bool = true;
 	public function isActive():Bool {
 		return g2d_active;
 	}
 	public function setActive(p_value:Bool):Void {
 		g2d_active = p_value;
 	}
+
+	private var g2d_enabled:Bool = true;
+	#if swc @:extern #end
+	public var enabled(get, set):Bool;
+	#if swc @:getter(enabled) #end
+	inline private function get_enabled():Bool {
+		return g2d_enabled;
+	}
+	#if swc @:setter(enabled) #end
+	inline private function set_enabled(p_value:Bool):Bool {
+		g2d_enabled = p_value;
+		if (g2d_enabled && !g2d_started) g2d_start();
+		return g2d_enabled;
+	}
+
+	private var g2d_started:Bool = false;
 
 	private var g2d_node:GNode;
     /**
@@ -58,8 +73,19 @@ class GComponent implements IGPrototypable
     public function init():Void {
     }
 
-    public function dispose():Void {
-    }
+	private function g2d_start():Void {
+		if (g2d_active && !g2d_started) {
+			g2d_started = true;
+			start();
+		}
+	}
+
+	/**
+        Abstract method called after components is initialized and enabled
+    **/
+	public function start():Void {
+
+	}
 	
 	/**
 	    Base dispose method, if there is a disposing you need to do in your extending components you should override it and always call super.dispose() its used when a node using this components is being disposed
@@ -70,6 +96,9 @@ class GComponent implements IGPrototypable
 		g2d_active = false;
 		
 		g2d_node = null;
+	}
+
+	public function dispose():Void {
 	}
 	
 	public function toReference():String {
