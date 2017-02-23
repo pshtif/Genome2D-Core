@@ -16,6 +16,7 @@ class GUISkin implements IGPrototypable {
 
     static private var g2d_batchQueue:Array<GUISkin>;
 	static private var g2d_texturePriorities:Array<GTexture>;
+	static private var g2d_currentPriorityIndex:Int;
 	static private var g2d_currentPriorityTexture:GTexture;
     static private var g2d_currentBatchTexture:GTexture;
 	static private var g2d_currentBatchFilter:GFilter;
@@ -38,10 +39,16 @@ class GUISkin implements IGPrototypable {
         return batched;
     }
 
+	static private function forceFlushBatch():Void {
+		// Difference between flush is that we need to reset priority offset
+		g2d_currentPriorityIndex = -1;
+		flushBatch();
+	}
+
     static private function flushBatch():Void {
 		if (useBatch) {
-			if (g2d_texturePriorities != null && g2d_texturePriorities.length>0) {
-				g2d_currentPriorityTexture = g2d_texturePriorities.shift();
+			if (g2d_texturePriorities != null && g2d_texturePriorities.length>++g2d_currentPriorityIndex) {
+				g2d_currentPriorityTexture = g2d_texturePriorities[g2d_currentPriorityIndex];
 			} else {
 				g2d_currentPriorityTexture = null;
 			}
@@ -58,9 +65,10 @@ class GUISkin implements IGPrototypable {
     }
 
 	static private function setBatchTexturePriority(p_flushPriority:Array<GTexture>):Void {
+		g2d_currentPriorityIndex = 0;
 		g2d_texturePriorities = p_flushPriority.concat(null);
 		if (g2d_texturePriorities != null && g2d_texturePriorities.length>0) {
-			g2d_currentPriorityTexture = g2d_texturePriorities.shift();
+			g2d_currentPriorityTexture = g2d_texturePriorities[g2d_currentPriorityIndex];
 		} else {
 			g2d_currentPriorityTexture = null;
 		}
