@@ -90,7 +90,7 @@ class GComponent implements IGPrototypable
 	/**
 	    Base dispose method, if there is a disposing you need to do in your extending components you should override it and always call super.dispose() its used when a node using this components is being disposed
 	**/
-	public function dispose():Void {
+	public function g2d_dispose():Void {
         onDispose();
 
 		g2d_active = false;
