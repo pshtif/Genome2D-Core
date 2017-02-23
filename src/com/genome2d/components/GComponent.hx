@@ -76,29 +76,29 @@ class GComponent implements IGPrototypable
 	private function g2d_start():Void {
 		if (g2d_active && !g2d_started) {
 			g2d_started = true;
-			start();
+			onStart();
 		}
 	}
 
 	/**
         Abstract method called after components is initialized and enabled
     **/
-	public function start():Void {
+	public function onStart():Void {
 
 	}
 	
 	/**
 	    Base dispose method, if there is a disposing you need to do in your extending components you should override it and always call super.dispose() its used when a node using this components is being disposed
 	**/
-	private function g2d_dispose():Void {
-        dispose();
+	public function dispose():Void {
+        onDispose();
 
 		g2d_active = false;
 		
 		g2d_node = null;
 	}
 
-	public function dispose():Void {
+	public function onDispose():Void {
 	}
 	
 	public function toReference():String {

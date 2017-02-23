@@ -167,13 +167,11 @@ class GCameraController extends GComponent
 		node.core.root.captureMouseInput(p_input);
 	}
 
-	override public function dispose():Void {
+	override public function onDispose():Void {
 		node.core.g2d_removeCameraController(this);
 		
 		node.onAddedToStage.remove(g2d_onAddedToStage);
 		node.onRemovedFromStage.remove(g2d_onRemovedFromStage);
-
-		super.dispose();
 	}
 
 	private function g2d_onAddedToStage():Void {

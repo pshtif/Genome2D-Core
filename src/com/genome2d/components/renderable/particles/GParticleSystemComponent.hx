@@ -58,7 +58,7 @@ class GParticleSystemComponent extends GComponent implements IGRenderable
 		return false;
 	}
 	
-	override public function dispose():Void {
+	override public function onDispose():Void {
 		node.core.onUpdate.remove(update);
 	}
 	

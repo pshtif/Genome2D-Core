@@ -211,11 +211,9 @@ class GParticleSystemD extends GComponent implements IGRenderable
         return null;
     }
 
-    override public function dispose():Void {
+    override public function onDispose():Void {
         while (g2d_firstParticle != null) deactivateParticle(g2d_firstParticle);
         node.core.onUpdate.remove(update);
-
-        super.dispose();
     }
 
     public function captureMouseInput(p_input:GMouseInput):Void {

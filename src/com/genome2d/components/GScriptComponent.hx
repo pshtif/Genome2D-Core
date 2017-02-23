@@ -30,7 +30,7 @@ class GScriptComponent extends GComponent {
     private var g2d_executeDispose:Void->Void;
     private var g2d_executeUpdate:Float->Void;
 
-    override public function dispose():Void {
+    override public function onDispose():Void {
         if (g2d_executeDispose != null) g2d_executeDispose();
     }
 
