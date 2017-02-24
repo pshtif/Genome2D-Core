@@ -39,26 +39,29 @@ class GUISkin implements IGPrototypable {
         return batched;
     }
 
-	static private function forceFlushBatch():Void {
-		// Difference between flush is that we need to reset priority offset
-		g2d_currentPriorityIndex = -1;
-		flushBatch();
-	}
-
     static private function flushBatch():Void {
 		if (useBatch) {
-			if (g2d_texturePriorities != null && g2d_texturePriorities.length>++g2d_currentPriorityIndex) {
-				g2d_currentPriorityTexture = g2d_texturePriorities[g2d_currentPriorityIndex];
-			} else {
-				g2d_currentPriorityTexture = null;
-			}
 			g2d_currentBatchTexture = null;
 			g2d_currentBatchFilter = null;
 			var queueLength:Int = g2d_batchQueue.length;
 			for (i in 0...queueLength) {
 				g2d_batchQueue.shift().flushRender();
 			}
-			if (g2d_batchQueue.length>0) flushBatch();
+			if (g2d_batchQueue.length>0) {
+				if (g2d_texturePriorities != null && g2d_texturePriorities.length>++g2d_currentPriorityIndex) {
+					g2d_currentPriorityTexture = g2d_texturePriorities[g2d_currentPriorityIndex];
+				} else {
+					g2d_currentPriorityTexture = null;
+				}
+				flushBatch();
+			} else {
+				g2d_currentPriorityIndex = 0;
+				if (g2d_texturePriorities != null && g2d_texturePriorities.length>0) {
+					g2d_currentPriorityTexture = g2d_texturePriorities[g2d_currentPriorityIndex];
+				} else {
+					g2d_currentPriorityTexture = null;
+				}
+			}
 			g2d_currentBatchTexture = null;
 			g2d_currentBatchFilter = null;
 		}

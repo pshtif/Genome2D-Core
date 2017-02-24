@@ -1090,7 +1090,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 			var camera:GCamera = context.getActiveCamera();
 
             if (flushBatch || useMask) {
-                GUISkin.forceFlushBatch();
+                GUISkin.flushBatch();
                 if (batchPriority != null) GUISkin.setBatchTexturePriority(batchPriority);
             }
 			if (useMask) {
@@ -1112,7 +1112,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
             }
 			
 			if (useMask) {
-				GUISkin.forceFlushBatch();
+				GUISkin.flushBatch();
 				context.setMaskRect(previousMask);
 			}
         }
