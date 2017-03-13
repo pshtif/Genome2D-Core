@@ -80,6 +80,15 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     @prototype 
 	public var mouseEnabled:Bool = true;
 
+    @prototype
+    public var mousePaddingTop:Float = 0;
+    @prototype
+    public var mousePaddingBottom:Float = 0;
+    @prototype
+    public var mousePaddingLeft:Float = 0;
+    @prototype
+    public var mousePaddingRight:Float = 0;
+
     @prototype 
 	public var mouseChildren:Bool = true;
 
@@ -1262,7 +1271,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                 }
 			}
 
-            if (!p_input.captured && p_input.worldX > g2d_worldLeft && p_input.worldX < g2d_worldRight && p_input.worldY > g2d_worldTop && p_input.worldY < g2d_worldBottom) {
+            if (!p_input.captured && p_input.worldX > g2d_worldLeft-mousePaddingLeft && p_input.worldX < g2d_worldRight+mousePaddingRight && p_input.worldY > g2d_worldTop-mousePaddingTop && p_input.worldY < g2d_worldBottom+mousePaddingBottom) {
                 if (g2d_activeSkin != null) {
                     // TODO add capture info in the actual skin
                     g2d_activeSkin.captureMouseInput(p_input);
