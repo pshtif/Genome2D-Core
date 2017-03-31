@@ -8,6 +8,7 @@
  */
 package com.genome2d.ui.element;
 
+import com.genome2d.components.renderable.ui.GUI;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.textures.GTexture;
 import com.genome2d.proto.GPrototypeExtras;
@@ -726,6 +727,14 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         return g2d_mouseMove;
     }
 
+    private var g2d_gui:GUI;
+    #if swc @:extern #end
+    public var gui(get,never):GUI;
+    #if swc @:getter(gui) #end
+    inline private function get_gui():GUI {
+        return g2d_root.g2d_gui;
+    }
+
     private var g2d_root:GUIElement;
     #if swc @:extern #end
     public var root(get,never):GUIElement;
@@ -1089,6 +1098,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     public function render(p_red:Float = 1, p_green:Float = 1, p_blue:Float = 1, p_alpha:Float = 1):Void {
         if (visible) {
+            if (gui.enableBoundsCulling) {
+                if (g2d_worldRight<gui.getBounds().left || g2d_worldBottom<gui.getBounds().top || g2d_worldLeft>gui.getBounds().right || g2d_worldTop>gui.getBounds().bottom) return;
+            }
+
 			var worldRed:Float = p_red * red;
 			var worldGreen:Float = p_green * green;
 			var worldBlue:Float = p_blue * blue;

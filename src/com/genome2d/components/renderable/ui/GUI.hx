@@ -13,10 +13,12 @@ class GUI extends GComponent implements IGRenderable {
 
     public var root:GUIElement;
 	public var useNodePosition:Bool = false;
+    public var enableBoundsCulling:Bool = false;
 	private var g2d_bounds:GRectangle;
 
     override public function init():Void {
         root = new GUIElement();
+        root.g2d_gui = this;
 		root.name = "root";
         root.g2d_root = root;
         root.mouseEnabled = false;
@@ -50,7 +52,7 @@ class GUI extends GComponent implements IGRenderable {
 		invalidate();
 	}
 
-    public function getBounds(p_target:GRectangle = null):GRectangle {
+    inline public function getBounds(p_target:GRectangle = null):GRectangle {
         return g2d_bounds;
     }
 
