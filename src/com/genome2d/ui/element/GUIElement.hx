@@ -1098,10 +1098,6 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
     public function render(p_red:Float = 1, p_green:Float = 1, p_blue:Float = 1, p_alpha:Float = 1):Void {
         if (visible) {
-            if (gui.enableBoundsCulling) {
-                if (g2d_worldRight<gui.getBounds().left || g2d_worldBottom<gui.getBounds().top || g2d_worldLeft>gui.getBounds().right || g2d_worldTop>gui.getBounds().bottom) return;
-            }
-
 			var worldRed:Float = p_red * red;
 			var worldGreen:Float = p_green * green;
 			var worldBlue:Float = p_blue * blue;
@@ -1126,7 +1122,11 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 			}
 
             if (g2d_activeSkin != null) {
-                g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom, worldRed, worldGreen, worldBlue, worldAlpha);
+                if (gui.enableBoundsCulling) {
+                    if (g2d_worldRight>gui.getBounds().left && g2d_worldBottom>gui.getBounds().top && g2d_worldLeft<gui.getBounds().right && g2d_worldTop<gui.getBounds().bottom) {
+                        g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom, worldRed, worldGreen, worldBlue, worldAlpha);
+                    }
+                }
             }
 
             for (i in 0...g2d_numChildren) {
