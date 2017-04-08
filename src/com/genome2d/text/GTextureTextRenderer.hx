@@ -7,6 +7,7 @@
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
 package com.genome2d.text;
+import com.genome2d.text.GTextureTextAccuracy;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.debug.GDebug;
 import com.genome2d.input.GMouseInput;
@@ -66,7 +67,8 @@ class GTextureTextRenderer extends GTextRenderer {
 	public var enableCursor:Bool = false;
 	public var scrollLine:Int = 0;
 	public var autoScroll:Bool = false;
-    public var forcePixelAccuracy:Bool = true;
+
+    public var forcePixelAccuracy:GTextureTextAccuracy = GTextureTextAccuracy.ROUND;
 
 	private var g2d_lineCount:Int = 0;
 	#if swc @:extern #end
@@ -159,10 +161,19 @@ class GTextureTextRenderer extends GTextRenderer {
 				ty = cy * p_scaleY + p_y;
 			}
 
-            if (forcePixelAccuracy) {
-                tx = Math.round(tx);
-                ty = Math.round(ty);
-            }
+			switch(forcePixelAccuracy) {
+				case GTextureTextAccuracy.FLOOR:
+					tx = Math.floor(tx);
+					ty = Math.floor(ty);
+				case GTextureTextAccuracy.ROUND:
+					tx = Math.round(tx);
+					ty = Math.round(ty);
+				case GTextureTextAccuracy.CEIL:
+					tx = Math.ceil(tx);
+					ty = Math.ceil(ty);
+				default:
+			}
+
 			if (charRed == 1 && charBlue == 1 && charGreen == 1 && charAlpha == 1) {
 				g2d_context.draw(renderable.texture, GBlendMode.NORMAL, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, null);
 			} else {
