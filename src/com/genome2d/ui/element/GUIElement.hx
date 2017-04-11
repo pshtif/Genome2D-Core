@@ -1126,6 +1126,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                     if (g2d_worldRight>gui.getBounds().left && g2d_worldBottom>gui.getBounds().top && g2d_worldLeft<gui.getBounds().right && g2d_worldTop<gui.getBounds().bottom) {
                         g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom, worldRed, worldGreen, worldBlue, worldAlpha);
                     }
+                } else {
+                    g2d_activeSkin.render(g2d_worldLeft, g2d_worldTop, g2d_worldRight, g2d_worldBottom, worldRed, worldGreen, worldBlue, worldAlpha);
                 }
             }
 
