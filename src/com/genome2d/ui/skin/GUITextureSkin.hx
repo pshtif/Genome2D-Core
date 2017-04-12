@@ -138,6 +138,13 @@ class GUITextureSkin extends GUISkin {
 					context.draw(texture, GBlendMode.NORMAL, x, y, finalScaleX, finalScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, filter);
 				}
             } else {
+                var sin:Float = 0;
+                var cos:Float = 1;
+                if (rotation != 0) {
+                    sin = Math.sin(rotation);
+                    cos = Math.cos(rotation);
+                }
+
 				var rx:Float = texture.u * texture.gpuWidth;// (texture.region != null) ? texture.region.x : 0;
 				var ry:Float = texture.v * texture.gpuHeight;// (texture.region != null) ? texture.region.y : 0;
 				
@@ -148,9 +155,11 @@ class GUITextureSkin extends GUISkin {
                 var ty:Float = 0;
                 var tw:Float = sl;
                 var th:Float = st;
+                var ox:Float = 0;
+                var oy:Float = 0;
                 if (tw != 0 && th != 0) {
                     context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
-                                       p_left, p_top, scaleX, scaleY, 0,
+                                       p_left, p_top, scaleX, scaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
@@ -158,8 +167,12 @@ class GUITextureSkin extends GUISkin {
                 tx = sl;
                 tw = sw;
                 if (tw != 0 && th != 0) {
+                    //cx*cos-cy*sin
+                    //cy*cos+cx*sin
+                    ox = (sl*texture.scaleFactor*scaleX)*cos;
+                    oy = (sl*texture.scaleFactor*scaleX)*sin;
                     context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
-                                       p_left+sl*texture.scaleFactor*scaleX, p_top, finalScaleX, scaleY, 0,
+                                       p_left+ox, p_top+oy, finalScaleX, scaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
@@ -167,8 +180,10 @@ class GUITextureSkin extends GUISkin {
                 tx = sr;
                 tw = texture.width / texture.scaleFactor - sr;
                 if (tw != 0 && th != 0) {
+                    ox = (sl*scaleX+sw*finalScaleX)*texture.scaleFactor*cos;
+                    oy = (sl*scaleX+sw*finalScaleX)*texture.scaleFactor*sin;
                     context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
-                                       p_left+(sl*scaleX+sw*finalScaleX)*texture.scaleFactor, p_top, scaleX, scaleY, 0,
+                                       p_left+ox, p_top+oy, scaleX, scaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
@@ -178,8 +193,10 @@ class GUITextureSkin extends GUISkin {
                 tw = sl;
                 th = sh;
                 if (tw != 0 && th != 0) {
+                    ox = -(st*texture.scaleFactor*scaleY)*sin;
+                    oy = (st*texture.scaleFactor*scaleY)*cos;
                     context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
-                                       p_left, p_top+st*texture.scaleFactor*scaleY, scaleX, finalScaleY, 0,
+                                       p_left+ox, p_top+oy, scaleX, finalScaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
@@ -187,8 +204,10 @@ class GUITextureSkin extends GUISkin {
                 tx = sl;
                 tw = sw;
                 if (tw != 0 && th != 0) {
+                    ox = (sl*texture.scaleFactor*scaleX)*cos - (st*texture.scaleFactor*scaleY)*sin;
+                    oy = (st*texture.scaleFactor*scaleY)*cos + (sl*texture.scaleFactor*scaleX)*sin;
                     context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
-                                       p_left+sl*texture.scaleFactor*scaleX, p_top+st*texture.scaleFactor*scaleY, finalScaleX, finalScaleY, 0,
+                                       p_left+ox, p_top+oy, finalScaleX, finalScaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
@@ -197,8 +216,10 @@ class GUITextureSkin extends GUISkin {
                 tw = texture.width/texture.scaleFactor-sr;
 
                 if (tw != 0 && th != 0) {
+                    ox = (sl*scaleX+sw*finalScaleX)*texture.scaleFactor*cos - (st*texture.scaleFactor*scaleY)*sin;
+                    oy = (st*texture.scaleFactor*scaleY)*cos + (sl*scaleX+sw*finalScaleX)*texture.scaleFactor*sin;
                     context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
-                                       p_left+(sl*scaleX+sw*finalScaleX)*texture.scaleFactor, p_top+st*texture.scaleFactor*scaleY, scaleX, finalScaleY, 0,
+                                       p_left+ox, p_top+oy, scaleX, finalScaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
@@ -208,8 +229,10 @@ class GUITextureSkin extends GUISkin {
                 tw = sl;
                 th = texture.nativeHeight-sb;
                 if (tw != 0 && th != 0) {
+                    ox = -(st*scaleY+sh*finalScaleY)*texture.scaleFactor*sin;
+                    oy = (st*scaleY+sh*finalScaleY)*texture.scaleFactor*cos;
                     context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
-                                       p_left, p_top+(st*scaleY+sh*finalScaleY)*texture.scaleFactor, scaleX, scaleY, 0,
+                                       p_left+ox, p_top+oy, scaleX, scaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
@@ -217,8 +240,10 @@ class GUITextureSkin extends GUISkin {
                 tx = sl;
                 tw = sw;
                 if (tw != 0 && th != 0) {
+                    ox = (sl*texture.scaleFactor*scaleX)*cos - (st*scaleY+sh*finalScaleY)*texture.scaleFactor*sin;
+                    oy = (st*scaleY+sh*finalScaleY)*texture.scaleFactor*cos + (sl*texture.scaleFactor*scaleX)*sin;
                     context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
-                                       p_left+sl*texture.scaleFactor*scaleX, p_top+(st*scaleY+sh*finalScaleY)*texture.scaleFactor, finalScaleX, scaleY, 0,
+                                       p_left+ox, p_top+oy, finalScaleX, scaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
@@ -226,8 +251,10 @@ class GUITextureSkin extends GUISkin {
                 tx = sr;
                 tw = texture.width/texture.scaleFactor-sr;
                 if (tw != 0 && th != 0) {
+                    ox = (sl*scaleX+sw*finalScaleX)*texture.scaleFactor*cos - (st*scaleY+sh*finalScaleY)*texture.scaleFactor*sin;
+                    oy = (st*scaleY+sh*finalScaleY)*texture.scaleFactor*cos + (sl*scaleX+sw*finalScaleX)*texture.scaleFactor*sin;
                     context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
-                                       p_left+(sl*scaleX+sw*finalScaleX)*texture.scaleFactor, p_top+(st*scaleY+sh*finalScaleY)*texture.scaleFactor, scaleX, scaleY, 0,
+                                       p_left+ox, p_top+oy, scaleX, scaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
