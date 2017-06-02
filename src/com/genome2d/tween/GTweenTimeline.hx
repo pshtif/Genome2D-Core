@@ -15,6 +15,11 @@ class GTweenTimeline {
         g2d_sequences.push(p_sequence);
     }
 
+    private function removeSequence(p_sequence:GTweenSequence):Void {
+        g2d_sequences.remove(p_sequence);
+        p_sequence.dispose();
+    }
+
     public function update(p_delta:Float) {
         for (sequence in g2d_sequences) {
             sequence.update(p_delta);
@@ -25,8 +30,7 @@ class GTweenTimeline {
             while (count-->0) {
                 var sequence:GTweenSequence = g2d_sequences[count];
                 if (sequence.isComplete()) {
-                    g2d_sequences.splice(count, 1);
-                    sequence.dispose();
+                    removeSequence(sequence);
                 }
             }
         }

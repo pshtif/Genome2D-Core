@@ -47,7 +47,13 @@ class GTweenSequence implements IGPrototypable {
     public function new() {
     }
 
-    inline private function dispose():Void {
+    private function dispose():Void {
+        while (g2d_currentStep!=null) {
+            var step:GTweenStep = g2d_currentStep;
+            removeStep(step);
+            step.dispose();
+        }
+
         g2d_currentStep = null;
         g2d_lastStep = null;
         g2d_stepCount = 0;
@@ -117,6 +123,15 @@ class GTweenSequence implements IGPrototypable {
 
     public function skipCurrent() {
         if (g2d_currentStep != null) g2d_currentStep.skip();
+    }
+
+    /*
+    public function skip() {
+        while (g2d_currentStep != null) skipCurrent();
+    }
+    /**/
+    public function abort() {
+        g2d_timeline.removeSequence(this);
     }
 
     public function bind(p_target:GUIElement, p_autoRun:Bool = false):Void {

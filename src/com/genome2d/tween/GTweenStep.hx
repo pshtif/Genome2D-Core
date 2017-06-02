@@ -105,7 +105,7 @@ class GTweenStep implements IGPrototypable {
     }
 
     public function skip():Void {
-        for (interp in g2d_interps) interp.setValue(interp.getFinalValue());
+        if (g2d_interps != null) for (interp in g2d_interps) interp.setValue(interp.getFinalValue());
         finish();
     }
 
