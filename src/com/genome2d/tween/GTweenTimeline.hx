@@ -1,5 +1,6 @@
 package com.genome2d.tween;
 
+import com.genome2d.macros.MGDebug;
 @prototypeName("tweenTimeline")
 @:access(com.genome2d.tween.GTweenSequence)
 class GTweenTimeline {
@@ -27,6 +28,7 @@ class GTweenTimeline {
 
         if (g2d_dirty) {
             var count:Int = g2d_sequences.length;
+            MGDebug.INFO(g2d_sequences.length);
             while (count-->0) {
                 var sequence:GTweenSequence = g2d_sequences[count];
                 if (sequence.isComplete()) {

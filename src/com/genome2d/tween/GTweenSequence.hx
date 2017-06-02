@@ -25,7 +25,6 @@ class GTweenSequence implements IGPrototypable {
         return sequence;
     }
 
-    private var g2d_next:GTweenSequence;
     private var g2d_firstStep:GTweenStep;
     private var g2d_currentStep:GTweenStep;
     private var g2d_lastStep:GTweenStep;
@@ -58,6 +57,8 @@ class GTweenSequence implements IGPrototypable {
         g2d_lastStep = null;
         g2d_stepCount = 0;
         g2d_complete = false;
+        g2d_running = false;
+        g2d_timeline = null;
 
         g2d_poolNext = g2d_poolFirst;
         g2d_poolFirst = this;
@@ -101,11 +102,6 @@ class GTweenSequence implements IGPrototypable {
         }
         g2d_stepCount++;
         return p_tween;
-    }
-
-    inline private function addSequence(p_sequence:GTweenSequence):GTweenSequence {
-        g2d_next = p_sequence;
-        return g2d_next;
     }
 
     inline private function nextStep():Void {
