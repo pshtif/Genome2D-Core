@@ -111,7 +111,7 @@ class GTweenStep implements IGPrototypable {
 
     inline private function finish():Void {
         if (g2d_onComplete != null) Reflect.callMethod(g2d_onComplete, g2d_onComplete, g2d_onCompleteArgs);
-        g2d_sequence.nextStep();
+        if (g2d_sequence != null) g2d_sequence.nextStep();
         if (g2d_interps != null) for (interp in g2d_interps) interp.reset();
     }
 
