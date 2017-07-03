@@ -645,6 +645,7 @@ class GNode implements IGFocusable implements IGPrototypable
 
         var component:T = g2d_addComponent(cast p_prototype.prototypeClass);
 
+        component.init();
         component.bindPrototype(p_prototype);
         component.g2d_start();
         #if genome_editor
