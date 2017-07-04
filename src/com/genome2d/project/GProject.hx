@@ -1,5 +1,6 @@
 package com.genome2d.project;
 
+import com.genome2d.debug.GDebug;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.context.GContextConfig;
@@ -16,6 +17,7 @@ class GProject {
     private var g2d_assetManager:GAssetManager;
 
     public function new(p_config:GProjectConfig) {
+        GDebug.info("new");
         g2d_config = p_config;
 
         g2d_genome = Genome2D.getInstance();
@@ -30,6 +32,7 @@ class GProject {
      *  Initialize Genome2D
      **/
     private function initGenome():Void {
+        GDebug.info("initGenome");
         g2d_genome.onFailed.addOnce(genomeFailed_handler);
         g2d_genome.onInitialized.addOnce(genomeInitialized_handler);
         g2d_genome.init(g2d_config.contextConfig);
@@ -43,12 +46,12 @@ class GProject {
      *  Handlers
      **/
     private function genomeInitialized_handler():Void {
+        GDebug.info("genomeInitialized");
         g2d_assetManager = new GAssetManager();
-
         init();
     }
 
     private function genomeFailed_handler(p_msg:String):Void {
-
+        //GDebug.error("genomeFailed", p_msg);
     }
 }
