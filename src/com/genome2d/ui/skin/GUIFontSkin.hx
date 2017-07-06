@@ -32,6 +32,19 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
 
     #if swc @:extern #end
     @prototype
+    public var wordWrap(get, set):Bool;
+    #if swc @:getter(wordWrap) #end
+    inline private function get_wordWrap():Bool {
+        return g2d_textRenderer.wordWrap;
+    }
+    #if swc @:setter(wordWrap) #end
+    inline private function set_wordWrap(p_value:Bool):Bool {
+        g2d_textRenderer.wordWrap = p_value;
+        return p_value;
+    }
+
+    #if swc @:extern #end
+    @prototype
     public var vAlign(get, set):GVAlignType;
     #if swc @:getter(vAlign) #end
     inline private function get_vAlign():GVAlignType {
@@ -211,6 +224,7 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
         clone.hAlign = hAlign;
         clone.rotation = rotation;
         clone.inputEnabled = inputEnabled;
+        clone.wordWrap = wordWrap;
         return clone;
     }
 
