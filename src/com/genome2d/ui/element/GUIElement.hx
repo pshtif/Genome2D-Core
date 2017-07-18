@@ -1561,7 +1561,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                 case GMouseInputType.MOUSE_DOWN:
                     if (g2d_root.g2d_mouseDownElement != null) {
                         g2d_root.g2d_mouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_DOWN, g2d_root.g2d_mouseDownElement, g2d_root.g2d_mouseDownElement, p_input, false);
-                        g2d_root.g2d_mouseDownElement = null;
+                        //g2d_root.g2d_mouseDownElement == null;
                     }
                 case GMouseInputType.MOUSE_UP:
                     if (g2d_root.g2d_mouseUpElement == null && g2d_root.g2d_mouseDownElement != null) {
@@ -1577,7 +1577,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                 case GMouseInputType.RIGHT_MOUSE_DOWN:
                     if (g2d_root.g2d_rightMouseDownElement != null) {
                         g2d_root.g2d_rightMouseDownElement.g2d_dispatchMouseCallback(GMouseInputType.RIGHT_MOUSE_DOWN, g2d_root.g2d_rightMouseDownElement, g2d_root.g2d_rightMouseDownElement, p_input, false);
-                        g2d_root.g2d_rightMouseDownElement = null;
+                        //g2d_root.g2d_rightMouseDownElement == null;
                     }
                 case GMouseInputType.RIGHT_MOUSE_UP:
                     if (g2d_root.g2d_rightMouseUpElement == null && g2d_root.g2d_rightMouseDownElement != null) {
