@@ -138,7 +138,7 @@ class GTweenSequence implements IGPrototypable {
             }
             step = step.g2d_next;
         }
-        run();
+        if (p_autoRun) run();
     }
 
     public function run():Void {

@@ -33,7 +33,7 @@ class GTween {
         return sequence.getLastStep();
     }
 
-    static public function create(p_target:Dynamic):GTweenStep {
+    static public function create(p_target:Dynamic, p_autoRun:Bool = true):GTweenStep {
         var sequence:GTweenSequence = GTweenSequence.getPoolInstance();
 
         if (g2d_currentTimeline == null) addTimeline(new GTweenTimeline(), true);
@@ -46,7 +46,7 @@ class GTween {
             step.g2d_target = p_target;
         }
 
-        sequence.run();
+        if (p_autoRun) sequence.run();
 
         return step;
     }
