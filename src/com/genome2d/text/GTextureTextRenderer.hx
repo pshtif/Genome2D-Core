@@ -57,6 +57,20 @@ class GTextureTextRenderer extends GTextRenderer {
 		return g2d_wordWrap;
 	}
 
+	private var g2d_wordWrapWhitespace:Bool = true;
+	#if swc @:extern #end
+	public var wordWrapWhitespace(get, set):Bool;
+	#if swc @:getter(wordWrapWhitespace) #end
+	inline private function get_wordWrapWhitespace():Bool {
+		return g2d_wordWrapWhitespace;
+	}
+	#if swc @:setter(wordWrapWhitespace) #end
+	inline private function set_wordWrapWhitespace(p_value:Bool):Bool {
+		g2d_wordWrapWhitespace = p_value;
+		g2d_dirty = true;
+		return g2d_wordWrapWhitespace;
+	}
+
 
     private var g2d_chars:Array<GTextureCharRenderable>;
 	
@@ -295,19 +309,22 @@ class GTextureTextRenderer extends GTextRenderer {
 				if (!g2d_autoSize && offsetX + char.texture.width*g2d_fontScale > g2d_width) {
 					if (!wordWrap) break;
 					lines.push(currentLine);
-					var backtrack:Int = i - whiteSpaceIndex - 1;
-					var currentCount:Int = currentLine.length;
-					currentLine.splice(currentLine.length - backtrack, backtrack);
-					currentLine = new Array<GTextureCharRenderable>();
-					charIndex -= backtrack;
+					// Backtracking to whitespace
+					if (wordWrapWhitespace) {
+						var backtrack:Int = i - whiteSpaceIndex - 1;
+						var currentCount:Int = currentLine.length;
+						currentLine.splice(currentLine.length - backtrack, backtrack);
+						currentLine = new Array<GTextureCharRenderable>();
+						charIndex -= backtrack;
+						if (backtrack >= currentCount) break;
+						i = whiteSpaceIndex+1;
+					}
 
-					if (backtrack >= currentCount) break;
 					if (!g2d_autoSize && offsetY + 2 * (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale > g2d_height && isAllVisible) {
 						isAllVisible = false;
 						g2d_maxVisibleLine = lines.length - 1;
 					}
 
-					i = whiteSpaceIndex+1;
 					if (previousRenderable != null && previousRenderable.x + (previousRenderable.width * fontScale) > maxLineWidth) {
 						maxLineWidth = previousRenderable.x + (previousRenderable.width * fontScale);
 					}

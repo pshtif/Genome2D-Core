@@ -117,6 +117,19 @@ class GText extends GComponent implements IGRenderable
         return p_value;
     }
 
+	#if swc @:extern #end
+	@prototype
+	public var wordWrap(get, set):Bool;
+	#if swc @:getter(wordWrap) #end
+	inline private function get_wordWrap():Bool {
+		return renderer.wordWrap;
+	}
+	#if swc @:setter(wordWrap) #end
+	inline private function set_wordWrap(p_value:Bool):Bool {
+		renderer.wordWrap = p_value;
+		return p_value;
+	}
+
     /*
         Width of the text
      */
