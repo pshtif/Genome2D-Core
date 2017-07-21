@@ -117,6 +117,9 @@ class GText extends GComponent implements IGRenderable
         return p_value;
     }
 
+	/*
+        Word wrapping
+     */
 	#if swc @:extern #end
 	@prototype
 	public var wordWrap(get, set):Bool;
@@ -127,6 +130,22 @@ class GText extends GComponent implements IGRenderable
 	#if swc @:setter(wordWrap) #end
 	inline private function set_wordWrap(p_value:Bool):Bool {
 		renderer.wordWrap = p_value;
+		return p_value;
+	}
+
+	/*
+        Word wrap (if enabled) will wrap around whitespace
+     */
+	#if swc @:extern #end
+	@prototype
+	public var wordWrapWhitespace(get, set):Bool;
+	#if swc @:getter(wordWrapWhitespace) #end
+	inline private function get_wordWrapWhitespace():Bool {
+		return renderer.wordWrapWhitespace;
+	}
+	#if swc @:setter(wordWrapWhitespace) #end
+	inline private function set_wordWrapWhitespace(p_value:Bool):Bool {
+		renderer.wordWrapWhitespace = p_value;
 		return p_value;
 	}
 
