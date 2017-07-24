@@ -314,11 +314,11 @@ class GTextureTextRenderer extends GTextRenderer {
 						var backtrack:Int = i - whiteSpaceIndex - 1;
 						var currentCount:Int = currentLine.length;
 						currentLine.splice(currentLine.length - backtrack, backtrack);
-						currentLine = new Array<GTextureCharRenderable>();
 						charIndex -= backtrack;
 						if (backtrack >= currentCount) break;
 						i = whiteSpaceIndex+1;
 					}
+					currentLine = new Array<GTextureCharRenderable>();
 
 					if (!g2d_autoSize && offsetY + 2 * (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale > g2d_height && isAllVisible) {
 						isAllVisible = false;
