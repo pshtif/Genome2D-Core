@@ -317,6 +317,8 @@ class GTextureTextRenderer extends GTextRenderer {
 						charIndex -= backtrack;
 						if (backtrack >= currentCount) break;
 						i = whiteSpaceIndex+1;
+					} else {
+						i++;
 					}
 					currentLine = new Array<GTextureCharRenderable>();
 
