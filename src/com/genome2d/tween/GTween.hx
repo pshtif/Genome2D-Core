@@ -28,8 +28,10 @@ class GTween {
         g2d_timelines.push(p_timeline);
     }
 
-    static public function createFromPrototype(p_prototype:GPrototype):GTweenStep {
+    static public function createFromSequencePrototype(p_prototype:GPrototype):GTweenStep {
         var sequence:GTweenSequence = cast GPrototypeFactory.createInstance(p_prototype);
+        if (g2d_currentTimeline == null) addTimeline(new GTweenTimeline(), true);
+        g2d_currentTimeline.addSequence(sequence);
         return sequence.getLastStep();
     }
 
