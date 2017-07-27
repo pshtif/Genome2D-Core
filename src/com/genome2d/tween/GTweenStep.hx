@@ -60,18 +60,31 @@ class GTweenStep implements IGPrototypable {
         return g2d_duration = p_value;
     }
 
-    private var g2d_currentRepeatCount:Int = 0;
-    private var g2d_repeatCount:Int = 0;
+    private var g2d_gotoStepId:String = "";
     @prototype
-    public var repeatCount(get, set):Int;
-    #if swc @:getter(repeatCount) #end
-    inline private function get_repeatCount():Int {
-        return g2d_repeatCount;
+    public var gotoStepId(get, set):String;
+    #if swc @:getter(gotoStepId) #end
+    inline private function get_gotoStepId():String {
+        return g2d_gotoStepId;
     }
-    #if swc @:setter(repeatCount) #end
-    inline public function set_repeatCount(p_value:Int):Int {
-        return g2d_repeatCount = p_value;
+    #if swc @:setter(gotoStepId) #end
+    inline public function set_gotoStepId(p_value:String):String {
+        return g2d_gotoStepId = p_value;
     }
+
+    private var g2d_gotoRepeatCount:Int = 0;
+    @prototype
+    public var gotoRepeatCount(get, set):Int;
+    #if swc @:getter(gotoRepeatCount) #end
+    inline private function get_gotoRepeatCount():Int {
+        return g2d_gotoRepeatCount;
+    }
+    #if swc @:setter(gotoRepeatCount) #end
+    inline public function set_gotoRepeatCount(p_value:Int):Int {
+        return g2d_gotoRepeatCount = p_value;
+    }
+
+    private var g2d_currentGotoRepeatCount:Int = 0;
 
     private var g2d_lastInterp:IGInterp;
     private var g2d_target:Dynamic;
@@ -138,9 +151,9 @@ class GTweenStep implements IGPrototypable {
         if (g2d_onComplete != null) Reflect.callMethod(g2d_onComplete, g2d_onComplete, g2d_onCompleteArgs);
         reset();
         if (g2d_sequence != null) {
-            if (g2d_currentRepeatCount<g2d_repeatCount) {
-                g2d_currentRepeatCount++;
-                g2d_sequence.repeat();
+            if (g2d_currentGotoRepeatCount<g2d_gotoRepeatCount) {
+                g2d_currentGotoRepeatCount++;
+                g2d_sequence.goto(g2d_sequence.getStepById(g2d_gotoStepId));
             } else {
                 g2d_sequence.nextStep();
             }
@@ -201,8 +214,9 @@ class GTweenStep implements IGPrototypable {
         return step;
     }
 
-    public function id(p_id:String):Void {
+    public function id(p_id:String):GTweenStep {
         g2d_stepId = p_id;
+        return this;
     }
 
     public function propF(p_property:String, p_to:Float, p_duration:Float):GTweenStep {
@@ -227,8 +241,16 @@ class GTweenStep implements IGPrototypable {
         return step;
     }
 
-    public function repeatSequence(p_repeatCount:Int):GTweenStep {
-        g2d_repeatCount = p_repeatCount;
+    public function extend():GTweenStep {
+        var step:GTweenStep = g2d_sequence.addStep(getPoolInstance());
+        step.g2d_target = g2d_target;
+        step.targetId = targetId;
+        return step;
+    }
+
+    public function goto(p_stepId:String, p_repeatCount:Int):GTweenStep {
+        g2d_gotoRepeatCount = p_repeatCount;
+        g2d_gotoStepId = p_stepId;
         return this;
     }
 

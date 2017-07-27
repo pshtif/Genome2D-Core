@@ -1,5 +1,6 @@
 package com.genome2d.tween;
 
+import com.genome2d.macros.MGDebug;
 import com.genome2d.ui.element.GUIElement;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.IGPrototypable;
@@ -149,10 +150,28 @@ class GTweenSequence implements IGPrototypable {
         g2d_currentStep = g2d_firstStep;
     }
 
+    public function getStepById(p_stepId:String):GTweenStep {
+        var step:GTweenStep = g2d_firstStep;
+
+        if (p_stepId != "") {
+            while (step != null) {
+                if (step.g2d_stepId == p_stepId) break;
+                else step = step.g2d_next;
+            }
+        }
+
+        return step;
+    }
+
+    public function goto(p_step:GTweenStep):Void {
+        if (p_step == null) MGDebug.WARNING("Cannot go to null step.");
+        g2d_currentStep = p_step;
+    }
+
     public function reset():Void {
         var step:GTweenStep = g2d_firstStep;
         while (step != null) {
-            step.g2d_currentRepeatCount = 0;
+            step.g2d_currentGotoRepeatCount = 0;
             step = step.g2d_next;
         }
         g2d_currentStep = g2d_firstStep;
