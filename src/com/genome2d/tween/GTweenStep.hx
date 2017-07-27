@@ -36,6 +36,18 @@ class GTweenStep implements IGPrototypable {
     private var g2d_interps:Array<IGInterp>;
     private var g2d_time:Float;
 
+    private var g2d_stepId:String = "";
+    @prototype
+    public var stepId(get, set):String;
+    #if swc @:getter(stepId) #end
+    inline private function get_stepId():String {
+        return g2d_stepId;
+    }
+    #if swc @:setter(stepId) #end
+    inline public function set_stepId(p_value:String):String {
+        return g2d_stepId = p_value;
+    }
+
     private var g2d_duration:Float;
     @prototype
     public var duration(get, set):Float;
@@ -48,8 +60,18 @@ class GTweenStep implements IGPrototypable {
         return g2d_duration = p_value;
     }
 
-    private var g2d_currentRepeatSequence:Int = 0;
-    private var g2d_repeatSequence:Int = 0;
+    private var g2d_currentRepeatCount:Int = 0;
+    private var g2d_repeatCount:Int = 0;
+    @prototype
+    public var repeatCount(get, set):Int;
+    #if swc @:getter(repeatCount) #end
+    inline private function get_repeatCount():Int {
+        return g2d_repeatCount;
+    }
+    #if swc @:setter(repeatCount) #end
+    inline public function set_repeatCount(p_value:Int):Int {
+        return g2d_repeatCount = p_value;
+    }
 
     private var g2d_lastInterp:IGInterp;
     private var g2d_target:Dynamic;
@@ -116,8 +138,8 @@ class GTweenStep implements IGPrototypable {
         if (g2d_onComplete != null) Reflect.callMethod(g2d_onComplete, g2d_onComplete, g2d_onCompleteArgs);
         reset();
         if (g2d_sequence != null) {
-            if (g2d_currentRepeatSequence<g2d_repeatSequence) {
-                g2d_currentRepeatSequence++;
+            if (g2d_currentRepeatCount<g2d_repeatCount) {
+                g2d_currentRepeatCount++;
                 g2d_sequence.repeat();
             } else {
                 g2d_sequence.nextStep();
@@ -179,6 +201,10 @@ class GTweenStep implements IGPrototypable {
         return step;
     }
 
+    public function id(p_id:String):Void {
+        g2d_stepId = p_id;
+    }
+
     public function propF(p_property:String, p_to:Float, p_duration:Float):GTweenStep {
         var interp:GFloatInterp = new GFloatInterp(this);
         interp.property = p_property;
@@ -201,8 +227,8 @@ class GTweenStep implements IGPrototypable {
         return step;
     }
 
-    public function repeatSequence(p_repeatSequence:Int):GTweenStep {
-        g2d_repeatSequence = p_repeatSequence;
+    public function repeatSequence(p_repeatCount:Int):GTweenStep {
+        g2d_repeatCount = p_repeatCount;
         return this;
     }
 
