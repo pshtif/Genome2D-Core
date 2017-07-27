@@ -48,6 +48,9 @@ class GTweenStep implements IGPrototypable {
         return g2d_duration = p_value;
     }
 
+    private var g2d_currentRepeatSequence:Int = 0;
+    private var g2d_repeatSequence:Int = 0;
+
     private var g2d_lastInterp:IGInterp;
     private var g2d_target:Dynamic;
 
@@ -111,8 +114,15 @@ class GTweenStep implements IGPrototypable {
 
     inline private function finish():Void {
         if (g2d_onComplete != null) Reflect.callMethod(g2d_onComplete, g2d_onComplete, g2d_onCompleteArgs);
-        if (g2d_sequence != null) g2d_sequence.nextStep();
-        if (g2d_interps != null) for (interp in g2d_interps) interp.reset();
+        reset();
+        if (g2d_sequence != null) {
+            if (g2d_currentRepeatSequence<g2d_repeatSequence) {
+                g2d_currentRepeatSequence++;
+                g2d_sequence.repeat();
+            } else {
+                g2d_sequence.nextStep();
+            }
+        }
     }
 
     private function dispose():Void {
@@ -189,6 +199,16 @@ class GTweenStep implements IGPrototypable {
             step.g2d_target = p_target;
         }
         return step;
+    }
+
+    public function repeatSequence(p_repeatSequence:Int):GTweenStep {
+        g2d_repeatSequence = p_repeatSequence;
+        return this;
+    }
+
+    public function reset():Void {
+        g2d_time = 0;
+        if (g2d_interps != null) for (interp in g2d_interps) interp.reset();
     }
 
     /****************************************************************************************************

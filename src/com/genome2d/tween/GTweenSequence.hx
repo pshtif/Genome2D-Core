@@ -145,6 +145,19 @@ class GTweenSequence implements IGPrototypable {
         g2d_running = true;
     }
 
+    public function repeat():Void {
+        g2d_currentStep = g2d_firstStep;
+    }
+
+    public function reset():Void {
+        var step:GTweenStep = g2d_firstStep;
+        while (step != null) {
+            step.g2d_currentRepeatSequence = 0;
+            step = step.g2d_next;
+        }
+        g2d_currentStep = g2d_firstStep;
+    }
+
     /****************************************************************************************************
 	 * 	PROTOTYPE CODE
 	 ****************************************************************************************************/
