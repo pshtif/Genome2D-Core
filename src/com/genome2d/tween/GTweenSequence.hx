@@ -158,6 +158,14 @@ class GTweenSequence implements IGPrototypable {
         g2d_currentStep = g2d_firstStep;
     }
 
+    public function retarget(p_target:Dynamic) {
+        var step:GTweenStep = g2d_firstStep;
+        while (step != null) {
+            step.g2d_target = p_target;
+            step = step.g2d_next;
+        }
+    }
+
     /****************************************************************************************************
 	 * 	PROTOTYPE CODE
 	 ****************************************************************************************************/
