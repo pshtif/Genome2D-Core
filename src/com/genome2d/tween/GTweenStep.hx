@@ -148,13 +148,14 @@ class GTweenStep implements IGPrototypable {
     }
 
     inline private function finish():Void {
-        if (g2d_onComplete != null) Reflect.callMethod(g2d_onComplete, g2d_onComplete, g2d_onCompleteArgs);
         reset();
         if (g2d_sequence != null) {
             if (g2d_currentGotoRepeatCount<g2d_gotoRepeatCount) {
                 g2d_currentGotoRepeatCount++;
                 g2d_sequence.goto(g2d_sequence.getStepById(g2d_gotoStepId));
             } else {
+                if (g2d_onComplete != null) Reflect.callMethod(g2d_onComplete, g2d_onComplete, g2d_onCompleteArgs);
+                g2d_currentGotoRepeatCount = 0;
                 g2d_sequence.nextStep();
             }
         }

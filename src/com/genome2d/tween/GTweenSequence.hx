@@ -171,6 +171,7 @@ class GTweenSequence implements IGPrototypable {
     public function reset():Void {
         var step:GTweenStep = g2d_firstStep;
         while (step != null) {
+            step.reset();
             step.g2d_currentGotoRepeatCount = 0;
             step = step.g2d_next;
         }
