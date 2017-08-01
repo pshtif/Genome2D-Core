@@ -201,20 +201,20 @@ class GTextureTextRenderer extends GTextRenderer {
 		if (cursorStartIndex == cursorEndIndex && Std.int(g2d_cursorBlinkCount / 10) % 2 == 0) {
 			var tx:Float = p_x;
 			var ty:Float = p_y;
-			if (g2d_textLength > 0) { 
-				var char:GTextureCharRenderable = (cursorEndIndex >= g2d_textLength) ? g2d_chars[g2d_textLength - 1] : g2d_chars[cursorEndIndex];
-				tx = char.x * p_scaleX * g2d_fontScale + p_x + (cursorStartIndex>=g2d_textLength?char.xadvance + g2d_tracking:0);
+			if (g2d_chars.length > 0) {
+				var char:GTextureCharRenderable = (cursorEndIndex >= g2d_chars.length) ? g2d_chars[g2d_chars.length - 1] : g2d_chars[cursorEndIndex];
+				tx = char.x * p_scaleX * g2d_fontScale + p_x + (cursorStartIndex>=g2d_chars.length?char.xadvance + g2d_tracking:0);
 				ty = char.y * p_scaleY * g2d_fontScale + p_y;
 			}
 			var char:GTextureChar = g2d_textureFont.getChar(Std.string(124));
 			g2d_context.draw(char.texture, GBlendMode.NORMAL, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red, green, blue, alpha, null);
 		} else if (cursorStartIndex != cursorEndIndex) {
 			var startChar:GTextureCharRenderable = (cursorStartIndex >= g2d_chars.length) ? g2d_chars[g2d_chars.length - 1] : g2d_chars[cursorStartIndex];
-			var sx:Float = startChar.x * p_scaleX * g2d_fontScale + p_x + (cursorStartIndex >= g2d_textLength?startChar.xadvance + g2d_tracking:0);
+			var sx:Float = startChar.x * p_scaleX * g2d_fontScale + p_x + (cursorStartIndex >= g2d_chars.length?startChar.xadvance + g2d_tracking:0);
 			var sy:Float = startChar.y * p_scaleY * g2d_fontScale + p_y;
 			
-			var endChar:GTextureCharRenderable = (cursorEndIndex >= g2d_textLength) ? g2d_chars[g2d_textLength - 1] : g2d_chars[cursorEndIndex];
-			var ex:Float = endChar.x * p_scaleX * g2d_fontScale + p_x + (cursorEndIndex >= g2d_textLength? endChar.xadvance + g2d_tracking:0);
+			var endChar:GTextureCharRenderable = (cursorEndIndex >= g2d_chars.length) ? g2d_chars[g2d_chars.length - 1] : g2d_chars[cursorEndIndex];
+			var ex:Float = endChar.x * p_scaleX * g2d_fontScale + p_x + (cursorEndIndex >= g2d_chars.length? endChar.xadvance + g2d_tracking:0);
 			var ey:Float = endChar.y * p_scaleY * g2d_fontScale + p_y;
 			
 			if (sy == ey) {
