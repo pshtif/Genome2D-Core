@@ -209,7 +209,7 @@ class GTextureTextRenderer extends GTextRenderer {
 			var char:GTextureChar = g2d_textureFont.getChar(Std.string(124));
 			g2d_context.draw(char.texture, GBlendMode.NORMAL, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red, green, blue, alpha, null);
 		} else if (cursorStartIndex != cursorEndIndex) {
-			var startChar:GTextureCharRenderable = (cursorStartIndex >= g2d_textLength) ? g2d_chars[g2d_textLength - 1] : g2d_chars[cursorStartIndex];
+			var startChar:GTextureCharRenderable = (cursorStartIndex >= g2d_chars.length) ? g2d_chars[g2d_chars.length - 1] : g2d_chars[cursorStartIndex];
 			var sx:Float = startChar.x * p_scaleX * g2d_fontScale + p_x + (cursorStartIndex >= g2d_textLength?startChar.xadvance + g2d_tracking:0);
 			var sy:Float = startChar.y * p_scaleY * g2d_fontScale + p_y;
 			
@@ -318,6 +318,7 @@ class GTextureTextRenderer extends GTextRenderer {
 						if (backtrack >= currentCount) break;
 						i = whiteSpaceIndex+1;
 					} else {
+						charIndex++;
 						i++;
 					}
 					currentLine = new Array<GTextureCharRenderable>();
