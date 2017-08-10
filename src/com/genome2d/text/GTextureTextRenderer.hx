@@ -361,9 +361,10 @@ class GTextureTextRenderer extends GTextRenderer {
 			previousRenderable = renderable;
             ++i;
         }
-		if (renderable != null && renderable.x + (renderable.width * fontScale) > maxLineWidth) {
-			maxLineWidth = renderable.x + (renderable.width * fontScale);
+		if (previousRenderable != null && previousRenderable.x + (previousRenderable.width * fontScale) > maxLineWidth) {
+			maxLineWidth = previousRenderable.x + (previousRenderable.width * fontScale);
 		}
+
         lines.push(currentLine);
 		g2d_lineCount = lines.length;
 
