@@ -253,7 +253,11 @@ class GTweenStep implements IGPrototypable {
         return step;
     }
 
+    #if swc
+    public function gotoId(p_stepId:String, p_repeatCount:Int):GTweenStep {
+    #else
     public function goto(p_stepId:String, p_repeatCount:Int):GTweenStep {
+    #end
         g2d_gotoRepeatCount = p_repeatCount;
         g2d_gotoStepId = p_stepId;
         return this;
