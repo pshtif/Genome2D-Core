@@ -7,6 +7,7 @@
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
 package com.genome2d.geom;
+import com.genome2d.macros.MGDebug;
 import com.genome2d.proto.IGPrototypable;
 
 class GCurve implements IGPrototypable {
@@ -23,6 +24,14 @@ class GCurve implements IGPrototypable {
         for (segment in g2d_segments) {
             if (Std.is(segment,LinearSegment)) {
                 p = p.concat([1, segment.end, segment.strength]);
+            } else if (Std.is(segment,QuadraticBezierSegment)) {
+                var qs:QuadraticBezierSegment = cast segment;
+                p = p.concat([2, segment.end, segment.strength, qs.control]);
+            } else if (Std.is(segment,CubicBezierSegment)) {
+                var cs:CubicBezierSegment = cast segment;
+                p = p.concat([3, segment.end, segment.strength, cs.control1, cs.control2]);
+            } else {
+                MGDebug.WARNING("Segment prototype not implemented.");
             }
         }
         return p;
@@ -36,8 +45,14 @@ class GCurve implements IGPrototypable {
                 case 1:
                     addSegment(new LinearSegment(p_value[i+1], p_value[i+2]));
                     i+=3;
+                case 2:
+                    addSegment(new QuadraticBezierSegment(p_value[i+1], p_value[i+2], p_value[i+3]));
+                    i+=4;
+                case 3:
+                    addSegment(new CubicBezierSegment(p_value[i+1], p_value[i+2], p_value[i+3], p_value[i+4]));
+                    i+=5;
                 case _:
-                    trace("Not implemented");
+                    MGDebug.WARNING("Segment prototype not implemented.");
             }
         }
         return p_value;
