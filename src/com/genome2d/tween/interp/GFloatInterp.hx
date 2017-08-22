@@ -27,6 +27,9 @@ class GFloatInterp implements IGInterp implements IGPrototypable {
     @prototype
     public var to:Float;
 
+    @prototype
+    public var relative:Bool = false;
+
     private var g2d_time:Float;
     public var from:Float;
 
@@ -164,7 +167,7 @@ class GFloatInterp implements IGInterp implements IGPrototypable {
 
     inline private function init() {
         from = Reflect.getProperty(g2d_tween.getTarget(), property);
-        difference = to - from;
+        difference = relative ? to : to - from;
         hasInitialized = true;
     }
 

@@ -220,8 +220,9 @@ class GTweenStep implements IGPrototypable {
         return this;
     }
 
-    public function propF(p_property:String, p_to:Float, p_duration:Float):GTweenStep {
+    public function propF(p_property:String, p_to:Float, p_duration:Float, p_relative:Bool):GTweenStep {
         var interp:GFloatInterp = new GFloatInterp(this);
+        interp.relative = p_relative;
         interp.property = p_property;
         interp.duration = p_duration;
         interp.to = p_to;
