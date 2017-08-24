@@ -62,7 +62,7 @@ class GUITextureSkin extends GUISkin {
 	
 	@prototype
 	public var bindTextureToModel:Bool = false;
-	
+
 	public var filter:GFilter;
 
     override public function getMinWidth():Float {
@@ -135,7 +135,7 @@ class GUITextureSkin extends GUISkin {
 				} else {
 					var x:Float = p_left + (.5 * texture.width + (usePivot?0:texture.pivotX)) * finalScaleX;
 					var y:Float = p_top + (.5 * texture.height + (usePivot?0:texture.pivotY)) * finalScaleY;
-					context.draw(texture, GBlendMode.NORMAL, x, y, finalScaleX, finalScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, filter);
+					context.draw(texture, GBlendMode.NORMAL, x, y, finalScaleX * scaleX, finalScaleY * scaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, filter);
 				}
             } else {
                 var sin:Float = 0;
@@ -150,7 +150,7 @@ class GUITextureSkin extends GUISkin {
 				
                 var finalScaleX:Float = (width - texture.width * scaleX) / (sw * texture.scaleFactor) + scaleX;
                 var finalScaleY:Float = (height - texture.height * scaleY) / (sh * texture.scaleFactor) + scaleY;
-											
+
                 var tx:Float = 0;
                 var ty:Float = 0;
                 var tw:Float = sl;
