@@ -53,13 +53,19 @@ class GUITextureSkin extends GUISkin {
 	
 	@prototype
 	public var rotation:Float = 0;
+
+    @prototype
+    public var renderScaleX:Float = 1;
+
+    @prototype
+    public var renderScaleY:Float = 1;
 	
 	@prototype
 	public var tiled:Bool = false;
 	
 	@prototype
 	public var usePivot:Bool = false;
-	
+
 	@prototype
 	public var bindTextureToModel:Bool = false;
 
@@ -135,7 +141,7 @@ class GUITextureSkin extends GUISkin {
 				} else {
 					var x:Float = p_left + (.5 * texture.width + (usePivot?0:texture.pivotX)) * finalScaleX;
 					var y:Float = p_top + (.5 * texture.height + (usePivot?0:texture.pivotY)) * finalScaleY;
-					context.draw(texture, GBlendMode.NORMAL, x, y, finalScaleX, finalScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, filter);
+					context.draw(texture, GBlendMode.NORMAL, x, y, finalScaleX * renderScaleX, finalScaleY * renderScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, filter);
 				}
             } else {
                 var sin:Float = 0;
@@ -297,6 +303,8 @@ class GUITextureSkin extends GUISkin {
 		clone.tiled = tiled;
 		clone.usePivot = usePivot;
 		clone.filter = filter;
+        clone.renderScaleX = renderScaleX;
+        clone.renderScaleY = renderScaleY;
         return clone;
     }
 	
