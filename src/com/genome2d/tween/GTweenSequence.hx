@@ -70,19 +70,11 @@ class GTweenSequence implements IGPrototypable {
 
         var rest:Float = p_delta;
         while (rest>0 && g2d_currentStep != null) {
-            rest = updateCurrentStep(rest);
-        }
-
-        return rest;
-    }
-
-    private function updateCurrentStep(p_delta:Float):Float {
-        var rest:Float = p_delta;
-        if (g2d_currentStep == null) {
-            finish();
-        } else {
             rest = g2d_currentStep.update(p_delta);
         }
+
+        if (g2d_currentStep == null) finish();
+
         return rest;
     }
 

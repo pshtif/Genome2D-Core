@@ -28,13 +28,13 @@ class GTweenTimeline {
 
         if (g2d_dirty) {
             var count:Int = g2d_sequences.length;
-            MGDebug.INFO(g2d_sequences.length);
             while (count-->0) {
                 var sequence:GTweenSequence = g2d_sequences[count];
                 if (sequence.isComplete()) {
                     removeSequence(sequence);
                 }
             }
+            g2d_dirty = false;
         }
     }
 }
