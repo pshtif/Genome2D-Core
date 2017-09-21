@@ -1345,7 +1345,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
                 var maskRect:GRectangle = new GRectangle(g2d_worldLeft*camera.scaleX, g2d_worldTop*camera.scaleY, w, h);
                 var intersection:GRectangle = (previousMask == null) ? maskRect : previousMask.intersection(maskRect);
-                if (intersection.width <= 0 || intersection.height <= 0) return;
+                if (intersection.width <= 1 || intersection.height <= 1) return;
 				context.setMaskRect(intersection);
 			}
 
