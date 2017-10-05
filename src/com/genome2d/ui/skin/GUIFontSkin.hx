@@ -167,7 +167,7 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
     @prototype
     public var inputEnabled:Bool = false;
 
-    override public function getTexture():GTexture {
+    override private function getTexture():GTexture {
         return (g2d_textRenderer != null && g2d_textRenderer.textureFont != null) ? g2d_textRenderer.textureFont.texture : null;
     }
 
@@ -221,7 +221,7 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
         text = (p_element.model != null) ? p_element.model : "";
     }
 
-    override public function clone():GUISkin {
+    override private function clone():GUISkin {
         var clone:GUIFontSkin = new GUIFontSkin("", g2d_textRenderer.textureFont, fontScale, autoSize, (g2d_origin == null)?this:cast g2d_origin);
         clone.red = red;
         clone.green = green;
