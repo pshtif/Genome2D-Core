@@ -50,6 +50,7 @@ class GUIShapeSkin extends GUISkin {
         clone.blue = blue;
         clone.alpha = alpha;
         clone.blendMode = blendMode;
+        clone.rotation = rotation;
         return clone;
     }
 }
