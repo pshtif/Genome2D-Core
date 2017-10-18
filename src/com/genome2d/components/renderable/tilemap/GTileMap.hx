@@ -115,8 +115,9 @@ class GTileMap extends GComponent implements IGRenderable
 
         var indexHeight:Int = Std.int((endY - firstY) / (g2d_iso ? g2d_tileHeight / 2 : g2d_tileHeight) - indexY + 2);
         if (indexHeight > g2d_height - indexY) indexHeight = g2d_height - indexY;
-		
-        var tileCount:Int = indexWidth*indexHeight;
+
+        // Added fix for large camera position numbers when both width/height are negative and will result in positive number
+        var tileCount:Int = (indexWidth<0 || indexWidth<0) ? 0 : indexWidth*indexHeight;
         for (i in 0...tileCount) {
             var row:Int = Std.int(i / indexWidth);
             var x:Float = g2d_node.g2d_worldX + (indexX + (i % indexWidth)) * g2d_tileWidth - mapHalfWidth + (g2d_iso && (indexY+row)%2 == 1 ? g2d_tileWidth : g2d_tileWidth/2);
