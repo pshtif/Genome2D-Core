@@ -144,10 +144,10 @@ class GFbxScene {
         for (model in g2d_models) {
 			if (model.visible) {
 				renderer = model.renderer;
-				//renderer.lightDirection = lightDirection;
-				//renderer.ambientColor = ambientColor;
-				//renderer.lightColor = lightColor;
-				//renderer.tintColor = tintColor;
+				renderer.lightDirection = lightDirection;
+				renderer.ambientColor = ambientColor;
+				renderer.lightColor = lightColor;
+				renderer.tintColor = tintColor;
 				switch (model.inheritSceneMatrixMode) {
 					case GFbxMatrixInheritMode.REPLACE:
 						renderer.modelMatrix = g2d_sceneMatrix;
