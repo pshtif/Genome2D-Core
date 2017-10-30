@@ -6,16 +6,17 @@ import com.genome2d.fbx.GFbxTools;
 import com.genome2d.g3d.G3DScene;
 import com.genome2d.g3d.G3DTexture;
 import haxe.io.BytesData;
+import haxe.io.Bytes;
 
 /**
  * @author Peter @sHTiF Stefcek
  */
 class G3DFbxImporter extends G3DAbstractImporter
 {
-	override public function importScene(p_data:BytesData):G3DScene {
+	override public function importScene(p_data:Bytes):G3DScene {
 		var scene:G3DScene = new G3DScene();
 
-		var fbxData:GFbxParserNode = GFbxParser.parse(p_data.readUTFBytes(p_data.length));
+		var fbxData:GFbxParserNode = GFbxParser.parse(p_data.getString(0, p_data.length));
 		
 		g2d_initTextures(scene, fbxData);
 		g2d_initModels(scene, fbxData);

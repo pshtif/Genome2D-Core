@@ -2,6 +2,7 @@ package com.genome2d.g3d.importers;
 
 import com.genome2d.g3d.G3DScene;
 import haxe.io.BytesData;
+import haxe.io.Bytes;
 
 /**
  * @author Peter @sHTiF Stefcek
@@ -15,7 +16,7 @@ class G3DAbstractImporter
 	}
 	
 	@:access(com.genome2d.g3d.G3DScene)
-	public function importScene(p_data:BytesData):G3DScene {
+	public function importScene(p_data:Bytes):G3DScene {
 		return null;
 	}
 
