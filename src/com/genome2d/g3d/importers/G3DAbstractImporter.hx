@@ -1,7 +1,6 @@
 package com.genome2d.g3d.importers;
 
 import com.genome2d.g3d.G3DScene;
-import haxe.io.BytesData;
 import haxe.io.Bytes;
 
 /**
@@ -20,7 +19,7 @@ class G3DAbstractImporter
 		return null;
 	}
 
-	public function exportScene(p_scene:G3DScene, p_data:BytesData):Void {
+	public function exportScene(p_scene:G3DScene, p_data:Bytes):Void {
 		
 	}
 	
