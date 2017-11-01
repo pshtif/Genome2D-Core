@@ -77,7 +77,7 @@ class GUISkin implements IGPrototypable {
 
 	static private function setBatchTexturePriority(p_flushPriority:Array<GTexture>):Void {
 		g2d_currentPriorityIndex = 0;
-		g2d_texturePriorities = p_flushPriority.concat(null);
+		g2d_texturePriorities = p_flushPriority.copy();
 		if (g2d_texturePriorities != null && g2d_texturePriorities.length>0) {
 			g2d_currentPriorityTexture = g2d_texturePriorities[g2d_currentPriorityIndex];
 		} else {
