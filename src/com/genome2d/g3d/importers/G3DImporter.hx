@@ -100,7 +100,6 @@ class G3DImporter extends G3DAbstractImporter
 
 	override public function importScene(p_data:Bytes):G3DScene {
 		var scene:G3DScene = new G3DScene();
-		var position:UInt = 0;
 
 		var wrap:GBytes = new GBytes(p_data);
 		var version:Int = wrap.readInt();
