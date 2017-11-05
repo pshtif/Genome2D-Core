@@ -241,6 +241,14 @@ class GParticleEmitter implements IGPrototypable
         p_particle.g2d_dispose();
     }
 
+	public function hasLiveParticles() {
+		return g2d_firstParticle != null;
+	}
+
+	public function disposeParticles() {
+		while (g2d_firstParticle != null) disposeParticle(g2d_firstParticle);
+	}
+
 	public function getPrototype(p_prototype:GPrototype = null):GPrototype {
 		p_prototype = getPrototypeDefault(p_prototype);
 
