@@ -23,6 +23,11 @@ class G3DScene {
     public var tintColor:GFloat4;
 	
     private var g2d_models:Array<G3DModel>;
+
+	public function getModels() {
+		return g2d_models;
+	}
+
 	public function getModelByName(p_name:String):G3DModel {
 		for (model in g2d_models) {
 			if (model.name == p_name) return model;
