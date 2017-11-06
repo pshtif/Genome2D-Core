@@ -42,7 +42,7 @@ class G3DScene {
 	public function getNode(p_id:String):G3DNode {
 		return g2d_nodes.get(p_id);
 	}
-	public function getNoes():Map<String, G3DNode> {
+	public function getNodes():Map<String, G3DNode> {
 		return g2d_nodes;
 	}
 	
