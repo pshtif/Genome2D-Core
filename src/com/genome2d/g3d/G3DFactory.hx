@@ -33,6 +33,15 @@ class G3DFactory
 								 0, 0, 1, 0, 0, 1, 1, 1,
 								 0, 0, 1, 0, 0, 1, 1, 1,
 								 0, 0, 1, 0, 0, 1, 1, 1];
+
+		var normals:Array<Float> = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+									0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+									0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+									0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+									0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+									0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+
 		var indices:Array<UInt> = [0, 1, 2, 2, 1, 3,
 								   4, 6, 5, 5, 6, 7,
 								   8, 10, 9, 9, 10, 11,
@@ -41,7 +50,7 @@ class G3DFactory
 								   20, 21, 22, 22, 21, 23];
 		
 		var geometry:G3DGeometry = new G3DGeometry("gge"+id);
-		geometry.initProcessed(vertices, uvs, indices, null);
+		geometry.initProcessed(vertices, uvs, indices, normals);
 		scene.addNode(geometry.id, geometry);
 		
 		scene.addConnection(geometry.id, model.id);
