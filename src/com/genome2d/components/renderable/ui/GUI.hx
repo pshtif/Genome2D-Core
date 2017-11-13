@@ -1,5 +1,6 @@
 package com.genome2d.components.renderable.ui;
 
+import com.genome2d.geom.GPoint;
 import com.genome2d.ui.skin.GUISkin;
 import com.genome2d.ui.element.GUIElement;
 import com.genome2d.input.GMouseInput;
@@ -22,7 +23,7 @@ class GUI extends GComponent implements IGRenderable {
 		root.name = "root";
         root.g2d_root = root;
         root.mouseEnabled = false;
-		
+
 		setBounds(new GRectangle(0, 0, node.core.getContext().getStageViewRect().width, node.core.getContext().getStageViewRect().height));
     }
 
@@ -33,7 +34,7 @@ class GUI extends GComponent implements IGRenderable {
 		root.g2d_worldBottom = g2d_bounds.bottom + (useNodePosition ? node.g2d_worldY : 0);
 		root.g2d_finalWidth = root.g2d_worldRight - root.g2d_worldLeft;
 		root.g2d_finalHeight = root.g2d_worldBottom - root.g2d_worldTop;
-		
+
         root.calculateWidth();
         root.invalidateWidth();
         root.calculateHeight();
@@ -46,7 +47,7 @@ class GUI extends GComponent implements IGRenderable {
         root.render();
         GUISkin.flushBatch();
     }
-	
+
 	public function setBounds(p_bounds:GRectangle):Void {
 		g2d_bounds = p_bounds;
 		invalidate();
@@ -59,8 +60,17 @@ class GUI extends GComponent implements IGRenderable {
     public function captureMouseInput(p_input:GMouseInput):Void {
         root.captureMouseInput(p_input);
     }
-	
+
 	public function hitTest(p_x:Float, p_y:Float):Bool {
         return false;
+    }
+
+    public function worldToUi(p_world:GPoint, p_result:GPoint = null):GPoint {
+        if (p_result == null) p_result = new GPoint();
+
+        p_result.x = p_world.x - root.g2d_worldLeft;
+        p_result.y = p_world.y - root.g2d_worldTop;
+
+        return p_result;
     }
 }

@@ -8,6 +8,8 @@
  */
 package com.genome2d.components;
 
+import com.genome2d.debug.GDebug;
+import com.genome2d.geom.GPoint;
 import com.genome2d.callbacks.GCallback.GCallback1;
 import com.genome2d.context.GViewport;
 import com.genome2d.textures.GTexture;
@@ -186,4 +188,40 @@ class GCameraController extends GComponent
 		if (viewport != null) viewport.dispose();
         viewport = new GViewport(this, p_width, p_height, p_resize);
     }
+
+	public function worldToScreen(p_world:GPoint, p_result:GPoint = null) {
+		var tx:Float = p_world.x - node.g2d_worldX;
+		var ty:Float = p_world.y - node.g2d_worldY;
+
+		tx *= zoom;
+		ty *= zoom;
+
+		var cos:Float = Math.cos(node.g2d_worldRotation);
+		var sin:Float = Math.sin(node.g2d_worldRotation);
+
+		var rx:Float = (tx*cos - ty*sin);
+		var ry:Float = (ty*cos + tx*sin);
+
+		if (p_result == null) p_result = new GPoint();
+		p_result.x = rx + g2d_viewRectangle.x + g2d_viewRectangle.width/2;
+		p_result.y = ry - g2d_viewRectangle.y - g2d_viewRectangle.height/2;
+	}
+
+	public function screenToWorld(p_screen:GPoint, p_result:GPoint = null) {
+		var tx:Float = p_screen.x - g2d_viewRectangle.x - g2d_viewRectangle.width/2;
+		var ty:Float = p_screen.y - g2d_viewRectangle.y - g2d_viewRectangle.height/2;
+
+		var cos:Float = Math.cos(-node.g2d_worldRotation);
+		var sin:Float = Math.sin(-node.g2d_worldRotation);
+
+		var rx:Float = (tx*cos - ty*sin);
+		var ry:Float = (ty*cos + tx*sin);
+
+		rx /= zoom;
+		ry /= zoom;
+
+		if (p_result == null) p_result = new GPoint();
+		p_result.x = rx + node.g2d_worldX;
+		p_result.y = ry + node.g2d_worldY;
+	}
 }

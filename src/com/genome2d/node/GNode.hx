@@ -1574,7 +1574,7 @@ class GNode implements IGFocusable implements IGPrototypable
         return p_result;
     }
 
-    public function globalToLocal(p_global:GPoint, p_result:GPoint = null):GPoint {
+    public function worldToLocal(p_global:GPoint, p_result:GPoint = null):GPoint {
         getTransformationMatrix(g2d_core.g2d_root, g2d_cachedTransformMatrix);
         g2d_cachedTransformMatrix.invert();
         if (p_result == null) p_result = new GPoint();
