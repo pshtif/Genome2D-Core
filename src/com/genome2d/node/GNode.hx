@@ -1566,7 +1566,7 @@ class GNode implements IGFocusable implements IGPrototypable
         return p_resultMatrix;
     }
 
-    public function localToGlobal(p_local:GPoint, p_result:GPoint = null):GPoint {
+    public function localToWorld(p_local:GPoint, p_result:GPoint = null):GPoint {
         getTransformationMatrix(g2d_core.g2d_root, g2d_cachedTransformMatrix);
         if (p_result == null) p_result = new GPoint();
         p_result.x = g2d_cachedTransformMatrix.a * p_local.x + g2d_cachedTransformMatrix.c * p_local.y + g2d_cachedTransformMatrix.tx;
@@ -1574,12 +1574,12 @@ class GNode implements IGFocusable implements IGPrototypable
         return p_result;
     }
 
-    public function worldToLocal(p_global:GPoint, p_result:GPoint = null):GPoint {
+    public function worldToLocal(p_world:GPoint, p_result:GPoint = null):GPoint {
         getTransformationMatrix(g2d_core.g2d_root, g2d_cachedTransformMatrix);
         g2d_cachedTransformMatrix.invert();
         if (p_result == null) p_result = new GPoint();
-        p_result.x = g2d_cachedTransformMatrix.a * p_global.x + g2d_cachedTransformMatrix.c * p_global.y + g2d_cachedTransformMatrix.tx;
-        p_result.y = g2d_cachedTransformMatrix.d * p_global.y + g2d_cachedTransformMatrix.b * p_global.x + g2d_cachedTransformMatrix.ty;
+        p_result.x = g2d_cachedTransformMatrix.a * p_world.x + g2d_cachedTransformMatrix.c * p_world.y + g2d_cachedTransformMatrix.tx;
+        p_result.y = g2d_cachedTransformMatrix.d * p_world.y + g2d_cachedTransformMatrix.b * p_world.x + g2d_cachedTransformMatrix.ty;
         return p_result;
     }
 
