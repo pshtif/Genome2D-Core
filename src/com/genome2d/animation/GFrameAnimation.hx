@@ -1,19 +1,28 @@
 package com.genome2d.animation;
+import com.genome2d.debug.GDebug;
+import com.genome2d.textures.GTextureManager;
+import com.genome2d.proto.GPrototypeExtras;
+import com.genome2d.proto.GPrototypeFactory;
+import com.genome2d.proto.GPrototype;
+import com.genome2d.proto.IGPrototypable;
 import com.genome2d.textures.GTexture;
 
-class GFrameAnimation
+class GFrameAnimation implements IGPrototypable
 {
 
+    @prototype
 	public var timeDilation:Float = 1;
 
     /**
         Is movieclip repeating after reaching the last frame, default true
     **/
+    @prototype
     public var repeatable:Bool = true;
 
     /**
         Is playback reversed, default false
     **/
+    @prototype
     public var reversed:Bool = false;
 
     private var g2d_speed:Float = 1000/30;
@@ -25,6 +34,7 @@ class GFrameAnimation
 	
 	public var currentFrameTexture:GTexture;
 
+    @prototype
 	public var frameRate(get, set):Int;
     #if swc @:getter(frameRate) #end
     inline private function get_frameRate():Int {
@@ -57,6 +67,8 @@ class GFrameAnimation
     inline private function get_currentFrame():Int {
         return g2d_currentFrame;
     }
+
+    private var frames:String;
 
     /**
         Textures used for frames
@@ -118,8 +130,7 @@ class GFrameAnimation
         g2d_playing = true;
     }
 	
-	public function new(p_frameTextures:Array<GTexture>):Void {
-		frameTextures = p_frameTextures;
+	public function new():Void {
 	}
 	
 	inline public function update(p_deltaTime:Float):Void {
@@ -147,5 +158,41 @@ class GFrameAnimation
             }
             g2d_accumulatedTime %= g2d_speed;
         }
-    }	
+    }
+
+    /****************************************************************************************************
+	 * 	PROTOTYPE CODE
+	 ****************************************************************************************************/
+
+    public function getPrototype(p_prototype:GPrototype = null):GPrototype {
+        p_prototype = getPrototypeDefault(p_prototype);
+
+        if (g2d_frameTextures != null && g2d_frameTextures.length>0) {
+            var textureIds:String = "@"+g2d_frameTextures[0].id;
+            for (i in 1...g2d_frameTextures.length) {
+                textureIds += ",@"+g2d_frameTextures[i].id;
+            }
+            p_prototype.createPrototypeProperty("frames", "String", GPrototypeExtras.IGNORE_AUTO_BIND, null, textureIds);
+        }
+        return p_prototype;
+    }
+
+    public function bindPrototype(p_prototype:GPrototype):Void {
+        bindPrototypeDefault(p_prototype);
+
+        if (p_prototype.hasProperty("frames")) {
+            var textureString:String = p_prototype.getProperty("frames").value;
+            if (textureString != "") {
+                var textureIds:Array<String> = textureString.split(",");
+                g2d_frameTextures = new Array<GTexture>();
+                for (textureId in textureIds) {
+                    var texture:GTexture = GTextureManager.getTexture(textureId.substr(1));
+                    if (texture != null) g2d_frameTextures.push(texture);
+                }
+                g2d_frameCount = g2d_frameTextures.length;
+            } else {
+                g2d_frameTextures = null;
+            }
+        }
+    }
 }
