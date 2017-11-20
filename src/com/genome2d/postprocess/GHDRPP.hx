@@ -7,7 +7,7 @@
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
 package com.genome2d.postprocess;
-
+#if flash
 import com.genome2d.context.GBlendMode;
 import com.genome2d.utils.GRenderTargetStack;
 import com.genome2d.context.IGContext;
@@ -127,3 +127,4 @@ class GHDRPP extends GPostProcess
         super.dispose();
     }
 }
+#end

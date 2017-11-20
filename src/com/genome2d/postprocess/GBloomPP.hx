@@ -14,12 +14,15 @@ import com.genome2d.context.IGContext;
 import com.genome2d.node.GNode;
 import com.genome2d.context.GCamera;
 import com.genome2d.geom.GRectangle;
+#if flash
 import com.genome2d.context.filters.GBloomPassFilter;
 import com.genome2d.context.filters.GBrightPassFilter;
+#end
 import com.genome2d.textures.GTexture;
 
 class GBloomPP extends GPostProcess
 {
+    #if flash
     private var g2d_blur:GBlurPP;
     private var g2d_bright:GFilterPP;
     private var g2d_bloomFilter:GBloomPassFilter;
@@ -89,4 +92,5 @@ class GBloomPP extends GPostProcess
 
         super.dispose();
     }
+    #end
 }

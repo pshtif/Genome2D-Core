@@ -7,7 +7,7 @@
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
 package com.genome2d.postprocess;
-
+#if flash
 import com.genome2d.context.filters.GFilter;
 import com.genome2d.context.GCamera;
 import com.genome2d.textures.GTexture;
@@ -172,3 +172,4 @@ class GBlurPP extends GPostProcess
         g2d_invalidate = false;
     }
 }
+#end
