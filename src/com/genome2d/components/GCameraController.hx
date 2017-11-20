@@ -189,7 +189,7 @@ class GCameraController extends GComponent
         viewport = new GViewport(this, p_width, p_height, p_resize);
     }
 
-	public function worldToScreen(p_world:GPoint, p_result:GPoint = null) {
+	public function worldToScreen(p_world:GPoint, p_result:GPoint = null):GPoint {
 		var tx:Float = p_world.x - node.g2d_worldX;
 		var ty:Float = p_world.y - node.g2d_worldY;
 
@@ -205,9 +205,11 @@ class GCameraController extends GComponent
 		if (p_result == null) p_result = new GPoint();
 		p_result.x = rx + g2d_viewRectangle.x + g2d_viewRectangle.width/2;
 		p_result.y = ry - g2d_viewRectangle.y - g2d_viewRectangle.height/2;
+		
+		return p_result;
 	}
 
-	public function screenToWorld(p_screen:GPoint, p_result:GPoint = null) {
+	public function screenToWorld(p_screen:GPoint, p_result:GPoint = null):GPoint {
 		var tx:Float = p_screen.x - g2d_viewRectangle.x - g2d_viewRectangle.width/2;
 		var ty:Float = p_screen.y - g2d_viewRectangle.y - g2d_viewRectangle.height/2;
 
@@ -223,5 +225,7 @@ class GCameraController extends GComponent
 		if (p_result == null) p_result = new GPoint();
 		p_result.x = rx + node.g2d_worldX;
 		p_result.y = ry + node.g2d_worldY;
+		
+		return p_result;
 	}
 }
