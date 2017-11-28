@@ -21,6 +21,13 @@ class GTweenTimeline {
         p_sequence.dispose();
     }
 
+    public function abortAllSequences():Void {
+        while (g2d_sequences.length>0) {
+            var sequence:GTweenSequence = g2d_sequences.shift();
+            sequence.dispose();
+        }
+    }
+
     public function update(p_delta:Float) {
         for (sequence in g2d_sequences) {
             sequence.update(p_delta);

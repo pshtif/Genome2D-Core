@@ -22,6 +22,10 @@ class GTween {
     static private var g2d_currentTimeline:GTweenTimeline;
     static private var g2d_timelines:Array<GTweenTimeline>;
 
+    inline static private function removeTimeline(p_timeline:GTweenTimeline):Void {
+
+    }
+
     inline static private function addTimeline(p_timeline:GTweenTimeline, p_setCurrent:Bool = false):Void {
         if (p_setCurrent) g2d_currentTimeline = p_timeline;
         if (g2d_timelines == null) g2d_timelines = new Array<GTweenTimeline>();
@@ -62,6 +66,15 @@ class GTween {
         if (g2d_timelines != null) {
             for (timeline in g2d_timelines) {
                 timeline.update(p_delta);
+            }
+        }
+    }
+
+    static public function abortAllTimelines():Void {
+        if (g2d_timelines != null) {
+            while (g2d_timelines.length>0) {
+                var timeline:GTweenTimeline = g2d_timelines.shift();
+                timeline.abortAllSequences();
             }
         }
     }
