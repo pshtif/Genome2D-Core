@@ -77,5 +77,6 @@ class GTween {
                 timeline.abortAllSequences();
             }
         }
+        g2d_currentTimeline = null;
     }
 }
