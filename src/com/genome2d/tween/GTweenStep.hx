@@ -176,6 +176,9 @@ class GTweenStep implements IGPrototypable {
         g2d_onUpdateArgs = null;
         targetId = "";
         g2d_target = null;
+        g2d_gotoStepId = "";
+        g2d_gotoRepeatCount = 0;
+        g2d_currentGotoRepeatCount = 0;
 
         // Put back to pool
         g2d_poolNext = g2d_poolFirst;
