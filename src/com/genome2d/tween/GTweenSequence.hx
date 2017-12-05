@@ -111,7 +111,9 @@ class GTweenSequence implements IGPrototypable {
     }
 
     public function skipCurrent() {
-        if (g2d_currentStep != null) g2d_currentStep.skip();
+        if (g2d_currentStep != null) {
+            g2d_currentStep.skip();
+        }
     }
 
     /*
@@ -120,7 +122,9 @@ class GTweenSequence implements IGPrototypable {
     }
     /**/
     public function abort() {
-        g2d_timeline.removeSequence(this);
+        if (g2d_timeline != null) {
+            g2d_timeline.removeSequence(this);
+        }
     }
 
     public function bind(p_target:GUIElement, p_autoRun:Bool = false):Void {
