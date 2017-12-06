@@ -12,7 +12,7 @@ class GProjectConfig {
         #end
 
         #if js
-        contextConfig = new GContextConfig(null, new GRectangle(0,0,720,1200));
+        contextConfig = new GContextConfig(null);
         #end
     }
 }
