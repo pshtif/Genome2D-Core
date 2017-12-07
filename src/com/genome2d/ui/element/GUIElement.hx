@@ -178,7 +178,12 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     #if swc @:setter(model) #end
     inline private function set_model(p_value:String):String {
         if (setModelHook != null) p_value = setModelHook(p_value);
+        #if js
+        // In JS target sometimes this isnt string and makes a mess for some reason
+        g2d_model = Std.string(p_value);
+        #else
         g2d_model = p_value;
+        #end
         onModelChanged.dispatch(this);
 
         return g2d_model;
