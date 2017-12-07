@@ -60,7 +60,7 @@ class GScript implements IGPrototypable
 	
 	public function setSource(p_source:String):Void {
 		g2d_source = p_source;
-		recompile();
+		if (p_source != null) recompile();
 	}
 
 	public function new() {
