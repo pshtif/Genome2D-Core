@@ -22,6 +22,10 @@ import com.genome2d.context.GCamera;
  **/
 class GSimpleParticleSystemD extends GComponent implements IGRenderable
 {
+	#if genome_editor
+	static public var PROTOTYPE_EDITOR:String = "GEUISimpleParticleSystemDEditor";
+	#end
+
 	@category("rendering")
 	@prototype
     public var blendMode:GBlendMode;
