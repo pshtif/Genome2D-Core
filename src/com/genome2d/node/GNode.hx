@@ -183,7 +183,7 @@ class GNode implements IGFocusable implements IGPrototypable
 	    Check if the node is disposed
 	**/
 	private var g2d_disposed:Bool = false;
-    inline private function isDisposed():Bool {
+    inline public function isDisposed():Bool {
         return g2d_disposed;
     }
 
