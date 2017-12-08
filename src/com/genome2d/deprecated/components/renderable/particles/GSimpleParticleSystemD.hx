@@ -353,7 +353,7 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
                 ty = node.g2d_worldY + particle.g2d_y;
             }
 		
-			node.core.getContext().draw(particle.g2d_texture, blendMode, tx, ty, particle.g2d_scaleX*node.g2d_worldScaleX, particle.g2d_scaleY*node.g2d_worldScaleY, particle.g2d_rotation, particle.g2d_red, particle.g2d_green, particle.g2d_blue, particle.g2d_alpha);
+			node.core.getContext().draw(texture, blendMode, tx, ty, particle.g2d_scaleX*node.g2d_worldScaleX, particle.g2d_scaleY*node.g2d_worldScaleY, particle.g2d_rotation, particle.g2d_red, particle.g2d_green, particle.g2d_blue, particle.g2d_alpha);
 
 			particle = next;
 		}
