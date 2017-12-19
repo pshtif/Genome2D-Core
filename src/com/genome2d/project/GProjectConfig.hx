@@ -6,13 +6,13 @@ class GProjectConfig {
 
     public var contextConfig:GContextConfig;
 
-    public function new() {
+    public function new(p_contextConfig:GContextConfig) {
         #if (!swc && !js)
-        contextConfig = new GContextConfig();
+        contextConfig = p_contextConfig == null ? new GContextConfig() : p_contextConfig;
         #end
 
-        #if js
-        contextConfig = new GContextConfig(null);
+        #if jsa
+        contextConfig = p_contextConfig == null ? new GContextConfig(null) : p_contextConfig;
         #end
     }
 }
