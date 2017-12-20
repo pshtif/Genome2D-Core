@@ -11,7 +11,7 @@ class GProjectConfig {
         contextConfig = p_contextConfig == null ? new GContextConfig() : p_contextConfig;
         #end
 
-        #if jsa
+        #if js
         contextConfig = p_contextConfig == null ? new GContextConfig(null) : p_contextConfig;
         #end
     }
