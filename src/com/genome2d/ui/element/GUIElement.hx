@@ -1522,10 +1522,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
             if (!p_input.captured && p_input.worldX > g2d_worldLeft-mousePaddingLeft && p_input.worldX < g2d_worldRight+mousePaddingRight && p_input.worldY > g2d_worldTop-mousePaddingTop && p_input.worldY < g2d_worldBottom+mousePaddingBottom) {
                 if (g2d_activeSkin != null) {
                     // TODO add capture info in the actual skin
-                    g2d_activeSkin.captureMouseInput(p_input);
-
                     p_input.localX = p_input.worldX - g2d_worldLeft;
                     p_input.localY = p_input.worldY - g2d_worldTop;
+
+                    g2d_activeSkin.captureMouseInput(p_input);
 
                     p_input.captured = mouseEnabled;
                     captured = mouseEnabled;

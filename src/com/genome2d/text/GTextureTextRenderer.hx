@@ -7,6 +7,7 @@
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
 package com.genome2d.text;
+import com.genome2d.macros.MGDebug;
 import com.genome2d.text.GTextureTextAccuracy;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.debug.GDebug;
@@ -18,12 +19,15 @@ import com.genome2d.utils.GHAlignType;
 import com.genome2d.utils.GVAlignType;
 #if flash
 import flash.display.BitmapData;
+#elseif js
+import js.html.ImageData;
+import js.html.Uint8ClampedArray;
 #end
 
 class GTextureTextRenderer extends GTextRenderer {
-	
+
 	static public var warnMissingCharTextures:Bool = false;
-	
+
 	public var red:Float = 1;
 	public var green:Float = 1;
 	public var blue:Float = 1;
@@ -73,9 +77,9 @@ class GTextureTextRenderer extends GTextRenderer {
 
 
     private var g2d_chars:Array<GTextureCharRenderable>;
-	
+
 	private var g2d_cursorBlinkCount:Int = 0;
-	
+
 	public var cursorStartIndex:Int = 0;
 	public var cursorEndIndex:Int = 0;
 	public var enableCursor:Bool = false;
@@ -101,29 +105,33 @@ class GTextureTextRenderer extends GTextRenderer {
 	inline private function get_maxVisibleLine():Int {
 		return g2d_maxVisibleLine;
 	}
-	
+
 	public var format:GTextFormat;
-	
+
 	static private var g2d_helperTexture:GTexture;
-	
+
 	public function new():Void {
 		super();
-		
+
 		g2d_chars = new Array<GTextureCharRenderable>();
-		
-		#if flash
+
 		if (g2d_helperTexture == null) {
+		#if flash
 			g2d_helperTexture = GTextureManager.createTexture("g2d_GTextureTextRenderer_helper", new BitmapData(4, 4, false, 0xFFFFFF));
 			g2d_helperTexture.pivotX = g2d_helperTexture.pivotY = -2;
-		}
+		#elseif js
+			var imageData:ImageData = new ImageData(new Uint8ClampedArray([255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255]), 4);
+			g2d_helperTexture = GTextureManager.createTexture("g2d_GTextureTextRenderer_helper", imageData);
+			g2d_helperTexture.pivotX = g2d_helperTexture.pivotY = -2;
 		#end
+		}
 	}
 
     override public function render(p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_rotation:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Void {
         if (g2d_textureFont == null) return;
 
         if (g2d_dirty) invalidate();
-		
+
 		if (enableCursor) renderSelection(p_x, p_y, p_scaleX, p_scaleY, 0);
 
         var charCount:Int = g2d_chars.length;
@@ -136,7 +144,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
 		var tx:Float;
         var ty:Float;
-		
+
 		var lastRenderColor:Int = 0xFFFFFF;
 		var charRed:Float = 1;
 		var charGreen:Float = 1;
@@ -147,7 +155,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
         for (i in 0...charCount) {
             var renderable:GTextureCharRenderable = g2d_chars[i];
-			
+
 			if (format != null) {
 				var indexColor:Int = format.getIndexColor(i);
 				if (indexColor != -1 && lastRenderColor != indexColor) {
@@ -163,7 +171,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				break;
 			}
 			if (renderable.whiteSpace || renderable.line<scrollLine) continue;
-			
+
 			var cx:Float = renderable.x + renderable.xoffset*fontScale;
 			var cy:Float = renderable.y + renderable.yoffset*fontScale - scrollOffset;
 
@@ -195,7 +203,7 @@ class GTextureTextRenderer extends GTextRenderer {
 			}
         }
 	}
-	
+
 	private function renderSelection(p_x:Float, p_y:Float, p_scaleX:Float, p_scaleY:Float, p_rotation:Float):Void {
 		g2d_cursorBlinkCount++;
 		if (cursorStartIndex == cursorEndIndex && Std.int(g2d_cursorBlinkCount / 10) % 2 == 0) {
@@ -212,11 +220,11 @@ class GTextureTextRenderer extends GTextRenderer {
 			var startChar:GTextureCharRenderable = (cursorStartIndex >= g2d_chars.length) ? g2d_chars[g2d_chars.length - 1] : g2d_chars[cursorStartIndex];
 			var sx:Float = startChar.x * p_scaleX * g2d_fontScale + p_x + (cursorStartIndex >= g2d_chars.length?startChar.xadvance + g2d_tracking:0);
 			var sy:Float = startChar.y * p_scaleY * g2d_fontScale + p_y;
-			
+
 			var endChar:GTextureCharRenderable = (cursorEndIndex >= g2d_chars.length) ? g2d_chars[g2d_chars.length - 1] : g2d_chars[cursorEndIndex];
 			var ex:Float = endChar.x * p_scaleX * g2d_fontScale + p_x + (cursorEndIndex >= g2d_chars.length? endChar.xadvance + g2d_tracking:0);
 			var ey:Float = endChar.y * p_scaleY * g2d_fontScale + p_y;
-			
+
 			if (sy == ey) {
 				g2d_context.draw(g2d_helperTexture, GBlendMode.NORMAL, sx, sy, (ex-sx)/4*p_scaleX * g2d_fontScale, g2d_textureFont.lineHeight/4*p_scaleY * g2d_fontScale, p_rotation, 1, 1, 1, 1, null);
 			} else {
@@ -231,7 +239,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
     override public function invalidate():Void {
         if (g2d_textureFont == null) return;
-		
+
         if (g2d_autoSize) {
             g2d_width = 0;
         }
@@ -259,7 +267,7 @@ class GTextureTextRenderer extends GTextRenderer {
 			} else {
 				renderable = g2d_chars[charIndex];
 			}
-			
+
             // New line character
             if (g2d_text.charCodeAt(i) == 10 || g2d_text.charCodeAt(i) == 13) {
                 if (g2d_autoSize) {
@@ -278,7 +286,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				}
                 offsetX = 0;
                 offsetY += (g2d_textureFont.lineHeight + g2d_lineSpace)*g2d_fontScale;
-				
+
 				renderable.line = lines.length - 1;
 				renderable.x = offsetX;
 				renderable.y = offsetY;
@@ -345,7 +353,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				if (currentCharCode == 32 || currentCharCode == 46) {
 					whiteSpaceIndex = i;
 				}
-				
+
 				if (currentCharCode == 32) {
 					renderable.whiteSpace = true;
 				} else {
@@ -356,7 +364,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
                 previousCharCode = currentCharCode;
             }
-			
+
 			renderable.visible = true;
 			previousRenderable = renderable;
             ++i;
@@ -394,7 +402,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
         for (i in 0...lines.length) {
             var currentLine:Array<GTextureCharRenderable> = lines[i];
-			
+
             charCount = currentLine.length;
             if (charCount == 0) continue;
             var offsetX:Float = 0;
@@ -416,7 +424,7 @@ class GTextureTextRenderer extends GTextRenderer {
 
         g2d_dirty = false;
     }
-	
+
 	private function getCharAt(p_x:Float, p_y:Float):Int {
 		var minX:Float = Math.POSITIVE_INFINITY;
 		var minY:Float = Math.POSITIVE_INFINITY;
@@ -428,25 +436,27 @@ class GTextureTextRenderer extends GTextRenderer {
 
 			var tx:Float = char.x * g2d_fontScale;
 			var ty:Float = char.y * g2d_fontScale;
-			
+
 			var difX:Float = p_x - tx;
 			if (difX < 0) continue;
+
 			var difY:Float = p_y - ty;
 			if (difY < -char.yoffset * g2d_fontScale) continue;
+
 			if (difX < minX && difY < g2d_textureFont.lineHeight * g2d_fontScale) {
 				minX = difX;
 				minY = difY;
 				minIndex = i;
 			}
 		}
-		
+
 		if (minIndex<charCount && minX > g2d_fontScale*g2d_chars[minIndex].width / 2) minIndex++;
-		
+
 		return minIndex;
 	}
-	
+
 	public function captureMouseInput(p_input:GMouseInput):Void {
-		if (enableCursor) {
+		if (enableCursor && p_input.type == GMouseInputType.MOUSE_DOWN || p_input.type == GMouseInputType.MOUSE_MOVE) {
 			var index:Int = getCharAt(p_input.localX, p_input.localY);
 			if (p_input.type == GMouseInputType.MOUSE_DOWN) {
 				g2d_cursorCurrentIndex = cursorEndIndex = cursorStartIndex = index;
