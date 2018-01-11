@@ -50,7 +50,10 @@ class G3DScene {
 	public function getSceneMatrix():GMatrix3D {
 		return g2d_sceneMatrix;
 	}
-	
+	public function setSceneMatrix(p_matrix:GMatrix3D) {
+		g2d_sceneMatrix = p_matrix;
+	}
+
 	private var g2d_projectionMatrix:GProjectionMatrix;
 	public function getProjectionMatrix():GProjectionMatrix {
 		return g2d_projectionMatrix;
