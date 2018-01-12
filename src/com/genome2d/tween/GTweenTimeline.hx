@@ -29,8 +29,8 @@ class GTweenTimeline {
     }
 
     public function update(p_delta:Float) {
-        for (sequence in g2d_sequences) {
-            sequence.update(p_delta);
+        for (i in 0...g2d_sequences.length) {
+            g2d_sequences[i].update(p_delta);
         }
 
         if (g2d_dirty) {
