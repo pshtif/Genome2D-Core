@@ -126,6 +126,19 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
     }
 
     #if swc @:extern #end
+    @prototype
+    public var lineSpace(get, set):Float;
+    #if swc @:getter(lineSpace) #end
+    inline private function get_lineSpace():Float {
+        return g2d_textRenderer.lineSpace;
+    }
+    #if swc @:setter(lineSpace) #end
+    inline private function set_lineSpace(p_value:Float):Float {
+        g2d_textRenderer.lineSpace = p_value;
+        return p_value;
+    }
+
+    #if swc @:extern #end
     @prototype("getReference")
     public var font(get, set):GTextureFont;
     #if swc @:getter(font) #end
