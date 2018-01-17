@@ -13,6 +13,10 @@ import com.genome2d.macros.MGDebug;
 import com.genome2d.proto.IGPrototypable;
 class GScript implements IGPrototypable
 {
+	#if genome_editor
+  	static public var PROTOTYPE_EDITOR:String = "GEUIScriptEditor";
+  	#end
+
 	private var g2d_onInvalidated:GCallback0;
 	#if swc @:extern #end
 	public var onInvalidated(get,null):GCallback0;
