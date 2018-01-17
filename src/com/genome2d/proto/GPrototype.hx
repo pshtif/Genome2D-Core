@@ -92,6 +92,17 @@ class GPrototype
 	public function getProperty(p_propertyName:String):GPrototypeProperty {
 		return properties.get(p_propertyName);
 	}
+
+	public function getNonAutoBindProperties():Map<String,GPrototypeProperty> {
+		var gen:Map<String,GPrototypeProperty> = new Map<String,GPrototypeProperty>();
+		for (key in properties.keys()) {
+			var property:GPrototypeProperty = properties.get(key);
+			if (property.extras & GPrototypeExtras.IGNORE_AUTO_BIND == GPrototypeExtras.IGNORE_AUTO_BIND) {
+				gen.set(key, property);
+			}
+		}
+		return gen;
+	}
 	
 	public function setPropertyFromString(p_name:String, p_value:String):Void {
 		var split:Array<String> = p_name.split(".");
