@@ -55,8 +55,9 @@ class GScript implements IGPrototypable
 	private var g2d_parser:hscript.Parser;
 	private var g2d_program:Dynamic;
 
-	private var g2d_properties:Map<String,Dynamic>;
-	private var g2d_propertyTypes:Map<String,String>;
+	private var g2d_scriptProperties:Map<String,String>;
+	private var g2d_scriptPropertyTypes:Map<String,String>;
+	private var g2d_prototypeProperties:Map<String,String>;
 
 	private var g2d_compiled:Bool = false;
 	public function isCompiled():Bool {
@@ -78,11 +79,13 @@ class GScript implements IGPrototypable
 
 		g2d_parser = new hscript.Parser();
 		g2d_parser.allowTypes = true;
+
+		g2d_prototypeProperties = new Map<String,String>();
 	}
 
 	private function preparseSource():String {
-		g2d_properties = new Map<String,Dynamic>();
-		g2d_propertyTypes = new Map<String,String>();
+		g2d_scriptProperties = new Map<String,String>();
+		g2d_scriptPropertyTypes = new Map<String,String>();
 		var e:EReg = ~/[\s\r\n]+/gim;
 		var preparsedSource:String = "";
 		var lines:Array<String> = g2d_source.split("\n");
@@ -119,8 +122,8 @@ class GScript implements IGPrototypable
 						varType = strip;
 					}
 				}
-				g2d_properties.set(varName,getVariableValue(varType, varValue));
-				g2d_propertyTypes.set(varName,varType == "" ? "String" : varType);
+				g2d_scriptProperties.set(varName,varValue);
+				g2d_scriptPropertyTypes.set(varName,varType == "" ? "String" : varType);
 			} else {
 				preparsedSource += line + "\n";
 			}
@@ -160,8 +163,18 @@ class GScript implements IGPrototypable
 		g2d_interpreter.variables.set("genome", Genome2D.getInstance());
 
 		var preparsedSource:String = preparseSource();
-		for (key in g2d_properties.keys()) {
-			g2d_interpreter.variables.set(key,g2d_properties.get(key));
+		for (key in g2d_scriptProperties.keys()) {
+			if (!g2d_prototypeProperties.exists(key)) {
+				g2d_prototypeProperties.set(key, g2d_scriptProperties.get(key));
+			}
+		}
+
+		for (key in g2d_prototypeProperties.keys()) {
+			if (g2d_scriptProperties.exists(key)) {
+				g2d_interpreter.variables.set(key, getVariableValue(g2d_scriptPropertyTypes.get(key), g2d_prototypeProperties.get(key)));
+			} else {
+				g2d_prototypeProperties.remove(key);
+			}
 		}
 
 		g2d_compiled = true;
@@ -223,8 +236,8 @@ class GScript implements IGPrototypable
 
 	public function getPrototype(p_prototype:GPrototype = null):GPrototype {
 		p_prototype = getPrototypeDefault(p_prototype);
-		for (key in g2d_properties.keys()) {
-			p_prototype.createPrototypeProperty(key, g2d_propertyTypes.get(key), GPrototypeExtras.IGNORE_AUTO_BIND, null, g2d_properties.get(key));
+		for (key in g2d_prototypeProperties.keys()) {
+			p_prototype.createPrototypeProperty(key, "String", GPrototypeExtras.IGNORE_AUTO_BIND, null, g2d_prototypeProperties.get(key));
 		}
 
 		return p_prototype;
@@ -233,11 +246,13 @@ class GScript implements IGPrototypable
 	public function bindPrototype(p_prototype:GPrototype):Void {
 		GPrototypeFactory.g2d_bindPrototype(this, p_prototype, PROTOTYPE_NAME);
 
-		var gen:Map<String,GPrototypeProperty> = p_prototype.getNonAutoBindProperties();
-		for (key in gen.keys()) {
-			var property:GPrototypeProperty = gen.get(key);
-			g2d_properties.set(key, property.value);
-			g2d_propertyTypes.set(key, property.type);
+		g2d_prototypeProperties = new Map<String,String>();
+
+		for (key in p_prototype.properties.keys()) {
+			if (PROTOTYPE_PROPERTY_NAMES.indexOf(key) == -1) {
+				var property:GPrototypeProperty = p_prototype.properties.get(key);
+				g2d_prototypeProperties.set(key, property.value);
+			}
 		}
 	}
 }

@@ -14,10 +14,10 @@ class GScriptManager
         return g2d_scripts != null ? g2d_scripts.get(p_id) : null;
     }
 
-    static public function createScript(p_id:String, p_source:String):GScript {
+    static public function createScript(p_id:String, p_source:String = ""):GScript {
         var script:GScript = new GScript();
-        script.setSource(p_source);
         script.id = p_id;
+        if (p_source != "") script.setSource(p_source);
 
         return script;
     }
