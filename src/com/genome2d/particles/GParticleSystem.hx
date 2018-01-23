@@ -8,6 +8,7 @@
  */
 package com.genome2d.particles;
 
+import com.genome2d.proto.GPrototypeExtras;
 import com.genome2d.proto.GPrototypeFactory;
 import com.genome2d.proto.GPrototype;
 import com.genome2d.proto.IGPrototypable;
@@ -65,16 +66,16 @@ class GParticleSystem implements IGPrototypable
     inline static public var RANGE:Float = 16;
     inline static public var RANGE2:Float = RANGE * RANGE;
 	
-	private var g2d_width:Float;
-	private var g2d_height:Float;
-	private var g2d_gridCellSize:Int;
+	private var g2d_width:Float = 0;
+	private var g2d_height:Float = 0;
+	private var g2d_gridCellSize:Int = 0;
 	private var g2d_gridWidthCount:Int = 0;
 	private var g2d_gridHeightCount:Int = 0;
 	private var g2d_grids:Array<Array<GSPHGrid>>;
-	private var g2d_invertedGridCellSize:Float;
-	private var g2d_neighborCount:Int;
+	private var g2d_invertedGridCellSize:Float = 0;
+	private var g2d_neighborCount:Int = 0;
 	private var g2d_neighbors:Array<GSPHNeighbor>;
-	private var g2d_neighborPrecacheCount:Int;
+	private var g2d_neighborPrecacheCount:Int = 0;
 	private var g2d_groups:Map<GParticleGroup,Bool>;
 	private var g2d_defaultGroup:GParticleGroup;
 	
@@ -84,17 +85,17 @@ class GParticleSystem implements IGPrototypable
 		g2d_defaultGroup = new GParticleGroup();
     }
 	
-	public function setupGrid(p_region:GRectangle, p_cellSize:Int, p_precacheNeighbors:Int = 0):Void {
+	public function setupGrid(p_width:Float, p_height:Float, p_cellSize:Int, p_precacheNeighbors:Int = 0):Void {
 		g2d_neighbors = new Array<GSPHNeighbor>();
 		g2d_neighborPrecacheCount = p_precacheNeighbors;
 		for (i in 0...g2d_neighborPrecacheCount) g2d_neighbors.push(new GSPHNeighbor());
         g2d_neighborCount = 0;
 		
-		g2d_width = p_region.width;
-		g2d_height = p_region.height;
+		g2d_width = p_width;
+		g2d_height = p_height;
 		g2d_gridCellSize = p_cellSize;
-		g2d_gridWidthCount = Math.ceil(p_region.width / g2d_gridCellSize);
-		g2d_gridHeightCount = Math.ceil(p_region.height / g2d_gridCellSize);
+		g2d_gridWidthCount = Math.ceil(p_width / g2d_gridCellSize);
+		g2d_gridHeightCount = Math.ceil(p_height / g2d_gridCellSize);
 		
 		g2d_invertedGridCellSize = 1 / g2d_gridCellSize;
 		
@@ -265,11 +266,21 @@ class GParticleSystem implements IGPrototypable
 			p_prototype.addChild(emitter.getPrototype(), PROTOTYPE_DEFAULT_CHILD_GROUP);
 		}
 
+		if (g2d_width != 0) {
+			p_prototype.createPrototypeProperty("sphGrid", "String", GPrototypeExtras.IGNORE_AUTO_BIND, null, g2d_width+","+g2d_height+","+g2d_gridCellSize);
+		}
+
 		return p_prototype;
 	}
 
 	public function bindPrototype(p_prototype:GPrototype):Void {
 		bindPrototypeDefault(p_prototype);
+
+		if (p_prototype.hasProperty("sphGrid")) {
+			var grid:String = p_prototype.getProperty("sphGrid").value.toString();
+			var split:Array<String> = grid.split(",");
+			setupGrid(Std.parseFloat(split[0]), Std.parseFloat(split[1]), Std.parseInt(split[2]));
+		}
 
 		var group:Array<GPrototype> = p_prototype.getGroup(PROTOTYPE_DEFAULT_CHILD_GROUP);
 		if (group != null) {
