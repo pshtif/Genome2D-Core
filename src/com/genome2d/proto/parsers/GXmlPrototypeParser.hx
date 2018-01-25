@@ -43,7 +43,11 @@ class GXmlPrototypeParser
 			if (!isDefaultChildGroup) xml.addChild(groupXml);
 		}
 
-		if (p_prototype.id != "") xml.set("prototypeId", p_prototype.id);
+		if (p_prototype.id != "") {
+            xml.set("prototypeId", p_prototype.id);
+        } else if (p_prototype.referenceId != ""){
+            xml.set("referenceId", p_prototype.referenceId);
+        }
 
 		return xml;
 	}
