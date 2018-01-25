@@ -42,7 +42,9 @@ class GXmlPrototypeParser
 			}
 			if (!isDefaultChildGroup) xml.addChild(groupXml);
 		}
-		
+
+		if (p_prototype.id != "") xml.set("prototypeId", p_prototype.id);
+
 		return xml;
 	}
 
@@ -79,37 +81,47 @@ class GXmlPrototypeParser
 		prototype.prototypeClass = GPrototypeFactory.getPrototypeClass(prototype.prototypeName);
 		if (prototype.prototypeClass == null) MGDebug.ERROR("Invalid prototype type", prototype.prototypeName);
 
-		//var propertyNames:Array<String> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
-		//var propertyDefaults:Array<Dynamic> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_DEFAULTS);
-		//var propertyTypes:Array<String> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES);
-		//var propertyExtras:Array<Int> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
-		var defaultChildGroup:String = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_DEFAULT_CHILD_GROUP);
-		
-		// We are adding properties on attributes
-		for (attribute in p_xml.attributes()) {
-			prototype.setPropertyFromString(attribute, p_xml.get(attribute));
-		}
-		
-		for (element in p_xml.elements()) {
-			// We are adding a node refering to property
-			if (element.nodeName.indexOf("p:") == 0) {
-				if (element.firstElement() == null) {
-					prototype.setPropertyFromString(element.nodeName.substr(2), "null");
+		// This prototype is just a reference
+		if (p_xml.get("referenceId") != null) {
+			prototype.referenceId = p_xml.get("referenceId");
+		} else {
+			//var propertyNames:Array<String> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
+			//var propertyDefaults:Array<Dynamic> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_DEFAULTS);
+			//var propertyTypes:Array<String> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES);
+			//var propertyExtras:Array<Int> = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
+			var defaultChildGroup:String = Reflect.field(prototype.prototypeClass, GPrototypeSpecs.PROTOTYPE_DEFAULT_CHILD_GROUP);
+
+			// We are adding properties on attributes
+			for (attribute in p_xml.attributes()) {
+				// Special attribute for prototype referencing
+				if (attribute == "prototypeId") {
+					prototype.id = p_xml.get(attribute);
 				} else {
-					setPropertyFromXml(prototype, element.nodeName.substr(2), element.firstElement());
-				}
-				
-			// We are adding a default group node
-			} else if (element.nodeName == defaultChildGroup || defaultChildGroup == "*") {
-				prototype.addChild(fromXml(element), defaultChildGroup);
-				
-			// Other group nodes
-			} else {
-				for (child in element.elements()) {
-					prototype.addChild(fromXml(child), element.nodeName);
+					prototype.setPropertyFromString(attribute, p_xml.get(attribute));
 				}
 			}
-        }
+
+			for (element in p_xml.elements()) {
+				// We are adding a node refering to property
+				if (element.nodeName.indexOf("p:") == 0) {
+					if (element.firstElement() == null) {
+						prototype.setPropertyFromString(element.nodeName.substr(2), "null");
+					} else {
+						setPropertyFromXml(prototype, element.nodeName.substr(2), element.firstElement());
+					}
+
+				// We are adding a default group node
+				} else if (element.nodeName == defaultChildGroup || defaultChildGroup == "*") {
+					prototype.addChild(fromXml(element), defaultChildGroup);
+
+				// Other group nodes
+				} else {
+					for (child in element.elements()) {
+						prototype.addChild(fromXml(child), element.nodeName);
+					}
+				}
+			}
+		}
 		
 		return prototype;
 	}

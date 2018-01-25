@@ -12,6 +12,22 @@ class GPrototype
 	static public var resolveEnum:String->Enum<Dynamic> = null;
 	static public var getClass:Dynamic->Class<Dynamic> = null;
 
+	private var g2d_id:String = "";
+	#if swc @:extern #end
+	public var id(get,set):String;
+	#if swc @:getter(id) #end
+	inline private function get_id():String {
+		return g2d_id;
+	}
+	#if swc @:setter(id) #end
+	inline private function set_id(p_value:String):String {
+		GPrototypeFactory.g2d_removeReference(this);
+		g2d_id = p_value;
+		GPrototypeFactory.g2d_addReference(this);
+		return g2d_id;
+	}
+
+	public var referenceId:String = "";
 	public var prototypeName:String;
 	public var prototypeClass:Class<IGPrototypable>;
 	

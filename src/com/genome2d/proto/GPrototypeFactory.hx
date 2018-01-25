@@ -1,5 +1,6 @@
 package com.genome2d.proto;
 
+import com.genome2d.macros.MGDebug;
 import com.genome2d.globals.GParameters;
 import Reflect;
 import com.genome2d.debug.GDebug;
@@ -8,6 +9,7 @@ class GPrototypeFactory {
     static private var g2d_helper:GPrototypeHelper;
     static private var g2d_lookupsInitialized:Bool = false;
     static private var g2d_lookups:Map<String,Class<IGPrototypable>>;
+    static private var g2d_prototypeReferences:Map<String,GPrototype>;
 
     static public function getParameters():GParameters {
         // Somewhat of a hack since we use this part for code generation at macro time and even if it isn't executed macro prohibitons apply (platform dependant package import)
@@ -21,6 +23,7 @@ class GPrototypeFactory {
     static private function initializePrototypes():Void {
         if (g2d_lookups != null) return;
         g2d_lookups = new Map<String,Class<IGPrototypable>>();
+        g2d_prototypeReferences = new Map<String,GPrototype>();
 		
 		// For some reason when Haxe is compiled to JS it can't find classes generated during macro directly
 		#if js
@@ -37,7 +40,14 @@ class GPrototypeFactory {
 			#end
             if (cls != null) g2d_lookups.set(field, cls);
 		}
-		
+    }
+
+    static public function g2d_addReference(p_prototype:GPrototype):Void {
+        g2d_prototypeReferences.set(p_prototype.id, p_prototype);
+    }
+
+    static public function g2d_removeReference(p_prototype:GPrototype):Void {
+        g2d_prototypeReferences.remove(p_prototype.id);
     }
 
     static public function setPrototypeClass(p_prototypeName:String, p_class:Class<IGPrototypable>):Void {
@@ -56,13 +66,22 @@ class GPrototypeFactory {
         if (p_args == null) p_args = [];
         var proto:IGPrototypable = Type.createInstance(p_prototype.prototypeClass, p_args);
         if (proto == null) GDebug.error("Invalid prototype class " + p_prototype.prototypeName);
-		
-        proto.bindPrototype(p_prototype);
+
+        if (p_prototype.referenceId == "") {
+            proto.bindPrototype(p_prototype);
+        } else {
+            var ref:GPrototype = g2d_prototypeReferences.get(p_prototype.referenceId);
+            if (ref != null) {
+                proto.bindPrototype(ref);
+            } else {
+                MGDebug.WARNING("Invalid prototype reference "+p_prototype.referenceId);
+            }
+        }
 
         return cast proto;
     }
 
-    static public function createPrototypes(p_prototypes:Array<GPrototype>):Array<IGPrototypable> {
+    static public function createPrototypeInstances(p_prototypes:Array<GPrototype>):Array<IGPrototypable> {
         var prototypeInstances:Array<IGPrototypable> = new Array<IGPrototypable>();
         for (prototype in p_prototypes) {
             prototypeInstances.push(createInstance(prototype));
@@ -73,7 +92,7 @@ class GPrototypeFactory {
 	static public function isValidProtototypeName(p_prototypeName:String):Bool {
 		return g2d_lookups.exists(p_prototypeName);
 	}
-
+/*
     static public function createEmptyPrototype(p_prototypeName:String):IGPrototypable {
         var prototypeClass:Class<IGPrototypable> = g2d_lookups.get(p_prototypeName);
         if (prototypeClass == null) {
@@ -85,7 +104,7 @@ class GPrototypeFactory {
 
         return proto;
     }
-
+/**/
     // TODO: Refactor accessibility, macro reading
 	static public function g2d_getPrototype(p_prototype:GPrototype, p_instance:IGPrototypable, p_prototypeName:String):GPrototype {
 		if (p_prototype == null) p_prototype = new GPrototype();
