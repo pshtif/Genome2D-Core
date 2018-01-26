@@ -33,16 +33,13 @@ class GParticleSystemComponent extends GComponent implements IGRenderable
 	}
 	
 	private function update(p_deltaTime:Float):Void {
-		particleSystem.x = node.x;
-		particleSystem.y = node.y;
+		particleSystem.x = node.g2d_worldX;
+		particleSystem.y = node.g2d_worldY;
 		
 		particleSystem.update(p_deltaTime);
 	}
 
 	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
-		particleSystem.x = node.x;
-		particleSystem.y = node.y;
-		
 		particleSystem.render(node.core.getContext());
 	}
 
