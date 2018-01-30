@@ -65,12 +65,13 @@ class Genome2D implements IGDebuggableInternal
         default `true`
     **/
     public var autoUpdateAndRender:Bool = true;
+    public var maxFrameTime:Int = -1;
 
 	private var g2d_initialized:Bool = false;
 	public function isInitialized():Bool {
 		return g2d_initialized;
 	}
-	
+
     /*
      *  CALLBACKS
      */
@@ -208,7 +209,7 @@ class Genome2D implements IGDebuggableInternal
     inline public function getCurrentFrameDeltaTime():Float {
         return g2d_currentFrameDeltaTime;
     }
-	
+
 	private var g2d_assetManager:GAssetManager;
 	inline public function getAssetManager():GAssetManager {
 		return g2d_assetManager;
@@ -296,17 +297,17 @@ class Genome2D implements IGDebuggableInternal
 		g2d_context.onInitialized.add(g2d_contextInitialized_handler);
 		g2d_context.onFailed.add(g2d_contextFailed_handler);
         g2d_context.onInvalidated.add(g2d_contextInvalidated_handler);
-		
+
 		GPrototypeFactory.initializePrototypes();
-		
+
         g2d_assetManager = new GAssetManager();
 		GStaticAssetManager.setInstance(g2d_assetManager);
-		
+
 		GFontManager.init();
 		GTextureManager.init(g2d_context);
         GUISkinManager.init();
 		GTransitionManager.init();
-		
+
 		g2d_context.init();
 	}
 
@@ -316,6 +317,7 @@ class Genome2D implements IGDebuggableInternal
         This method is called automatically if `autoUpdateAndRender` is true
     **/
 	public function update(p_deltaTime:Float):Void {
+        if (maxFrameTime != -1 && p_deltaTime > maxFrameTime) p_deltaTime = maxFrameTime;
         g2d_currentFrameDeltaTime = p_deltaTime;
         g2d_accumulatedDeltaTime += g2d_currentFrameDeltaTime;
         GTween.update(p_deltaTime);
