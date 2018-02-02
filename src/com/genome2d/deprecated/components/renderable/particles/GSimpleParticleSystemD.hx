@@ -386,6 +386,10 @@ class GSimpleParticleSystemD extends GComponent implements IGRenderable
 		p_particle.g2d_dispose();
 	}
 
+	public function hasLiveParticles() {
+		return g2d_firstParticle != null;
+	}
+
 	override public function onDispose():Void {
         while (g2d_firstParticle != null) deactivateParticle(g2d_firstParticle);
         node.core.onUpdate.remove(update);
