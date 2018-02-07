@@ -1,5 +1,6 @@
 package com.genome2d.components.renderable;
 
+import com.genome2d.macros.MGDebug;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.context.IGContext;
 import com.genome2d.input.GMouseInput;
@@ -120,8 +121,8 @@ class GSliceSprite extends GComponent implements IGRenderable {
 
             var finalScaleX:Float = g2d_width / texture.width;
             var finalScaleY:Float = g2d_height / texture.height;
-			var scaleX:Float = node.g2d_worldScaleX;
-			var scaleY:Float = node.g2d_worldScaleY;
+			var scaleX:Float = 1; //node.g2d_worldScaleX; removed scale as it doesn't make sense as render only scale
+			var scaleY:Float = 1; //node.g2d_worldScaleY; removed scale as it doesn't make sense as render only scale
 			var left:Float = node.g2d_worldX;
 			var top:Float = node.g2d_worldY;
 			var rotation:Float = node.g2d_worldRotation;
