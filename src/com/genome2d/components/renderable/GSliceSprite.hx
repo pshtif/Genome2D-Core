@@ -1,5 +1,6 @@
 package com.genome2d.components.renderable;
 
+import com.genome2d.input.GMouseInputType;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.context.GBlendMode;
 import com.genome2d.context.IGContext;
@@ -30,6 +31,12 @@ class GSliceSprite extends GComponent implements IGRenderable {
         Blend mode used for rendering
     **/
     public var blendMode:Int = 1;
+
+    /**
+        Enable/disable pixel perfect mouse detection, not supported by all contexts.
+        Default false
+    **/
+    public var mousePixelEnabled:Bool = false;
 
     /**
         Specify alpha treshold for pixel perfect mouse detection, works with mousePixelEnabled true
@@ -260,46 +267,21 @@ class GSliceSprite extends GComponent implements IGRenderable {
             }
         }
     }
-	
-	    @:dox(hide)
-    public function captureMouseInput(p_input:GMouseInput):Void {
-		/*
-        if (p_captured && p_input.type == GMouseInputType.MOUSE_UP) node.g2d_mouseDownNode = null;
 
-        if (p_captured || texture == null || g2d_width == 0 || g2d_height == 0 || node.g2d_worldScaleX == 0 || node.g2d_worldScaleY == 0) {
-            if (node.g2d_mouseOverNode == node) node.dispatchMouseCallback(GMouseInputType.MOUSE_OUT, node, 0, 0, p_input);
-            return false;
+    inline public function captureMouseInput(p_input:GMouseInput):Void {
+        p_input.captured = p_input.captured || hitTest(p_input.localX, p_input.localY);
+    }
+
+    inline public function hitTest(p_x:Float, p_y:Float):Bool {
+        var hit:Bool = false;
+        if (texture != null) {
+            p_x = p_x / g2d_width;
+            p_y = p_y / g2d_height;
+
+            hit = (p_x >= 0 && p_x <= 1 && p_y >= 0 && p_y <= 1 &&
+            (!mousePixelEnabled || texture.getAlphaAtUV(p_x + texture.pivotX / texture.width, p_y + texture.pivotY / texture.height) <= mousePixelTreshold));
         }
-
-        // Invert translations
-        var tx:Float = p_input.worldX - node.g2d_worldX;
-        var ty:Float = p_input.worldY - node.g2d_worldY;
-
-        if (node.g2d_worldRotation != 0) {
-            var cos:Float = Math.cos(-node.g2d_worldRotation);
-            var sin:Float = Math.sin(-node.g2d_worldRotation);
-
-            var ox:Float = tx;
-            tx = (tx*cos - ty*sin);
-            ty = (ty*cos + ox*sin);
-        }
-
-        tx /= node.g2d_worldScaleX*g2d_width;
-        ty /= node.g2d_worldScaleY*g2d_height;
-
-        if (tx >= 0 && tx <= 1 && ty >= 0 && ty <= 1) {
-            node.dispatchMouseCallback(p_input.type, node, tx*g2d_width, ty*g2d_height, p_input);
-            if (node.g2d_mouseOverNode != node) {
-                node.dispatchMouseCallback(GMouseInputType.MOUSE_OVER, node, tx*g2d_width, ty*g2d_height, p_input);
-            }
-
-            return true;
-        } else {
-            if (node.g2d_mouseOverNode == node) {
-                node.dispatchMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*g2d_width, ty*g2d_height, p_input);
-            }
-        }
-		/**/
+        return hit;
     }
 
     /**
@@ -315,9 +297,5 @@ class GSliceSprite extends GComponent implements IGRenderable {
         }
 
         return p_bounds;
-    }
-	
-	public function hitTest(p_x:Float, p_y:Float):Bool {
-        return false;
     }
 }
