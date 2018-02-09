@@ -41,7 +41,7 @@ class GSliceSprite extends GComponent implements IGRenderable {
     /**
         Specify alpha treshold for pixel perfect mouse detection, works with mousePixelEnabled true
     **/
-    public var mousePixelTreshold:Int = 0;
+    public var mousePixelTreshold:UInt = 0;
 
     /**
         Texture used for rendering
