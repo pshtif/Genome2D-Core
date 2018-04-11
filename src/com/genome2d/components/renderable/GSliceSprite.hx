@@ -275,8 +275,8 @@ class GSliceSprite extends GComponent implements IGRenderable {
     inline public function hitTest(p_x:Float, p_y:Float):Bool {
         var hit:Bool = false;
         if (texture != null) {
-            p_x = p_x / g2d_width;
-            p_y = p_y / g2d_height;
+            p_x = p_x * node.g2d_worldScaleX / g2d_width;
+            p_y = p_y * node.g2d_worldScaleY / g2d_height;
 
             hit = (p_x >= 0 && p_x <= 1 && p_y >= 0 && p_y <= 1 &&
             (!mousePixelEnabled || texture.getAlphaAtUV(p_x + texture.pivotX / texture.width, p_y + texture.pivotY / texture.height) <= mousePixelTreshold));
