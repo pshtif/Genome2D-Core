@@ -201,8 +201,6 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
         if (p_font != null) font = p_font;
         fontScale = p_fontScale;
         autoSize = p_autoSize;
-
-        Genome2D.getInstance().onKeyboardInput.add(keyboard_handler);
     }
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Bool {
@@ -266,6 +264,11 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
         }
     }
 
+    override public function dispose():Void {
+        Genome2D.getInstance().onKeyboardInput.remove(keyboard_handler);
+        super.dispose();
+    }
+
     public var restrictedChars:Array<String> = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
 
     private function keyboard_handler(input:GKeyboardInput):Void {
@@ -310,9 +313,11 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
 
     private function gotFocus():Void {
         textRenderer.enableCursor = true;
+        Genome2D.getInstance().onKeyboardInput.add(keyboard_handler);
     }
 
     private function lostFocus():Void {
+        Genome2D.getInstance().onKeyboardInput.remove(keyboard_handler);
         textRenderer.enableCursor = false;
     }
 }

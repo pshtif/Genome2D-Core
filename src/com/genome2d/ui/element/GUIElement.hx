@@ -205,6 +205,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     }
 
     private var g2d_activeSkin:GUISkin;
+    
+    private var g2d_skinListenerAdded:Bool = false;
 
     private var g2d_skin:GUISkin;
     #if swc @:extern #end
@@ -222,6 +224,11 @@ class GUIElement implements IGPrototypable implements IGFocusable {
             g2d_activeSkin = g2d_skin;
 
             setDirty();
+
+            if (g2d_skin != null && !g2d_skinListenerAdded) {
+                g2d_skinListenerAdded = true;
+                GUISkinManager.onSkinChanged.addUnsafe(skinChanged_handler);
+            }
         }
 
         return g2d_skin;
@@ -1138,7 +1145,6 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 
 
     public function new(p_skin:GUISkin = null) {
-		GUISkinManager.onSkinChanged.add(skinChanged_handler);
         g2d_onModelChanged = new GCallback1<GUIElement>();
 
         if (p_skin != null) skin = p_skin;
@@ -1384,7 +1390,9 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     public function dispose():Void {
 		visible = mouseEnabled = mouseChildren = false;
 		
-		GUISkinManager.onSkinChanged.remove(skinChanged_handler);
+        if (g2d_skinListenerAdded) {
+            GUISkinManager.onSkinChanged.remove(skinChanged_handler);   
+        }
 	
 		if (g2d_skin != null) g2d_skin.remove();
 		g2d_skin = null;

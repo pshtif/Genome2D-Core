@@ -286,13 +286,16 @@ class GNode implements IGFocusable implements IGPrototypable
 		return false;
 	}
 	
-	public function getNodesUnderPoint(p_x:Float, p_y:Float):Array<GNode> {
-		var found:Array<GNode> = new Array<GNode>();
+	public function getNodesUnderPoint(p_x:Float, p_y:Float, p_nodes:Array<GNode> = null):Array<GNode> {
+        if (p_nodes == null) {
+            p_nodes = [];
+        }
+
 		if (isActive() && visible) {
 			var child:GNode = g2d_lastChild;
 			while (child != null) {
 				var previous:GNode = child.g2d_previous;
-				found = found.concat(child.getNodesUnderPoint(p_x, p_y));
+				child.getNodesUnderPoint(p_x, p_y, p_nodes);
 				child = previous;
 			}
 			
@@ -312,11 +315,11 @@ class GNode implements IGFocusable implements IGPrototypable
 				tx /= g2d_worldScaleX;
 				ty /= g2d_worldScaleY;
 				
-				if ((g2d_defaultRenderable != null) ? g2d_defaultRenderable.hitTest(tx, ty) : g2d_renderable.hitTest(tx, ty)) found.push(this);
+				if ((g2d_defaultRenderable != null) ? g2d_defaultRenderable.hitTest(tx, ty) : g2d_renderable.hitTest(tx, ty)) p_nodes.push(this);
 			}
 		}
 		
-		return found;
+		return p_nodes;
 	}
 	
 	/****************************************************************************************************
