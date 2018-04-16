@@ -152,6 +152,10 @@ class GFloatInterp implements IGInterp implements IGPrototypable {
 
     @prototype
     public var property:String;
+    
+    public var propertyGetter:String;
+    
+    public var propertySetter:String;
 
     public var hasInitialized:Bool;
 
@@ -166,9 +170,37 @@ class GFloatInterp implements IGInterp implements IGPrototypable {
     }
 
     inline private function init() {
-        from = Reflect.getProperty(g2d_tween.getTarget(), property);
+        #if flash
+            propertyGetter = Reflect.hasField(g2d_tween.getTarget(), "get_" + property) ? "get_" + property : null;
+            propertySetter = Reflect.hasField(g2d_tween.getTarget(), "set_" + property) ? "set_" + property : null;
+        #end
+        from = getTargetValue();
         difference = relative ? to : to - from;
         hasInitialized = true;
+    }
+
+    inline private function getTargetValue():Float {
+        #if flash
+            if (propertyGetter != null) {
+                return untyped g2d_tween.getTarget()[propertyGetter]();
+            } else {
+                return untyped g2d_tween.getTarget()[property];
+            }
+        #else
+            return Reflect.getProperty(g2d_tween.getTarget(), property);
+        #end
+    }
+
+    inline private function setTargetValue(p_value:Float) {
+        #if flash
+            if (propertySetter != null) {
+                untyped g2d_tween.getTarget()[propertySetter](p_value);
+            } else {
+                untyped g2d_tween.getTarget()[property] = p_value;
+            }
+        #else
+            return Reflect.setProperty(g2d_tween.getTarget(), property, p_value);
+        #end
     }
 
     inline public function reset():Void {
@@ -193,6 +225,6 @@ class GFloatInterp implements IGInterp implements IGPrototypable {
     }
 
     inline public function setValue(p_value:Float) {
-        if (p_value != current) Reflect.setProperty(g2d_tween.getTarget(), property, p_value);
+        if (p_value != current) setTargetValue(p_value);
     }
 }
