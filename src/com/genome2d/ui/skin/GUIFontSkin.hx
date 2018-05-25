@@ -205,6 +205,7 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Bool {
         g2d_textRenderer.format = format;
+        g2d_textRenderer.blendMode = blendMode;
 
         if (forcePixelAccuracy) {
             p_left = Math.round(p_left);
@@ -244,6 +245,7 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
         clone.rotation = rotation;
         clone.inputEnabled = inputEnabled;
         clone.wordWrap = wordWrap;
+        clone.blendMode = blendMode;
         return clone;
     }
 

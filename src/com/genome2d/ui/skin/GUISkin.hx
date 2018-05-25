@@ -7,6 +7,7 @@
  *	License:: ./doc/LICENSE.md (https://github.com/pshtif/Genome2D/blob/master/LICENSE.md)
  */
 package com.genome2d.ui.skin;
+import com.genome2d.context.GBlendMode;
 import com.genome2d.context.filters.GFilter;
 import com.genome2d.input.GMouseInput;
 import com.genome2d.proto.GPrototype;
@@ -28,6 +29,7 @@ class GUISkin implements IGPrototypable {
 	static private var g2d_currentPriorityTexture:GTexture;
     static private var g2d_currentBatchTexture:GTexture;
 	static private var g2d_currentBatchFilter:GFilter;
+	static private var g2d_currentBlendMode:GBlendMode;
 	static public var useBatch:Bool = true;
 
     static private function batchRender(p_skin:GUISkin):Bool {
@@ -36,13 +38,14 @@ class GUISkin implements IGPrototypable {
 		} else if ((g2d_currentPriorityTexture != null && p_skin.getTexture().nativeTexture != g2d_currentPriorityTexture.nativeTexture) ||
 		           (g2d_currentBatchTexture != null &&
 		  		   !p_skin.getTexture().hasSameGPUTexture(g2d_currentBatchTexture) &&
-					p_skin.getFilter() == g2d_currentBatchFilter)) {
+					p_skin.getFilter() == g2d_currentBatchFilter) && p_skin.blendMode == g2d_currentBlendMode) {
 			g2d_batchQueue.push(p_skin);
             batched = true;
         } else if (g2d_currentBatchTexture == null &&
 				   p_skin.getTexture() != null) {
             g2d_currentBatchTexture = p_skin.getTexture();
 			g2d_currentBatchFilter = p_skin.getFilter();
+			g2d_currentBlendMode = p_skin.blendMode;
         }
         return batched;
     }
@@ -108,6 +111,9 @@ class GUISkin implements IGPrototypable {
 	
 	@prototype
 	public var blue:Float = 1;
+
+	@prototype
+	public var blendMode:GBlendMode;
 	
 	#if swc @:extern #end
     @prototype
@@ -139,6 +145,7 @@ class GUISkin implements IGPrototypable {
     }
 
     public function new(p_id:String = "", p_origin:GUISkin) {
+		blendMode = GBlendMode.NORMAL;
 		g2d_origin = p_origin;
         if (g2d_origin == null) {
 			g2d_clones = new Array<GUISkin>();

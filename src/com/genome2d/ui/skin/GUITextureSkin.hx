@@ -128,7 +128,7 @@ class GUITextureSkin extends GUISkin {
 						texture.vScale = finalScaleY;
 						var x:Float = p_left + (.5 * texture.width + (usePivot?0:texture.pivotX)) * finalScaleX;
 						var y:Float = p_top + (.5 * texture.height + (usePivot?0:texture.pivotY)) * finalScaleY;
-						context.draw(texture, GBlendMode.NORMAL, x, y, finalScaleX, finalScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, filter);
+						context.draw(texture, blendMode, x, y, finalScaleX, finalScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, filter);
 					} else {
 						var rx:Float = texture.u * texture.gpuWidth;// (texture.region != null) ? texture.region.x : 0;
 						var ry:Float = texture.v * texture.gpuHeight;// (texture.region != null) ? texture.region.y : 0;
@@ -142,14 +142,14 @@ class GUITextureSkin extends GUISkin {
 								var sy:Float = (finalScaleY - j > 1) ? 1 : (finalScaleY - j);
 								var px:Float = (texture.nativeWidth / 2 + texture.pivotX) - sx * scaleX * texture.nativeWidth / 2;
 								var py:Float = (texture.nativeHeight / 2 + texture.pivotY) - sy * scaleY * texture.nativeHeight / 2;
-								context.drawSource(texture, GBlendMode.NORMAL, rx, ry, sx*texture.nativeWidth, sy*texture.nativeHeight, 0, 0, x+i*texture.width*scaleX-px, y+j*texture.height*scaleY-py, scaleX, scaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, filter);
+								context.drawSource(texture, blendMode, rx, ry, sx*texture.nativeWidth, sy*texture.nativeHeight, 0, 0, x+i*texture.width*scaleX-px, y+j*texture.height*scaleY-py, scaleX, scaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, filter);
 							}
 						}
 					}
 				} else {
 					var x:Float = p_left + (.5 * texture.width + (usePivot?0:texture.pivotX)) * finalScaleX;
 					var y:Float = p_top + (.5 * texture.height + (usePivot?0:texture.pivotY)) * finalScaleY;
-					context.draw(texture, GBlendMode.NORMAL, x, y, finalScaleX * renderScaleX, finalScaleY * renderScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, filter);
+					context.draw(texture, blendMode, x, y, finalScaleX * renderScaleX, finalScaleY * renderScaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, filter);
 				}
             } else {
                 var sin:Float = 0;
@@ -172,7 +172,7 @@ class GUITextureSkin extends GUISkin {
                 var ox:Float = 0;
                 var oy:Float = 0;
                 if (tw != 0 && th != 0) {
-                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, blendMode, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left, p_top, scaleX, scaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
@@ -185,7 +185,7 @@ class GUITextureSkin extends GUISkin {
                     //cy*cos+cx*sin
                     ox = (sl*texture.scaleFactor*scaleX)*cos;
                     oy = (sl*texture.scaleFactor*scaleX)*sin;
-                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, blendMode, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+ox, p_top+oy, finalScaleX, scaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
@@ -196,7 +196,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     ox = (sl*scaleX+sw*finalScaleX)*texture.scaleFactor*cos;
                     oy = (sl*scaleX+sw*finalScaleX)*texture.scaleFactor*sin;
-                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, blendMode, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+ox, p_top+oy, scaleX, scaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
@@ -209,7 +209,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     ox = -(st*texture.scaleFactor*scaleY)*sin;
                     oy = (st*texture.scaleFactor*scaleY)*cos;
-                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, blendMode, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+ox, p_top+oy, scaleX, finalScaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
@@ -220,7 +220,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     ox = (sl*texture.scaleFactor*scaleX)*cos - (st*texture.scaleFactor*scaleY)*sin;
                     oy = (st*texture.scaleFactor*scaleY)*cos + (sl*texture.scaleFactor*scaleX)*sin;
-                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, blendMode, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+ox, p_top+oy, finalScaleX, finalScaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
@@ -232,7 +232,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     ox = (sl*scaleX+sw*finalScaleX)*texture.scaleFactor*cos - (st*texture.scaleFactor*scaleY)*sin;
                     oy = (st*texture.scaleFactor*scaleY)*cos + (sl*scaleX+sw*finalScaleX)*texture.scaleFactor*sin;
-                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, blendMode, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+ox, p_top+oy, scaleX, finalScaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
@@ -245,7 +245,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     ox = -(st*scaleY+sh*finalScaleY)*texture.scaleFactor*sin;
                     oy = (st*scaleY+sh*finalScaleY)*texture.scaleFactor*cos;
-                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, blendMode, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+ox, p_top+oy, scaleX, scaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
@@ -256,7 +256,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     ox = (sl*texture.scaleFactor*scaleX)*cos - (st*scaleY+sh*finalScaleY)*texture.scaleFactor*sin;
                     oy = (st*scaleY+sh*finalScaleY)*texture.scaleFactor*cos + (sl*texture.scaleFactor*scaleX)*sin;
-                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, blendMode, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+ox, p_top+oy, finalScaleX, scaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
@@ -267,7 +267,7 @@ class GUITextureSkin extends GUISkin {
                 if (tw != 0 && th != 0) {
                     ox = (sl*scaleX+sw*finalScaleX)*texture.scaleFactor*cos - (st*scaleY+sh*finalScaleY)*texture.scaleFactor*sin;
                     oy = (st*scaleY+sh*finalScaleY)*texture.scaleFactor*cos + (sl*scaleX+sw*finalScaleX)*texture.scaleFactor*sin;
-                    context.drawSource(texture, GBlendMode.NORMAL, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
+                    context.drawSource(texture, blendMode, rx+tx, ry+ty, tw, th, -tw*.5, -th*.5,
                                        p_left+ox, p_top+oy, scaleX, scaleY, rotation,
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
@@ -313,6 +313,7 @@ class GUITextureSkin extends GUISkin {
 		clone.filter = filter;
         clone.renderScaleX = renderScaleX;
         clone.renderScaleY = renderScaleY;
+        clone.blendMode = blendMode;
         return clone;
     }
 	
