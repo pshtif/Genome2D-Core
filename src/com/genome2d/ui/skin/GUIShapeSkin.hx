@@ -13,7 +13,6 @@ import com.genome2d.particles.GParticleSystem;
 
 class GUIShapeSkin extends GUISkin {
 
-    public var blendMode:GBlendMode;
     public var texture:GTexture;
     public var rotation:Float = 0;
 
@@ -31,7 +30,6 @@ class GUIShapeSkin extends GUISkin {
     public function new(p_id:String = "", p_texture:GTexture, p_vertices:Array<Float>, p_uvs:Array<Float>, p_origin:GUIShapeSkin = null) {
         super(p_id, p_origin);
 
-        blendMode = GBlendMode.NORMAL;
         texture = p_texture;
         g2d_vertices = p_vertices;
         g2d_uvs = p_uvs;
