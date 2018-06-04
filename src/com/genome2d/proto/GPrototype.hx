@@ -54,7 +54,17 @@ class GPrototype
 		//var propertyDefaults:Array<Dynamic> = Reflect.field(currentPrototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_DEFAULTS);
 		var propertyTypes:Array<String> = Reflect.field(currentPrototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES);
 		var propertyExtras:Array<Int> = Reflect.field(currentPrototypeClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS);
-
+		
+		/*
+		var lookupClass:Class<IGPrototypable> = prototypeClass;
+		var superClass = cast Type.getSuperClass(lookupClass);
+		while (superClass != null) {
+			propertyNames = propertyNames.concat(Reflect.field(superClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES));
+			propertyTypes = propertyTypes.concat(Reflect.field(superClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_TYPES));
+			propertyExtras = propertyExtras.concat(Reflect.field(superClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS));
+			superClass = cast Type.getSuperClass(superClass);
+		}
+		/**/
 		for (i in 0...propertyNames.length) {
 			var name:String = propertyNames[i];
 			var extras:Int = propertyExtras[i];
@@ -65,7 +75,6 @@ class GPrototype
 			while (meta == null && lookupClass != null) {
 				lookupClass = cast Type.getSuperClass(lookupClass);
 				if (lookupClass != null) {
-					propertyNames = Reflect.field(lookupClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_NAMES);
 					meta = Reflect.getProperty(Meta.getFields(lookupClass), name);
 				}
 			}
