@@ -1,17 +1,18 @@
 package com.genome2d.g3d;
 
+import com.genome2d.debug.GDebug;
+
 class G3DGeometry extends G3DNode {
 
 	public var importedUvs:Array<Float>;
 	public var importedIndices:Array<UInt>;
 	public var importedUvIndices:Array<Int>;
-	//public var importedNormals:Array<Float>;
+	public var importedNormals:Array<Float>;
 	
     public var vertices:Array<Float>;
     public var indices:Array<UInt>;
     public var uvs:Array<Float>;
-    public var vertexNormals:Array<Float>;
-    public var faceNormals:Array<Float>;
+    public var normals:Array<Float>;
 
     public function new(p_id:String) {
         super(p_id);
@@ -21,40 +22,44 @@ class G3DGeometry extends G3DNode {
         vertices = p_vertices;
 		uvs = p_uvs;
 		indices = p_indices;
-		vertexNormals = p_normals;
+		normals = p_normals;
     }
 	
-	public function initImported(p_vertices:Array<Float>, p_uvs:Array<Float>, p_indices:Array<UInt>, p_uvIndices:Array<Int>) {
-        vertices = p_vertices;
-        //importedNormals = p_normals;
+	public function initImported(p_vertices:Array<Float>, p_uvs:Array<Float>, p_indices:Array<UInt>, p_uvIndices:Array<Int>, p_normals:Array<Float>) {
 		importedUvs = p_uvs;
 		importedIndices = p_indices;
 		importedUvIndices = p_uvIndices;
+        importedNormals = p_normals;
 		
-        if (importedUvIndices.length != importedIndices.length) throw "Not same number of vertex and UV indices!";
-        // Create array for our reindexed UVs
+		normals = p_normals;
+		
+        if (p_uvIndices.length != p_indices.length) throw "Not same number of vertex and UV indices!";
+
+		vertices = new Array<Float>();
         uvs = new Array<Float>();
-        for (j in 0...importedUvs.length) {
-            uvs.push(0);
-        }
-
-        // Reindex UV coordinates to correspond to vertex indices
         indices = new Array<UInt>();
-        for (j in 0...importedUvIndices.length) {
-            var vertexIndex:Int = importedIndices[j];
-            if (vertexIndex < 0) vertexIndex = -vertexIndex-1;
-            indices.push(vertexIndex);
-            //mergedVertexIndices.push(vertexIndex+indexOffset);
+        for (j in 0...p_indices.length) {
+            var vertexIndex:Int = p_indices[j];
+            if (vertexIndex < 0) vertexIndex = -vertexIndex - 1;
+			vertices.push(p_vertices[vertexIndex * 3]);
+			vertices.push(p_vertices[vertexIndex * 3 + 1]);
+			vertices.push(p_vertices[vertexIndex * 3 + 2]);
+            indices.push(j);
 
-            var uvIndex:Int = importedUvIndices[j];
-            uvs[vertexIndex*2] = importedUvs[uvIndex*2];
-            uvs[vertexIndex*2+1] = 1-importedUvs[uvIndex*2+1];
+            var uvIndex:Int = p_uvIndices[j];
+            uvs.push(p_uvs[uvIndex * 2]);
+            uvs.push(1 - p_uvs[uvIndex * 2 + 1]);
         }
 
-        calculateFaceNormals();
-        calculateVertexNormals();
+		/*
+        if (vertexNormals == null) {
+            calculateFaceNormals();
+            calculateVertexNormals();
+        }
+		/**/
     }
-
+	
+	/*
     private function calculateFaceNormals():Void {
         faceNormals = new Array<Float>();
         var i:Int = 0;
@@ -100,7 +105,7 @@ class G3DGeometry extends G3DNode {
     }
 
     private function calculateVertexNormals():Void {
-        vertexNormals = new Array<Float>();
+        normals = new Array<Float>();
         var vertexCount:Int = Std.int(vertices.length/3);
         for (i in 0...vertexCount) {
             var sharedFaces:Array<UInt> = getVertexFaces(i);
@@ -113,9 +118,10 @@ class G3DGeometry extends G3DNode {
                 nz += faceNormals[faceIndex*3+2];
             }
             var nl:Float = Math.sqrt(nx*nx+ny*ny+nz*nz);
-            vertexNormals.push(nx/nl);
-            vertexNormals.push(ny/nl);
-            vertexNormals.push(nz/nl);
+            normals.push(nx/nl);
+            normals.push(ny/nl);
+            normals.push(nz/nl);
         }
     }
+	/**/
 }

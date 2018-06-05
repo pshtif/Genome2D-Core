@@ -102,17 +102,22 @@ class G3DScene {
 				var geometry:G3DGeometry = model.getGeometry();
 				if (geometry == null) MGDebug.G2D_ERROR("Model has no geometry.");
 				
-				var renderer:G3DRenderer = new G3DRenderer(geometry.vertices, geometry.uvs, geometry.indices, geometry.vertexNormals, false);
+				var renderer:G3DRenderer = new G3DRenderer(geometry.vertices, geometry.uvs, geometry.indices, geometry.normals, false);
 				var material:G3DMaterial = model.getMaterial();
 				if (material == null) MGDebug.G2D_ERROR("Model has no material.");
 				
 				var texture:G3DTexture = model.getMaterial().getTexture();
-				if (texture == null) MGDebug.G2D_ERROR("Model material has no texture.");
-				
-				var textureId:String = texture.relativePath;
-				renderer.texture = GTextureManager.getTexture(textureId);
-				if (renderer.texture == null) MGDebug.G2D_ERROR("Couldn't find texture", textureId);
-				
+				if (texture == null) {
+					MGDebug.WARNING("Model material has no texture.");
+					renderer.texture = GTextureManager.getTexture("g2d_internal");
+				} else {				
+					var textureId:String = texture.relativePath;
+					renderer.texture = GTextureManager.getTexture(textureId);
+					if (renderer.texture == null) {
+						MGDebug.WARNING("Couldn't find texture", textureId);
+						renderer.texture = GTextureManager.getTexture("g2d_internal");
+					}
+				}
 				model.renderer = renderer;
 				g2d_models.push(model);
             }

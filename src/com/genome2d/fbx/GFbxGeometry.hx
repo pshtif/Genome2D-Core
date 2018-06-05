@@ -8,7 +8,7 @@ class GFbxGeometry extends GFbxNode {
     public var vertices:Array<Float>;
     public var indices:Array<UInt>;
     public var uvs:Array<Float>;
-    public var importedNormals:Array<Float>;
+    //public var importedNormals:Array<Float>;
     public var vertexNormals:Array<Float>;
     public var faceNormals:Array<Float>;
 
@@ -23,8 +23,8 @@ class GFbxGeometry extends GFbxNode {
         var uvNode:GFbxParserNode = GFbxTools.getAll(p_fbxNode,"LayerElementUV.UV")[0];
         var uvIndexNode:GFbxParserNode = GFbxTools.getAll(p_fbxNode,"LayerElementUV.UVIndex")[0];
 
-        vertices = GFbxTools.getFloats(vertexNode);
-        importedNormals = GFbxTools.getFloats(normalsNode);
+        var importedVertices:Array<Float> = GFbxTools.getFloats(vertexNode);
+        vertexNormals = GFbxTools.getFloats(normalsNode);
         var currentVertexIndices:Array<Int> = cast GFbxTools.getInts(vertexIndexNode);
         var currentUVs:Array<Float> = GFbxTools.getFloats(uvNode);
         var currentUVIndices:Array<Int> = GFbxTools.getInts(uvIndexNode);
@@ -35,21 +35,25 @@ class GFbxGeometry extends GFbxNode {
             uvs.push(0);
         }
 
-        // Reindex UV coordinates to correspond to vertex indices
+        // Reindex stuff
+        vertices = new Array<Float>();
         indices = new Array<UInt>();
-        for (j in 0...currentUVIndices.length) {
+        for (j in 0...currentVertexIndices.length) {
             var vertexIndex:Int = currentVertexIndices[j];
             if (vertexIndex < 0) vertexIndex = -vertexIndex-1;
-            indices.push(vertexIndex);
+            vertices.push(importedVertices[vertexIndex*3]);
+            vertices.push(importedVertices[vertexIndex*3+1]);
+            vertices.push(importedVertices[vertexIndex*3+2]);
+            indices.push(j);
             //mergedVertexIndices.push(vertexIndex+indexOffset);
 
             var uvIndex:Int = currentUVIndices[j];
-            uvs[vertexIndex*2] = currentUVs[uvIndex*2];
-            uvs[vertexIndex*2+1] = 1-currentUVs[uvIndex*2+1];
+            uvs[j*2] = currentUVs[uvIndex*2];
+            uvs[j*2+1] = 1-currentUVs[uvIndex*2+1];
         }
 
-        calculateFaceNormals();
-        calculateVertexNormals();
+        //calculateFaceNormals();
+        //calculateVertexNormals();
     }
 
     private function calculateFaceNormals():Void {

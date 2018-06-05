@@ -75,18 +75,18 @@ class G3DFbxImporter extends G3DAbstractImporter
 			var uvNode:GFbxParserNode = GFbxTools.getAll(node,"LayerElementUV.UV")[0];
 			var uvIndexNode:GFbxParserNode = GFbxTools.getAll(node, "LayerElementUV.UVIndex")[0];
 			
+			var normalsNode:GFbxParserNode = GFbxTools.getAll(node, "LayerElementNormal.Normals")[0];
+			
 			var vertices:Array<Float> = GFbxTools.getFloats(vertexNode);
-			
-			// TODO normal usage?
-			//var normalsNode:GFbxParserNode = GFbxTools.getAll(node, "LayerElementNormal.Normals")[0];
-			//var normals:Array<Float> = GFbxTools.getFloats(normalsNode);
-			
 			var indices:Array<UInt> = cast GFbxTools.getInts(vertexIndexNode);
+		
 			var uvs:Array<Float> = GFbxTools.getFloats(uvNode);
 			var uvIndices:Array<Int> = GFbxTools.getInts(uvIndexNode);
 			
+			var normals:Array<Float> = GFbxTools.getFloats(normalsNode);
+			
             var geometry:G3DGeometry = new G3DGeometry(id);
-			geometry.initImported(vertices, uvs, indices, uvIndices);
+			geometry.initImported(vertices, uvs, indices, uvIndices, normals);
             p_scene.addNode(geometry.id, geometry);
         }
     }

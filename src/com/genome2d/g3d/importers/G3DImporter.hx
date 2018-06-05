@@ -75,12 +75,12 @@ class G3DImporter extends G3DAbstractImporter
 					}
 				}
 				
-				if (processed) {
-					wrap.writeInt(geometry.vertexNormals.length);
-					for (i in 0...geometry.vertexNormals.length) {
-						wrap.writeFloat(geometry.vertexNormals[i]);
-					}
-				} else {
+				wrap.writeInt(geometry.normals.length);
+				for (i in 0...geometry.normals.length) {
+					wrap.writeFloat(geometry.normals[i]);
+				}
+				
+				if (!processed) {
 					wrap.writeInt(geometry.importedUvIndices.length);
 					for (i in 0...geometry.importedUvIndices.length) {
 						wrap.writeInt(geometry.importedUvIndices[i]);
@@ -96,6 +96,10 @@ class G3DImporter extends G3DAbstractImporter
 			wrap.writeUTF(connection.destinationId);
 			c++;
 		}
+	}
+	
+	public function getSceneSize(p_scene:G3DScene):Void {
+		var size:Int = 0;
 	}
 
 	override public function importScene(p_data:Bytes):G3DScene {
@@ -143,21 +147,23 @@ class G3DImporter extends G3DAbstractImporter
 					
 					var count:Int = wrap.readInt();
 					var normals:Array<Float> = new Array<Float>();
+					for (i in 0...count) {
+						normals.push(wrap.readFloat());
+					}
+					
 					var uvIndices:Array<Int> = new Array<Int>();
-					if (processed) {
-						for (i in 0...count) {
-							normals.push(wrap.readFloat());
-						}
-					} else {
+					if (!processed) {
+						var count:Int = wrap.readInt();
 						for (i in 0...count) {
 							uvIndices.push(wrap.readInt());
 						}
 					}
+					
 					var geometry:G3DGeometry = new G3DGeometry(id);
 					if (processed) {
 						geometry.initProcessed(vertices, uvs, indices, normals);
 					} else {
-						geometry.initImported(vertices, uvs, indices, uvIndices);
+						geometry.initImported(vertices, uvs, indices, uvIndices, normals);
 					}
 					scene.addNode(geometry.id, geometry);
 				case 5:

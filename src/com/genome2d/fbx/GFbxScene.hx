@@ -130,9 +130,19 @@ class GFbxScene {
 				var fbxRenderer:G3DRenderer = new G3DRenderer(fbxGeometry.vertices, fbxGeometry.uvs, fbxGeometry.indices, fbxGeometry.vertexNormals, false);
 
 				var fbxTexture:GFbxTexture = model.getMaterial().getTexture();
-				if (fbxTexture == null) GDebug.error("Model material has no texture.");
-				fbxRenderer.texture = GTextureManager.getTexture(fbxTexture.relativePath.substring(fbxTexture.relativePath.lastIndexOf("\\") + 1, fbxTexture.relativePath.lastIndexOf(".")));
-				if (fbxRenderer.texture == null) GDebug.error("Couldn't find FBX texture ", fbxTexture.relativePath.substring(fbxTexture.relativePath.lastIndexOf("\\") + 1, fbxTexture.relativePath.lastIndexOf(".")));
+
+				if (fbxTexture == null) {
+                    GDebug.warning("Model material has no texture.");
+                    fbxRenderer.texture = GTextureManager.getTexture("g2d_internal");
+                } else {
+				    fbxRenderer.texture = GTextureManager.getTexture(fbxTexture.relativePath.substring(fbxTexture.relativePath.lastIndexOf("\\") + 1, fbxTexture.relativePath.lastIndexOf(".")));
+                }
+
+				if (fbxRenderer.texture == null) {
+                    GDebug.warning("Couldn't find FBX texture ", fbxTexture.relativePath.substring(fbxTexture.relativePath.lastIndexOf("\\") + 1, fbxTexture.relativePath.lastIndexOf(".")));
+                    fbxRenderer.texture = GTextureManager.getTexture("g2d_internal");
+                }
+
 				model.renderer = fbxRenderer;
 				g2d_models.push(model);
             }
