@@ -392,6 +392,16 @@ class Genome2D implements IGDebuggableInternal
         g2d_context.onKeyboardInput.add(g2d_contextKeyboardInput_handler);
 
 		g2d_initialized = true;
+
+        if (GTextureManager.getTexture("g2d_internal") == null) {
+            #if flash
+                GTextureManager.createTexture("g2d_internal", new flash.display.BitmapData(4, 4, false, 0xFFFFFF));
+            #elseif js
+                var imageData:js.html.ImageData = new js.html.ImageData(new js.html.Uint8ClampedArray([255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255]), 4);
+                GTextureManager.createTexture("g2d_internal", imageData);
+            #end
+        }
+
         onInitialized.dispatch();
     }
 
