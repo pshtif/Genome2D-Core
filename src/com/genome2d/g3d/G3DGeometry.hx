@@ -31,7 +31,9 @@ class G3DGeometry extends G3DNode {
 		importedUvIndices = p_uvIndices;
         importedNormals = p_normals;
 		
-		normals = p_normals;
+		// TODO: assuming that reindexation happens if there is length disparity is a hack, potentionally reindexation should happen even if the length is the same but order doesn't match - sHTiF
+		var reindexNormals:Bool = p_normals.length != importedIndices.length*3;
+		normals = reindexNormals ? new Array<Float>() : p_normals;
 		
         if (p_uvIndices.length != p_indices.length) throw "Not same number of vertex and UV indices!";
 
@@ -44,6 +46,11 @@ class G3DGeometry extends G3DNode {
 			vertices.push(p_vertices[vertexIndex * 3]);
 			vertices.push(p_vertices[vertexIndex * 3 + 1]);
 			vertices.push(p_vertices[vertexIndex * 3 + 2]);
+			if (reindexNormals) {
+				normals.push(p_normals[vertexIndex * 3]);
+				normals.push(p_normals[vertexIndex * 3 + 1]);
+				normals.push(p_normals[vertexIndex * 3 + 2]);
+			}
             indices.push(j);
 
             var uvIndex:Int = p_uvIndices[j];
