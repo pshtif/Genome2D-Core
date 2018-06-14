@@ -22,25 +22,14 @@ class G3DScene {
     public var lightColor:GFloat4;
     public var tintColor:GFloat4;
 	
-    private var g2d_opaqueModels:Array<G3DModel>;
-	private var g2d_transparentModels:Array<G3DModel>;
-	
-	public var debugDrawMesh:Array<Int> = [];
+    private var g2d_models:Array<G3DModel>;
 
-	public function getOpaqueModels() {
-		return g2d_opaqueModels;
-	}
-	
-	public function getTransparentModels() {
-		return g2d_transparentModels;
+	public function getModels() {
+		return g2d_models;
 	}
 
 	public function getModelByName(p_name:String):G3DModel {
-		for (model in g2d_opaqueModels) {
-			if (model.name == p_name) return model;
-		}
-		
-		for (model in g2d_transparentModels) {
+		for (model in g2d_models) {
 			if (model.name == p_name) return model;
 		}
 		return null;
@@ -105,23 +94,34 @@ class G3DScene {
 
     public function invalidate():Void {
 		g2d_sceneMatrix = new GMatrix3D();
-        g2d_opaqueModels = new Array<G3DModel>();
-		g2d_transparentModels = new Array<G3DModel>();
+        g2d_models = new Array<G3DModel>();
 
         for (node in g2d_nodes) {
             var model:G3DModel = (Std.is(node,G3DModel)) ? cast node : null;
             if (model != null) {
-				model.invalidate();
-				if (model.transparent) {
-					model.calculateCenter();
-					g2d_transparentModels.push(model);
-				} else {
-					g2d_opaqueModels.push(model);
+				var geometry:G3DGeometry = model.getGeometry();
+				if (geometry == null) MGDebug.G2D_ERROR("Model has no geometry.");
+				
+				var renderer:G3DRenderer = new G3DRenderer(geometry.vertices, geometry.uvs, geometry.indices, geometry.normals, false);
+				var material:G3DMaterial = model.getMaterial();
+				if (material == null) MGDebug.G2D_ERROR("Model has no material.");
+				
+				var texture:G3DTexture = model.getMaterial().getTexture();
+				if (texture == null) {
+					MGDebug.WARNING("Model material has no texture.");
+					renderer.texture = GTextureManager.getTexture("g2d_internal");
+				} else {				
+					var textureId:String = texture.relativePath;
+					renderer.texture = GTextureManager.getTexture(textureId);
+					if (renderer.texture == null) {
+						MGDebug.WARNING("Couldn't find texture", textureId);
+						renderer.texture = GTextureManager.getTexture("g2d_internal");
+					}
 				}
+				model.renderer = renderer;
+				g2d_models.push(model);
             }
         }
-
-		g2d_transparentModels.sort(sortOnCenter);
     }
 	
 	static public function projectPoint(p_point:GVector3D, p_sceneMatrix:GMatrix3D, p_cameraMatrix:GMatrix3D, p_projectionMatrix:GProjectionMatrix):GPoint {
@@ -137,31 +137,10 @@ class G3DScene {
 		p_point = p_projectionMatrix.transformVector(p_point);
 		return new GPoint((p_point.x+1)/2*stageRect.width, -(p_point.y-1)/2*stageRect.height);
 	}
-	
-	private function sortOnCenter(p_model1:G3DModel, p_model2:G3DModel):Int {
-		GDebug.info(p_model1.center.z, p_model2.center.z);
-		if (p_model1.center.z > p_model2.center.z) return 1;
-		else if (p_model1.center.z < p_model2.center.z) return -1;
-		
-		return 0;
-	}
-	
-	public function render(p_cameraMatrix:GMatrix3D, p_type:Int = 1, p_textureOverride:GTexture = null):Void {
-		var context:IGContext = Genome2D.getInstance().getContext();
-        context.setBlendMode(GBlendMode.NORMAL, true);
-		
-		renderModels(g2d_opaqueModels, p_cameraMatrix, p_type, p_textureOverride);
-		renderModels(g2d_transparentModels, p_cameraMatrix, p_type, p_textureOverride);
-	}
-	
-	private function renderModels(p_models:Array<G3DModel>, p_cameraMatrix:GMatrix3D, p_type:Int = 1, p_textureOverride:GTexture = null) {
-		var context:IGContext = Genome2D.getInstance().getContext();
-		var renderer:G3DRenderer;
-		var index:Int = 0;
 
-        for (model in p_models) {
-			index++;
-			if (debugDrawMesh.length != 0 && debugDrawMesh.indexOf(index - 1) == -1) continue;
+    public function render(p_cameraMatrix:GMatrix3D, p_type:Int = 1, p_textureOverride:GTexture = null):Void {
+		var renderer:G3DRenderer;
+        for (model in g2d_models) {
 			if (model.visible) {
 				renderer = model.renderer;
 				if (p_textureOverride != null) renderer.texture = p_textureOverride;
@@ -183,13 +162,13 @@ class G3DScene {
 			}
         }		
 		
-		index = 0;
+		var context:IGContext = Genome2D.getInstance().getContext();
+        context.setBlendMode(GBlendMode.NORMAL, true);
+		
         switch (p_type) {
 			// Unlit
 			case 0:
-                for (model in p_models) {
-					index++;
-					if (debugDrawMesh.length != 0 && debugDrawMesh.indexOf(index-1) == -1) continue;
+                for (model in g2d_models) {
 					if (model.visible) {
 						renderer = model.renderer;
 						context.setRenderer(renderer);
@@ -198,9 +177,7 @@ class G3DScene {
                 }
             // Normal
             case 1:
-                for (model in p_models) {
-					index++;
-					if (debugDrawMesh.length != 0 && debugDrawMesh.indexOf(index-1) == -1) continue;
+                for (model in g2d_models) {
 					if (model.visible) {
 						renderer = model.renderer;
 						context.setRenderer(renderer);
@@ -209,9 +186,7 @@ class G3DScene {
                 }
             // Reflection
             case 2:
-                for (model in p_models) {
-					index++;
-					if (debugDrawMesh.length != 0 && debugDrawMesh.indexOf(index-1) == -1) continue;
+                for (model in g2d_models) {
 					if (model.visible) {
 						renderer = model.renderer;
 						context.setRenderer(renderer);
@@ -220,9 +195,7 @@ class G3DScene {
                 }
             // Shadow
             case 3:
-                for (model in p_models) {
-					index++;
-					if (debugDrawMesh.length != 0 && debugDrawMesh.indexOf(index-1) == -1) continue;
+                for (model in g2d_models) {
 					if (model.visible) {
 						renderer = model.renderer;
 						context.setRenderer(renderer);
@@ -231,9 +204,7 @@ class G3DScene {
                 }
             // Invisible
             case 4:
-                for (model in p_models) {
-					index++;
-					if (debugDrawMesh.length != 0 && debugDrawMesh.indexOf(index-1) == -1) continue;
+                for (model in g2d_models) {
 					if (model.visible) {
 						renderer = model.renderer;
 						context.setRenderer(renderer);
@@ -244,9 +215,7 @@ class G3DScene {
                 }
 			// Depth reflection
             case 5:
-                for (model in p_models) {
-					index++;
-					if (debugDrawMesh.length != 0 && debugDrawMesh.indexOf(index-1) == -1) continue;
+                for (model in g2d_models) {
 					if (model.visible) {
 						renderer = model.renderer;
 						context.setRenderer(renderer);
