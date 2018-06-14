@@ -6,6 +6,7 @@ import Reflect;
 import com.genome2d.debug.GDebug;
 
 class GPrototypeFactory {
+    static private var g2d_helper:GPrototypeHelper;
     static private var g2d_lookupsInitialized:Bool = false;
     static private var g2d_lookups:Map<String,Class<IGPrototypable>>;
     static private var g2d_prototypeReferences:Map<String,GPrototype>;
@@ -24,12 +25,19 @@ class GPrototypeFactory {
         g2d_lookups = new Map<String,Class<IGPrototypable>>();
         g2d_prototypeReferences = new Map<String,GPrototype>();
 		
-		var cls = Type.resolveClass("com.genome2d.proto.GPrototypeHelper");
-		var fields:Array<String> = Type.getClassFields(cls);
-		//#end
+		// For some reason when Haxe is compiled to JS it can't find classes generated during macro directly
+		#if js
+		var fields:Array<String> = untyped Type.getClassFields(com_genome2d_proto_GPrototypeHelper);
+		#else
+		var fields:Array<String> = Type.getClassFields(GPrototypeHelper);
+		#end
 		for (field in fields) {
 			if (field.indexOf("g2d_") == 0) continue;
-			var cls:Class<IGPrototypable> = cast Type.resolveClass(Reflect.field(cls, field));
+			#if js
+			var cls:Class<IGPrototypable> = cast Type.resolveClass(Reflect.field(untyped com_genome2d_proto_GPrototypeHelper, field));
+			#else
+			var cls:Class<IGPrototypable> = cast Type.resolveClass(Reflect.field(GPrototypeHelper, field));
+			#end
             if (cls != null) g2d_lookups.set(field, cls);
 		}
     }
