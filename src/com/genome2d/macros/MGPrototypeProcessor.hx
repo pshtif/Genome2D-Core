@@ -21,10 +21,11 @@ import haxe.macro.Compiler;
 
     Not used by user
 **/
-class MGPrototypeProcessor {		
+class MGPrototypeProcessor {
+	static public var prototypeOutput:String = "";
 	static public var helperIndex:Int = 0;
     static public var prototypes = [];
-    static public var previous:String = "com.genome2d.proto.GPrototypeHelper";
+    //static public var previous:String = "com.genome2d.proto.GPrototypeHelper";
 	static public var classFlags:Map<String,Int>;
 
     public static function build() : Array<Field> {
@@ -244,34 +245,39 @@ class MGPrototypeProcessor {
 		fields.push( { name : GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS,   doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, { expr:EArrayDecl(declPropertyExtras), pos:pos } )  , pos : pos } );
         fields.push( { name : GPrototypeSpecs.PROTOTYPE_NAME, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { prototypeName } )              , pos : pos } );
 		fields.push( { name : GPrototypeSpecs.PROTOTYPE_DEFAULT_CHILD_GROUP, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { prototypeDefaultChildGroup } ), pos : pos } );
-
+		
 		// Prototype class name lookup
 		//var kind = TPath( { pack : [], name : "Class", params : [TPType(TPath( { name : localClass.name, pack : localClass.pack, params : [] } ))] } );
-		var field = { name : localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
-		prototypes.push(field);
-		var field = { name : localModule+"."+localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
-		prototypes.push(field);
+		//var field = { name : localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
+		//prototypes.push(field);
+		prototypeOutput += localClass.name + "|" + localClass.module + "\n";
+		
+		//var field = { name : localModule+"."+localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
+		//prototypes.push(field);
+		prototypeOutput += localModule+"."+localClass.name + "|" + localClass.module + "\n";
+		
 		// We have a custom prototype name lookup as well
 		if (prototypeName != localClass.name) {
-			var field = { name : prototypeName, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
-			prototypes.push(field);
+			//var field = { name : prototypeName, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
+			//prototypes.push(field);
+			prototypeOutput += prototypeName + "|" + localClass.module + "\n";
 		}
 
 		// Prototype class implementation to avoid DCE
 		var kind = TPath({ pack : localClass.pack, name : localClass.name, params : []});
         var field = { name : "g2d_"+localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(kind, null), pos : pos };
-		prototypes.push(field);
-
+		//prototypes.push(field);
+		/*
         var helperName = "G" + (helperIndex++);
 		var helperClass = {
 			pack:[], name: helperName, pos: pos,
 			meta: [ { name:":native", params:[macro "com.genome2d.proto.GPrototypeHelper"], pos:pos }, { name:":keep", params:[], pos:pos }], //, { name:":rtti", params:[], pos:pos } ],
 			kind: TDClass(), fields:prototypes
 		}
-		Context.defineType( helperClass );
-		Compiler.exclude( previous );
-		previous = helperName;
-
+		//Context.defineType( helperClass );
+		//Compiler.exclude( previous );
+		//previous = helperName;
+		/**/
         return fields;
     }
 
