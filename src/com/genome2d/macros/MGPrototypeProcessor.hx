@@ -22,6 +22,7 @@ import haxe.macro.Compiler;
     Not used by user
 **/
 class MGPrototypeProcessor {
+	static public var prototypeOutput:String = "";
 	static public var helperIndex:Int = 0;
     static public var prototypes = [];
     //static public var previous:String = "com.genome2d.proto.GPrototypeHelper";
@@ -249,17 +250,17 @@ class MGPrototypeProcessor {
 		//var kind = TPath( { pack : [], name : "Class", params : [TPType(TPath( { name : localClass.name, pack : localClass.pack, params : [] } ))] } );
 		//var field = { name : localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
 		//prototypes.push(field);
-		MGBuild.prototypeCache += localClass.name + "|" + localClass.module + "\n";
+		prototypeOutput += localClass.name + "|" + localClass.module + "\n";
 		
 		//var field = { name : localModule+"."+localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
 		//prototypes.push(field);
-		MGBuild.prototypeCache += localModule+"."+localClass.name + "|" + localClass.module + "\n";
+		prototypeOutput += localModule+"."+localClass.name + "|" + localClass.module + "\n";
 		
 		// We have a custom prototype name lookup as well
 		if (prototypeName != localClass.name) {
 			//var field = { name : prototypeName, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
 			//prototypes.push(field);
-			MGBuild.prototypeCache += prototypeName + "|" + localClass.module + "\n";
+			prototypeOutput += prototypeName + "|" + localClass.module + "\n";
 		}
 
 		// Prototype class implementation to avoid DCE
