@@ -136,15 +136,19 @@ class GCameraController extends GComponent
 		}
 	}
 
-	public function captureMouseInput(p_input:GMouseInput):Void {
-		if (g2d_capturedThisFrame || !node.isActive()) return;
-		g2d_capturedThisFrame = true;
-
-        var stageRect:GRectangle = node.core.getContext().getStageViewRect();
+	inline private function g2d_invalidateViewRect():Void {
+		var stageRect:GRectangle = node.core.getContext().getStageViewRect();
         g2d_viewRectangle.setTo(stageRect.width*g2d_contextCamera.normalizedViewX,
                                 stageRect.height*g2d_contextCamera.normalizedViewY,
                                 stageRect.width*g2d_contextCamera.normalizedViewWidth,
                                 stageRect.height*g2d_contextCamera.normalizedViewHeight);
+	}
+
+	public function captureMouseInput(p_input:GMouseInput):Void {
+		if (g2d_capturedThisFrame || !node.isActive()) return;
+		g2d_capturedThisFrame = true;
+
+        g2d_invalidateViewRect();
 
 		if (!g2d_viewRectangle.contains(p_input.contextX, p_input.contextY)) return;
 
@@ -203,6 +207,9 @@ class GCameraController extends GComponent
 		var ry:Float = (ty*cos + tx*sin);
 
 		if (p_result == null) p_result = new GPoint();
+
+		g2d_invalidateViewRect();
+
 		p_result.x = rx + g2d_viewRectangle.x + g2d_viewRectangle.width/2;
 		p_result.y = ry - g2d_viewRectangle.y - g2d_viewRectangle.height/2;
 		
@@ -210,6 +217,8 @@ class GCameraController extends GComponent
 	}
 
 	public function screenToWorld(p_screen:GPoint, p_result:GPoint = null):GPoint {
+		g2d_invalidateViewRect();
+
 		var tx:Float = p_screen.x - g2d_viewRectangle.x - g2d_viewRectangle.width/2;
 		var ty:Float = p_screen.y - g2d_viewRectangle.y - g2d_viewRectangle.height/2;
 
