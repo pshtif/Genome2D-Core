@@ -122,22 +122,20 @@ class GParticleEmitter implements IGPrototypable
 			g2d_accumulatedTime%=g2d_currentDuration;
 		}
 
-		var emitterUpdated:Bool = false;
 		for (module in g2d_modules) {
 			if (module.updateEmitterModule && module.enabled) {
 				module.updateEmitter(this, p_deltaTime);
-				emitterUpdated = true;
 			}
 		}
 		
 		doEmission(p_deltaTime);
 
 		var particle:GParticle = g2d_firstParticle;
-		if (particle != null && emitterUpdated) {
+		if (particle != null) {
 			while (particle != null) {
 				var next:GParticle = particle.g2d_next;
 				for (module in g2d_modules) {
-					if (module.updateEmitterModule && module.enabled) {
+					if (module.updateParticleModule && module.enabled) {
 						module.updateParticle(this, particle, p_deltaTime);
 					}
 				}
