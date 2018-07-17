@@ -86,9 +86,9 @@ class G3DGeometry extends G3DNode {
             var e2x:Float = p3x-p2x;
             var e2y:Float = p3y-p2y;
             var e2z:Float = p3z-p2z;
-            var nx:Float = e1y*e2z - e1z*e2y;
-            var ny:Float = e1z*e2x - e1x*e2z;
-            var nz:Float = e1x*e2y - e1y*e2x;
+            var nx:Float = -e1y*e2z + e1z*e2y;
+            var ny:Float = -e1z*e2x + e1x*e2z;
+            var nz:Float = -e1x*e2y + e1y*e2x;
             var nl:Float = Math.sqrt(nx*nx+ny*ny+nz*nz);
             nx /= nl;
             ny /= nl;
