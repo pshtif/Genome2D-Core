@@ -81,6 +81,9 @@ class GUIElement implements IGPrototypable implements IGFocusable {
     @prototype
     public var useWorldColor:Bool = true;
 	
+    @prototype
+    public var useWorldAlpha:Bool = true;
+
     @prototype 
 	public var mouseEnabled:Bool = true;
 
@@ -1343,7 +1346,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 			var worldRed:Float = useWorldColor ? p_red * red : red;
 			var worldGreen:Float = useWorldColor ? p_green * green : green;
 			var worldBlue:Float = useWorldColor ? p_blue * blue : blue;
-			var worldAlpha:Float = useWorldColor ? p_alpha * alpha : alpha;
+			var worldAlpha:Float = useWorldAlpha ? p_alpha * alpha : alpha;
 
 			var context:IGContext = Genome2D.getInstance().getContext();
 			var previousMask:GRectangle = context.getMaskRect();
