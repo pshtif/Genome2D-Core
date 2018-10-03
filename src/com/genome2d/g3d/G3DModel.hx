@@ -75,6 +75,28 @@ class G3DModel extends G3DNode {
 			}
 		}
 	}
+
+	public function checkValidity():Bool {
+		var geometry:G3DGeometry = getGeometry();
+		if (geometry == null) {
+			MGDebug.WARNING("Model has no geometry.");
+			return false;
+		}
+
+		var material:G3DMaterial = getMaterial();
+		if (material == null) {
+			MGDebug.WARNING("Model has no material.");
+			return false;
+		}
+		
+		var texture:G3DTexture = getMaterial().getTexture();
+		if (texture == null) {
+			MGDebug.WARNING("Model material has no texture.");
+			return false;
+		}
+
+		return true;
+	}
 	
 	public function calculateCenter():Void {
 		center = new GVector3D();

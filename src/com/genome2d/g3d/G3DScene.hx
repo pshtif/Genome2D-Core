@@ -103,6 +103,17 @@ class G3DScene {
         }
 	}
 
+	public function checkValidity():Bool {
+		var valid:Bool = true;
+		 for (node in g2d_nodes) {
+            var model:G3DModel = (Std.is(node,G3DModel)) ? cast node : null;
+            if (model != null) {
+				valid = valid && model.checkValidity();
+			}
+		 }
+		 return valid;
+	}
+
     public function invalidate():Void {
 		g2d_sceneMatrix = new GMatrix3D();
         g2d_opaqueModels = new Array<G3DModel>();
