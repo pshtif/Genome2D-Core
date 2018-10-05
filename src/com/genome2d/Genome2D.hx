@@ -200,6 +200,7 @@ class Genome2D implements IGDebuggableInternal
     private var g2d_mouseMoveInputDetected:Bool = false;
     private var g2d_lastMouseX:Float = -1000000;
     private var g2d_lastMouseY:Float = -1000000;
+    private var g2d_lastMouseOut:Bool = false;
 
     private var g2d_accumulatedDeltaTime:Float = 0;
     private var g2d_currentFrameDeltaTime:Float;
@@ -426,6 +427,7 @@ class Genome2D implements IGDebuggableInternal
             var input:GMouseInput = new GMouseInput(g2d_context, g2d_context, GMouseInputType.MOUSE_STILL, g2d_lastMouseX, g2d_lastMouseY);
             input.worldX = input.contextX = g2d_lastMouseX;
             input.worldY = input.contextY = g2d_lastMouseY;
+            input.mouseOut = g2d_lastMouseOut;
             g2d_contextMouseInput_handler(input);
         }
         g2d_mouseMoveInputDetected = false;
@@ -475,6 +477,7 @@ class Genome2D implements IGDebuggableInternal
             g2d_mouseMoveInputDetected = true;
             g2d_lastMouseX = p_input.contextX;
             g2d_lastMouseY = p_input.contextY;
+            g2d_lastMouseOut = p_input.mouseOut;
         }
 
         // If there is no camera process the callbacks directly by root node
