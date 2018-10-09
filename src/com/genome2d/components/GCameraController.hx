@@ -150,7 +150,7 @@ class GCameraController extends GComponent
 
         g2d_invalidateViewRect();
 
-		if (!g2d_viewRectangle.contains(p_input.contextX, p_input.contextY)) return;
+		if (!p_input.mouseOut && !g2d_viewRectangle.contains(p_input.contextX, p_input.contextY)) return;
 
 	    var tx:Float = p_input.contextX - g2d_viewRectangle.x - g2d_viewRectangle.width/2;
         var ty:Float = p_input.contextY - g2d_viewRectangle.y - g2d_viewRectangle.height/2;

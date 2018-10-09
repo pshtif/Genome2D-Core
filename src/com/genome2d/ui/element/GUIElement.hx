@@ -1560,6 +1560,10 @@ class GUIElement implements IGPrototypable implements IGFocusable {
 		}
 
         if (isRoot()) {
+            if (p_input.mouseOut) {
+                g2d_root.g2d_mouseOverElement = null;
+            }
+            
             switch (p_input.type) {
                 case GMouseInputType.MOUSE_MOVE | GMouseInputType.MOUSE_STILL:
                     if (g2d_root.g2d_mouseOverElement != null) g2d_root.g2d_mouseOverElement.g2d_dispatchMouseCallback(GMouseInputType.MOUSE_MOVE, g2d_root.g2d_mouseOverElement, g2d_root.g2d_mouseOverElement, p_input, false);
