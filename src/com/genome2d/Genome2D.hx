@@ -478,6 +478,9 @@ class Genome2D implements IGDebuggableInternal
             g2d_lastMouseX = p_input.contextX;
             g2d_lastMouseY = p_input.contextY;
             g2d_lastMouseOut = p_input.mouseOut;
+        } else if (p_input.type == GMouseInputType.MOUSE_DOWN) {
+            g2d_lastMouseX = p_input.contextX;
+            g2d_lastMouseY = p_input.contextY;
         }
 
         // If there is no camera process the callbacks directly by root node
