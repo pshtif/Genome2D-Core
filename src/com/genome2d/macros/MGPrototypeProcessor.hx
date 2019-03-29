@@ -249,8 +249,10 @@ class MGPrototypeProcessor {
 		//var kind = TPath( { pack : [], name : "Class", params : [TPType(TPath( { name : localClass.name, pack : localClass.pack, params : [] } ))] } );
 		var field = { name : localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
 		prototypes.push(field);
+		/*
 		var field = { name : localModule+"."+localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
 		prototypes.push(field);
+		/**/
 		// We have a custom prototype name lookup as well
 		if (prototypeName != localClass.name) {
 			var field = { name : prototypeName, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
