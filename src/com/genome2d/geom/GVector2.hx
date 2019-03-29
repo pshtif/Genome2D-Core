@@ -24,11 +24,6 @@ class GVector2 {
         return Math.sqrt(x * x + y * y);
     }
 
-    public function GVector2(p_x:Float = 0, p_y:Float = 0 ) {
-        x = p_x;
-        y = p_y;
-    }
-
     public function addEq(p_vector:GVector2):Void {
         x += p_vector.x;
         y += p_vector.y;
