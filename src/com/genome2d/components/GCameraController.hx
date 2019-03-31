@@ -106,7 +106,7 @@ class GCameraController extends GComponent
 	}
 
 	override public function init():Void {
-        g2d_contextCamera = new GCamera();
+        g2d_contextCamera = new GCamera(node.core.getContext());
         g2d_viewRectangle = new GRectangle();
 
 		if (node != node.core.root && node.isOnStage()) node.core.g2d_addCameraController(this);
