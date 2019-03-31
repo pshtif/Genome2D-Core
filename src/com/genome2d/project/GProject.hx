@@ -5,8 +5,17 @@ import com.genome2d.macros.MGDebug;
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.context.GContextConfig;
 import com.genome2d.assets.GAsset;
+import com.genome2d.assets.GStaticAssetManager;
+#if cs
+import unityengine.*;
+#end
 
+#if !cs
 class GProject {
+#else
+@:nativeGen
+class GProject extends MonoBehaviour {
+#end
     private var g2d_genome:Genome2D;
     public function getGenome():Genome2D {
         return g2d_genome;
@@ -16,8 +25,8 @@ class GProject {
 
     private var g2d_assetManager:GAssetManager;
 
+    #if !cs
     public function new(p_config:GProjectConfig) {
-        GDebug.info("new");
         g2d_config = p_config;
 
         g2d_genome = Genome2D.getInstance();
@@ -27,7 +36,20 @@ class GProject {
             init();
         }
     }
+    #else
+    public function Start() {
+        GDebug.info("Starting project.");
+        var contextConfig:GContextConfig = new GContextConfig(this);
+        g2d_config = new GProjectConfig(contextConfig);
 
+        g2d_genome = Genome2D.getInstance();
+        if (g2d_config.initGenome) {
+            initGenome();
+        } else {
+            init();
+        }
+    }
+    #end
     /**
      *  Initialize Genome2D
      **/
@@ -39,7 +61,6 @@ class GProject {
     }
 
     private function init():Void {
-
     }
 
     /**
@@ -52,6 +73,6 @@ class GProject {
     }
 
     private function genomeFailed_handler(p_msg:String):Void {
-        //GDebug.error("genomeFailed", p_msg);
+        GDebug.error("genomeFailed", p_msg);
     }
 }
