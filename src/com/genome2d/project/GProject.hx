@@ -1,11 +1,13 @@
 package com.genome2d.project;
 
+import com.genome2d.callbacks.GCallback.GCallback0;
 import com.genome2d.debug.GDebug;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.assets.GAssetManager;
 import com.genome2d.context.GContextConfig;
 import com.genome2d.assets.GAsset;
 import com.genome2d.assets.GStaticAssetManager;
+import com.genome2d.geom.GRectangle;
 #if cs
 import unityengine.*;
 #end
@@ -16,6 +18,8 @@ class GProject {
 @:nativeGen
 class GProject extends MonoBehaviour {
 #end
+    public var onFrame(default,null):GCallback0;
+
     private var g2d_genome:Genome2D;
     public function getGenome():Genome2D {
         return g2d_genome;
@@ -39,7 +43,9 @@ class GProject extends MonoBehaviour {
     #else
     public function Start() {
         GDebug.info("Starting project.");
-        var contextConfig:GContextConfig = new GContextConfig(this);
+        onFrame = new GCallback0();
+
+        var contextConfig:GContextConfig = new GContextConfig(this, new GRectangle(0,0,800,600));
         g2d_config = new GProjectConfig(contextConfig);
 
         g2d_genome = Genome2D.getInstance();
@@ -48,6 +54,10 @@ class GProject extends MonoBehaviour {
         } else {
             init();
         }
+    }
+
+    public function Update() {
+        onFrame.dispatch();
     }
     #end
     /**
