@@ -14,16 +14,10 @@ class MGBuild {
         Context.onAfterTyping(onAfterTyping);
         Context.onGenerate(onGenerate);
         //Context.onTypeNotFound(onTypeNotFound);
-        Context.onMacroContextReused(onMacroContextReused);
         return { expr:EBlock([]), pos:Context.currentPos() }
     }
 
     #if macro
-    static public function onMacroContextReused():Bool {
-        trace("onMacroContextReused");
-        return true;
-    }
-
     static public function onTypeNotFound(p_type:String):TypeDefinition {
         trace("onTypeNotFound", p_type);
         return null;
