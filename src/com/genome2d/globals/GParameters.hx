@@ -28,12 +28,14 @@ class GParameters {
             if (line.indexOf("#") != 0) {
                 var split:Array<String> = line.split("=");
                 if (split.length == 2) {
+                    // Fix Haxe 4 actually had a problem in correct IMap abstraction doing this in IMap set.
+                    var f:Float = Std.parseFloat(split[1]);
                     if (split[1].toLowerCase() == "true") {
                         g2d_parameters.set(split[0], true);
                     } else if (split[1].toLowerCase() == "false") {
                         g2d_parameters.set(split[0], false);
-                    } else if (!Math.isNaN(Std.parseFloat(split[1]))) {
-                        g2d_parameters.set(split[0], Std.parseFloat(split[1]));
+                    } else if (!Math.isNaN(f)) {
+                        g2d_parameters.set(split[0], f);
                     } else {
                         g2d_parameters.set(split[0], split[1]);
                     }
