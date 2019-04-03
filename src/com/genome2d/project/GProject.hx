@@ -1,6 +1,7 @@
 package com.genome2d.project;
 
 import com.genome2d.callbacks.GCallback.GCallback0;
+import com.genome2d.callbacks.GCallback.GCallback2;
 import com.genome2d.debug.GDebug;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.assets.GAssetManager;
@@ -18,7 +19,11 @@ class GProject {
 @:nativeGen
 class GProject extends MonoBehaviour {
 #end
+    #if cs
     public var onFrame(default,null):GCallback0;
+    public var onMouseButton(default,null):GCallback2<Int,Bool>;
+    public var onMouseMove(default,null):GCallback0;
+    #end
 
     private var g2d_genome:Genome2D;
     public function getGenome():Genome2D {
@@ -44,6 +49,8 @@ class GProject extends MonoBehaviour {
     public function Start() {
         GDebug.info("Starting project.");
         onFrame = new GCallback0();
+        onMouseMove = new GCallback0();
+        onMouseButton = new GCallback2<Int, Bool>();
 
         var contextConfig:GContextConfig = new GContextConfig(this, new GRectangle(0,0,800,600));
         g2d_config = new GProjectConfig(contextConfig);
@@ -56,7 +63,29 @@ class GProject extends MonoBehaviour {
         }
     }
 
+    private var g2d_mouseInitialized:Bool = false;
+    private var g2d_lastMouseX:Float;
+    private var g2d_lastMouseY:Float;
+
     public function Update() {
+        if (Input.GetMouseButtonDown(0)) {
+            onMouseButton.dispatch(0, false);
+        }
+
+        if (Input.GetMouseButtonUp(0)) {
+            onMouseButton.dispatch(0, false);
+        }
+
+        if (!g2d_mouseInitialized) {
+            g2d_mouseInitialized = true;
+        } else {
+            if (g2d_lastMouseX != Input.mousePosition.x || g2d_lastMouseY != Input.mousePosition.y) {
+                onMouseMove.dispatch();
+            }
+        }
+        g2d_lastMouseX = Input.mousePosition.x;
+        g2d_lastMouseX = Input.mousePosition.y;
+
         onFrame.dispatch();
     }
     #end
