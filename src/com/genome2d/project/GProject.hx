@@ -82,7 +82,9 @@ class GProject extends MonoBehaviour {
         }
         g2d_lastMouseX = Input.mousePosition.x;
         g2d_lastMouseX = Input.mousePosition.y;
+    }
 
+    public function OnPostRender() {
         onFrame.dispatch();
     }
     #end
