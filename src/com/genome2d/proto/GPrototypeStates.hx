@@ -8,11 +8,11 @@ class GPrototypeStates
 {
 	private var g2d_states:Map<String,Map<String,GPropertyState>>;
 
-	inline public function new() {
+	#if !cs	inline #end public function new() {
 		g2d_states = new Map<String,Map<String,GPropertyState>>();
 	}
 	
-	inline public function setProperty(p_property:String, p_value:Dynamic, p_extras:Int, p_stateName:String, p_transition:String):Void {
+	#if !cs	inline #end public function setProperty(p_property:String, p_value:Dynamic, p_extras:Int, p_stateName:String, p_transition:String):Void {
 		if (p_stateName == null) p_stateName = "default";
 		
 		var split:Array<String> = p_stateName.split("-");
@@ -31,11 +31,11 @@ class GPrototypeStates
 		}
 	}	
 	
-	inline public function getState(p_stateName:String = "default"):Map<String,GPropertyState> {
+	#if !cs	inline #end public function getState(p_stateName:String = "default"):Map<String,GPropertyState> {
 		return g2d_states.get(p_stateName);
 	}
 
-	inline public function hasState(p_stateName:String):Bool {
+	#if !cs	inline #end public function hasState(p_stateName:String):Bool {
 		return g2d_states.exists(p_stateName);
 	}
 }
