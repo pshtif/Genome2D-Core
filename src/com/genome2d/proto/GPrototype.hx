@@ -272,7 +272,9 @@ class GPrototypeProperty {
 		}
 
 		if (isReference() && mapValue != null) {
-			var c:Class<IGPrototypable> = GPrototypeFactory.getPrototypeClass(type);
+			// TODO Parsing . to _ for cs target, can be refactored to be more streamlined for all platforms
+			var parsedType:String = StringTools.replace(type, ".", "_");
+			var c:Class<IGPrototypable> = GPrototypeFactory.getPrototypeClass(parsedType);
 			// TODO check if the class has fromReference!
 			realValue = (c != null) ? Reflect.callMethod(c, Reflect.field(c,"fromReference"), [mapValue]) : null;
 		} else if (isPrototype() && mapValue != null) {

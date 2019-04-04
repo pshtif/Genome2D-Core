@@ -249,8 +249,11 @@ class MGPrototypeProcessor {
 		//var kind = TPath( { pack : [], name : "Class", params : [TPType(TPath( { name : localClass.name, pack : localClass.pack, params : [] } ))] } );
 		var field = { name : localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
 		prototypes.push(field);
-		/*
-		var field = { name : localModule+"."+localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
+		/**/
+		// TODO Parsing . to _ for cs target, can be refactored to be more streamlined for all platforms
+		var parsedName:String = localModule+"."+localClass.name;
+		parsedName = StringTools.replace(parsedName, ".", "_");
+		var field = { name : parsedName, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
 		prototypes.push(field);
 		/**/
 		// We have a custom prototype name lookup as well

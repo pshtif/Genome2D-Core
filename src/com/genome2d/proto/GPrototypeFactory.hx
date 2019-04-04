@@ -22,6 +22,9 @@ class GPrototypeFactory {
 
     static private function initializePrototypes():Void {
         if (g2d_lookups != null) return;
+        #if cs
+        GPrototypeConstructorLookups.initialize();
+        #end
         g2d_lookups = new Map<String,Class<IGPrototypable>>();
         g2d_prototypeReferences = new Map<String,GPrototype>();
 		
@@ -63,7 +66,14 @@ class GPrototypeFactory {
             GDebug.error("Non existing prototype class "+p_prototype.prototypeName);
         }
 
-        if (p_args == null) p_args = [];
+        if (p_args == null) {
+            #if cs
+            p_args = GPrototypeConstructorLookups.getArguments(p_prototype.prototypeName);
+            #else
+            p_args = [];
+            #end
+        }
+        //GDebug.info(p_prototype.prototypeClass, p_args, p_prototype.prototypeName);
         var proto:IGPrototypable = Type.createInstance(p_prototype.prototypeClass, p_args);
         if (proto == null) GDebug.error("Invalid prototype class " + p_prototype.prototypeName);
 
