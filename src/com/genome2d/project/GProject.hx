@@ -62,26 +62,14 @@ class GProject extends MonoBehaviour {
         }
     }
 
-    private var g2d_mouseInitialized:Bool = false;
-    private var g2d_lastMouseX:Float;
-    private var g2d_lastMouseY:Float;
-
     public function Update() {
         if (Input.GetMouseButtonDown(0)) {
             onMouse.dispatch(GMouseInputType.MOUSE_DOWN, 0);
         } else if (Input.GetMouseButtonUp(0)) {
             onMouse.dispatch(GMouseInputType.MOUSE_UP, 0);
         } else {
-            if (!g2d_mouseInitialized) {
-                g2d_mouseInitialized = true;
-            } else {
-                if (g2d_lastMouseX != Input.mousePosition.x || g2d_lastMouseY != Input.mousePosition.y) {
-                    onMouse.dispatch(GMouseInputType.MOUSE_MOVE, -1);
-                }
-            }
+            onMouse.dispatch(GMouseInputType.MOUSE_MOVE, -1);
         }
-        g2d_lastMouseX = Input.mousePosition.x;
-        g2d_lastMouseX = Input.mousePosition.y;
     }
 
     public function OnPostRender() {
