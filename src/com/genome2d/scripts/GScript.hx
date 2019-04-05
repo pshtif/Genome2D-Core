@@ -160,7 +160,8 @@ class GScript implements IGPrototypable
 	public function recompile():Void {
 		g2d_interpreter = new hscript.Interp();
 		if (includeMath) g2d_interpreter.variables.set("Math", Math);
-		g2d_interpreter.variables.set("genome", Genome2D.getInstance());
+		var genome:Genome2D = Genome2D.getInstance();
+		g2d_interpreter.variables.set("genome", genome);
 
 		var preparsedSource:String = preparseSource();
 		for (key in g2d_scriptProperties.keys()) {
