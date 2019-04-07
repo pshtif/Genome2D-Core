@@ -168,7 +168,7 @@ class GTile
                 }
                 g2d_accumulatedTime %= g2d_speed;
             }
-            p_context.draw(texture, p_blendMode, p_x, p_y, 1, 1, rotation, red, green, blue, alpha);
+            p_context.draw(texture, p_blendMode, p_x, p_y, 1, 1, rotation, red, green, blue, alpha, null);
             g2d_lastTimeRendered = p_time;
             g2d_lastFrameRendered = p_frameId;
         }

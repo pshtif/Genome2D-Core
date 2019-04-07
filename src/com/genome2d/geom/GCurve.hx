@@ -58,7 +58,7 @@ class GCurve implements IGPrototypable {
         return p_value;
     }
 
-    public function new(p_start:Float = 0) {
+    public function new(p_start:Float) {
         start = p_start;
         g2d_segments = new Array<Segment>();
         g2d_pathLength = 0;
@@ -115,7 +115,7 @@ class GCurve implements IGPrototypable {
     }
 
     static public function createLine(p_end:Float, p_strength:Float = 1):GCurve {
-        return new GCurve().line(p_end, p_strength);
+        return new GCurve(0).line(p_end, p_strength);
     }
 
     public function quadraticBezier(p_end:Float, p_control:Float, p_strength:Float = 1):GCurve {

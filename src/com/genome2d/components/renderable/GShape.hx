@@ -39,7 +39,7 @@ class GShape extends GComponent implements IGRenderable
     public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         if (texture == null || g2d_vertices == null || g2d_uvs == null) return;
         if (g2d_shapeRenderer == null) {
-            node.core.getContext().drawPoly(texture, blendMode, g2d_vertices, g2d_uvs, node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha);
+            node.core.getContext().drawPoly(texture, blendMode, g2d_vertices, g2d_uvs, node.g2d_worldX, node.g2d_worldY, node.g2d_worldScaleX, node.g2d_worldScaleY, node.g2d_worldRotation, node.g2d_worldRed, node.g2d_worldGreen, node.g2d_worldBlue, node.g2d_worldAlpha, null);
         } else {
             node.core.getContext().setRenderer(g2d_shapeRenderer);
             untyped g2d_shapeRenderer.draw(texture);

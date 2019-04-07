@@ -15,6 +15,7 @@ import com.genome2d.context.IGContext;
 import com.genome2d.geom.GCurve;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.textures.GTexture;
+import com.genome2d.debug.GDebug;
 
 /**
  *	Particle emitter
@@ -196,7 +197,7 @@ class GParticleEmitter implements IGPrototypable
             if (particle.implementRender) {
                 particle.g2d_render(p_context, this);
             } else {
-				if (particle.texture != null) p_context.draw(particle.texture, particle.blendMode, tx + particle.x * sx, ty + particle.y * sy, sx * particle.scaleX, sy * particle.scaleY, particle.rotation, particle.red, particle.green, particle.blue, particle.alpha);
+				if (particle.texture != null) p_context.draw(particle.texture, particle.blendMode, tx + particle.x * sx, ty + particle.y * sy, sx * particle.scaleX, sy * particle.scaleY, particle.rotation, particle.red, particle.green, particle.blue, particle.alpha, null);
             }
             particle = next;
         }

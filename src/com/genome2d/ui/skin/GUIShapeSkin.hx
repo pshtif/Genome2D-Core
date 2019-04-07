@@ -36,7 +36,7 @@ class GUIShapeSkin extends GUISkin {
     }
 
     override public function render(p_left:Float, p_top:Float, p_right:Float, p_bottom:Float, p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Bool {
-        Genome2D.getInstance().getContext().drawPoly(texture, blendMode, g2d_vertices, g2d_uvs, p_left, p_top, 1, 1, rotation, red, green, blue, alpha);
+        Genome2D.getInstance().getContext().drawPoly(texture, blendMode, g2d_vertices, g2d_uvs, p_left, p_top, 1, 1, rotation, red, green, blue, alpha, null);
 
         return true;
     }

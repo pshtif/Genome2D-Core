@@ -94,7 +94,7 @@ class GPostProcess implements IGPrototypable {
         g2d_matrix.identity();
         g2d_matrix.prependTranslation(-currentBounds.x+g2d_leftMargin, -currentBounds.y+g2d_topMargin, 0);
         context.setRenderTarget(g2d_passTextures[0], g2d_matrix, true);
-        context.draw(p_source, GBlendMode.NORMAL, p_x,p_y,1,1,0,1,1,1);
+        context.draw(p_source, GBlendMode.NORMAL, p_x,p_y,1,1,0,1,1,1,1,null);
 
         var zero:GTexture = g2d_passTextures[0];
         //g2d_passTextures[0] = p_source;

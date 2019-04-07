@@ -14,6 +14,7 @@ import com.genome2d.proto.GPrototype;
 import com.genome2d.proto.IGPrototypable;
 import com.genome2d.context.IGContext;
 import com.genome2d.geom.GRectangle;
+import com.genome2d.debug.GDebug;
 
 @:access(com.genome2d.particles.GParticle)
 @:access(com.genome2d.particles.GParticleEmitter)
