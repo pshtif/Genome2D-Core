@@ -76,7 +76,7 @@ class GParticleGroup
 			for (i in 0...particleCount) {
 				var particle:GParticle = particles[i];
 				if (particle.density > 0 && !particle.fixed) {
-					particle.velocityY += .1;
+					//particle.velocityY += .1;
 					particle.velocityX += particle.fluidX / (particle.density * 0.9 + 0.1);
 					particle.velocityY += particle.fluidY / (particle.density * 0.9 + 0.1);
 				}
