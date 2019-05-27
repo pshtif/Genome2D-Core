@@ -8,6 +8,7 @@ class G3DNode {
 
     public function new(p_id:String) {
         id = p_id;
+        name = "";
 
         connections = new Map<String,G3DNode>();
     }
