@@ -59,4 +59,36 @@ class G3DFactory
 		
 		return scene;
 	}
+
+	static public function createPlane(p_width:Float, p_height:Float, p_texture:GTexture):G3DScene {
+		var id:String = Std.string(g2d_ids++);
+		var scene:G3DScene = new G3DScene();
+
+		var texture:G3DTexture = new G3DTexture("gte"+id, p_texture.id);
+		scene.addNode(texture.id, texture);
+		
+		var material:G3DMaterial = new G3DMaterial("gma" + id);
+		scene.addNode(material.id, material);
+		
+		var model:G3DModel = new G3DModel("gmo"+id);
+		scene.addNode(model.id, model);
+		
+		var vertices:Array<Float> = [ -p_width / 2, -p_height / 2, 0, -p_width / 2, p_height / 2, 0, p_width / 2, -p_height / 2, 0, p_width / 2, p_height / 2, 0];
+		var uvs:Array<Float> = [ 0, 0, 1, 0, 0, 1, 1, 1];
+
+		var normals:Array<Float> = [0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1];
+
+
+		var indices:Array<UInt> = [0, 1, 2, 2, 1, 3];
+		
+		var geometry:G3DGeometry = new G3DGeometry("gge"+id);
+		geometry.initProcessed(vertices, uvs, indices, normals);
+		scene.addNode(geometry.id, geometry);
+		
+		scene.addConnection(geometry.id, model.id);
+		scene.addConnection(material.id, model.id);
+		scene.addConnection(texture.id, material.id);
+		
+		return scene;
+	}
 }
