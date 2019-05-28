@@ -22,7 +22,7 @@ class GProject extends MonoBehaviour {
 #end
     #if cs
     public var onFrame(default,null):GCallback0;
-    public var onMouse(default,null):GCallback2<String, Int>;
+    public var onMouse(default,null):GCallback2<String, Bool>;
     #end
 
     private var g2d_genome:Genome2D;
@@ -49,7 +49,7 @@ class GProject extends MonoBehaviour {
     public function Start() {
         GDebug.info("Starting project.");
         onFrame = new GCallback0();
-        onMouse = new GCallback2<String, Int>();
+        onMouse = new GCallback2<String, Bool>();
 
         var contextConfig:GContextConfig = new GContextConfig(this, new GRectangle(0,0,Screen.width,Screen.height));
         g2d_config = new GProjectConfig(contextConfig);
@@ -64,11 +64,11 @@ class GProject extends MonoBehaviour {
 
     public function Update() {
         if (Input.GetMouseButtonDown(0)) {
-            onMouse.dispatch(GMouseInputType.MOUSE_DOWN, 0);
+            onMouse.dispatch(GMouseInputType.MOUSE_DOWN, true);
         } else if (Input.GetMouseButtonUp(0)) {
-            onMouse.dispatch(GMouseInputType.MOUSE_UP, 0);
+            onMouse.dispatch(GMouseInputType.MOUSE_UP, false);
         } else {
-            onMouse.dispatch(GMouseInputType.MOUSE_MOVE, -1);
+            onMouse.dispatch(GMouseInputType.MOUSE_MOVE, Input.GetMouseButton(0));
         }
     }
 
