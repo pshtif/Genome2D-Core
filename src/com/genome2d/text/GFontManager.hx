@@ -19,6 +19,10 @@ class GFontManager
     }
 
     static private function g2d_removeFont(p_font:GFont):Void {
+        if (p_font.id == null) {
+            return;
+        }
+        
         g2d_fonts.remove(p_font.id);
     }
 
