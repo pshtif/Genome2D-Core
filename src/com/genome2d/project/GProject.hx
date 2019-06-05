@@ -70,6 +70,10 @@ class GProject extends MonoBehaviour {
         } else {
             onMouse.dispatch(GMouseInputType.MOUSE_MOVE, Input.GetMouseButton(0));
         }
+                
+        if (Input.mouseScrollDelta.y != 0) {
+            onMouse.dispatch(GMouseInputType.MOUSE_WHEEL, Input.GetMouseButton(0));
+        }
     }
 
     public function OnPostRender() {
