@@ -1341,7 +1341,7 @@ class GUIElement implements IGPrototypable implements IGFocusable {
         if (g2d_onInvalidate != null) g2d_onInvalidate.dispatch();
     }
 
-    public function render(p_red:Float = 1, p_green:Float = 1, p_blue:Float = 1, p_alpha:Float = 1):Void {
+    public function render(p_red:Float, p_green:Float, p_blue:Float, p_alpha:Float):Void {
         if (visible) {
 			var worldRed:Float = useWorldColor ? p_red * red : red;
 			var worldGreen:Float = useWorldColor ? p_green * green : green;

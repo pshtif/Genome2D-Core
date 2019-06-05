@@ -44,7 +44,7 @@ class GUI extends GComponent implements IGRenderable {
     public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         invalidate();
 
-        root.render();
+        root.render(1, 1, 1, 1);
         GUISkin.flushBatch();
     }
 
@@ -66,7 +66,7 @@ class GUI extends GComponent implements IGRenderable {
     }
 
     public function worldToUi(p_world:GPoint, p_result:GPoint = null):GPoint {
-        if (p_result == null) p_result = new GPoint();
+        if (p_result == null) p_result = new GPoint(0, 0);
 
         p_result.x = p_world.x - root.g2d_worldLeft;
         p_result.y = p_world.y - root.g2d_worldTop;
