@@ -107,7 +107,7 @@ class GCameraController extends GComponent
 
 	override public function init():Void {
         g2d_contextCamera = new GCamera(node.core.getContext());
-        g2d_viewRectangle = new GRectangle();
+        g2d_viewRectangle = new GRectangle(0, 0, 0, 0);
 
 		if (node != node.core.root && node.isOnStage()) node.core.g2d_addCameraController(this);
 		
@@ -206,7 +206,7 @@ class GCameraController extends GComponent
 		var rx:Float = (tx*cos - ty*sin);
 		var ry:Float = (ty*cos + tx*sin);
 
-		if (p_result == null) p_result = new GPoint();
+		if (p_result == null) p_result = new GPoint(0, 0);
 
 		g2d_invalidateViewRect();
 
@@ -231,7 +231,7 @@ class GCameraController extends GComponent
 		rx /= zoom;
 		ry /= zoom;
 
-		if (p_result == null) p_result = new GPoint();
+		if (p_result == null) p_result = new GPoint(0, 0);
 		p_result.x = rx + node.g2d_worldX;
 		p_result.y = ry + node.g2d_worldY;
 		

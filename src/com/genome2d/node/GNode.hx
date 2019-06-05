@@ -1046,7 +1046,7 @@ class GNode implements IGFocusable implements IGPrototypable
 
     public function getBounds(p_targetSpace:GNode = null, p_bounds:GRectangle = null):GRectangle {
         if (p_targetSpace == null) p_targetSpace = core.root;
-        if (p_bounds == null) p_bounds = new GRectangle();
+        if (p_bounds == null) p_bounds = new GRectangle(0, 0, 0, 0);
         var found:Bool = false;
         // Reverted back to using constants as Math.POSITIVE_INFINITY/NEGATIVE_INFINITY doesn't work well with SWC target
         var minX:Float = 10000000;
@@ -1571,7 +1571,7 @@ class GNode implements IGFocusable implements IGPrototypable
 
     public function localToWorld(p_local:GPoint, p_result:GPoint = null):GPoint {
         getTransformationMatrix(g2d_core.g2d_root, g2d_cachedTransformMatrix);
-        if (p_result == null) p_result = new GPoint();
+        if (p_result == null) p_result = new GPoint(0, 0);
         p_result.x = g2d_cachedTransformMatrix.a * p_local.x + g2d_cachedTransformMatrix.c * p_local.y + g2d_cachedTransformMatrix.tx;
         p_result.y = g2d_cachedTransformMatrix.d * p_local.y + g2d_cachedTransformMatrix.b * p_local.x + g2d_cachedTransformMatrix.ty;
         return p_result;
@@ -1580,7 +1580,7 @@ class GNode implements IGFocusable implements IGPrototypable
     public function worldToLocal(p_world:GPoint, p_result:GPoint = null):GPoint {
         getTransformationMatrix(g2d_core.g2d_root, g2d_cachedTransformMatrix);
         g2d_cachedTransformMatrix.invert();
-        if (p_result == null) p_result = new GPoint();
+        if (p_result == null) p_result = new GPoint(0, 0);
         p_result.x = g2d_cachedTransformMatrix.a * p_world.x + g2d_cachedTransformMatrix.c * p_world.y + g2d_cachedTransformMatrix.tx;
         p_result.y = g2d_cachedTransformMatrix.d * p_world.y + g2d_cachedTransformMatrix.b * p_world.x + g2d_cachedTransformMatrix.ty;
         return p_result;
