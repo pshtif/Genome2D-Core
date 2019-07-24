@@ -94,7 +94,7 @@ class GTweenStep implements IGPrototypable {
 
     private var g2d_onComplete:Array<Dynamic>->Void;
     private var g2d_onCompleteArgs:Array<Dynamic>;
-    private var g2d_onUpdate:Float->Void;
+    private var g2d_onUpdate:Array<Dynamic>->Void;
     private var g2d_onUpdateArgs:Array<Dynamic>;
 
     private var g2d_empty:Bool;
@@ -121,7 +121,7 @@ class GTweenStep implements IGPrototypable {
         return this;
     }
 
-    inline public function onUpdate(p_callback:Float->Void, p_args:Array<Dynamic> = null):GTweenStep {
+    inline public function onUpdate(p_callback:Array<Dynamic>->Void, p_args:Array<Dynamic> = null):GTweenStep {
         g2d_onUpdateArgs = p_args == null ? [] : p_args;
         g2d_onUpdate = p_callback;
         return this;

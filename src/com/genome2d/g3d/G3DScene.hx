@@ -150,7 +150,6 @@ class G3DScene {
 	}
 	
 	private function sortOnCenter(p_model1:G3DModel, p_model2:G3DModel):Int {
-		GDebug.info(p_model1.center.z, p_model2.center.z);
 		if (p_model1.center.z > p_model2.center.z) return 1;
 		else if (p_model1.center.z < p_model2.center.z) return -1;
 		
