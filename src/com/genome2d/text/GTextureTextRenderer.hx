@@ -325,9 +325,6 @@ class GTextureTextRenderer extends GTextRenderer {
 						charIndex -= backtrack;
 						if (backtrack >= currentCount) break;
 						i = whiteSpaceIndex+1;
-					} else {
-						charIndex++;
-						i++;
 					}
 					currentLine = new Array<GTextureCharRenderable>();
 
@@ -341,7 +338,16 @@ class GTextureTextRenderer extends GTextRenderer {
 					}
 					offsetX = 0;
 					offsetY += (g2d_textureFont.lineHeight + g2d_lineSpace) * g2d_fontScale;
-					continue;
+
+					if (wordWrapWhitespace) {
+						continue;
+					}
+					
+					if (currentCharCode == 32) {
+						charIndex++;
+						i++;
+						continue;
+					}
 				}
 
 				currentLine.push(renderable);
