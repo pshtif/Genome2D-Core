@@ -106,9 +106,9 @@ class GCurve implements IGPrototypable {
                     lastEnd = path.end;
                 } else {
                     r = path.calculate(lastEnd, ratio / path.strength);
+                    break;
                 }
             }
-            trace(lastEnd, p_delta, ratio, g2d_totalStrength, r);
         }
 
         return r;
