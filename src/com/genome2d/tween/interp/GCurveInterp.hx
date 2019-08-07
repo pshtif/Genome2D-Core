@@ -22,6 +22,9 @@ class GCurveInterp implements IGInterp implements IGPrototypable {
     public var tween:GTweenStep;
 
     @prototype
+    public var relative:Bool = false;
+
+    @prototype
     public var duration:Float;
 
     private var g2d_time:Float;
@@ -51,7 +54,11 @@ class GCurveInterp implements IGInterp implements IGPrototypable {
     }
 
     inline function init():Void {
-        from = Reflect.getProperty(tween.getTarget(), property);
+        if (relative) {
+            from = Reflect.getProperty(tween.getTarget(), property);
+        } else {
+            from = 0;
+        }
         hasInitialized = true;
     }
 

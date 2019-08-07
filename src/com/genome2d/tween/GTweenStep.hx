@@ -234,6 +234,7 @@ class GTweenStep implements IGPrototypable {
 
     public function propC(p_property:String, p_to:GCurve, p_duration:Float):GTweenStep {
         var interp:GCurveInterp = new GCurveInterp(this);
+        interp.relative = p_relative;
         interp.property = p_property;
         interp.duration = p_duration;
         interp.to = p_to;
