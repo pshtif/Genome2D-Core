@@ -174,7 +174,7 @@ class GFloatInterp implements IGInterp implements IGPrototypable {
             propertyGetter = Reflect.hasField(g2d_tween.getTarget(), "get_" + property) ? "get_" + property : null;
             propertySetter = Reflect.hasField(g2d_tween.getTarget(), "set_" + property) ? "set_" + property : null;
         #end
-        from = getTargetValue();
+        current = from = getTargetValue();
         difference = relative ? to : to - from;
         hasInitialized = true;
     }
