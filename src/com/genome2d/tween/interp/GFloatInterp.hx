@@ -192,6 +192,7 @@ class GFloatInterp implements IGInterp implements IGPrototypable {
     }
 
     inline private function setTargetValue(p_value:Float) {
+        current = p_value;
         #if flash
             if (propertySetter != null) {
                 untyped g2d_tween.getTarget()[propertySetter](p_value);
