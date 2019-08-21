@@ -6,6 +6,7 @@ import com.genome2d.geom.GVector3D;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.textures.GTextureManager;
 import com.genome2d.debug.GDebug;
+import com.genome2d.geom.GFloat4;
 
 class G3DModel extends G3DNode {
 	public var useSceneLighting:Bool = true;
