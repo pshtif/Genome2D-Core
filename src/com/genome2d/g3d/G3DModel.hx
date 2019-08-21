@@ -8,6 +8,12 @@ import com.genome2d.textures.GTextureManager;
 import com.genome2d.debug.GDebug;
 
 class G3DModel extends G3DNode {
+	public var useSceneLighting:Bool = true;
+	public var lightDirection:GFloat4;
+    public var ambientColor:GFloat4;
+    public var lightColor:GFloat4;
+    public var tintColor:GFloat4;
+
 	public var visible:Bool = true;
 	
 	public var renderer:G3DRenderer;
@@ -20,6 +26,11 @@ class G3DModel extends G3DNode {
 	public function new(p_id:String):Void {
 		super(p_id);
 		
+		lightDirection = new GFloat4(1,1,1);
+        ambientColor = new GFloat4(1,1,1,1);
+        tintColor = new GFloat4(1,1,1,1);
+        lightColor = new GFloat4(1,1,1,1);
+
 		center = new GVector3D();
 		modelMatrix = new GMatrix3D();
 	}

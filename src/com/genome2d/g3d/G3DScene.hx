@@ -175,10 +175,10 @@ class G3DScene {
 			if (model.visible) {
 				renderer = model.renderer;
 				if (p_textureOverride != null) renderer.texture = p_textureOverride;
-				renderer.lightDirection = lightDirection;
-				renderer.ambientColor = ambientColor;
-				renderer.lightColor = lightColor;
-				renderer.tintColor = tintColor;
+				renderer.lightDirection = model.useSceneLighting ? lightDirection : model.lightDirection;
+				renderer.ambientColor = model.useSceneLighting ? ambientColor : model.ambientColor;
+				renderer.lightColor = model.useSceneLighting ? lightColor : model.lightColor;
+				renderer.tintColor = model.useSceneLighting ? tintColor : model.tintColor;
 				switch (model.inheritSceneMatrixMode) {
 					case G3DMatrixInheritMode.REPLACE:
 						renderer.modelMatrix = g2d_sceneMatrix;
