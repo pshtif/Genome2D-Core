@@ -140,7 +140,7 @@ class G3DScene {
 		
 		if (p_projectionMatrix == null) {
 			p_projectionMatrix = new GProjectionMatrix();
-			p_projectionMatrix.ortho(stageRect.width, stageRect.height);
+			p_projectionMatrix.ortho(stageRect.width, stageRect.height, null);
 		}
 		
 		p_point = p_sceneMatrix.transformVector(p_point);
