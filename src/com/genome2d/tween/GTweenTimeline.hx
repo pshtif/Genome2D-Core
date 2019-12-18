@@ -29,14 +29,18 @@ class GTweenTimeline {
     }
 
     public function update(p_delta:Float) {
-        for (i in 0...g2d_sequences.length) {
-            g2d_sequences[i].update(p_delta);
+        var index:Int = 0;
+        while (index<g2d_sequences.length) {
+            if (g2d_sequences[index] != null) {
+                g2d_sequences[index].update(p_delta);
+            }
+            index++;
         }
 
         if (g2d_dirty) {
-            var count:Int = g2d_sequences.length;
-            while (count-->0) {
-                var sequence:GTweenSequence = g2d_sequences[count];
+            index = g2d_sequences.length;
+            while (index-->0) {
+                var sequence:GTweenSequence = g2d_sequences[index];
                 if (sequence.isComplete()) {
                     removeSequence(sequence);
                 }
