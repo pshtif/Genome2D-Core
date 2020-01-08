@@ -30,7 +30,8 @@ class GTweenTimeline {
 
     public function update(p_delta:Float) {
         var index:Int = 0;
-        while (index<g2d_sequences.length) {
+        var length:Int = g2d_sequences.length;
+        while (index<length) {
             if (g2d_sequences[index] != null) {
                 g2d_sequences[index].update(p_delta);
             }
