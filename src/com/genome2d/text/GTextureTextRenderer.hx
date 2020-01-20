@@ -214,7 +214,7 @@ class GTextureTextRenderer extends GTextRenderer {
 				tx = char.x * p_scaleX * g2d_fontScale + p_x + (cursorStartIndex>=g2d_chars.length?char.xadvance + g2d_tracking:0);
 				ty = char.y * p_scaleY * g2d_fontScale + p_y;
 			}
-			var char:GTextureChar = g2d_textureFont.getChar(Std.string(124));
+			var char:GTextureChar = g2d_textureFont.getChar(124);
 			g2d_context.draw(char.texture, GBlendMode.NORMAL, tx, ty, p_scaleX * g2d_fontScale, p_scaleY * g2d_fontScale, p_rotation, red, green, blue, alpha, null);
 		} else if (cursorStartIndex != cursorEndIndex) {
 			var startChar:GTextureCharRenderable = (cursorStartIndex >= g2d_chars.length) ? g2d_chars[g2d_chars.length - 1] : g2d_chars[cursorStartIndex];
@@ -268,8 +268,10 @@ class GTextureTextRenderer extends GTextRenderer {
 				renderable = g2d_chars[charIndex];
 			}
 
+			currentCharCode = g2d_text.charCodeAt(i);
+
             // New line character
-            if (g2d_text.charCodeAt(i) == 10 || g2d_text.charCodeAt(i) == 13) {
+            if (currentCharCode == 10 || currentCharCode == 13) {
                 if (g2d_autoSize) {
                     g2d_width = (offsetX>g2d_width) ? offsetX : g2d_width;
                 }
@@ -299,11 +301,10 @@ class GTextureTextRenderer extends GTextRenderer {
 					g2d_maxVisibleLine = lines.length - 1;
 				}
 
-                currentCharCode = g2d_text.charCodeAt(i);
-                char = g2d_textureFont.getChar(Std.string(currentCharCode));
+                char = g2d_textureFont.getChar(currentCharCode);
 
                 if (char == null) {
-                    if (warnMissingCharTextures) GDebug.warning("Texture for character " + g2d_text.charAt(i) + " with code " + g2d_text.charCodeAt(i) + " not found!");
+                    if (warnMissingCharTextures) GDebug.warning("Texture for character " + String.fromCharCode(i) + " with code " + currentCharCode + " not found!");
 					i++;
                     continue;
                 }
@@ -493,12 +494,12 @@ class GTextureCharRenderable
 	}
 
 	private var fontChar:GTextureChar;
-    inline private function setCharCode(p_value:Int):Void {
-		g2d_charCode = p_value;
+    inline private function setCharCode(p_charCode:Int):Void {
+		g2d_charCode = p_charCode;
 
-		fontChar = renderer.textureFont.getChar(Std.string(p_value));
+		fontChar = renderer.textureFont.getChar(p_charCode);
 
-        if (fontChar == null) GDebug.warning("Texture for character " + Std.string(p_value) + " with code " + p_value + " not found!");
+        if (fontChar == null) GDebug.warning("Texture for character " + String.fromCharCode(p_charCode) + " with code " + p_charCode + " not found!");
 	}
 	
 	public var texture(get, never):GTexture;

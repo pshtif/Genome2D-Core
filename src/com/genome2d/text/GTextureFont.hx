@@ -39,14 +39,14 @@ class GTextureFont extends GFont {
 
 	public var kerning:Map<Int,Map<Int,Int>>;
 
-	private var g2d_chars:Map<String,GTextureChar>;
+	private var g2d_chars:Map<Int,GTextureChar>;
 	
 	public function new():Void {
-		g2d_chars = new Map<String,GTextureChar>();
+		g2d_chars = new Map<Int,GTextureChar>();
 	}
 
-    public function getChar(p_subId:String):GTextureChar {
-        return cast g2d_chars.get(p_subId);
+    public function getChar(p_charId:Int):GTextureChar {
+        return cast g2d_chars.get(p_charId);
     }
 
 	public function addCharsFromXml(p_xml:Xml):Void {
@@ -70,7 +70,7 @@ class GTextureFont extends GFont {
 			var h:Int = Std.parseInt(node.get("height"));
 			var region:GRectangle = new GRectangle(Std.parseInt(node.get("x")) + regionOffsetX, Std.parseInt(node.get("y")) + regionOffsetY, w, h);
 
-			addChar(node.get("id"), region, Std.parseFloat(node.get("xoffset")), Std.parseFloat(node.get("yoffset")), Std.parseFloat(node.get("xadvance")));
+			addChar(Std.parseInt(node.get("id")), region, Std.parseFloat(node.get("xoffset")), Std.parseFloat(node.get("yoffset")), Std.parseFloat(node.get("xadvance")));
 		}
 
 		var kernings:Xml = root.elementsNamed("kernings").next();
@@ -92,7 +92,7 @@ class GTextureFont extends GFont {
 		}
 	}
 
-    public function addChar(p_charId:String, p_region:GRectangle, p_xoffset:Float, p_yoffset:Float, p_xadvance:Float):GTextureChar {
+    public function addChar(p_charId:Int, p_region:GRectangle, p_xoffset:Float, p_yoffset:Float, p_xadvance:Float):GTextureChar {
         var charTexture:GTexture = GTextureManager.createSubTexture(id+"_"+p_charId, texture, p_region);
 		charTexture.pivotX = -p_region.width/2;
         charTexture.pivotY = -p_region.height/2;
