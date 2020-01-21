@@ -182,9 +182,11 @@ class GTweenStep implements IGPrototypable {
         g2d_gotoRepeatCount = 0;
         g2d_currentGotoRepeatCount = 0;
 
-        // Put back to pool
-        g2d_poolNext = g2d_poolFirst;
-        g2d_poolFirst = this;
+        if (GTween.enablePooling) {
+            // Put back to pool
+            g2d_poolNext = g2d_poolFirst;
+            g2d_poolFirst = this;
+        }
     }
 
     public function update(p_delta:Float):Float {

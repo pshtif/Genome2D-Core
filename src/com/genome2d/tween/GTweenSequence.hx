@@ -61,8 +61,10 @@ class GTweenSequence implements IGPrototypable {
         g2d_running = false;
         g2d_timeline = null;
 
-        g2d_poolNext = g2d_poolFirst;
-        g2d_poolFirst = this;
+        if (GTween.enablePooling) {
+            g2d_poolNext = g2d_poolFirst;
+            g2d_poolFirst = this;
+        }
     }
 
     public function update(p_delta:Float):Float {

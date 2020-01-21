@@ -18,6 +18,7 @@ import com.genome2d.tween.easing.GEase;
 class GTween {
     static public var timeScale:Float = 1.0;
     static public var defaultEase:GEase = GLinear.none;
+    static public var enablePooling:Bool = true;
 
     static private var g2d_currentTimeline:GTweenTimeline;
     static private var g2d_timelines:Array<GTweenTimeline>;
