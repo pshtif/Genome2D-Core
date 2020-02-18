@@ -56,6 +56,30 @@ class GNode implements IGFocusable implements IGPrototypable
         return node.addComponent(p_componentClass);
     }
 
+    /**
+	 * 	Create node with a GSprite component
+	 *
+	 *  @param p_name optional name for the node
+	 */
+    static public function createWithGSpriteComponent(p_name:String = ""):GSprite {
+        var node:GNode = new GNode();
+        if (p_name != "") node.name = p_name;
+
+        var component:GSprite = new GSprite();
+        component.g2d_node = node;
+
+        node.g2d_defaultRenderable = component;
+        node.g2d_components = [component];
+        node.g2d_componentCount = 1;
+
+        component.init();
+        component.g2d_start();
+        #if genome_editor
+        dispatchHierarchyChange();
+        #end
+        
+        return component;
+    }
 
     static private var g2d_cachedArray:Array<GNode>;
     static private var g2d_cachedMatrix:GMatrix;
