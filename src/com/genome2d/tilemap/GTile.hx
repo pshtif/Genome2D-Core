@@ -22,6 +22,9 @@ class GTile
     public var green:Float = 1;
     public var blue:Float = 1;
 
+    public var scaleX: Float = 1;
+    public var scaleY: Float = 1;
+
     #if swc @:extern #end
     public var color(get, set):Int;
     #if swc @:getter(color) #end
@@ -168,7 +171,7 @@ class GTile
                 }
                 g2d_accumulatedTime %= g2d_speed;
             }
-            p_context.draw(texture, p_blendMode, p_x, p_y, 1, 1, rotation, red, green, blue, alpha, null);
+            p_context.draw(texture, p_blendMode, p_x, p_y, scaleX, scaleY, rotation, red, green, blue, alpha, null);
             g2d_lastTimeRendered = p_time;
             g2d_lastFrameRendered = p_frameId;
         }
