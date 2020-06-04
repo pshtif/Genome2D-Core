@@ -20,5 +20,6 @@ class GPrototypeConstructorLookups {
         _arguments.set("transition", ["", 0, null, 0]);
         _arguments.set("GCurveInterp", [null]);
         _arguments.set("tweenFloat", [null]);
+        _arguments.set("node", [""]);
     }
 }
