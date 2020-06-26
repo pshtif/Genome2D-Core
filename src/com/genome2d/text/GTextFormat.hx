@@ -17,7 +17,7 @@ class GTextFormat
 	}
 	
 	public function getIndexColor(p_index:Int):UInt {
-		var color:UInt = -1;
+		var color:UInt = 0;
 		if (g2d_formatMap.exists(p_index)) {
 			color = g2d_formatMap.get(p_index);
 		}

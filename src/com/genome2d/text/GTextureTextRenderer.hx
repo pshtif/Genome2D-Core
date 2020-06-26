@@ -145,7 +145,7 @@ class GTextureTextRenderer extends GTextRenderer {
 		var tx:Float;
         var ty:Float;
 
-		var lastRenderColor:Int = 0xFFFFFF;
+		var lastRenderColor:UInt = 0xFFFFFF;
 		var charRed:Float = 1;
 		var charGreen:Float = 1;
 		var charBlue:Float = 1;
@@ -157,7 +157,8 @@ class GTextureTextRenderer extends GTextRenderer {
             var renderable:GTextureCharRenderable = g2d_chars[i];
 
 			if (format != null) {
-				var indexColor:Int = format.getIndexColor(i);
+				var indexColor:UInt = format.getIndexColor(i);
+
 				if (indexColor != -1 && lastRenderColor != indexColor) {
 					charAlpha = (indexColor >> 24 & 0xFF) / 0xFF;
 					charRed = (indexColor >> 16 & 0xFF) / 0xFF;
