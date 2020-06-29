@@ -159,7 +159,7 @@ class GTextureTextRenderer extends GTextRenderer {
 			if (format != null) {
 				var indexColor:UInt = format.getIndexColor(i);
 
-				if (indexColor != -1 && lastRenderColor != indexColor) {
+				if (lastRenderColor != indexColor) {
 					charAlpha = (indexColor >> 24 & 0xFF) / 0xFF;
 					charRed = (indexColor >> 16 & 0xFF) / 0xFF;
 					charGreen = (indexColor >> 8 & 0xFF) / 0xFF;
