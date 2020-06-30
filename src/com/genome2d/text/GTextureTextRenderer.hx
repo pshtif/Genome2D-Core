@@ -156,10 +156,10 @@ class GTextureTextRenderer extends GTextRenderer {
         for (i in 0...charCount) {
             var renderable:GTextureCharRenderable = g2d_chars[i];
 
-			if (format != null) {
+			if (format != null && format.hasIndexColor(i)) {
 				var indexColor:UInt = format.getIndexColor(i);
 
-				if (lastRenderColor != indexColor) {
+				if (format.hasIndexColor(i) && lastRenderColor != indexColor) {
 					charAlpha = (indexColor >> 24 & 0xFF) / 0xFF;
 					charRed = (indexColor >> 16 & 0xFF) / 0xFF;
 					charGreen = (indexColor >> 8 & 0xFF) / 0xFF;

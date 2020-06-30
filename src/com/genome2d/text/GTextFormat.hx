@@ -17,12 +17,16 @@ class GTextFormat
 	}
 	
 	public function getIndexColor(p_index:Int):Int {
-		var color:Int = 0;
+		var color:Int = -2;
 		if (g2d_formatMap.exists(p_index)) {
 			color = g2d_formatMap.get(p_index);
 		}
 
 		return color;
+	}
+
+	public function hasIndexColor(p_index:Int):Bool {
+		return g2d_formatMap.exists(p_index);
 	}
 	
 }
