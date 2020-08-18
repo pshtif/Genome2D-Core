@@ -21,7 +21,7 @@ import com.genome2d.utils.GVAlignType;
 import flash.display.BitmapData;
 #elseif js
 import js.html.ImageData;
-import js.html.Uint8ClampedArray;
+#if (haxe_ver < 4) import js.html.Uint8ClampedArray; #else import js.lib.Uint8ClampedArray; #end
 #end
 
 class GTextureTextRenderer extends GTextRenderer {
