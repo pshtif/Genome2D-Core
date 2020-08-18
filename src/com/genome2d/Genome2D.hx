@@ -29,8 +29,11 @@ import com.genome2d.geom.GMatrix;
 import com.genome2d.components.GCameraController;
 import com.genome2d.node.GNode;
 import com.genome2d.input.GMouseInput;
-
 import com.genome2d.context.GContextConfig;
+#if js
+import js.html.ImageData;
+#if (haxe_ver < 4) import js.html.Uint8ClampedArray; #else import js.lib.Uint8ClampedArray; #end
+#end
 
 /**
     Genome2D core class
@@ -340,7 +343,7 @@ class Genome2D implements IGDebuggableInternal
                 g2d_renderMatrix.identity();
                 g2d_renderMatrixArray = [];
             }
-			
+
             if (p_camera != null) {
                 p_camera.render();
             } else {
@@ -398,7 +401,7 @@ class Genome2D implements IGDebuggableInternal
             #if flash
                 GTextureManager.createTexture("g2d_internal", new flash.display.BitmapData(4, 4, false, 0xFFFFFF));
             #elseif js
-                var imageData:js.html.ImageData = new js.html.ImageData(new js.html.Uint8ClampedArray([255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255]), 4);
+                var imageData:ImageData = new ImageData(new Uint8ClampedArray([255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255,255]), 4);
                 GTextureManager.createTexture("g2d_internal", imageData);
             #end
         }
@@ -441,7 +444,7 @@ class Genome2D implements IGDebuggableInternal
 		for (i in 0...g2d_cameras.length) {
             if (g2d_cameras[i].id == p_id) return g2d_cameras[i];
         }
-		
+
 		return null;
 	}
 
@@ -452,7 +455,7 @@ class Genome2D implements IGDebuggableInternal
             }
         }
     }
-	
+
     @:allow(com.genome2d.components.GCameraController)
 	private function g2d_addCameraController(p_camera:GCameraController):Void {
         for (i in 0...g2d_cameras.length) {
