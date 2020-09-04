@@ -81,5 +81,6 @@ class GFontManager
 
         return createFromBitmapDatas(p_id, bitmaps, ids, p_format);
     }
-	/**/	
+	/*
+	*/
 }

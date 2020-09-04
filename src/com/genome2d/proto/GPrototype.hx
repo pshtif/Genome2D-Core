@@ -64,7 +64,8 @@ class GPrototype
 			propertyExtras = propertyExtras.concat(Reflect.field(superClass, GPrototypeSpecs.PROTOTYPE_PROPERTY_EXTRAS));
 			superClass = cast Type.getSuperClass(superClass);
 		}
-		/**/
+		/*
+		*/
 		for (i in 0...propertyNames.length) {
 			var name:String = propertyNames[i];
 			var extras:Int = propertyExtras[i];

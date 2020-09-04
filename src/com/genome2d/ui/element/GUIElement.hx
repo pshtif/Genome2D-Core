@@ -1665,7 +1665,8 @@ class GUIElement implements IGPrototypable implements IGFocusable {
                     if (mouseEnabled && g2d_onRightMouseClick != null) {
                         if (g2d_onRightMouseClick != null) g2d_onRightMouseClick.dispatch(mouseInput);
                     }
-                /**/
+                /*
+                */
                 // WHEEL
                 case GMouseInputType.MOUSE_WHEEL:
                     if (mouseEnabled && g2d_onMouseWheel != null) g2d_onMouseWheel.dispatch(mouseInput);

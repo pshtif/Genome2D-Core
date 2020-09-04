@@ -49,5 +49,6 @@ class GTransition implements IGPrototypable {
 		Reflect.setField(prop, p_property, p_value);
 		//Actuate.tween(p_instance, time, prop).delay(delay);
 	}
-	/**/
+	/*
+	*/
 }

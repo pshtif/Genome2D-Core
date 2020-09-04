@@ -29,7 +29,8 @@ class MGBuild {
         for (moduleType in p_types) {
             trace(moduleType);
         }
-        /**/
+        /*
+        */
     }
 
     static function onGenerate(p_types:Array<haxe.macro.Type>) {

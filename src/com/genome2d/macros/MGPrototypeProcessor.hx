@@ -86,7 +86,8 @@ class MGPrototypeProcessor {
 				else if (i.name == "toReference") hasToReference = true;
 				else if (i.name == "g2d_prototypeStates") hasPrototypeStates = true;
 			}
-			/**/
+			/*
+			*/
 
             superClass = c.superClass;
         }
@@ -249,13 +250,15 @@ class MGPrototypeProcessor {
 		//var kind = TPath( { pack : [], name : "Class", params : [TPType(TPath( { name : localClass.name, pack : localClass.pack, params : [] } ))] } );
 		var field = { name : localClass.name, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
 		prototypes.push(field);
-		/**/
+		/*
+		*/
 		// TODO Parsing . to _ for cs target, can be refactored to be more streamlined for all platforms
 		var parsedName:String = localModule+"."+localClass.name;
 		parsedName = StringTools.replace(parsedName, ".", "_");
 		var field = { name : parsedName, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };
 		prototypes.push(field);
-		/**/
+		/*
+		*/
 		// We have a custom prototype name lookup as well
 		if (prototypeName != localClass.name) {
 			var field = { name : prototypeName, doc : null, meta : [], access : [APublic, AStatic], kind : FVar(macro : String, macro $v { localClass.module } ), pos : pos };

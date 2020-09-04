@@ -121,7 +121,8 @@ class GSliceSprite extends GComponent implements IGRenderable {
             cy += ch*node.g2d_worldScaleY;
         }
     }
-	/**/
+	/*
+	*/
 	public function render(p_camera:GCamera, p_useMatrix:Bool):Void {
         if (texture != null) {
             var context:IGContext = node.core.getContext();
@@ -186,7 +187,8 @@ class GSliceSprite extends GComponent implements IGRenderable {
                                        red, green, blue, alpha,
                                        null);
                 }
-				/**/
+				/*
+				*/
                 tx = sl;
                 tw = sw;
                 if (tw != 0 && th != 0) {
@@ -195,7 +197,8 @@ class GSliceSprite extends GComponent implements IGRenderable {
                                        red, green, blue, alpha,
                                        null);
                 }
-                /**/
+                /*
+                */
                 tx = sr;
                 tw = texture.width / texture.scaleFactor - sr;
                 if (tw != 0 && th != 0) {
@@ -204,7 +207,8 @@ class GSliceSprite extends GComponent implements IGRenderable {
                                        red, green, blue, alpha,
                                        null);
                 }
-				/**/
+				/*
+				*/
                 tx = 0;
                 ty = st;
                 tw = sl;
@@ -215,7 +219,8 @@ class GSliceSprite extends GComponent implements IGRenderable {
                                        red, green, blue, alpha,
                                        null);
                 }
-                /**/
+                /*
+                */
                 tx = sl;
                 tw = sw;
                 if (tw != 0 && th != 0) {
@@ -224,7 +229,8 @@ class GSliceSprite extends GComponent implements IGRenderable {
                                        red, green, blue, alpha,
                                        null);
                 }
-                /**/
+                /*
+                */
                 tx = sr;
                 tw = texture.width/texture.scaleFactor-sr;
 
@@ -234,7 +240,8 @@ class GSliceSprite extends GComponent implements IGRenderable {
                                        red, green, blue, alpha,
                                        null);
                 }
-                /**/
+                /*
+                */
                 tx = 0;
                 ty = sb;
                 tw = sl;
@@ -245,7 +252,8 @@ class GSliceSprite extends GComponent implements IGRenderable {
                                        red, green, blue, alpha,
                                        null);
                 }
-                /**/
+                /*
+                */
                 tx = sl;
                 tw = sw;
                 if (tw != 0 && th != 0) {
@@ -254,7 +262,8 @@ class GSliceSprite extends GComponent implements IGRenderable {
                                        red, green, blue, alpha,
                                        null);
                 }
-                /**/
+                /*
+                */
                 tx = sr;
                 tw = texture.width/texture.scaleFactor-sr;
                 if (tw != 0 && th != 0) {
@@ -263,7 +272,8 @@ class GSliceSprite extends GComponent implements IGRenderable {
                                        red, green, blue, alpha,
                                        null);
                 }
-                /**/
+                /*
+                */
             }
         }
     }

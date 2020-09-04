@@ -540,7 +540,8 @@ class GTextureCharRenderable
 	inline private function get_y():Float {
 		return line * (renderer.textureFont.lineHeight + renderer.lineSpace);
 	}
-	/**/
+	/*
+	*/
 
 	private var whiteSpace:Bool = false;
 

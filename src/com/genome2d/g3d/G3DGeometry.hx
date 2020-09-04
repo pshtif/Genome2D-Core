@@ -63,7 +63,8 @@ class G3DGeometry extends G3DNode {
             calculateFaceNormals();
             calculateVertexNormals();
         }
-		/**/
+		/*
+		*/
     }
 	
 	/*
@@ -130,5 +131,6 @@ class G3DGeometry extends G3DNode {
             normals.push(nz/nl);
         }
     }
-	/**/
+	/*
+	*/
 }

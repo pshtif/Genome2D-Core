@@ -177,7 +177,8 @@ class GUITextureSkin extends GUISkin {
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
-				/**/
+				/*
+				*/
                 tx = sl;
                 tw = sw;
                 if (tw != 0 && th != 0) {
@@ -190,7 +191,8 @@ class GUITextureSkin extends GUISkin {
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
-                /**/
+                /*
+                */
                 tx = sr;
                 tw = texture.width / texture.scaleFactor - sr;
                 if (tw != 0 && th != 0) {
@@ -201,7 +203,8 @@ class GUITextureSkin extends GUISkin {
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
-				/**/
+				/*
+				*/
                 tx = 0;
                 ty = st;
                 tw = sl;
@@ -214,7 +217,8 @@ class GUITextureSkin extends GUISkin {
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
-                /**/
+                /*
+                */
                 tx = sl;
                 tw = sw;
                 if (tw != 0 && th != 0) {
@@ -225,7 +229,8 @@ class GUITextureSkin extends GUISkin {
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
-                /**/
+                /*
+                */
                 tx = sr;
                 tw = texture.width/texture.scaleFactor-sr;
 
@@ -237,7 +242,8 @@ class GUITextureSkin extends GUISkin {
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
-                /**/
+                /*
+                */
                 tx = 0;
                 ty = sb;
                 tw = sl;
@@ -250,7 +256,8 @@ class GUITextureSkin extends GUISkin {
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
-                /**/
+                /*
+                */
                 tx = sl;
                 tw = sw;
                 if (tw != 0 && th != 0) {
@@ -261,7 +268,8 @@ class GUITextureSkin extends GUISkin {
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
-                /**/
+                /*
+                */
                 tx = sr;
                 tw = texture.width/texture.scaleFactor-sr;
                 if (tw != 0 && th != 0) {
@@ -272,7 +280,8 @@ class GUITextureSkin extends GUISkin {
                                        red*p_red, green*p_green, blue*p_blue, alpha*p_alpha,
                                        filter);
                 }
-                /**/
+                /*
+                */
             }
             rendered = true;
         }

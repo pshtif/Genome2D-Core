@@ -236,7 +236,8 @@ class GText extends GComponent implements IGRenderable
                 node.dispatchMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*renderer.width, ty*renderer.height, p_input);
             }
         }
-		/**/
+		/*
+		*/
 	}
 
     public function getBounds(p_bounds:GRectangle = null):GRectangle {
@@ -262,5 +263,6 @@ class GText extends GComponent implements IGRenderable
 		
 		renderer.textureFont = cast GFontManager.getFont(p_prototype.getProperty("font").value);
 	}
-	/**/
+	/*
+	*/
 }
