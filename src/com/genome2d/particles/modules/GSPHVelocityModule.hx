@@ -32,7 +32,8 @@ class GSPHVelocityModule extends GParticleEmitterModule
 		p_particle.accumulatedTime += p_deltaTime;
 
 		if (p_particle.accumulatedTime > 5000) p_particle.die = true;
-		/**/
+		/*
+		*/
 	}
 	
 }

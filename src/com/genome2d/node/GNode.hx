@@ -474,7 +474,8 @@ class GNode implements IGFocusable implements IGPrototypable
 	public var onRightMouseUp:GCallback1<GMouseInput>;
 	private var g2d_onRightMouseClick:GCallback1<GMouseInput>;
 	public var onRightMouseClick:GCallback1<GMouseInput>;
-	/**/
+	/*
+	*/
 	public var g2d_mouseDownNode:GNode;
 	public var g2d_mouseOverNode:GNode;
 	public var g2d_rightMouseDownNode:GNode;
@@ -526,7 +527,8 @@ class GNode implements IGFocusable implements IGPrototypable
 				} else {
 					g2d_renderable.captureMouseInput(p_input);
 				}
-				/**/
+				/*
+				*/
 			}
 			
 			if (!previouslyCaptured && p_input.captured) {

@@ -155,7 +155,8 @@ class GParticleSystemD extends GComponent implements IGRenderable
                     particle.texture.g2d_v = zv;
                     particle.texture.g2d_uScale = zuScale;
                     particle.texture.g2d_vScale = zvScale;
-                /**/
+                /*
+                */
                 } else {
                     node.core.getContext().draw(particle.texture, blendMode, tx, ty, particle.scaleX*node.g2d_worldScaleX, particle.scaleY*node.g2d_worldScaleY, particle.rotation, particle.red*node.g2d_worldRed, particle.green*node.g2d_worldGreen, particle.blue*node.g2d_worldBlue, particle.alpha*node.g2d_worldAlpha, null);
                 }

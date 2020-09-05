@@ -114,7 +114,8 @@ class GPrototypeFactory {
 
         return proto;
     }
-/**/
+/*
+*/
     // TODO: Refactor accessibility, macro reading
 	static public function g2d_getPrototype(p_prototype:GPrototype, p_instance:IGPrototypable, p_prototypeName:String):GPrototype {
 		if (p_prototype == null) p_prototype = new GPrototype();

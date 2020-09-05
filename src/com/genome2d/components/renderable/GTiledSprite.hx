@@ -134,7 +134,8 @@ class GTiledSprite extends GComponent implements IGRenderable {
                 node.dispatchMouseCallback(GMouseInputType.MOUSE_OUT, node, tx*g2d_width, ty*g2d_height, p_input);
             }
         }
-		/**/
+		/*
+		*/
     }
 
     /**

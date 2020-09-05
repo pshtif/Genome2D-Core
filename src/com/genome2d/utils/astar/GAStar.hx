@@ -254,5 +254,6 @@ class GAStar
 			insize *= 2;
 		}
 	}
-	/**/
+	/*
+	*/
 }

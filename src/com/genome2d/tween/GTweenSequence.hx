@@ -122,7 +122,8 @@ class GTweenSequence implements IGPrototypable {
     public function skip() {
         while (g2d_currentStep != null) skipCurrent();
     }
-    /**/
+    /*
+    */
     public function abort() {
         if (g2d_timeline != null) {
             g2d_timeline.removeSequence(this);

@@ -137,7 +137,8 @@ class GParticleSystem implements IGPrototypable
 				for (i in 0...g2d_neighborCount) {
 					g2d_neighbors[i].calculateForce();
 				}
-				/**/
+				/*
+				*/
 				g2d_defaultGroup.calculateForce();
 				for (group in g2d_groups.keys()) {
 					group.calculateForce();
@@ -352,7 +353,8 @@ class GSPHNeighbor
 			particle1.fluidY += fy + fay * particle2.viscosity;
 			particle2.fluidX -= fx + fax * particle1.viscosity;
 			particle2.fluidY -= fy + fay * particle1.viscosity;
-			/**/
+			/*
+			*/
 		}
     }
 }

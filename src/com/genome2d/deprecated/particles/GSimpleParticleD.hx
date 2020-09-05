@@ -205,7 +205,8 @@ class GSimpleParticleD
 		for (i in 0...p_emitter.g2d_fieldsCount) {
 			p_emitter.aFields[i].updateSimpleParticle(this, p_deltaTime);
 		}
-		/**/
+		/*
+		*/
 		var p:Float = g2d_accumulatedEnergy/g2d_energy;
 		g2d_velocityX += g2d_accelerationX*p_deltaTime;
 		g2d_velocityY += g2d_accelerationY*p_deltaTime;
@@ -230,7 +231,8 @@ class GSimpleParticleD
 			g2d_scaleY = n*10;
 			g2d_rotation = -Math.atan2(g2d_velocityX, g2d_velocityY);
 		}
-		/**/
+		/*
+		*/
 	}
 
 	private function g2d_dispose():Void {
