@@ -177,6 +177,32 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
         return p_value;
     }
 
+    #if swc @:extern #end
+    public var pivotX(get, set):Float;
+    #if swc @:getter(pivotX) #end
+    inline private function get_pivotX():Float {
+        return g2d_textRenderer.pivotX;
+    }
+    #if swc @:setter(pivotX) #end
+    inline private function set_pivotX(p_value:Float):Float {
+        g2d_textRenderer.pivotX = p_value;
+
+        return p_value;
+    }
+
+    #if swc @:extern #end
+    public var pivotY(get, set):Float;
+    #if swc @:getter(pivotY) #end
+    inline private function get_pivotY():Float {
+        return g2d_textRenderer.pivotY;
+    }
+    #if swc @:setter(pivotY) #end
+    inline private function set_pivotY(p_value:Float):Float {
+        g2d_textRenderer.pivotY = p_value;
+
+        return p_value;
+    }
+
     @prototype
     public var inputEnabled:Bool = false;
 
@@ -243,6 +269,8 @@ class GUIFontSkin extends GUISkin implements IGFocusable {
         clone.vAlign = vAlign;
         clone.hAlign = hAlign;
         clone.rotation = rotation;
+        clone.pivotX = pivotX;
+        clone.pivotY = pivotY;
         clone.inputEnabled = inputEnabled;
         clone.wordWrap = wordWrap;
         clone.blendMode = blendMode;
