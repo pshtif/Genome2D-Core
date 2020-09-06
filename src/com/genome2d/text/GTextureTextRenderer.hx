@@ -108,6 +108,32 @@ class GTextureTextRenderer extends GTextRenderer {
 
 	public var format:GTextFormat;
 
+	private var g2d_pivotX:Float = 0;
+
+	#if swc @:extern #end
+	public var pivotX(get, set):Float;
+	#if swc @:getter(pivotX) #end
+	inline private function get_pivotX():Float {
+		return g2d_pivotX;
+	}
+	#if swc @:setter(pivotX) #end
+	inline private function set_pivotX(p_value:Float):Float {
+		return g2d_pivotX = p_value;
+	}
+
+	private var g2d_pivotY:Float = 0;
+
+	#if swc @:extern #end
+	public var pivotY(get, set):Float;
+	#if swc @:getter(pivotY) #end
+	inline private function get_pivotY():Float {
+		return g2d_pivotY;
+	}
+	#if swc @:setter(pivotY) #end
+	inline private function set_pivotY(p_value:Float):Float {
+		return g2d_pivotY = p_value;
+	}
+
 	static private var g2d_helperTexture:GTexture;
 
 	public function new():Void {
@@ -177,8 +203,10 @@ class GTextureTextRenderer extends GTextRenderer {
 			var cy:Float = renderable.y + renderable.yoffset*fontScale - scrollOffset;
 
             if (p_rotation != 0) {
-                tx = (cx * cos - cy * sin) * p_scaleX + p_x;
-                ty = (cy * cos + cx * sin) * p_scaleY + p_y;
+				var wh = g2d_width*g2d_pivotX;
+				var hh = g2d_height*g2d_pivotY;
+                tx = (cx * cos - cy * sin) * p_scaleX + p_x + (wh - (wh * cos - hh * sin)) * p_scaleX;
+                ty = (cy * cos + cx * sin) * p_scaleY + p_y + (hh - (hh * cos + wh * sin)) * p_scaleY;
             } else {
 				tx = cx * p_scaleX + p_x;
 				ty = cy * p_scaleY + p_y;
