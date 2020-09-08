@@ -46,13 +46,17 @@ class GProject extends MonoBehaviour {
         }
     }
     #else
+    private function getConfig():GProjectConfig {
+        var contextConfig:GContextConfig = new GContextConfig(this, new GRectangle(0,0,Screen.width,Screen.height));
+        return new GProjectConfig(contextConfig);
+    }
+
     public function Start() {
         GDebug.info("Starting project.");
         onFrame = new GCallback0();
         onMouse = new GCallback2<String, Bool>();
 
-        var contextConfig:GContextConfig = new GContextConfig(this, new GRectangle(0,0,Screen.width,Screen.height));
-        g2d_config = new GProjectConfig(contextConfig);
+        g2d_config = getConfig();
 
         g2d_genome = Genome2D.getInstance();
         if (g2d_config.initGenome) {
