@@ -23,6 +23,8 @@ class GProject extends MonoBehaviour {
     #if cs
     public var onFrame(default,null):GCallback0;
     public var onMouse(default,null):GCallback2<String, Bool>;
+    //Experimental
+    public var USE_TOUCHES_WITH_PRIORITY:Bool = false;
     #end
 
     private var g2d_genome:Genome2D;
@@ -67,16 +69,37 @@ class GProject extends MonoBehaviour {
     }
 
     public function Update() {
-        if (Input.GetMouseButtonDown(0)) {
+        var mouseDown = false;
+        var mouseUp = false;
+        var holdingDown = false;
+
+        if (USE_TOUCHES_WITH_PRIORITY && Input.touchCount > 0) {
+            var touch = Input.GetTouch(0);
+
+            if (touch.phase == TouchPhase.Began) {
+                mouseDown = true;
+                holdingDown = true;
+            } else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) {
+                mouseUp = true;
+            } else if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary) {
+                holdingDown = true;
+            }
+        } else {
+            mouseDown = Input.GetMouseButtonDown(0);
+            mouseUp = Input.GetMouseButtonUp(0);
+            holdingDown = Input.GetMouseButton(0);
+        }
+
+        if (mouseDown) {
             onMouse.dispatch(GMouseInputType.MOUSE_DOWN, true);
-        } else if (Input.GetMouseButtonUp(0)) {
+        } else if (mouseUp) {
             onMouse.dispatch(GMouseInputType.MOUSE_UP, false);
         } else {
-            onMouse.dispatch(GMouseInputType.MOUSE_MOVE, Input.GetMouseButton(0));
+            onMouse.dispatch(GMouseInputType.MOUSE_MOVE, holdingDown);
         }
                 
         if (Input.mouseScrollDelta.y != 0) {
-            onMouse.dispatch(GMouseInputType.MOUSE_WHEEL, Input.GetMouseButton(0));
+            onMouse.dispatch(GMouseInputType.MOUSE_WHEEL, holdingDown);
         }
     }
 
