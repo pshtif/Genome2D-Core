@@ -351,9 +351,16 @@ class GTextureTextRenderer extends GTextRenderer {
 					if (wordWrapWhitespace) {
 						var backtrack:Int = i - whiteSpaceIndex - 1;
 						var currentCount:Int = currentLine.length;
+						if (backtrack >= currentCount) {
+							if (currentCount < 2) {
+								break;
+							}
+							backtrack = 1;
+							whiteSpaceIndex = i - backtrack - 1;
+						}
 						currentLine.splice(currentLine.length - backtrack, backtrack);
 						charIndex -= backtrack;
-						if (backtrack >= currentCount) break;
+
 						i = whiteSpaceIndex+1;
 					}
 					currentLine = new Array<GTextureCharRenderable>();
