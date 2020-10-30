@@ -70,6 +70,12 @@ class GUITextureSkin extends GUISkin {
 	
 	@prototype
 	public var tiled:Bool = false;
+
+    @prototype
+    public var tiledHeight:Bool = false;
+
+    @prototype
+    public var tiledWidth:Bool = false;
 	
 	@prototype
 	public var usePivot:Bool = false;
@@ -134,16 +140,18 @@ class GUITextureSkin extends GUISkin {
 						var ry:Float = texture.v * texture.gpuHeight;// (texture.region != null) ? texture.region.y : 0;
 						var x:Float = p_left + (.5 * texture.width + texture.pivotX);
 						var y:Float = p_top + (.5 * texture.height + texture.pivotY);
-						finalScaleX /= scaleX;
-						finalScaleY /= scaleY;
-						for (i in 0...Math.ceil(finalScaleX)) {
-							for (j in 0...Math.ceil(finalScaleY)) {
-								var sx:Float = (finalScaleX - i > 1) ? 1 : (finalScaleX - i);
-								var sy:Float = (finalScaleY - j > 1) ? 1 : (finalScaleY - j);
-								var px:Float = (texture.nativeWidth / 2 + texture.pivotX) - sx * scaleX * texture.nativeWidth / 2;
-								var py:Float = (texture.nativeHeight / 2 + texture.pivotY) - sy * scaleY * texture.nativeHeight / 2;
-								context.drawSource(texture, blendMode, rx, ry, sx*texture.nativeWidth, sy*texture.nativeHeight, 0, 0, x+i*texture.width*scaleX-px, y+j*texture.height*scaleY-py, scaleX, scaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, filter);
-							}
+						finalScaleX = tiledHeight == true ? finalScaleX : finalScaleX / scaleX;
+                        finalScaleY = tiledWidth == true ? finalScaleY : finalScaleY / scaleY;
+                        var columnsToDraw = tiledHeight == true ? Math.ceil(finalScaleX) - 1 : 0;
+                        var rowsToDraw = tiledWidth == true ? Math.ceil(finalScaleY) - 1 : 0;
+                        for (i in columnsToDraw...Math.ceil(finalScaleX)) {
+                            for (j in rowsToDraw...Math.ceil(finalScaleY)) {
+                                var sx:Float = tiledHeight == true ? 1 : (finalScaleX - i > 1) ? 1 : (finalScaleX - i);
+                                var sy:Float = tiledWidth == true ? 1 : (finalScaleY - j > 1) ? 1 : (finalScaleY - j);
+                                var px:Float = (texture.nativeWidth / 2 + texture.pivotX) - sx * scaleX * texture.nativeWidth / 2;
+                                var py:Float = (texture.nativeHeight / 2 + texture.pivotY) - sy * scaleY * texture.nativeHeight / 2;
+                                context.drawSource(texture, blendMode, rx, ry, sx*texture.nativeWidth, sy*texture.nativeHeight, 0, 0, x+i*texture.width*scaleX-px, y+j*texture.height*scaleY-py, tiledHeight == true ? finalScaleX : scaleX, tiledWidth == true ? finalScaleY : scaleY, rotation, red * p_red, green * p_green, blue * p_blue, alpha * p_alpha, filter);
+                            }
 						}
 					}
 				} else {
@@ -318,6 +326,8 @@ class GUITextureSkin extends GUISkin {
 		clone.scaleY = scaleY;
 		clone.rotation = rotation;
 		clone.tiled = tiled;
+        clone.tiledWidth = tiledWidth;
+        clone.tiledHeight = tiledHeight;
 		clone.usePivot = usePivot;
 		clone.filter = filter;
         clone.renderScaleX = renderScaleX;
