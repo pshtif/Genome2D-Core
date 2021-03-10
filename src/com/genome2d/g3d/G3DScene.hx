@@ -164,7 +164,7 @@ class G3DScene {
 		renderModels(g2d_transparentModels, p_cameraMatrix, p_type, p_textureOverride);
 	}
 	
-	private function renderModels(p_models:Array<G3DModel>, p_cameraMatrix:GMatrix3D, p_type:Int = 1, p_textureOverride:GTexture = null) {
+	private function renderModels(p_models:Array<G3DModel>, p_cameraMatrix:GMatrix3D, p_type:Int, p_textureOverride:GTexture) {
 		var context:IGContext = Genome2D.getInstance().getContext();
 		var renderer:G3DRenderer;
 		var index:Int = 0;
