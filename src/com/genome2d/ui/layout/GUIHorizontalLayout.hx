@@ -15,6 +15,9 @@ import com.genome2d.ui.element.GUIElement;
 class GUIHorizontalLayout extends GUILayout {
     @prototype 
 	public var gap:Float = 0;
+
+    @prototype
+    public var useChildrenHeight:Bool = false;
 	
 	public function new() {
 		type = GUILayoutType.HORIZONTAL;
@@ -60,7 +63,10 @@ class GUIHorizontalLayout extends GUILayout {
             child.calculateHeight();
 
             p_element.g2d_minHeight = p_element.g2d_minHeight < child.g2d_minHeight ? child.g2d_minHeight : p_element.g2d_minHeight;
-            //p_element.g2d_preferredHeight = p_element.g2d_preferredHeight < child.g2d_preferredHeight ? child.g2d_preferredHeight : p_element.g2d_preferredHeight;
+            
+            if (useChildrenHeight == true) {
+                p_element.g2d_preferredHeight = p_element.g2d_preferredHeight < child.g2d_preferredHeight ? child.g2d_preferredHeight : p_element.g2d_preferredHeight;
+            }
         }
     }
 
