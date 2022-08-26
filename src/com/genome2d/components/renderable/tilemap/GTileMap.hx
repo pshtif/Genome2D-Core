@@ -94,8 +94,8 @@ class GTileMap extends GComponent implements IGRenderable
         var viewRect:GRectangle = node.core.getContext().getStageViewRect();
         var cameraWidth:Float = viewRect.width*p_camera.normalizedViewWidth / p_camera.scaleX;
         var cameraHeight:Float = viewRect.height*p_camera.normalizedViewHeight / p_camera.scaleY;
-        var startX:Float =	p_camera.x - g2d_node.g2d_worldX - cameraWidth *.5 - horizontalMargin;
-        var startY:Float = p_camera.y - g2d_node.g2d_worldY - cameraHeight *.5 - verticalMargin;
+        var startX:Float =	p_camera.x - g2d_node.g2d_worldX - cameraWidth *.5 - horizontalMargin * p_camera.scaleX;
+        var startY:Float = p_camera.y - g2d_node.g2d_worldY - cameraHeight *.5 - verticalMargin * p_camera.scaleY;
         // Position of top left tile from map center
         var firstX:Float = -mapHalfWidth + (g2d_iso ? g2d_tileWidth/2 : 0);
         var firstY:Float = -mapHalfHeight + (g2d_iso ? g2d_tileHeight/2 : 0);
@@ -107,8 +107,8 @@ class GTileMap extends GComponent implements IGRenderable
         if (indexY<0) indexY = 0;
 
         // Position of bottom right tile from map center
-        var endX:Float = p_camera.x - g2d_node.g2d_worldX + cameraWidth * .5 - (g2d_iso ? g2d_tileWidth/2 : g2d_tileWidth) + horizontalMargin;
-        var endY:Float = p_camera.y - g2d_node.g2d_worldY + cameraHeight * .5 - (g2d_iso ? 0 : g2d_tileHeight) + verticalMargin;
+        var endX:Float = p_camera.x - g2d_node.g2d_worldX + cameraWidth * .5 - (g2d_iso ? g2d_tileWidth/2 : g2d_tileWidth) + horizontalMargin * p_camera.scaleX;
+        var endY:Float = p_camera.y - g2d_node.g2d_worldY + cameraHeight * .5 - (g2d_iso ? 0 : g2d_tileHeight) + verticalMargin * p_camera.scaleY;
 
         var indexWidth:Int = Std.int((endX - firstX) / g2d_tileWidth - indexX+2);
         if (indexWidth>g2d_width-indexX) indexWidth = g2d_width - indexX;
