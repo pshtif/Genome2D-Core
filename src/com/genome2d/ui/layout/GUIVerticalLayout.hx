@@ -16,6 +16,12 @@ class GUIVerticalLayout extends GUILayout {
 
     @prototype 
 	public var gap:Float = 0;
+
+    @prototype
+    public var useChildrenWidth:Bool = false;
+
+    @prototype
+    public var skipLastGap:Bool = false;
 	
 	public function new() {
 		type = GUILayoutType.VERTICAL;
@@ -29,7 +35,9 @@ class GUIVerticalLayout extends GUILayout {
             child.calculateWidth();
 
             p_element.g2d_minWidth = p_element.g2d_minWidth < child.g2d_minWidth ? child.g2d_minWidth : p_element.g2d_minWidth;
-            p_element.g2d_preferredWidth = p_element.g2d_preferredWidth < child.g2d_preferredWidth ? child.g2d_preferredWidth : p_element.g2d_preferredWidth;
+            if (useChildrenWidth == true) {
+                p_element.g2d_preferredWidth = p_element.g2d_preferredWidth < child.g2d_preferredWidth ? child.g2d_preferredWidth : p_element.g2d_preferredWidth;
+            }
         }
     }
 
@@ -49,13 +57,18 @@ class GUIVerticalLayout extends GUILayout {
 
     override private function calculateHeight(p_element:GUIElement):Void {
         p_element.g2d_preferredHeight = p_element.g2d_minHeight = 0;
+        var layoutGap:Float = gap;
 
         for (i in 0...p_element.g2d_numChildren) {
             var child:GUIElement = p_element.g2d_children[i];
             child.calculateHeight();
 
-            p_element.g2d_minHeight += child.g2d_minHeight + gap;
-            p_element.g2d_preferredHeight += child.g2d_preferredHeight + gap;
+            if (skipLastGap == true && i >= p_element.g2d_numChildren - 1) {
+                layoutGap = 0;
+            }
+
+            p_element.g2d_minHeight += child.g2d_minHeight + layoutGap;
+            p_element.g2d_preferredHeight += child.g2d_preferredHeight + layoutGap;
         }
     }
 
@@ -63,6 +76,7 @@ class GUIVerticalLayout extends GUILayout {
         var offsetY:Float = 0;
         var rest:Float = p_element.g2d_finalHeight - p_element.g2d_minHeight;
         if (rest<0) rest = 0;
+        var layoutGap:Float = gap;
 
         for (i in 0...p_element.g2d_numChildren) {
             var child:GUIElement = p_element.g2d_children[i];
@@ -74,7 +88,11 @@ class GUIVerticalLayout extends GUILayout {
 			rest -= childDif;
             child.g2d_worldBottom = child.g2d_worldTop + child.g2d_minHeight + childDif;
             child.g2d_finalHeight = child.g2d_worldBottom - child.g2d_worldTop;
-            offsetY += child.g2d_finalHeight + gap;
+
+            if (skipLastGap == true && i >= p_element.g2d_numChildren - 1) {
+                layoutGap = 0;
+            }
+            offsetY += child.g2d_finalHeight + layoutGap;
 
             child.invalidateHeight();
         }
