@@ -1,7 +1,6 @@
 package com.genome2d.project;
 
 import com.genome2d.callbacks.GCallback.GCallback0;
-import com.genome2d.callbacks.GCallback.GCallback2;
 import com.genome2d.debug.GDebug;
 import com.genome2d.macros.MGDebug;
 import com.genome2d.assets.GAssetManager;
@@ -11,7 +10,6 @@ import com.genome2d.assets.GStaticAssetManager;
 import com.genome2d.geom.GRectangle;
 #if cs
 import unityengine.*;
-import com.genome2d.input.GMouseInputType;
 #end
 
 #if !cs
@@ -21,10 +19,10 @@ class GProject {
 class GProject extends MonoBehaviour {
 #end
     #if cs
+    public var onUpdate(default,null):GCallback0;
     public var onFrame(default,null):GCallback0;
-    public var onMouse(default,null):GCallback2<String, Bool>;
-    //Experimental
-    public var USE_TOUCHES_WITH_PRIORITY:Bool = false;
+
+    // onMouse callback was moved to GUnityContext
     #end
 
     private var g2d_genome:Genome2D;
@@ -55,8 +53,8 @@ class GProject extends MonoBehaviour {
 
     public function Start() {
         GDebug.info("Starting project.");
+        onUpdate = new GCallback0();
         onFrame = new GCallback0();
-        onMouse = new GCallback2<String, Bool>();
 
         g2d_config = getConfig();
 
@@ -69,38 +67,7 @@ class GProject extends MonoBehaviour {
     }
 
     public function Update() {
-        var mouseDown = false;
-        var mouseUp = false;
-        var holdingDown = false;
-
-        if (USE_TOUCHES_WITH_PRIORITY && Input.touchCount > 0) {
-            var touch = Input.GetTouch(0);
-
-            if (touch.phase == TouchPhase.Began) {
-                mouseDown = true;
-                holdingDown = true;
-            } else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) {
-                mouseUp = true;
-            } else if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary) {
-                holdingDown = true;
-            }
-        } else {
-            mouseDown = Input.GetMouseButtonDown(0);
-            mouseUp = Input.GetMouseButtonUp(0);
-            holdingDown = Input.GetMouseButton(0);
-        }
-
-        if (mouseDown) {
-            onMouse.dispatch(GMouseInputType.MOUSE_DOWN, true);
-        } else if (mouseUp) {
-            onMouse.dispatch(GMouseInputType.MOUSE_UP, false);
-        } else {
-            onMouse.dispatch(GMouseInputType.MOUSE_MOVE, holdingDown);
-        }
-                
-        if (Input.mouseScrollDelta.y != 0) {
-            onMouse.dispatch(GMouseInputType.MOUSE_WHEEL, holdingDown);
-        }
+        onUpdate.dispatch();
     }
 
     public function OnPostRender() {
