@@ -22,6 +22,9 @@ class GUIVerticalLayout extends GUILayout {
 
     @prototype
     public var skipLastGap:Bool = false;
+
+    @prototype
+    public var skipInvisibleChildren:Bool = false;
 	
 	public function new() {
 		type = GUILayoutType.VERTICAL;
@@ -61,6 +64,9 @@ class GUIVerticalLayout extends GUILayout {
 
         for (i in 0...p_element.g2d_numChildren) {
             var child:GUIElement = p_element.g2d_children[i];
+
+            if (skipInvisibleChildren && !child.visible) continue;
+
             child.calculateHeight();
 
             if (skipLastGap == true && i >= p_element.g2d_numChildren - 1) {
@@ -80,6 +86,8 @@ class GUIVerticalLayout extends GUILayout {
 
         for (i in 0...p_element.g2d_numChildren) {
             var child:GUIElement = p_element.g2d_children[i];
+
+            if (skipInvisibleChildren && !child.visible) continue;
 
             child.g2d_worldTop = p_element.g2d_worldTop + offsetY;
 			// Top priority rest space distribution

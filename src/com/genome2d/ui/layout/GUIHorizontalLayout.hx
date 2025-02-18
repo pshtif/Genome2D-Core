@@ -21,6 +21,9 @@ class GUIHorizontalLayout extends GUILayout {
 
     @prototype
     public var skipLastGap:Bool = false;
+
+    @prototype
+    public var skipInvisibleChildren:Bool = false;
 	
 	public function new() {
 		type = GUILayoutType.HORIZONTAL;
@@ -32,6 +35,9 @@ class GUIHorizontalLayout extends GUILayout {
 
         for (i in 0...p_element.g2d_numChildren) {
             var child:GUIElement = p_element.g2d_children[i];
+
+            if (skipInvisibleChildren && !child.visible) continue;
+
             child.calculateWidth();
 
             if (skipLastGap == true && i >= p_element.g2d_numChildren - 1) {
@@ -50,6 +56,8 @@ class GUIHorizontalLayout extends GUILayout {
         var layoutGap:Float = gap;
         for (i in 0...p_element.g2d_numChildren) {
             var child:GUIElement = p_element.g2d_children[i];
+
+            if (skipInvisibleChildren && !child.visible) continue;
 
             child.g2d_worldLeft = p_element.g2d_worldLeft + offsetX;
 			// Left priority rest space distribution
